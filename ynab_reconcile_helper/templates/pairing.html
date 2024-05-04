@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <form action="{% url 'ynab-sync' %}" method="post">
+        {% csrf_token %}
+        <button type="submit" name="ynab-sync" value="partial-sync">Sync from YNAB</button>
+        <button type="submit" name="ynab-sync" value="total-sync">Full YNAB sync</button>
+        <button
+            type="submit"
+            hx-post="{% url 'pair-expense-transaction' %}"
+            hx-include="[name='pairing-view']"
+            hx-target="#split"
+            hx-select="#split"
+            hx-swap="outerHTML"
+        >
+            Pair expenses
+        </button>
+    </form>
+</div>
+<div id="server-feedbacks">
+</div>
+<form name="pairing-view">
+<div id="split">
+    <div>
+        <table id="expenses-table">
+            <tbody>
+            {% for expense in expenses %}
+                <tr>
+                    <td><input type="radio" name="expense" value="{{ expense.id }}" /></td>
+                    <td class="amount">{{ expense.amount }}</td>
+                    <td>{{ expense.name }}</td>
+                    <td>{{ expense.date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <table id="ynab-transactions-table">
+            <tbody>
+            {% for transaction in ynab_transactions %}
+                <tr>
+                    <td><input type="radio" name="ynab-transaction" value="{{ transaction.id }}" /></td>
+                    <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
+                    <td>{{ transaction.memo }}</td>
+                    <td>{{ transaction.date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+    </form>
+{% endblock %}

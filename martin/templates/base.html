@@ -1,0 +1,12 @@
+{% load static %}
+
+<html>
+    <head>
+        <title>Martin</title>
+        <link rel="stylesheet" href="{% static '/style.css' %}" />
+        <script src="{% static 'htmx-2.0.0-beta1.js' %}" type="module"  defer></script>
+    </head>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+        {% block content %}{% endblock %}
+    </body>
+</html>

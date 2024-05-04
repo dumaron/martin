@@ -1,0 +1,36 @@
+body {
+    font-family: "Berkeley Mono", monospace;
+}
+
+#split {
+    width: 100%;
+    display: flex;
+    margin-bottom: 10rem;
+    gap: 1rem;
+
+    > div {
+        width: 50%;
+        overflow-x: auto;
+    }
+}
+
+table {
+    width: 100%;
+}
+
+table, th, td {
+  border: 1px solid #ddd;
+}
+
+tr:hover td {
+    background-color: bisque;
+}
+
+td.amount {
+    background-color: papayawhip;
+    text-align: right;
+}
+
+form {
+    margin-bottom: 0;
+}
