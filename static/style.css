@@ -1,12 +1,19 @@
+:root {
+    --action-bar-height: 50px;
+}
+
 body {
     font-family: "Berkeley Mono", monospace;
+    margin: 0;
+    padding: 0;
 }
 
 #split {
     width: 100%;
     display: flex;
-    margin-bottom: 10rem;
     gap: 1rem;
+    height: calc(100svh - var(--action-bar-height));
+
 
     > div {
         width: 50%;
@@ -15,7 +22,9 @@ body {
 }
 
 table {
-    width: 100%;
+    width: calc(100% - 10px);
+    height: 100%;
+    margin: 5px;
 }
 
 table, th, td {
@@ -33,4 +42,8 @@ td.amount {
 
 form {
     margin-bottom: 0;
+}
+
+#action-bar {
+    height: var(--action-bar-height);
 }

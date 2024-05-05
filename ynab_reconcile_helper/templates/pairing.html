@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
+<div id="action-bar">
     <form action="{% url 'ynab-sync' %}" method="post">
         {% csrf_token %}
         <button type="submit" name="ynab-sync" value="partial-sync">Sync from YNAB</button>

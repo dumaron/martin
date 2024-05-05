@@ -58,7 +58,7 @@ def debug(request):
 
 @login_required
 def expenses_pairing_view(request):
-    unpaired_expenses = BankExpense.objects.filter(ynab_transaction_id=None)
+    unpaired_expenses = BankExpense.objects.filter(ynab_transaction_id=None).order_by('-date')
     ynab_transactions = (
         YnabTransaction
         .objects
