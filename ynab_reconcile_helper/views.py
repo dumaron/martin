@@ -4,6 +4,7 @@ from services.ynab import ynab
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from .forms import BankImportForm
 
 
 @login_required
@@ -85,3 +86,18 @@ def pair_expense_with_ynab_transaction(request):
         expense.save()
 
     return redirect('expenses_pairing_view')
+
+
+@login_required()
+def file_import(request):
+    if request.method == "POST":
+        form = BankImportForm(request.POST, request.FILES)
+        if form.is_valid():
+            return redirect('expenses_pairing_view')
+        else:
+            print(form.is_valid())
+            print(form.errors)
+            return render(request, 'file_import.html', {'form': form})
+    else:
+        form = BankImportForm()
+        return render(request, 'file_import.html', {'form': form})
