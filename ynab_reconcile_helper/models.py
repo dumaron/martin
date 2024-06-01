@@ -27,8 +27,7 @@ class BankFileImport(models.Model):
         # Given that we have a unique constrain on SQL based on name, date and amount, the already-imported expenses will
         # trigger an error. However, by using `ignore_conflicts`, we can just simulate a behaviour where the duplicates
         # are just skipped
-        res = BankExpense.objects.bulk_create(expenses, ignore_conflicts=True)
-        print(res)
+        BankExpense.objects.bulk_create(expenses, ignore_conflicts=True)
         return imported
 
 
@@ -41,6 +40,7 @@ class BankExpense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ynab_transaction_id = models.CharField(max_length=256, null=True, blank=True)
     paired_on = models.DateTimeField(null=True, blank=True)
+    snoozed_on = models.DateField(null=True, blank=True)
 
     class Meta:
         constraints = models.UniqueConstraint('name', 'date', 'amount', name='expense-uniqueness-name-date-amount'),

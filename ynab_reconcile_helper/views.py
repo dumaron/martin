@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import BankExpense, YnabTransaction, YnabImport
+from .models import BankExpense, YnabTransaction, YnabImport, BankFileImport
 from services.ynab import ynab
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -93,10 +93,11 @@ def file_import(request):
     if request.method == "POST":
         form = BankImportForm(request.POST, request.FILES)
         if form.is_valid():
+            new_import = form.save(commit=False)
+            new_import.user = request.user
+            new_import.save()
             return redirect('expenses_pairing_view')
         else:
-            print(form.is_valid())
-            print(form.errors)
             return render(request, 'file_import.html', {'form': form})
     else:
         form = BankImportForm()
