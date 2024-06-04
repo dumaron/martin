@@ -8,8 +8,15 @@ User = get_user_model()
 
 
 class BankFileImport(models.Model):
+
+    class FileType(models.TextChoices):
+        UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
+        FINECO_BANK_ACCOUNT_CSV_EXPORT = 'FINECO_BANK_ACCOUNT_CSV_EXPORT'
+        UNICREDIT_DEBIT_CARD_CSV_EXPORT = 'UNICREDIT_DEBIT_CARD_CSV_EXPORT'
+
     id = models.AutoField(primary_key=True)
     file_name = models.CharField(max_length=255)
+    file_type = models.CharField(max_length=255, choices=FileType, default=FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT)
     bank_file = models.FileField(upload_to='uploads/')
     import_date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -40,7 +47,7 @@ class BankExpense(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     ynab_transaction_id = models.CharField(max_length=256, null=True, blank=True)
     paired_on = models.DateTimeField(null=True, blank=True)
-    snoozed_on = models.DateField(null=True, blank=True)
+    snoozed_on = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         constraints = models.UniqueConstraint('name', 'date', 'amount', name='expense-uniqueness-name-date-amount'),

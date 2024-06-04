@@ -1,7 +1,6 @@
 from martin import settings
 import requests
 from datetime import datetime
-from ynab_reconcile_helper.models import YnabTransaction
 import json
 
 base_url = 'https://api.ynab.com/v1'

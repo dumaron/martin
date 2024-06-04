@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import BankExpense, YnabTransaction, YnabImport, BankFileImport
+from .models import BankExpense, YnabTransaction, YnabImport
 from services.ynab import ynab
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
@@ -59,7 +59,7 @@ def debug(request):
 
 @login_required
 def expenses_pairing_view(request):
-    unpaired_expenses = BankExpense.objects.filter(ynab_transaction_id=None).order_by('-date')
+    unpaired_expenses = BankExpense.objects.filter(ynab_transaction_id=None, snoozed_on=None).order_by('-date')
     ynab_transactions = (
         YnabTransaction
         .objects
@@ -83,6 +83,7 @@ def pair_expense_with_ynab_transaction(request):
         transaction.cleared = YnabTransaction.ClearedStatuses.CLEARED
         transaction.save()
         expense.ynab_transaction_id = transaction_id
+        expense.paired_on = datetime.now()
         expense.save()
 
     return redirect('expenses_pairing_view')
