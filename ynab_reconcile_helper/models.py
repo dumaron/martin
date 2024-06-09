@@ -11,7 +11,7 @@ class BankFileImport(models.Model):
 
     class FileType(models.TextChoices):
         UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
-        FINECO_BANK_ACCOUNT_CSV_EXPORT = 'FINECO_BANK_ACCOUNT_CSV_EXPORT'
+        FINECO_BANK_ACCOUNT_CSV_EXPORT = 'FINECO_BANK_ACCOUNT_XLSX_EXPORT'
         UNICREDIT_DEBIT_CARD_CSV_EXPORT = 'UNICREDIT_DEBIT_CARD_CSV_EXPORT'
 
     id = models.AutoField(primary_key=True)
@@ -27,13 +27,23 @@ class BankFileImport(models.Model):
     def save(self, *args, **kwargs):
         imported = super().save(*args, **kwargs)
 
-        # When saving, we want the it to also to create many single expenser entries as per file
-        rows = parse_unicredit_csv(self.bank_file)
-        expenses = [BankExpense.from_unicredit_csv_row(row, self.user, self) for row in rows]
+        file_parsing_strategy = None
+        if self.file_type == BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT:
+            file_parsing_strategy = BankExpense.from_unicredit_bank_account_csv_row
+        elif self.file_type == BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT:
+            file_parsing_strategy = BankExpense.from_unicredit_debit_card_csv_row
 
-        # Given that we have a unique constrain on SQL based on name, date and amount, the already-imported expenses will
-        # trigger an error. However, by using `ignore_conflicts`, we can just simulate a behaviour where the duplicates
-        # are just skipped
+        if file_parsing_strategy is None:
+            # not yet implemented, nothing todo
+            return imported
+
+        # When saving, we want it also to create many single expense entries as per file
+        rows = parse_unicredit_csv(self.bank_file)
+        expenses = [file_parsing_strategy(row, self.user, self) for row in rows]
+
+        # Given that we have a unique constraint based on SQL based on name, date and amount, the already-imported
+        # expenses will trigger an error. However, by using `ignore_conflicts`, we can just simulate a behaviour where
+        # the duplicates are just skipped
         BankExpense.objects.bulk_create(expenses, ignore_conflicts=True)
         return imported
 
@@ -53,15 +63,28 @@ class BankExpense(models.Model):
         constraints = models.UniqueConstraint('name', 'date', 'amount', name='expense-uniqueness-name-date-amount'),
     
     @classmethod
-    def from_unicredit_csv_row(cls, row, user, file_import):
-        test = BankExpense(
+    def from_unicredit_bank_account_csv_row(cls, row, user, file_import):
+        return BankExpense(
             name=row['Descrizione'].strip(),
             amount=fix_unicredit_floating_point(row['Importo (EUR)']),
             user=user,
             date=datetime.strptime(row['Data Registrazione'], '%d.%m.%Y'),
             file_import=file_import
         )
-        return test
+
+    @classmethod
+    def from_unicredit_debit_card_csv_row(cls, row, user, file_import):
+        return BankExpense(
+            name=row['Descrizione'].strip(),
+            amount=fix_unicredit_floating_point(row['Importo']),
+            user=user,
+            date=datetime.strptime(row['Data Registrazione'], '%d/%m/%Y'),
+            file_import=file_import
+        )
+
+    @classmethod
+    def from_fineco_bank_account_xslx_row(cls, row, user, file_import):
+        pass
 
     def __str__(self):
         return self.name
