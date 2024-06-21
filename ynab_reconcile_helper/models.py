@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from .csv import parse_unicredit_csv
+from services.file_reader import get_file_rows
 from datetime import datetime
 from .utils import fix_unicredit_floating_point
 
@@ -11,7 +11,7 @@ class BankFileImport(models.Model):
 
     class FileType(models.TextChoices):
         UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
-        FINECO_BANK_ACCOUNT_CSV_EXPORT = 'FINECO_BANK_ACCOUNT_XLSX_EXPORT'
+        FINECO_BANK_ACCOUNT_XSLX_EXPORT = 'FINECO_BANK_ACCOUNT_XLSX_EXPORT'
         UNICREDIT_DEBIT_CARD_CSV_EXPORT = 'UNICREDIT_DEBIT_CARD_CSV_EXPORT'
 
     id = models.AutoField(primary_key=True)
@@ -32,13 +32,15 @@ class BankFileImport(models.Model):
             file_parsing_strategy = BankExpense.from_unicredit_bank_account_csv_row
         elif self.file_type == BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT:
             file_parsing_strategy = BankExpense.from_unicredit_debit_card_csv_row
+        elif self.file_type == BankFileImport.FileType.FINECO_BANK_ACCOUNT_XSLX_EXPORT:
+            file_parsing_strategy = BankExpense.from_fineco_bank_account_xslx_row
 
         if file_parsing_strategy is None:
             # not yet implemented, nothing todo
             return imported
 
         # When saving, we want it also to create many single expense entries as per file
-        rows = parse_unicredit_csv(self.bank_file)
+        rows = get_file_rows(self.bank_file, self.file_type)
         expenses = [file_parsing_strategy(row, self.user, self) for row in rows]
 
         # Given that we have a unique constraint based on SQL based on name, date and amount, the already-imported
@@ -84,7 +86,13 @@ class BankExpense(models.Model):
 
     @classmethod
     def from_fineco_bank_account_xslx_row(cls, row, user, file_import):
-        pass
+        return BankExpense(
+            name=row['Descrizione_Completa'].strip(),
+            amount=float(row['Entrate'] or 0) + float(row['Uscite'] or 0),
+            user=user,
+            date=datetime.strptime(row['Data'], '%d/%m/%Y'),
+            file_import=file_import
+        )
 
     def __str__(self):
         return self.name

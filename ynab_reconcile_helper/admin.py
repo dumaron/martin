@@ -9,9 +9,17 @@ def snooze(modeladmin, request, queryset):
 
 
 class BankExpenseAdmin(admin.ModelAdmin):
-    list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on', 'ynab_transaction_id']
+    list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on', 'file_type']
     search_fields = ['name', 'amount']
+    list_filter = [
+        'file_import__file_type',
+        ('snoozed_on', admin.EmptyFieldListFilter),
+        ('paired_on', admin.EmptyFieldListFilter),
+    ]
     actions = [snooze]
+
+    def file_type(self, obj):
+        return obj.file_import.file_type
 
 
 class YnabTransactionAdmin(admin.ModelAdmin):
