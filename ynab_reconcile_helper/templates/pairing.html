@@ -1,13 +1,12 @@
-{% extends 'base.html' %}
-
+{% extends 'ynab_base.html' %}
+aaaaa
 {% block content %}
-{% include 'navigation.html' %}
 <div id="action-bar">
     <form action="{% url 'ynab-sync' %}" method="post">
         {% csrf_token %}
         <strong>Actions:</strong>
         <button type="submit" name="ynab-sync" value="partial-sync">Sync from YNAB</button>
-        <button type="submit" name="ynab-sync" value="total-sync">Full YNAB sync</button>
+<!--        <button type="submit" name="ynab-sync" value="total-sync">Full YNAB sync</button>-->
         <button
                 type="submit"
                 hx-post="{% url 'pair-expense-transaction' %}"

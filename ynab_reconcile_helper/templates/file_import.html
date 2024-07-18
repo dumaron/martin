@@ -1,8 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'ynab_base.html' %}
 
 {% block content %}
-{% include 'navigation.html' %}
-
 <form action="{% url "file-import" %}" method="post" enctype="multipart/form-data">
     {% csrf_token %}
     {{ form }}

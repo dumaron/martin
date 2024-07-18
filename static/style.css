@@ -65,3 +65,22 @@ form {
 nav#main-navigation {
     margin-bottom: .6rem;
 }
+
+#main-navigation {
+    border-bottom: 1px solid black;
+}
+
+.tab {
+    display: inline-block;
+    border: 1px solid black;
+    border-bottom: none;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+    text-decoration: none;
+    padding: 4px;
+
+
+    &:active {
+        background-color: gainsboro;
+    }
+}
