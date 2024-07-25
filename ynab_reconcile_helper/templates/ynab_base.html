@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block stylesheets %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static '/finance_style.css' %}" />
+{% endblock %}
 
 {% block subnavigation %}
     {% include 'ynab_navigation.html' %}

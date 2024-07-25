@@ -1,0 +1,37 @@
+#split {
+    width: 100%;
+    display: flex;
+    gap: 1rem;
+    height: calc(100svh - var(--action-bar-height) - var(--main-navbar-height) - 1rem);
+
+
+    > div {
+        width: 50%;
+        overflow-x: auto;
+    }
+}
+
+table {
+    width: calc(100% - 10px);
+    max-height: 100%;
+    margin: 5px;
+}
+
+table, th, td {
+  border: 1px solid #333;
+  border-collapse: collapse;
+}
+
+tr:hover td {
+    background-color: bisque;
+}
+
+td.amount {
+    background-color: papayawhip;
+    text-align: right;
+}
+
+td {
+    height: 1.8em;
+    padding: 0 .2em;
+}
