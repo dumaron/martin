@@ -1,9 +1,6 @@
 #split {
-    width: 100%;
     display: flex;
     gap: 1rem;
-    height: calc(100svh - var(--action-bar-height) - var(--main-navbar-height) - 1rem);
-
 
     > div {
         width: 50%;
@@ -12,8 +9,6 @@
 }
 
 table {
-    width: calc(100% - 10px);
-    max-height: 100%;
     margin: 5px;
 }
 
@@ -34,4 +29,7 @@ td.amount {
 td {
     height: 1.8em;
     padding: 0 .2em;
+}
+
+#finances-navigation {
 }

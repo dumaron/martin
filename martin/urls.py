@@ -4,6 +4,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("ynab-reconcile-helper/", include("ynab_reconcile_helper.urls")),
+    path("finances/", include("ynab_reconcile_helper.urls")),
     path("accounts/", include("django.contrib.auth.urls")),
 ]

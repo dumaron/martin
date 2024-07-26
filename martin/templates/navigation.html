@@ -1,5 +1,6 @@
 <nav id="main-navigation">
     <div id="title">Martin</div>
-    <a class="tab" href="expenses_pairing_view">Tasks</a>
-    <a class="tab" href="{% url 'expenses_pairing_view' %}">Finances</a>
+    <a class="tab{% if request.path == '/' %} active{% endif %}" href="/">Home</a>
+    <a class="tab{% if '/tasks' in request.path %} active{% endif %}" href="/tasks">Tasks</a>
+    <a class="tab{% if '/finances' in request.path %} active{% endif %}" href="{% url 'expenses_pairing_view' %}">Finances</a>
 </nav>

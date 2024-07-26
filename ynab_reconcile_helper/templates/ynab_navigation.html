@@ -1,4 +1,8 @@
-<nav id="ynab-reconcile-helper-navigation">
-    <a class="tab" href="{% url 'expenses_pairing_view' %}">Pairing view</a>
-    <a class="tab" href="{% url 'file-import' %}">Upload file</a>
+<nav id="finances-navigation" class="sub-navigation">
+    <a class="tab{% if request.resolver_match.url_name == 'expenses_pairing_view' %} active{% endif %}"
+       href="{% url 'expenses_pairing_view' %}">Pairing v1</a>
+    <a class="tab{% if request.resolver_match.url_name == 'pairing_v2' %} active{% endif %}"
+       href="{% url 'pairing_v2' %}">Pairing v2</a>
+    <a class="tab{% if request.resolver_match.url_name == 'file-import' %} active{% endif %}"
+       href="{% url 'file-import' %}">Upload file</a>
 </nav>

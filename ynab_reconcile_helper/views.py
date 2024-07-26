@@ -70,6 +70,13 @@ def expenses_pairing_view(request):
         'ynab_transactions': ynab_transactions,
     })
 
+@login_required
+def pairing_view_v2(request):
+    first_unpaired_expense = BankExpense.objects.filter(snoozed_on=None, paired_on=None).order_by('-date').first()
+    return render(request, 'pairing_v2.html', {
+        'expense': first_unpaired_expense
+    })
+
 
 @login_required()
 def pair_expense_with_ynab_transaction(request):
