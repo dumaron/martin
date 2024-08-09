@@ -1,6 +1,7 @@
 #split {
     display: flex;
     gap: 1rem;
+    margin: 0 1rem;
 
     > div {
         width: 50%;
@@ -9,7 +10,7 @@
 }
 
 table {
-    margin: 5px;
+    width: 100%;
 }
 
 table, th, td {

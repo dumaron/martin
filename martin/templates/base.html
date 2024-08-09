@@ -7,7 +7,7 @@
         {% block stylesheets %}{% endblock %}
         <script src="{% static 'htmx-2.0.0-beta1.js' %}" type="module"  defer></script>
     </head>
-    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-boost="true">
         {% include 'navigation.html' %}
         {% block subnavigation %}{% endblock %}
         {% block content %}{% endblock %}
