@@ -32,5 +32,15 @@ td {
     padding: 0 .2em;
 }
 
-#finances-navigation {
+#pairing-v2 {
+    display: grid;
+    grid-template: "[expense suggestions]"
+}
+
+#suggestions {
+    grid-area: suggestions 1;
+}
+
+#expense {
+    grid-area: expense 1;
 }

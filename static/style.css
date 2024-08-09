@@ -46,8 +46,12 @@ form {
         color: #000;
 
         &.active {
-            background-color: gainsboro;
             border-bottom-color: gainsboro;
+            background-color: gainsboro;
+        }
+
+        &:hover:not(.active) {
+            background: #20A09F;
         }
     }
 }
@@ -62,8 +66,11 @@ form {
     margin-bottom: -1px;
 
     &.active {
-        background-color: white;
         border-bottom-color: white;
+    }
+
+    &:hover, &.active {
+        background-color: white;
         color: black;
     }
 }

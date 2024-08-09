@@ -8,9 +8,43 @@
     </fieldset>
     {% csrf_token %}
 </form>
-<main>
+<main id="pairing-v2">
     {% if expense is None %}
     No expense to check! Yay!
     {% endif %}
+
+    <div id="expense">
+        <h1>{{ expense.name }}</h1>
+        <dl>
+            <dt>Date</dt>
+            <dd>{{ expense.date | date:"d.m.Y" }}</dd>
+            <dt>Amount</dt>
+            <dd>{{ expense.amount }}€</dd>
+            <dt>Source</dt>
+            <dd>{{ expense.file_import.file_type }}</dd>
+        </dl>
+    </div>
+    <div id="suggestions">
+        {% if first_amount_suggestions is not None %}
+
+        <div id="same-amount-suggestions">
+            <h2>Same amount</h2>
+            <table>
+                <tbody>
+                {% for transaction in same_amount_suggestions %}
+                <tr>
+                    <td><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
+                    <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
+                    <td>{{ transaction.memo }}</td>
+                    <td>{{ transaction.date | date:"d.m.Y" }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+    </div>
+
 </main>
 {% endblock %}

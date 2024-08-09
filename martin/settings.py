@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django_htmx",
     "ynab_reconcile_helper",
+    "tasks",
 ]
 
 MIDDLEWARE = [

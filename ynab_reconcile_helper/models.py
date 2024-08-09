@@ -36,7 +36,7 @@ class BankFileImport(models.Model):
             file_parsing_strategy = BankExpense.from_fineco_bank_account_xslx_row
 
         if file_parsing_strategy is None:
-            # not yet implemented, nothing todo
+            # not yet implemented, nothing to do
             return imported
 
         # When saving, we want it also to create many single expense entries as per file

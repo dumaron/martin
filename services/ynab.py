@@ -10,7 +10,7 @@ long_time_ago = datetime(2023, 1, 1).date()
 class YNABService:
     @staticmethod
     def get_uncleared_expenses(start_from):
-        date = start_from if start_from != None else long_time_ago
+        date = start_from if start_from is not None else long_time_ago
         budgets = requests.get(
             f'{base_url}/budgets/{settings.YNAB_DEFAULT_BUDGET}/transactions?since_date={date.strftime("%Y-%m-%d")}',
             headers={'Authorization': 'Bearer ' + settings.YNAB_API_TOKEN})
