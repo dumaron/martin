@@ -1,3 +1,8 @@
+:root {
+    --main-color: #00807F;
+    --highlighted-main-color: #20A09F;
+}
+
 #split {
     display: flex;
     gap: 1rem;

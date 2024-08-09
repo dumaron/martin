@@ -3,6 +3,11 @@
     --main-navbar-height:30px;
 }
 
+:root {
+    --main-color: gray;
+    --highlighted-main-color: #20A09F;
+}
+
 body, td {
     font-size: 14px;
 }
@@ -39,10 +44,10 @@ form {
 #main-navigation {
     border-bottom: 1px solid black;
     padding-top: .8rem;
-    background: #00807F;
+    background: var(--main-color);
 
     .tab {
-        background: #00807F;
+        background: var(--main-color);
         color: #000;
 
         &.active {
@@ -51,7 +56,7 @@ form {
         }
 
         &:hover:not(.active) {
-            background: #20A09F;
+            background: var(--highlighted-main-color);
         }
     }
 }

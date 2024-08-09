@@ -9,6 +9,7 @@
     </head>
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-boost="true">
         {% include 'navigation.html' %}
+        {% block additional_css %}{% endblock %}
         {% block subnavigation %}{% endblock %}
         {% block content %}{% endblock %}
     </body>

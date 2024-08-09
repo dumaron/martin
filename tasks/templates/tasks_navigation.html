@@ -1,0 +1,4 @@
+<nav id="tasks-navigation" class="sub-navigation">
+    <a class="tab{% if request.resolver_match.url_name == 'tasks_first_page' %} active{% endif %}"
+       href="{% url 'tasks_first_page' %}">Welcome</a>
+</nav>
