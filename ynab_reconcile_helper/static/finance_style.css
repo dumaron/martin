@@ -39,13 +39,14 @@ td {
 
 #pairing-v2 {
     display: grid;
-    grid-template: "[expense suggestions]"
+    grid-template: "expense suggestions";
+    grid-template-columns: 60% 40%;
 }
 
 #suggestions {
-    grid-area: suggestions 1;
+    grid-area: suggestions;
 }
 
 #expense {
-    grid-area: expense 1;
+    grid-area: expense;
 }

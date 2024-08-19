@@ -25,8 +25,8 @@
         </dl>
     </div>
     <div id="suggestions">
-        {% if first_amount_suggestions is not None %}
 
+        {% if same_amount_suggestions %}
         <div id="same-amount-suggestions">
             <h2>Same amount</h2>
             <table>
@@ -43,6 +43,28 @@
             </table>
         </div>
         {% endif %}
+
+        {% if similar_date_suggestions %}
+        <div id="similar-date-suggestions">
+            <h2>Similar date</h2>
+            <table>
+                <tbody>
+                {% for transaction in similar_date_suggestions %}
+                <tr>
+                    <td><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
+                    <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
+                    <td>{{ transaction.memo }}</td>
+                    <td>{{ transaction.date | date:"d.m.Y" }}</td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+
+        <div id="ai-suggestions">
+            <h2>AI suggested</h2>
+        </div>
 
     </div>
 
