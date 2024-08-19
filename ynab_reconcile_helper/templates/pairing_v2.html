@@ -9,10 +9,6 @@
     {% csrf_token %}
 </form>
 <main id="pairing-v2">
-    {% if expense is None %}
-    No expense to check! Yay!
-    {% endif %}
-
     <div id="expense">
         <h1>{{ expense.name }}</h1>
         <dl>
@@ -65,8 +61,6 @@
         <div id="ai-suggestions">
             <h2>AI suggested</h2>
         </div>
-
     </div>
-
 </main>
 {% endblock %}

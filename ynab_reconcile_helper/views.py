@@ -74,6 +74,10 @@ def expenses_pairing_view(request):
 @login_required
 def pairing_view_v2(request):
     first_unpaired_expense = BankExpense.objects.filter(snoozed_on=None, paired_on=None).order_by('-date').first()
+
+    if first_unpaired_expense is None:
+        return render(request, 'pairing_v2_empty.html', {})
+
     same_amount_suggestions = YnabTransaction.objects.filter(
         amount=first_unpaired_expense.amount) if first_unpaired_expense is not None else None
 

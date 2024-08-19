@@ -1,0 +1,14 @@
+{% extends 'ynab_base.html' %}
+
+{% block content %}
+<form action="{% url 'ynab-sync' %}" method="post">
+    <fieldset>
+        <legend>Actions</legend>
+        <button type="submit" name="ynab-sync" value="partial-sync">Sync from YNAB</button>
+    </fieldset>
+    {% csrf_token %}
+</form>
+<main id="pairing-v2">
+    No expense to check! Yay!
+</main>
+{% endblock %}
