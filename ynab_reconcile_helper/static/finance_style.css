@@ -16,6 +16,7 @@
 
 table {
     width: 100%;
+    margin-bottom: 1rem;
 }
 
 table, th, td {
@@ -25,11 +26,6 @@ table, th, td {
 
 tr:hover td {
     background-color: bisque;
-}
-
-td.amount {
-    background-color: papayawhip;
-    text-align: right;
 }
 
 td {
@@ -49,4 +45,18 @@ td {
 
 #expense {
     grid-area: expense;
+}
+
+td.date {
+    width: 6em;
+}
+
+td.selection {
+    width: 1em;
+}
+
+td.amount {
+    background-color: papayawhip;
+    text-align: right;
+    width: 6em;
 }

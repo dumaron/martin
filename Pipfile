@@ -6,6 +6,7 @@ name = "pypi"
 [packages]
 django-htmx = "*"
 tablib = {extras = ["xlsx"], version = "*"}
+gunicorn = "*"
 
 [dev-packages]
 

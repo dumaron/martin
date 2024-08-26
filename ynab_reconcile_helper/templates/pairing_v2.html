@@ -29,14 +29,15 @@
                 <tbody>
                 {% for transaction in same_amount_suggestions %}
                 <tr>
-                    <td><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
+                    <td class="selection"><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
                     <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
                     <td>{{ transaction.memo }}</td>
-                    <td>{{ transaction.date | date:"d.m.Y" }}</td>
+                    <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            <button>Pair expenses</button>
         </div>
         {% endif %}
 
@@ -47,19 +48,26 @@
                 <tbody>
                 {% for transaction in similar_date_suggestions %}
                 <tr>
-                    <td><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
+                    <td class="selection"><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
                     <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
                     <td>{{ transaction.memo }}</td>
-                    <td>{{ transaction.date | date:"d.m.Y" }}</td>
+                    <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
                 </tr>
                 {% endfor %}
                 </tbody>
             </table>
+            <button>Equalize and pair</button>
         </div>
         {% endif %}
 
         <div id="ai-suggestions">
             <h2>AI suggested</h2>
+            <button>Equalize and pair</button>
+        </div>
+
+        <div>
+            <h2>More</h2>
+            <button>Create new expense</button>
         </div>
     </div>
 </main>
