@@ -4,3 +4,4 @@ uploads/
 .idea/
 **/*.pyc
 *.pyc
+*/__pycache__/

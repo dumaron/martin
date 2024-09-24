@@ -79,12 +79,14 @@ def pairing_view_v2(request):
         return render(request, 'pairing_v2_empty.html', {})
 
     same_amount_suggestions = YnabTransaction.objects.filter(
-        amount=first_unpaired_expense.amount) if first_unpaired_expense is not None else None
+        amount=first_unpaired_expense.amount, 
+        cleared=YnabTransaction.ClearedStatuses.UNCLEARED) if first_unpaired_expense is not None else None
 
     similar_date_suggestions = YnabTransaction.objects.filter(
         date__lte=first_unpaired_expense.date + timedelta(days=3),
-        date__gte=first_unpaired_expense.date - timedelta(days=3)
-    )
+        date__gte=first_unpaired_expense.date - timedelta(days=3),
+        cleared=YnabTransaction.ClearedStatuses.UNCLEARED) if first_unpaired_expense is not None else None
+    
 
     return render(request, 'pairing_v2.html', {
         'expense': first_unpaired_expense,
