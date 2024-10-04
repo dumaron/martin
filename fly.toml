@@ -15,10 +15,11 @@ console_command = '/code/manage.py shell'
 [http_service]
   internal_port = 8000
   force_https = true
-  auto_stop_machines = 'stop'
   auto_start_machines = true
   min_machines_running = 0
   processes = ['app']
+  auto_stop_machines = 'off'
+
 
 [[vm]]
   memory = '512mb'
@@ -28,3 +29,7 @@ console_command = '/code/manage.py shell'
 [[statics]]
   guest_path = '/code/static'
   url_prefix = '/static/'
+
+[mounts]
+  source="martin_sqlite"
+  destination="/db"

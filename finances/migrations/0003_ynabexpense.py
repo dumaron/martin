@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("ynab_reconcile_helper", "0002_bankexpense_paired_on_and_more"),
+        ("finances", "0002_bankexpense_paired_on_and_more"),
     ]
 
     operations = [

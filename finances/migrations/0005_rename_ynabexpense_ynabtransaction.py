@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         (
-            "ynab_reconcile_helper",
+            "finances",
             "0004_ynabexpense_user_ynabimport_ynabexpense_local_import",
         ),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

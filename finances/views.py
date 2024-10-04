@@ -63,7 +63,7 @@ def expenses_pairing_view(request):
     ynab_transactions = (
         YnabTransaction
         .objects
-        .filter(cleared=YnabTransaction.ClearedStatuses.UNCLEARED)
+        .filter(cleared=YnabTransaction.ClearedStatuses.UNCLEARED, deleted=False)
         .order_by('-date'))
     return render(request, 'pairing.html', {
         'expenses': unpaired_expenses,

@@ -12,6 +12,7 @@ requests = "*"
 psycopg = {extras = ["binary"], version = "*"}
 whitenoise = "*"
 dj-database-url = "*"
+boto3 = "*"
 
 [dev-packages]
 

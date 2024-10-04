@@ -1,7 +1,6 @@
 from pathlib import Path
 from dotenv import load_dotenv
 from os import environ
-import dj_database_url
 
 
 load_dotenv()
@@ -34,7 +33,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     "django.contrib.staticfiles",
     "django_htmx",
-    "ynab_reconcile_helper",
+    "finances",
     "tasks"
 ]
 
@@ -75,10 +74,10 @@ WSGI_APPLICATION = "martin.wsgi.application"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": dj_database_url.config(
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": environ.get('DATABASE_PATH', BASE_DIR / "db.sqlite3"),
+    }
 }
 
 
@@ -118,7 +117,7 @@ USE_TZ = True
 STATIC_URL = "static/"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
-    BASE_DIR / "ynab_reconcile_helper/static"
+    BASE_DIR / "finances/static"
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
