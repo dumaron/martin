@@ -24,20 +24,24 @@
 
         {% if same_amount_suggestions %}
         <div id="same-amount-suggestions">
-            <h2>Same amount</h2>
-            <table>
-                <tbody>
-                {% for transaction in same_amount_suggestions %}
-                <tr>
-                    <td class="selection"><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
-                    <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
-                    <td>{{ transaction.memo }}</td>
-                    <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <button>Pair expenses</button>
+            <form action="{% url 'pair-expense-transaction' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="expense" value="{{ expense.id }}" />
+                <h2>Same amount</h2>
+                <table>
+                    <tbody>
+                    {% for transaction in same_amount_suggestions %}
+                    <tr>
+                        <td class="selection"><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
+                        <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
+                        <td>{{ transaction.memo }}</td>
+                        <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit">Pair expenses</button>
+            </form>
         </div>
         {% endif %}
 

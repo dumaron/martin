@@ -97,6 +97,9 @@ def pairing_view_v2(request):
 
 @login_required()
 def pair_expense_with_ynab_transaction(request):
+    """
+    Pair an expense with a YNAB transaction
+    """
     transaction_id = request.POST['ynab-transaction']
     expense_id = request.POST['expense']
     transaction = get_object_or_404(YnabTransaction, pk=transaction_id)
@@ -110,7 +113,7 @@ def pair_expense_with_ynab_transaction(request):
         expense.paired_on = datetime.now()
         expense.save()
 
-    return redirect('expenses_pairing_view')
+    return redirect('pairing_v2')
 
 
 @login_required()
