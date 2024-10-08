@@ -125,7 +125,6 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 AUTH_USER_MODEL = "auth.User"
@@ -134,3 +133,6 @@ AUTH_USER_MODEL = "auth.User"
 # YNAB
 YNAB_API_TOKEN = environ['YNAB_API_TOKEN']
 YNAB_DEFAULT_BUDGET = environ['YNAB_DEFAULT_BUDGET']
+
+# Environment, used to tell if we are in production or development and by doing so prevent some mutation on external services
+ENVIRONMENT = environ.get('ENVIRONMENT', 'development')

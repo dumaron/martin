@@ -1,5 +1,6 @@
 db.sqlite3
 db.sqlite3.bk
+db.sqlite3-shm
 .env
 uploads/
 .idea/
