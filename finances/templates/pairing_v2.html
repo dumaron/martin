@@ -21,6 +21,14 @@
         </dl>
     </div>
     <div id="suggestions">
+        <div>
+            <h2>No-pair actions</h2>
+            <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
+                {% csrf_token %}
+                <button type="submit">Snooze</button>
+            </form>
+        </div>
+
 
         {% if same_amount_suggestions %}
         <div id="same-amount-suggestions">

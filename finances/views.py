@@ -130,3 +130,16 @@ def file_import(request):
     else:
         form = BankImportForm()
         return render(request, 'file_import.html', {'form': form})
+    
+
+@login_required
+@require_http_methods(['POST'])
+def snooze_bankexpense(request, bankexpense_id):
+    """
+    Snoozes a bank expense. Useful for expenses that are actually just money transfers, like reloading the debit card
+    """
+    
+    expense = get_object_or_404(BankExpense, pk=bankexpense_id)
+    expense.snoozed_on = datetime.now()
+    expense.save()
+    return redirect('pairing_v2')
