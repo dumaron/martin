@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(
                 default=0,
                 on_delete=django.db.models.deletion.CASCADE,
-                to="ynab_reconcile_helper.ynabimport",
+                to="finances.ynabimport",
             ),
             preserve_default=False,
         ),

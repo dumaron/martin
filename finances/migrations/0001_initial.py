@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                     "file_import",
                     models.ForeignKey(
                         on_delete=django.db.models.deletion.CASCADE,
-                        to="ynab_reconcile_helper.bankfileimport",
+                        to="finances.bankfileimport",
                     ),
                 ),
             ],

@@ -153,3 +153,13 @@ class YnabTransaction(models.Model):
     def __str__(self):
         return f'{self.amount} {self.date} {self.memo}'
 
+
+class YnabCategory(models.Model):
+    id = models.UUIDField(primary_key=True)
+    name = models.CharField(max_length=256)
+    hidden = models.BooleanField()
+    original_category_group_id = models.UUIDField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
