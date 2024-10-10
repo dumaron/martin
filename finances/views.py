@@ -3,7 +3,7 @@ from .models import BankExpense, YnabTransaction, YnabImport
 from services.ynab import ynab
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods
+from django.views.decorators.http import require_http_methods, require_POST
 from .forms import BankImportForm
 
 
@@ -95,19 +95,29 @@ def pairing_view_v2(request):
     })
 
 
-@login_required()
+@login_required
+@require_POST
 def pair_expense_with_ynab_transaction(request):
     """
     Pair an expense with a YNAB transaction
     """
     transaction_id = request.POST['ynab-transaction']
     expense_id = request.POST['expense']
+
     transaction = get_object_or_404(YnabTransaction, pk=transaction_id)
     expense = get_object_or_404(BankExpense, pk=expense_id)
-    result = ynab.clear_transaction(transaction)
+
+    # Sometimes I record transactions in YNAB with a slightly different amount of money. Given that the bank expense is
+    # always the source of truth, I can decide to override the YNAB amount attribute when pairing to make them match
+    # without having to do it manually through app or web interface
+    amount = expense.amount if request.POST['override-amount'] == 'true' else None
+
+    result = ynab.clear_transaction(transaction, amount)
 
     if result['data']:
         transaction.cleared = YnabTransaction.ClearedStatuses.CLEARED
+        if amount is not None:
+            transaction.amount = amount
         transaction.save()
         expense.ynab_transaction_id = transaction_id
         expense.paired_on = datetime.now()
@@ -116,7 +126,7 @@ def pair_expense_with_ynab_transaction(request):
     return redirect('pairing_v2')
 
 
-@login_required()
+@login_required
 def file_import(request):
     if request.method == "POST":
         form = BankImportForm(request.POST, request.FILES)
@@ -133,12 +143,11 @@ def file_import(request):
     
 
 @login_required
-@require_http_methods(['POST'])
+@require_POST
 def snooze_bankexpense(request, bankexpense_id):
     """
     Snoozes a bank expense. Useful for expenses that are actually just money transfers, like reloading the debit card
     """
-    
     expense = get_object_or_404(BankExpense, pk=bankexpense_id)
     expense.snoozed_on = datetime.now()
     expense.save()

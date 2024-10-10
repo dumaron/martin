@@ -18,7 +18,7 @@ class YNABService:
         return budgets.json()
 
     @staticmethod
-    def clear_transaction(transaction):
+    def clear_transaction(transaction, amount=None):
 
         if is_development:
             fake_successful_response = {
@@ -38,6 +38,10 @@ class YNABService:
                 'cleared': transaction.ClearedStatuses.CLEARED,
             }
         }
+
+        if amount is not None:
+            data['transaction']['amount'] = amount
+
         json_object = json.dumps(data, indent=4)
         url = f'{base_url}/budgets/{settings.YNAB_DEFAULT_BUDGET}/transactions/{str(transaction.id)}'
 

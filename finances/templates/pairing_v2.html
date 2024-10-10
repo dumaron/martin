@@ -55,20 +55,25 @@
 
         {% if similar_date_suggestions %}
         <div id="similar-date-suggestions">
-            <h2>Similar date</h2>
-            <table>
-                <tbody>
-                {% for transaction in similar_date_suggestions %}
-                <tr>
-                    <td class="selection"><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
-                    <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
-                    <td>{{ transaction.memo }}</td>
-                    <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
-                </tr>
-                {% endfor %}
-                </tbody>
-            </table>
-            <button>Equalize and pair</button>
+            <form action="{% url 'pair-expense-transaction' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="expense" value="{{ expense.id }}" />
+                <input type="hidden" name="override-amount" value="true" />
+                <h2>Similar date</h2>
+                <table>
+                    <tbody>
+                    {% for transaction in similar_date_suggestions %}
+                    <tr>
+                        <td class="selection"><input type="radio" name="ynab-transaction" value="{{ transaction.id }}"/></td>
+                        <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
+                        <td>{{ transaction.memo }}</td>
+                        <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit">Equalize and pair</button>
+            </form>
         </div>
         {% endif %}
 
