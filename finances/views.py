@@ -3,7 +3,7 @@ from .models import BankExpense, YnabTransaction, YnabImport
 from services.ynab import ynab
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from .forms import BankImportForm
 
 
@@ -110,7 +110,7 @@ def pair_expense_with_ynab_transaction(request):
     # Sometimes I record transactions in YNAB with a slightly different amount of money. Given that the bank expense is
     # always the source of truth, I can decide to override the YNAB amount attribute when pairing to make them match
     # without having to do it manually through app or web interface
-    amount = expense.amount if request.POST['override-amount'] == 'true' else None
+    amount = expense.amount if request.POST.get('override-amount', None) == 'true' else None
 
     result = ynab.clear_transaction(transaction, amount)
 
@@ -151,4 +151,23 @@ def snooze_bankexpense(request, bankexpense_id):
     expense = get_object_or_404(BankExpense, pk=bankexpense_id)
     expense.snoozed_on = datetime.now()
     expense.save()
+    return redirect('pairing_v2')
+
+
+@login_required
+@require_GET
+def ynab_synchronizations_list(request):
+    """
+    Shows a list of possible operations to sync local database with YNAB APIs
+    """
+    return render(request, 'ynab_synchronizations.html', {})
+
+
+@login_required
+@require_POST
+def synchronize_ynab_categories(request):
+    """
+    Synchronize YNAB categories with local database
+    """
+    ynab.sync_categories()
     return redirect('pairing_v2')

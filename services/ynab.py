@@ -1,3 +1,5 @@
+from django.template.context_processors import static
+
 from martin import settings
 import requests
 from datetime import datetime
@@ -20,18 +22,6 @@ class YNABService:
     @staticmethod
     def clear_transaction(transaction, amount=None):
 
-        if is_development:
-            fake_successful_response = {
-                'data': {
-                    'transaction': {
-                        'account_id': str(transaction.account_id),
-                        'cleared': transaction.ClearedStatuses.CLEARED,
-                    }
-                }
-            }
-            return fake_successful_response
-        
-
         data = {
             'transaction': {
                 'account_id': str(transaction.account_id),
@@ -40,10 +30,15 @@ class YNABService:
         }
 
         if amount is not None:
-            data['transaction']['amount'] = amount
+            # YNAB APIs receive amounts in milliunits
+            data['transaction']['amount'] = int(amount * 1000)
 
         json_object = json.dumps(data, indent=4)
         url = f'{base_url}/budgets/{settings.YNAB_DEFAULT_BUDGET}/transactions/{str(transaction.id)}'
+
+        if is_development:
+            print(json_object)
+            return { 'data': data }
 
         response = requests.put(
             url,
@@ -53,7 +48,15 @@ class YNABService:
             },
             data=json_object
         )
+
         return response.json()
+
+    @staticmethod
+    def sync_categories():
+        """
+        Upsert all YNAB categories on local database
+        """
+        pass
 
 
 ynab = YNABService()
