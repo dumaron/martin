@@ -13,6 +13,9 @@ class Project(models.Model):
     parent_project = models.ForeignKey('Project', on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(choices=Statuses, max_length=32)
 
+    def __str__(self):
+        return self.name
+
 
 class Todo(models.Model):
 
@@ -28,3 +31,6 @@ class Todo(models.Model):
     project = models.ForeignKey('Project', on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(choices=Statuses, max_length=32)
     valid_from = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.description

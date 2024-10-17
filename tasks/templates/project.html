@@ -1,0 +1,31 @@
+{% extends 'tasks_base.html' %}
+
+{% block content %}
+<main>
+    {% if project.parent_project %}
+    Go up to <a href="{% url 'project_detail' project_id=project.parent_project_id %}">{{ project.parent_project }}</a>
+    {% else %}
+    Go up to <a href="{% url 'tasks_first_page' %}">top level</a>
+    {% endif %}
+    <h1>{{ project }}</h1>
+    {% if children_projects %}
+    <h2>Children projects</h2>
+    <ul>
+        {% for children in children_projects %}
+        <li><a href="{% url 'project_detail' project_id=children.id %}">{{ children }}</a></li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if todos %}
+    <h2>Todos</h2>
+    <form>
+        <ul>
+            {% for todo in todos %}
+            <li><input type="checkbox" name="todo_ids" value="{{ todo.id }}">{{ todo }} /></li>
+            {% endfor %}
+        </ul>
+    </form>
+    {% endif %}
+</main>
+{% endblock %}
