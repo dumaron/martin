@@ -1,4 +1,6 @@
 <nav id="tasks-navigation" class="sub-navigation">
-    <a class="tab{% if request.resolver_match.url_name == 'tasks_first_page' %} active{% endif %}"
-       href="{% url 'tasks_first_page' %}">Welcome</a>
+    <a class="tab{% if '/projects' in request.path %} active{% endif %}" href="{% url 'tasks_first_page' %}">
+        Projects
+    </a>
+    <a class="tab">Operative views</a>
 </nav>
