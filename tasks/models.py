@@ -38,6 +38,18 @@ class Todo(models.Model):
     daily_priority_increase = models.SmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     is_valid_order_pray =  models.BooleanField(default=False)
+    inbox_after_completion = models.TextField(null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if (self.status == Todo.Statuses.DONE or self.status == Todo.Statuses.ACTIVE) and self.inbox_after_completion is not None:
+            current_todo = Todo.objects.get(pk=self.id)
+            if current_todo.status == Todo.Statuses.TODO:
+                # Then I know the model has changed from "to do" to "done", and it needs to spawn the inbox
+                inbox = Inbox(content=self.inbox_after_completion)
+                inbox.save()
+
+        return super().save(*args, **kwargs)
+
 
     def __str__(self):
         return self.description
