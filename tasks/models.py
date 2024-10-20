@@ -1,6 +1,5 @@
-from random import choices
-
 from django.db import models
+from datetime import date
 
 
 class Project(models.Model):
@@ -37,8 +36,9 @@ class Todo(models.Model):
     priority = models.SmallIntegerField(default=0)
     daily_priority_increase = models.SmallIntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
-    is_valid_order_pray =  models.BooleanField(default=False)
+    is_valid_order_pray = models.BooleanField(default=False)
     inbox_after_completion = models.TextField(null=True, blank=True)
+    last_increase = models.DateField(default=date.today)
 
     def save(self, *args, **kwargs):
         if (self.status == Todo.Statuses.DONE or self.status == Todo.Statuses.ACTIVE) and self.inbox_after_completion is not None:
