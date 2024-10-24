@@ -1,55 +1,26 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import BankExpense, YnabTransaction, YnabImport
-from services.ynab import ynab
+from finances.adapters import ynab
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from .forms import BankImportForm
+from finances.actions.sync_ynab_categories import sync_ynab_categories
+from .actions.sync_ynab_transactions import sync_ynab_transactions
 
 
 @login_required
 @require_http_methods(['POST'])
 def ynab_sync(request):
+    """
+    Synchronizes local transactions with the ones in YNAB, taking the latter as a source of truth. Can work both in
+    partial mode or "full" mode.
+    """
     if 'ynab-sync' in request.POST:
-        mode = request.POST['ynab-sync']
-        date = None
+        partial_mode = request.POST['ynab-sync'] == 'partial-sync'
+        sync_ynab_transactions(partial_mode, request.user)
 
-        if mode == 'partial-sync':
-            last_ynab_import = YnabImport.objects.latest('execution_datetime')
-            if last_ynab_import is not None:
-                date = last_ynab_import.execution_datetime - timedelta(days=30)
-                date = date.date()
-
-        ynab_expenses = ynab.get_uncleared_expenses(start_from=date)
-        transactions = ynab_expenses['data']['transactions']
-        ynab_import = YnabImport(user=request.user, execution_datetime=datetime.now())
-        ynab_import.save()
-
-        for t in transactions:
-            YnabTransaction.objects.update_or_create(
-                id=t['id'],
-                defaults={
-                    "date": datetime.strptime(t['date'], "%Y-%m-%d").date(),
-                    "amount": t['amount'] / 1000,
-                    "memo": t['memo'],
-                    "cleared": t['cleared'],
-                    "approved": t['approved'],
-                    "flag_color": t['flag_color'],
-                    "flag_name": t['flag_name'],
-                    "account_id": t['account_id'],
-                    "payee_id": t['payee_id'],
-                    "category_id": t['category_id'],
-                    "transfer_account_id": t['transfer_account_id'],
-                    "transfer_transaction_id": t['transfer_transaction_id'],
-                    "matched_transaction_id": t['matched_transaction_id'],
-                    "import_id": t['import_id'],
-                    "debt_transaction_type": t['debt_transaction_type'],
-                    "deleted": t['deleted'],
-                    "user": request.user,
-                    "local_import": ynab_import,
-                }
-            )
-        return redirect('expenses_pairing_view')
+    return redirect('pairing_v2')
 
 
 def debug(request):
@@ -134,7 +105,7 @@ def file_import(request):
             new_import = form.save(commit=False)
             new_import.user = request.user
             new_import.save()
-            return redirect('expenses_pairing_view')
+            return redirect('pairing_v2')
         else:
             return render(request, 'file_import.html', {'form': form})
     else:
@@ -169,5 +140,5 @@ def synchronize_ynab_categories(request):
     """
     Synchronize YNAB categories with local database
     """
-    ynab.sync_categories()
+    sync_ynab_categories()
     return redirect('pairing_v2')

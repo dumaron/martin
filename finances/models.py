@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from services.file_reader import get_file_rows
+from finances.adapters.file_reader import get_file_rows
 from datetime import datetime
 from .utils import fix_unicredit_floating_point
 
@@ -101,6 +101,10 @@ class BankExpense(models.Model):
 class YnabImport(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     execution_datetime = models.DateTimeField()
+    server_knowledge = models.IntegerField(blank=True, null=True)
+
+    def __str__(self):
+        return f'YNAB import of {datetime.strftime(self.execution_datetime, '%d/%m/%Y %H:%M %Z')}'
 
 
 class YnabTransaction(models.Model):
@@ -113,7 +117,7 @@ class YnabTransaction(models.Model):
     class FlagColors(models.TextChoices):
         RED = 'red'
         ORANGE = 'orange'
-        YELLOW = 'yellow'
+        YELLOW = 'yellow' # shared with Federica using the official ratio (70/30)
         GREEN = 'green'
         BLUE = 'blue'
         PURPLE = 'purple'

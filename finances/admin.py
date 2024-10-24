@@ -28,7 +28,10 @@ class YnabTransactionAdmin(admin.ModelAdmin):
     search_fields = ['memo']
 
 
+class YnabImportAdmin(admin.ModelAdmin):
+    list_display = ['execution_datetime', 'server_knowledge']
+
 admin.site.register(BankFileImport)
 admin.site.register(BankExpense, BankExpenseAdmin)
-admin.site.register(YnabImport)
+admin.site.register(YnabImport, YnabImportAdmin)
 admin.site.register(YnabTransaction, YnabTransactionAdmin)

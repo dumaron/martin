@@ -39,6 +39,7 @@ class Todo(models.Model):
     is_valid_order_pray = models.BooleanField(default=False)
     inbox_after_completion = models.TextField(null=True, blank=True)
     last_increase = models.DateField(default=date.today)
+    snoozed_until = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if (self.status == Todo.Statuses.DONE or self.status == Todo.Statuses.ACTIVE) and self.inbox_after_completion is not None:
@@ -61,12 +62,18 @@ class Inbox(models.Model):
         PRIVATE = 'private'
         WORK = 'work'
 
+    class Meta:
+        verbose_name_plural = 'inboxes'
+
     id = models.AutoField(primary_key=True)
     content = models.TextField()
     context = models.TextField(choices=Contexts, default=Contexts.PRIVATE)
     created_at = models.DateTimeField(auto_now_add=True)
     processed_at = models.DateTimeField(null=True, blank=True)
     deleted_at = models.DateTimeField(null=True, blank=True)
+
+    def __str__(self):
+        return self.content
 
 
 class Update(models.Model):

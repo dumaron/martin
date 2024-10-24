@@ -1,22 +1,18 @@
-from django.template.context_processors import static
-
 from martin import settings
 import requests
-from datetime import datetime
 import json
 
 is_development = settings.ENVIRONMENT == 'development'
 base_url = 'https://api.ynab.com/v1'
-long_time_ago = datetime(2023, 1, 1).date()
 
 
-class YNABService:
+class YnabAdapter:
     @staticmethod
-    def get_uncleared_expenses(start_from):
-        date = start_from if start_from is not None else long_time_ago
+    def get_uncleared_expenses(server_knowledge):
         budgets = requests.get(
-            f'{base_url}/budgets/{settings.YNAB_DEFAULT_BUDGET}/transactions?since_date={date.strftime("%Y-%m-%d")}',
+            f'{base_url}/budgets/{settings.YNAB_DEFAULT_BUDGET}/transactions?since_date=2023-08-01&last_knowledge_of_server={server_knowledge}',
             headers={'Authorization': 'Bearer ' + settings.YNAB_API_TOKEN})
+        # TODO find a way to validate this response with pydantic
         return budgets.json()
 
     @staticmethod
@@ -52,11 +48,16 @@ class YNABService:
         return response.json()
 
     @staticmethod
-    def sync_categories():
+    def get_categories():
         """
         Upsert all YNAB categories on local database
         """
-        pass
 
+        response = requests.get(
+            f'{base_url}/budgets/{settings.YNAB_DEFAULT_BUDGET}/categories',
+            headers={'Authorization': 'Bearer ' + settings.YNAB_API_TOKEN})
 
-ynab = YNABService()
+        data = response.json()['data']
+
+        print(data['category_groups'])
+
