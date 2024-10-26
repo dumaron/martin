@@ -1,6 +1,5 @@
 from django.urls import path
-from .views import expenses_pairing_view, ynab_sync, debug, pair_expense_with_ynab_transaction, file_import, \
-    pairing_view_v2, snooze_bankexpense, ynab_synchronizations_list, synchronize_ynab_categories
+from .views import *
 
 urlpatterns = [
     path("", expenses_pairing_view, name="expenses_pairing_view"),
@@ -15,7 +14,5 @@ urlpatterns = [
 
     # files
     path("file-import", file_import, name="file-import"),
-
-    # misc/tmp
-    path("debug", debug, name="debug"),
 ]
+    

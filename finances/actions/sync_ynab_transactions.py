@@ -6,9 +6,7 @@ from ..models import YnabTransaction, YnabImport
 
 
 def sync_ynab_transactions(partial, user) -> None:
-    last_server_knowledge = 0
-    if partial:
-        last_server_knowledge = YnabImport.objects.aggregate(Max('server_knowledge'))['server_knowledge__max'] or 0
+    last_server_knowledge = YnabImport.objects.aggregate(Max('server_knowledge'))['server_knowledge__max'] or 0 if partial else 0
 
     result = YnabAdapter.get_uncleared_expenses(last_server_knowledge)
 
