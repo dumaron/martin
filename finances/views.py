@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import BankExpense, YnabTransaction, YnabImport
-from finances.adapters import ynab
+from .actions.pair_bank_expense_with_ynab_transaction import pair_bank_expense_with_ynab_transaction
+from .models import BankExpense, YnabTransaction
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
@@ -23,13 +23,13 @@ def ynab_sync(request):
     return redirect('pairing_v2')
 
 
-def debug(request):
-    print(request.POST)
-    return render(request, 'partial.html')
-
-
 @login_required
+@require_GET
 def expenses_pairing_view(request):
+    """
+    Version 1 of the pairing view, showing all the unpaired bank expenses on the left and all the uncleared YNAB
+    transactions on the right.
+    """
     unpaired_expenses = BankExpense.objects.filter(ynab_transaction_id=None, snoozed_on=None).order_by('-date')
     ynab_transactions = (
         YnabTransaction
@@ -43,7 +43,12 @@ def expenses_pairing_view(request):
 
 
 @login_required
+@require_GET
 def pairing_view_v2(request):
+    """
+    Second version of the pairing view. It is bank-expense centric: takes the oldest unpaired bank expense and shows
+    some suggestions for pair-able YNAB transactions.
+    """
     first_unpaired_expense = BankExpense.objects.filter(snoozed_on=None, paired_on=None).order_by('-date').first()
 
     if first_unpaired_expense is None:
@@ -70,35 +75,24 @@ def pairing_view_v2(request):
 @require_POST
 def pair_expense_with_ynab_transaction(request):
     """
-    Pair an expense with a YNAB transaction
+    Pairs an expense with a YNAB transaction
     """
     transaction_id = request.POST['ynab-transaction']
     expense_id = request.POST['expense']
+    override_amount = request.POST.get('override-amount', False) == 'true'
 
-    transaction = get_object_or_404(YnabTransaction, pk=transaction_id)
-    expense = get_object_or_404(BankExpense, pk=expense_id)
+    ynab_transaction = get_object_or_404(YnabTransaction, pk=transaction_id)
+    bank_expense = get_object_or_404(BankExpense, pk=expense_id)
 
-    # Sometimes I record transactions in YNAB with a slightly different amount of money. Given that the bank expense is
-    # always the source of truth, I can decide to override the YNAB amount attribute when pairing to make them match
-    # without having to do it manually through app or web interface
-    amount = expense.amount if request.POST.get('override-amount', None) == 'true' else None
-
-    result = ynab.clear_transaction(transaction, amount)
-
-    if result['data']:
-        transaction.cleared = YnabTransaction.ClearedStatuses.CLEARED
-        if amount is not None:
-            transaction.amount = amount
-        transaction.save()
-        expense.ynab_transaction_id = transaction_id
-        expense.paired_on = datetime.now()
-        expense.save()
-
+    pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, override_amount)
     return redirect('pairing_v2')
 
 
 @login_required
 def file_import(request):
+    """
+    Page to allow uploading files from banks export
+    """
     if request.method == "POST":
         form = BankImportForm(request.POST, request.FILES)
         if form.is_valid():

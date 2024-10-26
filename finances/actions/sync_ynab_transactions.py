@@ -1,15 +1,19 @@
 from datetime import datetime
+
 from django.db.models import Max
 from ..adapters.ynab import YnabAdapter
 from ..models import YnabTransaction, YnabImport
 
 
-def sync_ynab_transactions(partial, user):
+def sync_ynab_transactions(partial, user) -> None:
     last_server_knowledge = 0
     if partial:
-        last_server_knowledge = YnabImport.objects.aggregate(Max('server_knowledge')) or 0
+        last_server_knowledge = YnabImport.objects.aggregate(Max('server_knowledge'))['server_knowledge__max'] or 0
 
     result = YnabAdapter.get_uncleared_expenses(last_server_knowledge)
+
+    if 'error' in result:
+        raise Exception(result['error'])
 
     transactions = result['data']['transactions']
     new_server_knowledge = result['data']['server_knowledge']
