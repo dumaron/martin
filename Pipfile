@@ -13,6 +13,7 @@ psycopg = {extras = ["binary"], version = "*"}
 whitenoise = "*"
 dj-database-url = "*"
 boto3 = "*"
+django-treenode = "*"
 
 [dev-packages]
 

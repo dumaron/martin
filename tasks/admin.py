@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import Project, Todo, Inbox, Update
-
+from treenode.admin import TreeNodeModelAdmin
+from treenode.forms import TreeNodeForm
 
 class TodoModelAdmin(admin.ModelAdmin):
     list_display = ['description', 'project', 'priority', 'status', 'deadline']
@@ -20,7 +21,20 @@ class InboxModelAdmin(admin.ModelAdmin):
         ('deleted_at', admin.EmptyFieldListFilter),
     ]
 
-admin.site.register(Project)
+class ProjectAdmin(TreeNodeModelAdmin):
+
+    # set the changelist display mode: 'accordion', 'breadcrumbs' or 'indentation' (default)
+    # when changelist results are filtered by a querystring,
+    # 'breadcrumbs' mode will be used (to preserve data display integrity)
+    #treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_ACCORDION
+    # treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_BREADCRUMBS
+    treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_INDENTATION
+
+    # use TreeNodeForm to automatically exclude invalid parent choices
+    form = TreeNodeForm
+
+
+admin.site.register(Project, ProjectAdmin)
 admin.site.register(Todo, TodoModelAdmin)
 admin.site.register(Inbox, InboxModelAdmin)
 admin.site.register(Update)

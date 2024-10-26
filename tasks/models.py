@@ -1,8 +1,8 @@
 from django.db import models
 from datetime import date
+from treenode.models import TreeNodeModel
 
-
-class Project(models.Model):
+class Project(TreeNodeModel):
 
     class Statuses(models.TextChoices):
         ACTIVE = 'active'
@@ -11,11 +11,17 @@ class Project(models.Model):
 
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=1024)
-    parent_project = models.ForeignKey('Project', on_delete=models.CASCADE, blank=True, null=True)
     status = models.CharField(choices=Statuses, max_length=32)
 
     def __str__(self):
         return self.name
+
+    treenode_display_field = "name"
+
+    class Meta(TreeNodeModel.Meta):
+        verbose_name = 'Project'
+        verbose_name_plural = 'Projects'
+
 
 
 class Todo(models.Model):
