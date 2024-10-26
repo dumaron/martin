@@ -44,16 +44,30 @@ class Todo(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     is_valid_order_pray = models.BooleanField(default=False)
     inbox_after_completion = models.TextField(null=True, blank=True)
+    waiting_after_completion = models.TextField(null=True, blank=True)
     last_increase = models.DateField(default=date.today)
     snoozed_until = models.DateTimeField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        if (self.status == Todo.Statuses.DONE or self.status == Todo.Statuses.ACTIVE) and self.inbox_after_completion is not None:
+        # If the Todo status is "Done" then there is a chance this update is to mark it done from a previous state.
+        # We need to check that in order to tell if we need to run the post-completion routines
+        if self.status == Todo.Statuses.DONE:
             current_todo = Todo.objects.get(pk=self.id)
-            if current_todo.status == Todo.Statuses.TODO:
-                # Then I know the model has changed from "to do" to "done", and it needs to spawn the inbox
-                inbox = Inbox(content=self.inbox_after_completion)
-                inbox.save()
+
+            if current_todo.status == Todo.Statuses.TODO or current_todo.status == Todo.Statuses.ACTIVE:
+                # Now we're sure we're handling a task that has been marked as completed just now. We can run the
+                # post-completion routines.
+
+                # Spawning new Inbox object if specified
+                if self.inbox_after_completion is not None:
+                    inbox = Inbox(content=self.inbox_after_completion)
+                    inbox.save()
+
+                # Spawning new Waiting object if specified
+                if self.waiting_after_completion is not None:
+                    waiting = Waiting(content=self.waiting_after_completion, project=self.project)
+                    waiting.save()
+
 
         return super().save(*args, **kwargs)
 
@@ -90,3 +104,20 @@ class Update(models.Model):
 
     def __str__(self):
         return f'Update for project {self.project} on {self.created_at}'
+
+
+class Waiting(models.Model):
+
+    class Statuses(models.TextChoices):
+        WAITING = 'waiting'
+        DONE = 'done'
+        DELETED = 'deleted'
+
+    id = models.AutoField(primary_key=True)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    content = models.TextField()
+    status = models.CharField(max_length=16, choices=Statuses, default=Statuses.WAITING)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.content
