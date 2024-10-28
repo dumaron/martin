@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Project, Todo, Inbox, Update
+from .models import *
 from treenode.admin import TreeNodeModelAdmin
 from treenode.forms import TreeNodeForm
 
@@ -40,3 +40,4 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(Todo, TodoModelAdmin)
 admin.site.register(Inbox, InboxModelAdmin)
 admin.site.register(Update)
+admin.site.register(Waiting)

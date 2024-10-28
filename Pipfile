@@ -9,9 +9,7 @@ tablib = {extras = ["xlsx"], version = "*"}
 gunicorn = "*"
 python-dotenv = "*"
 requests = "*"
-psycopg = {extras = ["binary"], version = "*"}
 whitenoise = "*"
-dj-database-url = "*"
 boto3 = "*"
 django-treenode = "*"
 

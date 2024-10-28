@@ -1,6 +1,6 @@
 :root {
     --action-bar-height: 30px;
-    --main-navbar-height:30px;
+    --main-navbar-height: 30px;
 }
 
 :root {
@@ -13,7 +13,7 @@ body, td {
 }
 
 body {
-    font-family: "Berkeley Mono", monospace;
+    font-family: 'SF Pro', sans-serif;
     margin: 0;
     padding: 0;
 }
@@ -44,7 +44,37 @@ form {
 #main-navigation {
     border-bottom: 1px solid black;
     padding-top: .8rem;
-    background: var(--main-color);
+
+    &.tasks {
+        &, .tab {
+            background: #a34a68;
+        }
+
+        .tab:hover:not(.active) {
+            background: #c96f8f;
+        }
+    }
+
+    &.memory {
+        &, .tab {
+            background: #4a7194;
+        }
+
+        .tab:hover:not(.active) {
+            background: #6a91b4;
+        }
+    }
+
+    &.finances {
+        &, .tab {
+            background: #00807F;
+        }
+
+        .tab:hover:not(.active) {
+            background: #20A09F;
+        }
+    }
+
 
     .tab {
         background: var(--main-color);

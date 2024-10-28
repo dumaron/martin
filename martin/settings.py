@@ -35,7 +35,8 @@ INSTALLED_APPS = [
     'treenode',
     "django_htmx",
     "finances",
-    "tasks"
+    "tasks",
+    'memory'
 ]
 
 MIDDLEWARE = [

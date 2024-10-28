@@ -6,7 +6,7 @@ from .models import Project, Todo
 
 @login_required
 def first_page(request):
-    top_level_projects = Project.objects.filter(parent_project__isnull=True, status=Project.Statuses.ACTIVE)
+    top_level_projects = Project.objects.filter(tn_parent__isnull=True, status=Project.Statuses.ACTIVE)
     return render(request, 'first_page.html', { 'projects': top_level_projects })
 
 
@@ -14,7 +14,7 @@ def first_page(request):
 @require_GET
 def project_detail(request, project_id):
     project = get_object_or_404(Project, pk=project_id)
-    children_projects = Project.objects.filter(parent_project=project, status=Project.Statuses.ACTIVE)
+    children_projects = Project.objects.filter(tn_parent=project, status=Project.Statuses.ACTIVE)
     related_todos = Todo.objects.filter(project=project).order_by('description')
     return render(request, 'project.html', {
         'project': project,
