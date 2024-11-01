@@ -10,6 +10,7 @@ class TodoModelAdmin(admin.ModelAdmin):
         'status',
         'is_valid_order_pray',
     ]
+    autocomplete_fields = ['project']
 
 
 class InboxModelAdmin(admin.ModelAdmin):
