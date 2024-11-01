@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .actions.pair_bank_expense_with_ynab_transaction import pair_bank_expense_with_ynab_transaction
-from .models import BankExpense, YnabTransaction
+from .models import BankExpense, YnabTransaction, YnabCategory
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
@@ -54,6 +54,8 @@ def pairing_view_v2(request):
     if first_unpaired_expense is None:
         return render(request, 'pairing_v2_empty.html', {})
 
+    ynab_categories = YnabCategory.objects.filter(hidden=False)
+
     same_amount_suggestions = YnabTransaction.objects.filter(
         deleted=False,
         amount=first_unpaired_expense.amount, 
@@ -70,6 +72,7 @@ def pairing_view_v2(request):
         'expense': first_unpaired_expense,
         'same_amount_suggestions': same_amount_suggestions,
         'similar_date_suggestions': similar_date_suggestions,
+        'ynab_categories': ynab_categories,
     })
 
 
@@ -136,5 +139,5 @@ def synchronize_ynab_categories(request):
     """
     Synchronize YNAB categories with local database
     """
-    sync_ynab_categories()
-    return redirect('pairing_v2')
+    sync_ynab_categories(request.user)
+    return redirect('ynab-synchronizations-list')

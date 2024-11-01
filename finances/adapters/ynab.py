@@ -1,6 +1,7 @@
 from martin import settings
 import requests
 import json
+from itertools import chain
 
 is_development = settings.ENVIRONMENT == 'development'
 base_url = 'https://api.ynab.com/v1'
@@ -58,6 +59,6 @@ class YnabAdapter:
             headers={'Authorization': 'Bearer ' + settings.YNAB_API_TOKEN})
 
         data = response.json()['data']
+        categories = list(chain.from_iterable(map(lambda x : x['categories'], data['category_groups'])))
 
-        print(data['category_groups'])
-
+        return categories

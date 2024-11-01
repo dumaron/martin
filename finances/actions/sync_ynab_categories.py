@@ -2,6 +2,19 @@ from finances.models import YnabCategory
 from finances.adapters.ynab import YnabAdapter
 
 
-def sync_ynab_categories():
+def sync_ynab_categories(user):
     ynab_categories = YnabAdapter.get_categories()
-    pass
+    for category in ynab_categories:
+
+        if category['original_category_group_id'] is None:
+            print(category)
+
+        YnabCategory.objects.update_or_create(
+            id=category['id'],
+            defaults={
+                'name': category['name'],
+                'hidden': category['hidden'],
+                'category_group_name': category['category_group_name'],
+                'user': user
+            })
+    return

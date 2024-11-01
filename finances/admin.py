@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import BankExpense, BankFileImport, YnabImport, YnabTransaction
+from .models import *
 from datetime import datetime
 
 
@@ -35,3 +35,4 @@ admin.site.register(BankFileImport)
 admin.site.register(BankExpense, BankExpenseAdmin)
 admin.site.register(YnabImport, YnabImportAdmin)
 admin.site.register(YnabTransaction, YnabTransactionAdmin)
+admin.site.register(YnabCategory)

@@ -162,7 +162,7 @@ class YnabCategory(models.Model):
     id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=256)
     hidden = models.BooleanField()
-    original_category_group_id = models.UUIDField()
+    category_group_name = models.CharField(max_length=1024)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):

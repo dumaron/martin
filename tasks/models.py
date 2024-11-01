@@ -59,12 +59,12 @@ class Todo(models.Model):
                 # post-completion routines.
 
                 # Spawning new Inbox object if specified
-                if self.inbox_after_completion is not None:
+                if self.inbox_after_completion != '':
                     inbox = Inbox(content=self.inbox_after_completion)
                     inbox.save()
 
                 # Spawning new Waiting object if specified
-                if self.waiting_after_completion is not None:
+                if self.waiting_after_completion != '':
                     waiting = Waiting(content=self.waiting_after_completion, project=self.project)
                     waiting.save()
 
