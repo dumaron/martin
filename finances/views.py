@@ -1,10 +1,14 @@
+from unicodedata import category
+
 from django.shortcuts import render, redirect, get_object_or_404
+
+from .actions.create_ynab_transaction_from_bank_expense import create_ynab_transaction_from_bank_expense
 from .actions.pair_bank_expense_with_ynab_transaction import pair_bank_expense_with_ynab_transaction
 from .models import BankExpense, YnabTransaction, YnabCategory
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
-from .forms import BankImportForm
+from .forms import BankImportForm, YnabTransactionCreationForm
 from finances.actions.sync_ynab_categories import sync_ynab_categories
 from .actions.sync_ynab_transactions import sync_ynab_transactions
 
@@ -49,7 +53,7 @@ def pairing_view_v2(request):
     Second version of the pairing view. It is bank-expense centric: takes the oldest unpaired bank expense and shows
     some suggestions for pair-able YNAB transactions.
     """
-    first_unpaired_expense = BankExpense.objects.filter(snoozed_on=None, paired_on=None).order_by('-date').first()
+    first_unpaired_expense = BankExpense.objects.filter(snoozed_on=None, paired_on=None).order_by('date').first()
 
     if first_unpaired_expense is None:
         return render(request, 'pairing_v2_empty.html', {})
@@ -66,13 +70,13 @@ def pairing_view_v2(request):
         date__lte=first_unpaired_expense.date + timedelta(days=3),
         date__gte=first_unpaired_expense.date - timedelta(days=3),
         cleared=YnabTransaction.ClearedStatuses.UNCLEARED) if first_unpaired_expense is not None else None
-    
 
     return render(request, 'pairing_v2.html', {
         'expense': first_unpaired_expense,
         'same_amount_suggestions': same_amount_suggestions,
         'similar_date_suggestions': similar_date_suggestions,
         'ynab_categories': ynab_categories,
+        'transaction_creation_form': YnabTransactionCreationForm(initial={'bank_expense_id': first_unpaired_expense.id})
     })
 
 
@@ -141,3 +145,21 @@ def synchronize_ynab_categories(request):
     """
     sync_ynab_categories(request.user)
     return redirect('ynab-synchronizations-list')
+
+
+@login_required
+@require_POST
+def create_ynab_transaction(request):
+    """
+    TODO
+    """
+    form = YnabTransactionCreationForm(request.POST)
+    if form.is_valid():
+        bank_expense = get_object_or_404(BankExpense, pk=form.cleaned_data['bank_expense_id'])
+        memo = form.cleaned_data['memo']
+        category_id = form.cleaned_data['ynab_category']
+        create_ynab_transaction_from_bank_expense(bank_expense, memo, category_id )
+        return redirect('pairing_v2')
+    else:
+        return
+

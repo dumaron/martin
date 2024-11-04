@@ -27,18 +27,13 @@
             <p>Lorem ipsum yadda yadda you know the rest</p>
             <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
                 {% csrf_token %}
-                <button type="submit">Snooze</button>
+                </label><button type="submit">Snooze</button>
             </form>
-            <h3></h3>
-            <form>
-                <h3>Create transaction from bank expense</h3>
-                <p>Well, here the help text can actually help</p>
-                <input type="text" name="memo" />
-                <select name="category">
-                    {% for category in ynab_categories %}
-                    <option value="{{ category.id }}">{{ category.name }}</option>
-                    {% endfor %}
-                </select>
+            <h3>Create transaction from bank expense</h3>
+            <p>Well, here the help text can actually help</p>
+            <form action="{% url 'create-ynab-transaction' %}" method="post">
+                {% csrf_token %}
+                {{ transaction_creation_form }}
                 <button type="submit">Create transaction</button>
             </form>
         </div>

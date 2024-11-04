@@ -135,6 +135,7 @@ AUTH_USER_MODEL = "auth.User"
 # YNAB
 YNAB_API_TOKEN = environ['YNAB_API_TOKEN']
 YNAB_DEFAULT_BUDGET = environ['YNAB_DEFAULT_BUDGET']
+YNAB_ACCOUNT_ID = environ['YNAB_ACCOUNT_ID']
 
 # Environment, used to tell if we are in production or development and by doing so prevent some mutation on external adapters
 ENVIRONMENT = environ.get('ENVIRONMENT', 'development')
