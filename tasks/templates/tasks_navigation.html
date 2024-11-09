@@ -2,5 +2,5 @@
     <a class="tab{% if '/projects' in request.path %} active{% endif %}" href="{% url 'tasks_first_page' %}">
         Projects
     </a>
-    <a class="tab">Operative views</a>
+    <a class="tab{% if '/flows' in request.path %} active{% endif %}" href="{% url 'flows_list' %}">Flows</a>
 </nav>

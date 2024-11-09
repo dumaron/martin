@@ -110,12 +110,6 @@ form {
     }
 }
 
-aside {
-    width: 300px;
-    background-color: gainsboro;
-    display: block;
-}
-
 .sub-navigation {
     padding-top: .6rem;
     border-bottom: 1px solid black;
@@ -132,6 +126,7 @@ aside {
 main {
     font-family: "SF Pro", "Helvetica", sans-serif;
     padding: .6rem 1rem;
+    grid-area: 'content';
 }
 
 form > div {
@@ -141,4 +136,18 @@ form > div {
 fieldset {
     border: 1px solid black;
     margin: .6rem 1rem;
+}
+
+.grid-content {
+    display: grid;
+    grid-template-columns: minmax(100px, 25%) 1fr;
+    grid-template-areas: "sidebar content";
+}
+
+aside {
+    margin: 30px 10px;
+    width: 300px;
+    background-color: gainsboro;
+    display: block;
+    grid-area: 'sidebar';
 }
