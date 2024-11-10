@@ -1,9 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from .models import Project, Todo
-from django.db.models import Max
-
 
 
 @login_required
@@ -32,18 +30,36 @@ def project_detail(request, project_id):
     })
 
 
+@login_required
+@require_GET
 def flows_list(request):
     """
-    TODO
+    Renders the initial page for the flows section
     """
     return render(request, 'flows_list.html', {})
 
 
+@login_required
+@require_GET
 def process_tasks_by_priority_flow(request):
     """
-    TODO
+    Flow that presents the task with the highest priority among the ones that needs to be done
     """
 
     max_priority_todo = Todo.objects.filter(status=Todo.Statuses.TODO).order_by('-priority').first()
 
     return render(request, 'flows/process_tasks_by_priority.html', { 'todo': max_priority_todo })
+
+
+@login_required
+@require_POST
+def set_task_status(request, todo_id):
+    """
+
+    """
+
+    todo = get_object_or_404(Todo, pk=todo_id)
+    todo.status = request.POST['new-status']
+    todo.save()
+
+    return

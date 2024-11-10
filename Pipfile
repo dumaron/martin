@@ -12,6 +12,8 @@ requests = "*"
 whitenoise = "*"
 boto3 = "*"
 django-treenode = "*"
+ruff = "*"
+openai = "*"
 
 [dev-packages]
 

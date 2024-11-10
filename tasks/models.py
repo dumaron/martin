@@ -2,6 +2,7 @@ from django.db import models
 from datetime import date
 from treenode.models import TreeNodeModel
 
+
 class Project(TreeNodeModel):
 
     class Statuses(models.TextChoices):
