@@ -140,14 +140,17 @@ fieldset {
 
 .grid-content {
     display: grid;
-    grid-template-columns: minmax(100px, 25%) 1fr;
+    grid-template-columns: minmax(200px, 300px) 1fr;
     grid-template-areas: "sidebar content";
 }
 
 aside {
     margin: 30px 10px;
-    width: 300px;
     background-color: gainsboro;
     display: block;
     grid-area: 'sidebar';
+}
+
+th {
+    text-align: left;
 }

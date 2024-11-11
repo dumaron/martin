@@ -10,4 +10,5 @@ urlpatterns = [
     # Flows
     path('flows/', flows_list, name='flows_list'),
     path('flows/max-priority', process_tasks_by_priority_flow, name='process_tasks_by_priority_flow'),
+    path('flows/process-inboxes', process_inboxes_flow, name='process_inboxes_flow'),
 ]

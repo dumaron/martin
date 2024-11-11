@@ -1,7 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST
-from .models import Project, Todo
+from .models import Project, Todo, Inbox
 
 
 @login_required
@@ -47,7 +47,6 @@ def process_tasks_by_priority_flow(request):
     """
 
     max_priority_todo = Todo.objects.filter(status=Todo.Statuses.TODO).order_by('-priority').first()
-
     return render(request, 'flows/process_tasks_by_priority.html', { 'todo': max_priority_todo })
 
 
@@ -63,3 +62,15 @@ def set_task_status(request, todo_id):
     todo.save()
 
     return
+
+
+@login_required
+@require_GET
+def process_inboxes_flow(request):
+    """
+    Flow to take inboxes one by one ordered by creation date, and to process them. Should foster their usage, as right
+    now they are almost unused.
+    """
+
+    oldest_unprocessed_inbox = Inbox.objects.filter(processed_at__isnull=True, deleted_at__isnull=True).order_by('created_at').first()
+    return render(request, 'flows/process_inboxes.html', { 'inbox': oldest_unprocessed_inbox })
