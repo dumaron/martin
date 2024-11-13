@@ -1,0 +1,12 @@
+line-length = 110
+indent-width = 1
+target-version = "py312"
+
+[format]
+quote-style = "single"
+indent-style = "tab"
+skip-magic-trailing-comma = true
+line-ending = "auto"
+
+[lint]
+extend-select = ["I"]

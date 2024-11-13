@@ -1,40 +1,40 @@
 from django.contrib import admin
-from .models import *
 from treenode.admin import TreeNodeModelAdmin
 from treenode.forms import TreeNodeForm
 
+from .models import Inbox, Project, Todo, Update, Waiting
+
+
 class TodoModelAdmin(admin.ModelAdmin):
-    list_display = ['description', 'project', 'priority', 'status', 'deadline']
-    search_fields = ['description']
-    list_filter = [
-        'status',
-        'is_valid_order_pray',
-    ]
-    autocomplete_fields = ['project']
+	list_display = ['description', 'project', 'priority', 'status', 'deadline']
+	search_fields = ['description']
+	list_filter = ['status', 'is_valid_order_pray']
+	autocomplete_fields = ['project']
 
 
 class InboxModelAdmin(admin.ModelAdmin):
-    list_display = ['content', 'context', 'created_at', 'processed_at', 'deleted_at']
-    search_field = ['content']
-    list_filter = [
-        'context',
-        ('processed_at', admin.EmptyFieldListFilter),
-        ('deleted_at', admin.EmptyFieldListFilter),
-    ]
+	list_display = ['content', 'context', 'created_at', 'processed_at', 'deleted_at']
+	search_field = ['content']
+	list_filter = [
+		'context',
+		('processed_at', admin.EmptyFieldListFilter),
+		('deleted_at', admin.EmptyFieldListFilter),
+	]
+
 
 class ProjectAdmin(TreeNodeModelAdmin):
-    # treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_ACCORDION
-    # treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_BREADCRUMBS
-    treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_INDENTATION
+	# treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_ACCORDION
+	# treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_BREADCRUMBS
+	treenode_display_mode = TreeNodeModelAdmin.TREENODE_DISPLAY_MODE_INDENTATION
 
-    # use TreeNodeForm to automatically exclude invalid parent choices
-    form = TreeNodeForm
+	# use TreeNodeForm to automatically exclude invalid parent choices
+	form = TreeNodeForm
 
-    list_display = ['name', 'status']
+	list_display = ['name', 'status']
 
-    search_fields = ['name']
+	search_fields = ['name']
 
-    list_filter = ['status']
+	list_filter = ['status']
 
 
 admin.site.register(Project, ProjectAdmin)
