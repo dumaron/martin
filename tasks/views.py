@@ -1,7 +1,9 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_GET, require_POST
 from .models import Project, Todo, Inbox
+from django.http import HttpResponseBadRequest
+from datetime import datetime
 
 
 @login_required
@@ -74,3 +76,28 @@ def process_inboxes_flow(request):
 
     oldest_unprocessed_inbox = Inbox.objects.filter(processed_at__isnull=True, deleted_at__isnull=True).order_by('created_at').first()
     return render(request, 'flows/process_inboxes.html', { 'inbox': oldest_unprocessed_inbox })
+
+
+@login_required
+@require_POST
+def process_inbox(request, inbox_id):
+    """
+    Updates an inbox by setting it as deleted or processed depending on the submitted value
+    """
+
+    inbox = get_object_or_404(Inbox, pk=inbox_id)
+    mark_as_processed = request.POST['status'] == 'processed'
+    mark_as_deleted = request.POST['status'] == 'deleted'
+
+    if not mark_as_processed and not mark_as_deleted:
+        return HttpResponseBadRequest('Invalid status update for Inbox object')
+
+    if mark_as_processed:
+        inbox.processed_at = datetime.now()
+
+    if mark_as_deleted:
+        inbox.deleted_at = datetime.now()
+
+    inbox.save()
+
+    return redirect('process_inboxes_flow')
