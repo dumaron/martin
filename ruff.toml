@@ -1,6 +1,10 @@
 line-length = 110
 indent-width = 1
 target-version = "py312"
+exclude = [
+    ".venv",
+    "*/migrations"
+]
 
 [format]
 quote-style = "single"

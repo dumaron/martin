@@ -45,6 +45,10 @@ form {
     border-bottom: 1px solid black;
     padding-top: .8rem;
 
+    &, .tab {
+        background-color: black;
+    }
+
     &.tasks {
         &, .tab {
             background: #a34a68;
@@ -113,7 +117,7 @@ form {
 .sub-navigation {
     padding-top: .6rem;
     border-bottom: 1px solid black;
-    padding-left: 1rem;
+    padding-left: 6.7rem;
     background-color: gainsboro;
 
     .tab:not(.active) {
@@ -153,4 +157,19 @@ aside {
 
 th {
     text-align: left;
+}
+
+/* HOME PAGE */
+#main-quote {
+    margin: auto;
+    font-family: serif;
+
+    blockquote {
+        font-size: 2rem;
+        font-style: italic;
+    }
+
+    figcaption {
+        font-size: 1.5rem;
+    }
 }

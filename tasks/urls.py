@@ -1,13 +1,13 @@
 from django.urls import path
-from .views import (
-	process_inbox,
-	first_page,
-	project_detail,
-	flows_list,
-	process_tasks_by_priority_flow,
-	process_inboxes_flow,
-)
 
+from .views import (
+	first_page,
+	flows_list,
+	process_inbox,
+	process_inboxes_flow,
+	process_tasks_by_priority_flow,
+	project_detail,
+)
 
 urlpatterns = [
 	# Project-based views
