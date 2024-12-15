@@ -1,0 +1,9 @@
+{% extends 'tasks_base.html' %}
+
+{% block content %}
+    <div class="grid-content">
+        {% include 'daily_suggestions/sidebar.html' %}
+        {{ daily_suggestion }}
+        {{ message }}
+    </div>
+{% endblock %}

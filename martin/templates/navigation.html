@@ -2,7 +2,7 @@
      class="{% if '/tasks' in request.path %}tasks{% elif '/finances' in request.path %}finances{% elif '/memory' in request.path %}memory{% endif %}">
     <div id="title">Martin</div>
     <a class="tab{% if request.path == '/' %} active{% endif %}" href="/">Home</a>
-    <a class="tab{% if '/tasks' in request.path %} active{% endif %}" href="{% url 'tasks_first_page' %}">Tasks</a>
+    <a class="tab{% if '/tasks' in request.path %} active{% endif %}" href="/tasks/">Tasks</a>
     <a class="tab{% if '/finances' in request.path %} active{% endif %}" href="{% url 'expenses_pairing_view' %}">Finances</a>
     <a class="tab{% if '/memory' in request.path %} active{% endif %}" href="{% url 'memory_first_page' %}">Memory</a>
 </nav>

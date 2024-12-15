@@ -1,6 +1,5 @@
 <nav id="tasks-navigation" class="sub-navigation">
-    <a class="tab{% if '/projects' in request.path %} active{% endif %}" href="{% url 'tasks_first_page' %}">
-        Projects
+    <a class="tab{% if '/daily-suggestions' in request.path %} active{% endif %}" href="{% url 'daily_suggestions_list' %}">
+        Daily suggestions
     </a>
-    <a class="tab{% if '/flows' in request.path %} active{% endif %}" href="{% url 'flows_list' %}">Flows</a>
 </nav>

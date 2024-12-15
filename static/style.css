@@ -117,7 +117,7 @@ form {
 .sub-navigation {
     padding-top: .6rem;
     border-bottom: 1px solid black;
-    padding-left: 6.7rem;
+    padding-left: 1.6rem;
     background-color: gainsboro;
 
     .tab:not(.active) {
@@ -149,10 +149,23 @@ fieldset {
 }
 
 aside {
-    margin: 30px 10px;
-    background-color: gainsboro;
+    margin: 10px 10px;
     display: block;
     grid-area: 'sidebar';
+
+    legend {
+        font-family: 'Berkeley Mono', monospace;
+        font-weight: 600;
+    }
+
+    ul {
+        margin: 0;
+        padding-left: 15px;
+    }
+
+    input {
+        margin-top: .6em;
+    }
 }
 
 th {

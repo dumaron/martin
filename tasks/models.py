@@ -119,3 +119,28 @@ class Waiting(models.Model):
 
 	def __str__(self):
 		return self.content
+
+
+class DailySuggestion(models.Model):
+	"""
+	A list of Todos that are suggested to be done in a day
+	"""
+
+	date = models.DateField(primary_key=True)
+	notes = models.TextField(null=True, blank=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	items = models.ManyToManyField(Todo, through='DailySuggestionItem')
+
+
+class DailySuggestionItem(models.Model):
+	"""
+	A single To do item in a DailySuggestion
+	"""
+
+	suggestion = models.ForeignKey(DailySuggestion, on_delete=models.CASCADE)
+	todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
+	order = models.SmallIntegerField(default=0)
+
+	class Meta:
+		unique_together = ('suggestion', 'todo')
+		ordering = ['order']
