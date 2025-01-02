@@ -2,7 +2,16 @@ from django.contrib import admin
 from treenode.admin import TreeNodeModelAdmin
 from treenode.forms import TreeNodeForm
 
-from .models import Inbox, Project, Todo, Update, Waiting
+from .models import (
+	Inbox,
+	Project,
+	Todo,
+	Update,
+	Waiting,
+	DailySuggestion,
+	DailySuggestionAddedTodo,
+	DailySuggestionPickedTodo,
+)
 
 
 class TodoModelAdmin(admin.ModelAdmin):
@@ -42,3 +51,6 @@ admin.site.register(Todo, TodoModelAdmin)
 admin.site.register(Inbox, InboxModelAdmin)
 admin.site.register(Update)
 admin.site.register(Waiting)
+admin.site.register(DailySuggestion)
+admin.site.register(DailySuggestionAddedTodo)
+admin.site.register(DailySuggestionPickedTodo)

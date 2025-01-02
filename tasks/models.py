@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 
 from django.db import models
 from treenode.models import TreeNodeModel
@@ -129,18 +129,35 @@ class DailySuggestion(models.Model):
 	date = models.DateField(primary_key=True)
 	notes = models.TextField(null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
-	items = models.ManyToManyField(Todo, through='DailySuggestionItem')
+	reviewed_at = models.DateTimeField(null=True, blank=True)
+	added_todos = models.ManyToManyField(Todo, related_name='added_todos', through='DailySuggestionAddedTodo')
+	picked_todos = models.ManyToManyField(Todo, related_name='picked_todos', through='DailySuggestionPickedTodo')
+
+	def __str__(self):
+		return f'Daily Suggestion {datetime.strftime(self.date, '%Y-%m-%d')}'
 
 
-class DailySuggestionItem(models.Model):
+class DailySuggestionAddedTodo(models.Model):
 	"""
-	A single To do item in a DailySuggestion
+	A single Todo added to a DailySuggestion
 	"""
 
 	suggestion = models.ForeignKey(DailySuggestion, on_delete=models.CASCADE)
 	todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
-	order = models.SmallIntegerField(default=0)
 
 	class Meta:
 		unique_together = ('suggestion', 'todo')
-		ordering = ['order']
+		ordering = ['id']
+
+
+class DailySuggestionPickedTodo(models.Model):
+	"""
+	A single Todo item that has been picked for a DailySuggestion, but not added to id
+	"""
+
+	suggestion = models.ForeignKey(DailySuggestion, on_delete=models.CASCADE)
+	todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
+
+	class Meta:
+		unique_together = ('suggestion', 'todo')
+		ordering = ['id']

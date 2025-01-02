@@ -1,0 +1,11 @@
+<tr>
+    <td><div class="id">{{ todo.id }}</div></td>
+    <td>{{ todo.description }}</td>
+    <td class="actions">
+        <form method="post" action="{% url 'add_todo_to_daily_suggestion' date=date %}">
+            {% csrf_token %}
+            <input type="hidden" name="todo" value="{{ todo.id }}" />
+            <button type="submit">A</button>
+        </form>
+    </td>
+</tr>

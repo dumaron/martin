@@ -3,11 +3,6 @@
     --main-navbar-height: 30px;
 }
 
-:root {
-    --main-color: gray;
-    --highlighted-main-color: #20A09F;
-}
-
 body, td {
     font-size: 14px;
 }
@@ -43,45 +38,14 @@ form {
 
 #main-navigation {
     border-bottom: 1px solid black;
-    padding-top: .8rem;
+    padding-top: .5rem;
 
     &, .tab {
         background-color: black;
     }
 
-    &.tasks {
-        &, .tab {
-            background: #a34a68;
-        }
-
-        .tab:hover:not(.active) {
-            background: #c96f8f;
-        }
-    }
-
-    &.memory {
-        &, .tab {
-            background: #4a7194;
-        }
-
-        .tab:hover:not(.active) {
-            background: #6a91b4;
-        }
-    }
-
-    &.finances {
-        &, .tab {
-            background: #00807F;
-        }
-
-        .tab:hover:not(.active) {
-            background: #20A09F;
-        }
-    }
-
-
     .tab {
-        background: var(--main-color);
+        background: gray;
         color: #000;
 
         &.active {
@@ -90,7 +54,7 @@ form {
         }
 
         &:hover:not(.active) {
-            background: var(--highlighted-main-color);
+            background: yellow;
         }
     }
 }
@@ -152,6 +116,10 @@ aside {
     margin: 10px 10px;
     display: block;
     grid-area: 'sidebar';
+
+    fieldset {
+        border: none;
+    }
 
     legend {
         font-family: 'Berkeley Mono', monospace;
