@@ -26,7 +26,7 @@
         }
 
         .daily-suggestion {
-        border: 1px solid black;
+            border: 1px solid black;
             margin: 1rem;
             padding: 1rem;
             margin-left: 0;
@@ -35,11 +35,11 @@
         }
 
         .id {
-                font-family: 'Berkeley Mono', monospace;
-                text-align: right;
-                padding: 1px 3px;
-                border: 1px solid black;
-            }
+            font-family: 'Berkeley Mono', monospace;
+            text-align: right;
+            padding: 1px 3px;
+            border: 1px solid black;
+        }
 
         select {
             width: 160px;
@@ -89,10 +89,10 @@
                         <tbody>
                         {% for todo in daily_suggestion.added_todos.all|dictsortreversed:'id' %}
                             <tr>
-                            <td>
-                                <div class="id">{{ todo.id }}</div>
-                            </td>
-                            <td>{{ todo.description }}</td>
+                                <td>
+                                    <div class="id">{{ todo.id }}</div>
+                                </td>
+                                <td>{{ todo.description }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -123,8 +123,8 @@
                                 <td><label for="criteria">By:</label></td>
                                 <td>
                                     <select name="criteria">
-                                        <option value="priority">Priority</option>
-                                        <option value="deadline">Deadline</option>
+                                        <option value="-priority">Priority</option>
+                                        <option value="-deadline">Deadline</option>
                                         <option value="?">Random</option>
                                     </select>
                             </tr>
