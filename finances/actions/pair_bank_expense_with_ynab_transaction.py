@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from finances.adapters.ynab import YnabAdapter
+from finances.adapters.ynab import clear_transaction
 from finances.models import YnabTransaction
 
 
@@ -16,7 +16,7 @@ def pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, over
 
     # Making the ynab transaction as "Cleared" in YNAB through API. The adapter takes care of updating the amount too
     # if needed.
-    clear_transaction_result = YnabAdapter.clear_transaction(ynab_transaction, ynab_new_amount)
+    clear_transaction_result = clear_transaction(ynab_transaction, ynab_new_amount)
 
     if clear_transaction_result['data']:
         # Updating the local representation of the ynab transaction to make it "Cleared" too

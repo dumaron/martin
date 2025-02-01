@@ -1,9 +1,9 @@
 from finances.models import YnabCategory
-from finances.adapters.ynab import YnabAdapter
+from finances.adapters.ynab import get_categories
 
 
 def sync_ynab_categories(user):
-    ynab_categories = YnabAdapter.get_categories()
+    ynab_categories = get_categories()
     for category in ynab_categories:
 
         if category['original_category_group_id'] is None:

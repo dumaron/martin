@@ -15,6 +15,7 @@ django-treenode = "*"
 ruff = "*"
 openai = "*"
 python-telegram-bot = "*"
+pydantic = "*"
 
 [dev-packages]
 
