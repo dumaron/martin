@@ -1,19 +1,24 @@
 from openai import OpenAI
+import os
+
+singleton_client = None
 
 
-class OpenAIService:
-    def get_pairing_suggestions(self):
-        self._init_openai_client()
-        pass
+def init_openai():
+   global singleton_client
+
+   if singleton_client is None:
+      singleton_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+
+   return singleton_client
 
 
-    def suggest_next_task(self, input):
-        self._init_openai_client()
-        pass
-
-
-    def _init_openai_client(self):
-        self.client = OpenAI()
-
-
-openai = OpenAIService()
+def ask_ai(question: str) -> str:
+   client = init_openai()
+   response = client.chat.completions.create(
+      model='gpt-4-1106-preview',
+      messages=[
+         {"role": "user", "content": question},
+      ],
+   )
+   return response.choices[0].message.content

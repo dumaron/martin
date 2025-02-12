@@ -18,16 +18,6 @@ headers = {
 def get_uncleared_expenses(server_knowledge) -> YnabTransactionListData:
    """
    Fetch and validate uncleared expenses from YNAB API
-
-   Args:
-       server_knowledge: Last known server knowledge number for delta updates
-
-   Returns:
-       List of validated YnabTransactionSchema objects
-
-   Raises:
-       YnabAPIError: If the API request fails
-       YnabValidationError: If the response data fails validation
    """
 
    response = requests.get(
@@ -75,6 +65,8 @@ def get_categories():
       headers=headers
    )
 
+   response.raise_for_status()
+
    data = response.json()['data']
    categories = list(chain.from_iterable(map(lambda x: x['categories'], data['category_groups'])))
 
@@ -83,7 +75,7 @@ def get_categories():
 
 def create_transaction(amount, date, memo, ynab_category) -> ExternalYnabTransaction:
    """
-   Creates a YNAB transactions
+   Creates a YNAB transactions on the YNAB remote database through API
    """
 
    data = {

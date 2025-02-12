@@ -24,31 +24,12 @@ def ynab_sync(request):
         partial_mode = request.POST['ynab-sync'] == 'partial-sync'
         sync_ynab_transactions(partial_mode, request.user)
 
-    return redirect('pairing_v2')
+    return redirect('pairing')
 
 
 @login_required
 @require_GET
-def expenses_pairing_view(request):
-    """
-    Version 1 of the pairing view, showing all the unpaired bank expenses on the left and all the uncleared YNAB
-    transactions on the right.
-    """
-    unpaired_expenses = BankExpense.objects.filter(ynab_transaction_id=None, snoozed_on=None).order_by('-date')
-    ynab_transactions = (
-        YnabTransaction
-        .objects
-        .filter(cleared=YnabTransaction.ClearedStatuses.UNCLEARED, deleted=False)
-        .order_by('-date'))
-    return render(request, 'pairing.html', {
-        'expenses': unpaired_expenses,
-        'ynab_transactions': ynab_transactions,
-    })
-
-
-@login_required
-@require_GET
-def pairing_view_v2(request):
+def pairing_view(request):
     """
     Second version of the pairing view. It is bank-expense centric: takes the oldest unpaired bank expense and shows
     some suggestions for pair-able YNAB transactions.
@@ -56,7 +37,7 @@ def pairing_view_v2(request):
     first_unpaired_expense = BankExpense.objects.filter(snoozed_on=None, paired_on=None).order_by('date').first()
 
     if first_unpaired_expense is None:
-        return render(request, 'pairing_v2_empty.html', {})
+        return render(request, 'pairing_empty.html', {})
 
     ynab_categories = YnabCategory.objects.filter(hidden=False)
 
@@ -71,7 +52,7 @@ def pairing_view_v2(request):
         date__gte=first_unpaired_expense.date - timedelta(days=3),
         cleared=YnabTransaction.ClearedStatuses.UNCLEARED) if first_unpaired_expense is not None else None
 
-    return render(request, 'pairing_v2.html', {
+    return render(request, 'pairing.html', {
         'expense': first_unpaired_expense,
         'same_amount_suggestions': same_amount_suggestions,
         'similar_date_suggestions': similar_date_suggestions,
@@ -94,7 +75,7 @@ def pair_expense_with_ynab_transaction(request):
     bank_expense = get_object_or_404(BankExpense, pk=expense_id)
 
     pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, override_amount)
-    return redirect('pairing_v2')
+    return redirect('pairing')
 
 
 @login_required
@@ -108,7 +89,7 @@ def file_import(request):
             new_import = form.save(commit=False)
             new_import.user = request.user
             new_import.save()
-            return redirect('pairing_v2')
+            return redirect('pairing')
         else:
             return render(request, 'file_import.html', {'form': form})
     else:
@@ -125,7 +106,7 @@ def snooze_bankexpense(request, bankexpense_id):
     expense = get_object_or_404(BankExpense, pk=bankexpense_id)
     expense.snoozed_on = datetime.now()
     expense.save()
-    return redirect('pairing_v2')
+    return redirect('pairing')
 
 
 @login_required
@@ -159,7 +140,7 @@ def create_ynab_transaction(request):
         memo = form.cleaned_data['memo']
         category_id = form.cleaned_data['ynab_category']
         create_ynab_transaction_from_bank_expense(bank_expense, memo, category_id )
-        return redirect('pairing_v2')
+        return redirect('pairing')
     else:
         return
 

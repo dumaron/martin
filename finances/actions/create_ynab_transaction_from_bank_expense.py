@@ -5,10 +5,14 @@ from datetime import datetime
 
 
 def create_ynab_transaction_from_bank_expense(bank_expense, memo, ynab_category):
+    """
+      Creates a YNAB transaction from a bank expense and pairs them together
+    """
+
     amount = bank_expense.amount
     date = bank_expense.date
 
-    # 1. Create the transaction on YNAB database. The transaction is already cleared
+    # 1. Create the transaction on YNAB remote database. The transaction is already cleared
     remote_transaction = create_transaction(amount, date, memo, ynab_category)
 
     # 2. Pair the local bank expense with the YNAB transaction id
