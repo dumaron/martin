@@ -28,14 +28,18 @@ class ExternalYnabTransaction(BaseModel):
     deleted: bool
 
 
-class YnabTransactionResponseData(BaseModel):
+# List validators --
+class YnabTransactionListData(BaseModel):
     transactions: List[ExternalYnabTransaction]
     server_knowledge: int = Field(..., description="Server knowledge number for delta updates")
 
 
 class YnabTransactionListResponse(BaseModel):
-    data: YnabTransactionResponseData = Field(..., description="YNAB /transactions response data")
+    data: YnabTransactionListData = Field(..., description="YNAB /transactions response data")
 
+# Creation validators --
+class YnabTransactionCreationData(BaseModel):
+      transaction: ExternalYnabTransaction
 
 class YnabTransactionCreationResponse(BaseModel):
-    data: ExternalYnabTransaction = Field(..., description="YNAB /transactions/{id} response data")
+    data: YnabTransactionCreationData = Field(..., description="YNAB /transactions/{id} response data")

@@ -1,4 +1,4 @@
-from .schemas import YnabTransactionCreationResponse, YnabTransactionListResponse, YnabTransactionResponseData, ExternalYnabTransaction
+from .schemas import YnabTransactionCreationResponse, YnabTransactionListResponse, YnabTransactionListData, ExternalYnabTransaction
 from martin import settings
 import requests
 import json
@@ -15,7 +15,7 @@ headers = {
 }
 
 
-def get_uncleared_expenses(server_knowledge) -> YnabTransactionResponseData:
+def get_uncleared_expenses(server_knowledge) -> YnabTransactionListData:
    """
    Fetch and validate uncleared expenses from YNAB API
 
@@ -51,7 +51,7 @@ def clear_transaction(transaction, amount=None):
    }
 
    if amount is not None:
-      # YNAB APIs receive amounts in milliunits
+      # YNAB APIs receive amounts in milli-units
       data['transaction']['amount'] = int(amount * 1000)
 
    response = requests.put(
@@ -108,5 +108,5 @@ def create_transaction(amount, date, memo, ynab_category) -> ExternalYnabTransac
 
    validated_response = YnabTransactionCreationResponse(**response.json())
 
-   return validated_response.data
+   return validated_response.data.transaction
 

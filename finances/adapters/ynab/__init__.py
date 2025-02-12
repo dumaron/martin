@@ -4,7 +4,7 @@ from .adapter import (
     get_categories,
     create_transaction
 )
-from .schemas import ExternalYnabTransaction, YnabTransactionListResponse, YnabTransactionResponseData
+from .schemas import ExternalYnabTransaction, YnabTransactionListResponse, YnabTransactionListData
 
 __all__ = [
     'get_uncleared_expenses',
@@ -13,5 +13,5 @@ __all__ = [
     'create_transaction',
     'ExternalYnabTransaction',
     'YnabTransactionListResponse',
-    'YnabTransactionResponseData'
+    'YnabTransactionListData'
 ]

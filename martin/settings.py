@@ -1,6 +1,6 @@
 from pathlib import Path
 from dotenv import load_dotenv
-from os import environ
+import os
 
 
 load_dotenv()
@@ -13,13 +13,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = environ.get('SECRET_KEY', 'verysecretkey')
+SECRET_KEY = os.getenv('SECRET_KEY', 'verysecretkey')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = environ.get('DEBUG', False)
+DEBUG = os.getenv('DEBUG', False)
 
-ALLOWED_HOSTS = environ.get('ALLOWED_HOSTS', 'localhost').split(',')
-CSRF_TRUSTED_ORIGINS = environ.get('CSRF_TRUSTED_ORIGINS', 'https://localhost').split(',')
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
+CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://localhost').split(',')
 
 
 # Application definition
@@ -34,9 +34,10 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     'treenode',
     "django_htmx",
+    'martin',
     "finances",
     "tasks",
-    'memory'
+    'memory',
 ]
 
 MIDDLEWARE = [
@@ -78,7 +79,7 @@ WSGI_APPLICATION = "martin.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": environ.get('DATABASE_PATH', BASE_DIR / "db.sqlite3"),
+        "NAME": os.getenv('DATABASE_PATH', BASE_DIR / "db.sqlite3"),
     }
 }
 
@@ -133,9 +134,9 @@ AUTH_USER_MODEL = "auth.User"
 
 
 # YNAB
-YNAB_API_TOKEN = environ['YNAB_API_TOKEN']
-YNAB_DEFAULT_BUDGET = environ['YNAB_DEFAULT_BUDGET']
-YNAB_ACCOUNT_ID = environ['YNAB_ACCOUNT_ID']
+YNAB_API_TOKEN = os.getenv('YNAB_API_TOKEN')
+YNAB_DEFAULT_BUDGET = os.getenv('YNAB_DEFAULT_BUDGET')
+YNAB_ACCOUNT_ID = os.getenv('YNAB_ACCOUNT_ID')
 
 # Environment, used to tell if we are in production or development and by doing so prevent some mutation on external adapters
-ENVIRONMENT = environ.get('ENVIRONMENT', 'development')
+ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')

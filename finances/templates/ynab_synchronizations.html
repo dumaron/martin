@@ -26,6 +26,7 @@
     <h2>Category sync</h2>
     <p>Import and merge all YNAB categories on local database</p>
     <form action="{% url 'synchronize_ynab_categories' %}" method="post">
+        {% csrf_token %}
         <button type="submit">Category sync</button>
     </form>
 </main>
