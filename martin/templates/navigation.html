@@ -3,6 +3,6 @@
     <div id="title">Martin</div>
     <a class="tab{% if request.path == '/' %} active{% endif %}" href="/">Home</a>
     <a class="tab{% if '/tasks' in request.path %} active{% endif %}" href="/tasks/">Tasks</a>
-    <a class="tab{% if '/finances' in request.path %} active{% endif %}" href="{% url 'expenses_pairing_view' %}">Finances</a>
+    <a class="tab{% if '/finances' in request.path %} active{% endif %}" href="{% url 'pairing' %}">Finances</a>
     <a class="tab{% if '/memory' in request.path %} active{% endif %}" href="{% url 'memory_first_page' %}">Memory</a>
 </nav>
