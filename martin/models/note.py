@@ -8,3 +8,6 @@ class Note(models.Model):
 
     def __str__(self):
         return self.content
+
+    class Meta:
+        db_table = 'memory_note'
