@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'martin',
     "finances",
     "tasks",
+    "core",
 ]
 
 MIDDLEWARE = [
