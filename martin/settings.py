@@ -37,7 +37,6 @@ INSTALLED_APPS = [
     'martin',
     "finances",
     "tasks",
-    'memory',
 ]
 
 MIDDLEWARE = [

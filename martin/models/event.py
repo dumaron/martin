@@ -13,4 +13,4 @@ class Event(models.Model):
         return self.content
 
     class Meta:
-        db_table = 'memory_event'
+        db_table = 'events'
