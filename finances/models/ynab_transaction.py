@@ -53,6 +53,9 @@ class YnabTransaction(models.Model):
    def __str__(self):
       return f'{self.amount} {self.date} {self.memo}'
 
+   class Meta:
+      db_table = 'ynab_transactions'
+
    @classmethod
    def from_external_transaction(cls, external_transaction, user, local_import):
       return YnabTransaction(

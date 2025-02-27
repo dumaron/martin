@@ -19,6 +19,7 @@ class BankExpense(models.Model):
 
    class Meta:
       constraints = models.UniqueConstraint('name', 'date', 'amount', name='expense-uniqueness-name-date-amount'),
+      db_table = 'bank_expenses'
 
    @staticmethod
    def from_unicredit_bank_account_csv_row(row, user, file_import):

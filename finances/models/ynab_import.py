@@ -11,3 +11,6 @@ class YnabImport(models.Model):
 
    def __str__(self):
       return f'YNAB import of {datetime.strftime(self.execution_datetime, "%d/%m/%Y %H:%M %Z")}'
+
+   class Meta:
+      db_table = 'ynab_imports'
