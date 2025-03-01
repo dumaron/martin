@@ -25,62 +25,62 @@ CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'https://localhost').sp
 # Application definition
 
 INSTALLED_APPS = [
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
     'whitenoise.runserver_nostatic',
-    "django.contrib.staticfiles",
+    'django.contrib.staticfiles',
     'treenode',
-    "django_htmx",
+    'django_htmx',
     'martin',
-    "finances",
-    "tasks",
-    "core",
+    'finances',
+    'tasks',
+    'core',
     'website'
 ]
 
 MIDDLEWARE = [
-    "django.middleware.security.SecurityMiddleware",
+    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.common.CommonMiddleware",
-    "django.middleware.csrf.CsrfViewMiddleware",
-    "django.contrib.auth.middleware.AuthenticationMiddleware",
-    "django.contrib.messages.middleware.MessageMiddleware",
-    "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    "django_htmx.middleware.HtmxMiddleware",
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_htmx.middleware.HtmxMiddleware',
 ]
 
-ROOT_URLCONF = "martin.urls"
+ROOT_URLCONF = 'martin.urls'
 
 TEMPLATES = [
     {
-        "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": ['martin/templates'],
-        "APP_DIRS": True,
-        "OPTIONS": {
-            "context_processors": [
-                "django.template.context_processors.debug",
-                "django.template.context_processors.request",
-                "django.contrib.auth.context_processors.auth",
-                "django.contrib.messages.context_processors.messages",
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': ['martin/templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
-WSGI_APPLICATION = "martin.wsgi.application"
+WSGI_APPLICATION = 'martin.wsgi.application'
 
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.getenv('DATABASE_PATH', BASE_DIR / "db.sqlite3"),
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.getenv('DATABASE_PATH', BASE_DIR / 'db.sqlite3'),
     }
 }
 
@@ -90,16 +90,16 @@ DATABASES = {
 
 AUTH_PASSWORD_VALIDATORS = [
     {
-        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator",
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.CommonPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
     },
     {
-        "NAME": "django.contrib.auth.password_validation.NumericPasswordValidator",
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
 
@@ -107,21 +107,18 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
-LANGUAGE_CODE = "en-us"
-
-TIME_ZONE = "UTC"
-
+LANGUAGE_CODE = 'en-us'
+TIME_ZONE = 'UTC'
 USE_I18N = True
-
 USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
 
-STATIC_URL = "static/"
+STATIC_URL = 'static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
-    BASE_DIR / "finances/static"
+    BASE_DIR / 'static',
+    BASE_DIR / 'finances/static'
 ]
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
@@ -129,9 +126,9 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
-DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-AUTH_USER_MODEL = "auth.User"
+AUTH_USER_MODEL = 'auth.User'
 
 
 # YNAB

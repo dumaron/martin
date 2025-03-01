@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from finances.adapters.ynab import clear_transaction
-from finances.models import YnabTransaction
+from core.models import YnabTransaction
 
 
 def pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, override_amount) -> None:

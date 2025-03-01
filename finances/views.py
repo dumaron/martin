@@ -4,7 +4,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 
 from .actions.create_ynab_transaction_from_bank_expense import create_ynab_transaction_from_bank_expense
 from .actions.pair_bank_expense_with_ynab_transaction import pair_bank_expense_with_ynab_transaction
-from .models import BankExpense, YnabTransaction, YnabCategory
+from core.models import BankExpense, YnabTransaction, YnabCategory
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET

@@ -1,5 +1,5 @@
 from django import forms
-from .models import BankFileImport, YnabCategory
+from core.models import BankFileImport, YnabCategory
 
 
 class BankImportForm(forms.ModelForm):

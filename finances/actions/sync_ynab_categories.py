@@ -1,4 +1,4 @@
-from finances.models import YnabCategory
+from core.models import YnabCategory
 from finances.adapters.ynab import get_categories
 
 

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from django.db.models import Max
 from ..adapters.ynab import get_uncleared_expenses
-from ..models import YnabTransaction, YnabImport
+from core.models import YnabTransaction, YnabImport
 
 
 def sync_ynab_transactions(partial, user) -> None:
