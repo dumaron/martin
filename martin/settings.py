@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'finances',
     'tasks',
     'core',
-    'website'
+    'apps.website'
 ]
 
 MIDDLEWARE = [
