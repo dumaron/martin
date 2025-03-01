@@ -1,21 +1,9 @@
-from .project import Project
-from .todo import Todo
-from .inbox import Inbox
-from .update import Update
-from .waiting import Waiting
-from .daily_suggestion import (
-    DailySuggestion,
-    DailySuggestionAddedTodo,
-    DailySuggestionPickedTodo,
-)
+"""
+All task models have been moved to the core app.
+Please import them from core.models instead.
 
-__all__ = [
-    'Project',
-    'Todo',
-    'Inbox',
-    'Update',
-    'Waiting',
-    'DailySuggestion',
-    'DailySuggestionAddedTodo',
-    'DailySuggestionPickedTodo',
-]
+For example:
+from core.models.todo import Todo
+from core.models.project import Project
+etc.
+"""

@@ -2,15 +2,15 @@ from django.contrib import admin
 from treenode.admin import TreeNodeModelAdmin
 from treenode.forms import TreeNodeForm
 
-from .models import (
+from core.models import (
+	DailySuggestion,
+	DailySuggestionAddedTodo,
+	DailySuggestionPickedTodo,
 	Inbox,
 	Project,
 	Todo,
 	Update,
 	Waiting,
-	DailySuggestion,
-	DailySuggestionAddedTodo,
-	DailySuggestionPickedTodo,
 )
 
 

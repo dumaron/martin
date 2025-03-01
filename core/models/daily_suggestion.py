@@ -1,6 +1,6 @@
 from datetime import datetime
 from django.db import models
-from .todo import Todo
+from core.models.todo import Todo
 
 
 class DailySuggestion(models.Model):

@@ -1,8 +1,8 @@
 from datetime import date
 from django.db import models
-from .project import Project
-from .inbox import Inbox
-from .waiting import Waiting
+from core.models.project import Project
+from core.models.inbox import Inbox
+from core.models.waiting import Waiting
 
 
 class Todo(models.Model):

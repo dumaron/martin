@@ -1,5 +1,5 @@
 from django.db import models
-from .project import Project
+from core.models.project import Project
 
 
 class Update(models.Model):

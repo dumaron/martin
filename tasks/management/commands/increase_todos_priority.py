@@ -1,5 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
-from tasks.models import Todo
+from core.models.todo import Todo
 from django.db.models import Q
 from datetime import datetime, date
 

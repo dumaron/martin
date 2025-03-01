@@ -2,7 +2,9 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render, get_object_or_404
 from django.views.decorators.http import require_GET, require_POST
 from datetime import datetime, timedelta
-from .models import DailySuggestion, Project, Todo
+from core.models.daily_suggestion import DailySuggestion
+from core.models.project import Project
+from core.models.todo import Todo
 from django.db.models import Q
 
 

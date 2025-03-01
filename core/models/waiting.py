@@ -1,5 +1,5 @@
 from django.db import models
-from .project import Project
+from core.models.project import Project
 
 
 class Waiting(models.Model):
@@ -13,6 +13,9 @@ class Waiting(models.Model):
     content = models.TextField()
     status = models.CharField(max_length=16, choices=Statuses, default=Statuses.WAITING)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'waiting'
 
     def __str__(self):
         return self.content
