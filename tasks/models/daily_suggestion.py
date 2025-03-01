@@ -8,6 +8,9 @@ class DailySuggestion(models.Model):
     A list of Todos that are suggested to be done in a day
     """
 
+    class Meta:
+        db_table = 'daily_suggestions'
+
     date = models.DateField(primary_key=True)
     notes = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -28,6 +31,7 @@ class DailySuggestionAddedTodo(models.Model):
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = 'daily_suggestion_added_todos'
         unique_together = ('suggestion', 'todo')
         ordering = ['id']
 
@@ -41,5 +45,6 @@ class DailySuggestionPickedTodo(models.Model):
     todo = models.ForeignKey(Todo, on_delete=models.CASCADE)
 
     class Meta:
+        db_table = 'daily_suggestion_picked_todos'
         unique_together = ('suggestion', 'todo')
         ordering = ['id']

@@ -18,5 +18,6 @@ class Project(TreeNodeModel):
     treenode_display_field = 'name'
 
     class Meta(TreeNodeModel.Meta):
+        db_table = 'projects'
         verbose_name = 'Project'
         verbose_name_plural = 'Projects'

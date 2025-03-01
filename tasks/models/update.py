@@ -8,5 +8,8 @@ class Update(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        db_table = 'updates'
+
     def __str__(self):
         return f'Update for project {self.project} on {self.created_at}'

@@ -7,6 +7,7 @@ class Inbox(models.Model):
         WORK = 'work'
 
     class Meta:
+        db_table = 'inboxes'
         verbose_name_plural = 'inboxes'
 
     id = models.AutoField(primary_key=True)

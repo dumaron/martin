@@ -28,6 +28,9 @@ class Todo(models.Model):
     last_increase = models.DateField(default=date.today)
     snoozed_until = models.DateTimeField(null=True, blank=True)
 
+    class Meta:
+        db_table = 'todos'
+
     def save(self, *args, **kwargs):
         # If the Todo status is "Done" then there is a chance this update is to mark it done from a previous state.
         # We need to check that in order to tell if we need to run the post-completion routines
