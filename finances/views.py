@@ -2,15 +2,17 @@ from unicodedata import category
 
 from django.shortcuts import render, redirect, get_object_or_404
 
-from .actions.create_ynab_transaction_from_bank_expense import create_ynab_transaction_from_bank_expense
-from .actions.pair_bank_expense_with_ynab_transaction import pair_bank_expense_with_ynab_transaction
+from core.actions import (
+    create_ynab_transaction_from_bank_expense,
+    pair_bank_expense_with_ynab_transaction,
+    sync_ynab_categories,
+    sync_ynab_transactions
+)
 from core.models import BankExpense, YnabTransaction, YnabCategory
 from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods, require_POST, require_GET
 from .forms import BankImportForm, YnabTransactionCreationForm
-from finances.actions.sync_ynab_categories import sync_ynab_categories
-from .actions.sync_ynab_transactions import sync_ynab_transactions
 
 
 @login_required
@@ -95,7 +97,7 @@ def file_import(request):
     else:
         form = BankImportForm()
         return render(request, 'file_import.html', {'form': form})
-    
+
 
 @login_required
 @require_POST
@@ -143,4 +145,3 @@ def create_ynab_transaction(request):
         return redirect('pairing')
     else:
         return
-

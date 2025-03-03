@@ -1,5 +1,5 @@
 from core.models import YnabCategory
-from finances.adapters.ynab import get_categories
+from core.adapters.ynab import get_categories
 
 
 def sync_ynab_categories(user):
