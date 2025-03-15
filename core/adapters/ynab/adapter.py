@@ -1,11 +1,11 @@
 from .schemas import YnabTransactionCreationResponse, YnabTransactionListResponse, YnabTransactionListData, ExternalYnabTransaction
-from martin import settings
+import settings
 import requests
 import json
 from itertools import chain
 from datetime import datetime
 
-from martin.settings import YNAB_ACCOUNT_ID
+from settings import YNAB_ACCOUNT_ID
 
 is_development = settings.ENVIRONMENT == 'development'
 base_url = f'https://api.ynab.com/v1/budgets/{settings.YNAB_DEFAULT_BUDGET}'
