@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django_htmx',
     'martin',
     'finances',
-    'tasks',
     'core',
     'apps.website'
 ]
