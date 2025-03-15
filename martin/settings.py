@@ -32,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
-    'treenode',
     'django_htmx',
     'martin',
     'finances',
