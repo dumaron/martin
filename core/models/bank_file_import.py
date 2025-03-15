@@ -1,6 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
-from finances.adapters.file_reader import get_file_rows
+from core.adapters.file_reader import get_file_rows
 
 User = get_user_model()
 
