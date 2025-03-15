@@ -1,7 +1,7 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from datetime import datetime
-from finances.utils import fix_unicredit_floating_point
+from ..utils.unicredit import fix_unicredit_floating_point
 from .bank_file_import import BankFileImport
 
 User = get_user_model()
