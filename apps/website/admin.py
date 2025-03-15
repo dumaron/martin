@@ -1,6 +1,7 @@
 from django.contrib import admin
 from datetime import datetime
 
+import apps.website.views
 from core.models import (
     Event, Note, BankFileImport, BankExpense, YnabImport,
     YnabTransaction, YnabCategory
@@ -23,7 +24,7 @@ class BankExpenseAdmin(admin.ModelAdmin):
     actions = [snooze]
 
     def file_type(self, obj):
-        return obj.file_import.file_type
+        return apps.website.views.file_import.file_type
 
 
 class YnabTransactionAdmin(admin.ModelAdmin):
