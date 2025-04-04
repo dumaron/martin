@@ -21,6 +21,6 @@ def create_ynab_transaction_from_bank_expense(bank_expense, memo, ynab_category)
     bank_expense.save()
 
     # 3. Sync the YNAB transactions with the local database so that we can be sure the new transaction is available
-    sync_ynab_transactions(partial=False, user=bank_expense.user)
+    sync_ynab_transactions(partial=False)
 
     return remote_transaction

@@ -30,7 +30,7 @@ def ynab_sync(request):
     """
     if 'ynab-sync' in request.POST:
         partial_mode = request.POST['ynab-sync'] == 'partial-sync'
-        sync_ynab_transactions(partial_mode, request.user)
+        sync_ynab_transactions(partial_mode)
 
     return redirect('pairing')
 
@@ -94,9 +94,7 @@ def file_import(request):
     if request.method == "POST":
         form = BankImportForm(request.POST, request.FILES)
         if form.is_valid():
-            new_import = form.save(commit=False)
-            new_import.user = request.user
-            new_import.save()
+            new_import = form.save()
             return redirect('pairing')
         else:
             return render(request, 'file_import.html', {'form': form})
@@ -132,7 +130,7 @@ def synchronize_ynab_categories(request):
     """
     Synchronize YNAB categories with local database
     """
-    sync_ynab_categories(request.user)
+    sync_ynab_categories()
     return redirect('ynab-synchronizations-list')
 
 

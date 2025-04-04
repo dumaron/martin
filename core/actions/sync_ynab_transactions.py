@@ -5,7 +5,7 @@ from core.adapters.ynab import get_uncleared_expenses
 from core.models import YnabTransaction, YnabImport
 
 
-def sync_ynab_transactions(partial, user) -> None:
+def sync_ynab_transactions(partial=False) -> None:
    """
    Sync YNAB transactions with local database using last import's server knowledge to get only new changes to
    transactions
@@ -19,7 +19,7 @@ def sync_ynab_transactions(partial, user) -> None:
    transactions = result.transactions
    new_server_knowledge = result.server_knowledge
 
-   ynab_import = YnabImport(user=user, execution_datetime=datetime.now(), server_knowledge=new_server_knowledge)
+   ynab_import = YnabImport(execution_datetime=datetime.now(), server_knowledge=new_server_knowledge)
    ynab_import.save()
 
    for t in transactions:
@@ -42,7 +42,6 @@ def sync_ynab_transactions(partial, user) -> None:
             'import_id': t.import_id,
             'debt_transaction_type': t.debt_transaction_type,
             'deleted': t.deleted,
-            'user': user,
             'local_import': ynab_import,
          },
       )

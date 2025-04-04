@@ -1,8 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from .ynab_import import YnabImport
-
-User = get_user_model()
 
 class YnabTransaction(models.Model):
    class ClearedStatuses(models.TextChoices):
@@ -47,7 +44,6 @@ class YnabTransaction(models.Model):
    import_payee_original = models.CharField(null=True, blank=True, max_length=256)
    debt_transaction_type = models.CharField(null=True, blank=True, choices=TransactionTypes, max_length=17)
    deleted = models.BooleanField()
-   user = models.ForeignKey(User, on_delete=models.CASCADE)
    local_import = models.ForeignKey(YnabImport, on_delete=models.CASCADE)
 
    def __str__(self):
@@ -57,7 +53,7 @@ class YnabTransaction(models.Model):
       db_table = 'ynab_transactions'
 
    @classmethod
-   def from_external_transaction(cls, external_transaction, user, local_import):
+   def from_external_transaction(cls, external_transaction, local_import):
       return YnabTransaction(
          id=external_transaction.id,
          date=external_transaction.date,
@@ -78,6 +74,5 @@ class YnabTransaction(models.Model):
          import_payee_original=external_transaction.import_payee_original,
          debt_transaction_type=external_transaction.debt_transaction_type,
          deleted=external_transaction.deleted,
-         user=user,
          local_import=local_import
       )

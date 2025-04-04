@@ -1,8 +1,5 @@
 from django.db import models
-from django.contrib.auth import get_user_model
 from core.adapters.file_reader import get_file_rows
-
-User = get_user_model()
 
 class BankFileImport(models.Model):
    class FileType(models.TextChoices):
@@ -15,7 +12,6 @@ class BankFileImport(models.Model):
    file_type = models.CharField(max_length=255, choices=FileType, default=FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT)
    bank_file = models.FileField(upload_to='uploads/')
    import_date = models.DateTimeField(auto_now_add=True)
-   user = models.ForeignKey(User, on_delete=models.CASCADE)
 
    class Meta:
       db_table = 'bank_file_imports'
@@ -43,7 +39,7 @@ class BankFileImport(models.Model):
 
       # When saving, we want it also to create many single expense entries as per file
       rows = get_file_rows(self.bank_file, self.file_type)
-      expenses = [file_parsing_strategy(row, self.user, self) for row in rows]
+      expenses = [file_parsing_strategy(row, self) for row in rows]
 
       # Given that we have a unique constraint based on SQL based on name, date and amount, the already-imported
       # expenses will trigger an error. However, by using `ignore_conflicts`, we can just simulate a behaviour where
