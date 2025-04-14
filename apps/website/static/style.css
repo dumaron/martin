@@ -19,7 +19,7 @@ form {
 
 #action-bar {
     height: var(--action-bar-height);
-    padding: .2rem 1rem ;
+    padding: .2rem 1rem;
     border: 1px solid black;
     margin: 1rem;
     display: flex;
@@ -33,31 +33,9 @@ form {
     margin-left: 1rem;
     font-weight: bold;
     height: var(--main-navbar-height);
-    color: white;
 }
 
-#main-navigation {
-    border-bottom: 1px solid black;
-    padding-top: .5rem;
-
-    &, .tab {
-        background-color: black;
-    }
-
-    .tab {
-        background: gray;
-        color: #000;
-
-        &.active {
-            border-bottom-color: gainsboro;
-            background-color: gainsboro;
-        }
-
-        &:hover:not(.active) {
-            background: yellow;
-        }
-    }
-}
+/* Top navigation styles removed and replaced with sidebar navigation */
 
 .tab {
     display: inline-block;
@@ -94,7 +72,7 @@ form {
 main {
     font-family: "SF Pro", "Helvetica", sans-serif;
     padding: .6rem 1rem;
-    grid-area: 'content';
+    grid-area: content;
 }
 
 form > div {
@@ -110,12 +88,17 @@ fieldset {
     display: grid;
     grid-template-columns: minmax(200px, 300px) 1fr;
     grid-template-areas: "sidebar content";
+    min-height: 100vh;
 }
 
 aside {
-    margin: 10px 10px;
+    margin: 0;
+    padding: 0;
     display: block;
-    grid-area: 'sidebar';
+    grid-area: sidebar;
+    background-color: white;
+    color: black;
+    min-height: 100vh;
 
     fieldset {
         border: none;
@@ -126,14 +109,44 @@ aside {
         font-weight: 600;
     }
 
-    ul {
-        margin: 0;
-        padding-left: 15px;
-    }
-
     input {
         margin-top: .6em;
     }
+}
+
+#sidebar-navigation {
+    padding: 1rem 0;
+    border-bottom: none;
+
+    > ul {
+        margin: 0;
+        padding-left: 16px;
+
+        ul li  {
+            margin-left: -8px;
+        }
+    }
+}
+
+.sidebar-links {
+    display: flex;
+    flex-direction: column;
+    margin-top: 1rem;
+}
+
+.sidebar-link {
+    display: block;
+    padding: 0.5rem 1rem;
+    color: white;
+    text-decoration: none;
+    border: none;
+    border-radius: 0;
+    margin: 0;
+}
+
+.sidebar-link:hover, .sidebar-link.active {
+    background-color: #333;
+    color: white;
 }
 
 th {
@@ -153,4 +166,114 @@ th {
     figcaption {
         font-size: 1.5rem;
     }
+}
+
+/* --- TREE --- */
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+li {
+    position: relative;
+    padding-left: 25px;
+    margin: 0;
+    font-size: 14px;
+    font-family: "Inter V";
+}
+
+li a {
+    text-decoration: underline;
+    color: darkslategrey;
+}
+
+li a, li span {
+    display: inline-block;
+    padding: 2px 0;
+}
+
+/* Vertical lines */
+li::before {
+    content: "";
+    position: absolute;
+    height: 100%;
+    left: 10px;
+    top: 0;
+    border-left: 1px solid #999;
+}
+
+/* Horizontal lines */
+li::after {
+    content: "";
+    position: absolute;
+    width: 10px;
+    height: 1px;
+    left: 10px;
+    top: 8px;
+    border-top: 1px solid #999;
+}
+
+/* Remove vertical line from last items */
+li:last-child::before {
+    height: 8px;
+}
+
+/* First level doesn't need left border for first item */
+> ul > li:first-child::before {
+    border-left: none;
+}
+
+/* Submenu styling */
+#sidebar-navigation > ul > li > ul {
+    margin-left: 0;
+    padding-bottom: 8px;
+}
+
+/* --- TABLES --- */
+table {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+table, th, td {
+  border: 1px solid #333;
+  border-collapse: collapse;
+}
+
+tr:hover td {
+    background-color: bisque;
+}
+
+td {
+    height: 1.8em;
+    padding: 0 .2em;
+}
+
+#pairing-v2 {
+    display: grid;
+    grid-template: "expense suggestions";
+    grid-template-columns: 60% 40%;
+}
+
+#suggestions {
+    grid-area: suggestions;
+}
+
+#expense {
+    grid-area: expense;
+}
+
+td.date {
+    width: 6em;
+}
+
+td.selection {
+    width: 1em;
+}
+
+td.amount {
+    background-color: papayawhip;
+    text-align: right;
+    width: 6em;
 }

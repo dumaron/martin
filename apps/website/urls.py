@@ -12,6 +12,9 @@ urlpatterns = [
    path('finances/', include([
       path('pairing', pairing_view, name='pairing'),
 
+      # pages
+
+
       # mutations
       path('pair-expense-transaction', pair_expense_with_ynab_transaction, name='pair-expense-transaction'),
       path('create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),

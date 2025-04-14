@@ -1,7 +1,17 @@
-<nav id="main-navigation"
-     class="{% if '/tasks' in request.path %}tasks{% else %}finances{% endif %}">
+<nav id="sidebar-navigation">
     <div id="title">Martin</div>
-    <a class="tab{% if request.path == '/' %} active{% endif %}" href="/">Home</a>
-    <a class="tab{% if '/tasks' in request.path %} active{% endif %}" href="/tasks/">Tasks</a>
-    <a class="tab{% if '/finances' in request.path %} active{% endif %}" href="{% url 'pairing' %}">Finances</a>
+    <ul>
+        <li><a href="{% url 'martin_home_page' %}">Dashboard</a></li>
+        <li>Finances
+            <ul>
+                <li><span>Personal account</span>
+                    <ul>
+                        <li><a href="{% url 'pairing' %}">Pair expenses</a></li>
+                        <li><a href="{% url 'file-import' %}">Upload bank export</a></li>
+                        <li><a href="{% url 'ynab-synchronizations-list' %}">Synchronize with YNAB</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
 </nav>
