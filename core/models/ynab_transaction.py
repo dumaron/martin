@@ -1,5 +1,7 @@
 from django.db import models
-from .ynab_import import YnabImport
+
+from core.models.ynab_budget import YnabBudget
+from core.models.ynab_import import YnabImport
 
 class YnabTransaction(models.Model):
    class ClearedStatuses(models.TextChoices):
@@ -45,6 +47,7 @@ class YnabTransaction(models.Model):
    debt_transaction_type = models.CharField(null=True, blank=True, choices=TransactionTypes, max_length=17)
    deleted = models.BooleanField()
    local_import = models.ForeignKey(YnabImport, on_delete=models.CASCADE)
+   budget = models.ForeignKey(YnabBudget, on_delete=models.CASCADE)
 
    def __str__(self):
       return f'{self.amount} {self.date} {self.memo}'

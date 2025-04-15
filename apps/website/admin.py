@@ -4,7 +4,7 @@ from datetime import datetime
 import apps.website.views
 from core.models import (
     Event, Note, BankFileImport, BankExpense, YnabImport,
-    YnabTransaction, YnabCategory
+    YnabTransaction, YnabCategory, YnabBudget
 )
 
 
@@ -44,3 +44,4 @@ admin.site.register(BankExpense, BankExpenseAdmin)
 admin.site.register(YnabImport, YnabImportAdmin)
 admin.site.register(YnabTransaction, YnabTransactionAdmin)
 admin.site.register(YnabCategory)
+admin.site.register(YnabBudget)

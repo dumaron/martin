@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from core.adapters.ynab import clear_transaction
+from core.integrations.ynab import clear_transaction
 from core.models import YnabTransaction
 
 

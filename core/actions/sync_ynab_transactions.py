@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from django.db.models import Max
-from core.adapters.ynab import get_uncleared_expenses
+from core.integrations.ynab import get_uncleared_expenses
 from core.models import YnabTransaction, YnabImport
 
 

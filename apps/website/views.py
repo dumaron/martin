@@ -9,6 +9,8 @@ from core.actions import create_ynab_transaction_from_bank_expense, pair_bank_ex
 from core.models import BankExpense, YnabCategory, YnabTransaction
 from apps.website.forms import BankImportForm, YnabTransactionCreationForm
 
+from settings.base import YNAB_PERSONAL_BUDGET_ID
+
 
 @login_required
 @require_GET
@@ -130,7 +132,7 @@ def synchronize_ynab_categories(request):
     """
     Synchronize YNAB categories with local database
     """
-    sync_ynab_categories()
+    sync_ynab_categories(YNAB_PERSONAL_BUDGET_ID)
     return redirect('ynab-synchronizations-list')
 
 

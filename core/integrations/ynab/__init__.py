@@ -1,4 +1,4 @@
-from .adapter import (
+from .ynab_integration import (
     get_uncleared_expenses,
     clear_transaction,
     get_categories,

@@ -122,8 +122,9 @@ AUTH_USER_MODEL = 'auth.User'
 
 # YNAB
 YNAB_API_TOKEN = os.getenv('YNAB_API_TOKEN')
-YNAB_DEFAULT_BUDGET = os.getenv('YNAB_DEFAULT_BUDGET')
+YNAB_PERSONAL_BUDGET_ID = os.getenv('YNAB_PERSONAL_BUDGET_ID')
+YNAB_SHARED_BUDGET_ID = os.getenv('YNAB_SHARED_BUDGET_ID')
 YNAB_ACCOUNT_ID = os.getenv('YNAB_ACCOUNT_ID')
 
-# Environment, used to tell if we are in production or development and by doing so prevent some mutation on external adapters
+# Environment, used to tell if we are in production or development and by doing so prevent some mutation on external integrations
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')

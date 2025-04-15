@@ -1,9 +1,10 @@
 from core.models import YnabCategory
-from core.adapters.ynab import get_categories
+from core.integrations.ynab import get_categories
 
 
-def sync_ynab_categories():
-    ynab_categories = get_categories()
+def sync_ynab_categories(budget_id) -> None :
+    ynab_categories = get_categories(budget_id)
+
     for category in ynab_categories:
         YnabCategory.objects.update_or_create(
             id=category['id'],

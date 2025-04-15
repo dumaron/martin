@@ -5,6 +5,7 @@ from core.models.note import Note
 from core.models.ynab_category import YnabCategory
 from core.models.ynab_import import YnabImport
 from core.models.ynab_transaction import YnabTransaction
+from core.models.ynab_budget import YnabBudget
 
 
 __all__ = [
@@ -14,5 +15,6 @@ __all__ = [
     'Note',
     'YnabCategory',
     'YnabImport',
-    'YnabTransaction'
+    'YnabTransaction',
+    'YnabBudget',
 ]

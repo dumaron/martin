@@ -1,5 +1,5 @@
 from core.actions.sync_ynab_transactions import sync_ynab_transactions
-from core.adapters.ynab import create_transaction
+from core.integrations.ynab import create_transaction
 
 from datetime import datetime
 

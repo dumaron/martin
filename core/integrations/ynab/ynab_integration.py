@@ -8,7 +8,8 @@ from datetime import datetime
 from settings import YNAB_ACCOUNT_ID
 
 is_development = settings.ENVIRONMENT == 'development'
-base_url = f'https://api.ynab.com/v1/budgets/{settings.YNAB_DEFAULT_BUDGET}'
+base_url = f'https://api.ynab.com/v1/budgets/{settings.YNAB_PERSONAL_BUDGET_ID}'
+base_url_budgetless = f'https://api.ynab.com/v1/budgets'
 headers = {
     'Authorization': f'Bearer {settings.YNAB_API_TOKEN}',
     'Content-Type': 'application/json'
@@ -55,13 +56,13 @@ def clear_transaction(transaction, amount=None):
     return response.json()
 
 
-def get_categories():
+def get_categories(budget_id):
     """
     Upsert all YNAB categories on local database
     """
 
     response = requests.get(
-        f'{base_url}/categories',
+        f'{base_url_budgetless}/{budget_id}/categories',
         headers=headers
     )
 

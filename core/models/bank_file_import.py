@@ -1,5 +1,5 @@
 from django.db import models
-from core.adapters.file_reader import get_file_rows
+from core.integrations.file_reader import get_file_rows
 
 class BankFileImport(models.Model):
    class FileType(models.TextChoices):
