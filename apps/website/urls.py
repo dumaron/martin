@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.website.views import create_ynab_transaction, file_import, martin_home_page, \
+from apps.website.views import create_ynab_transaction, file_import_personal, martin_home_page, \
    pair_expense_with_ynab_transaction, pairing_view, \
    snooze_bankexpense, synchronize_ynab_categories, ynab_sync, ynab_synchronizations_list
 
@@ -25,7 +25,7 @@ urlpatterns = [
       path('ynab-sync', ynab_sync, name='ynab-sync'),
       path('sync-ynab-categories', synchronize_ynab_categories, name='synchronize_ynab_categories'),
 
-      # files
-      path('file-import', file_import, name='file-import'),
+      # file import for personal bank expenses
+      path('personal/file-import', file_import_personal, name='file_import_personal'),
    ])),
 ]

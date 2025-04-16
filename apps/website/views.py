@@ -7,7 +7,7 @@ from django.views.decorators.http import require_GET, require_POST, require_http
 from core.actions import create_ynab_transaction_from_bank_expense, pair_bank_expense_with_ynab_transaction, \
 	sync_ynab_categories, sync_ynab_transactions
 from core.models import BankExpense, YnabCategory, YnabTransaction
-from apps.website.forms import BankImportForm, YnabTransactionCreationForm
+from apps.website.forms import PersonalBankImportForm, YnabTransactionCreationForm
 
 from settings.base import YNAB_PERSONAL_BUDGET_ID
 
@@ -89,20 +89,21 @@ def pair_expense_with_ynab_transaction(request):
 
 
 @login_required
-def file_import(request):
+def file_import_personal(request):
     """
-    Page to allow uploading files from banks export
+    GET: Page to allow importing bank exports for personal banks (Unicredit, Fineco)
+    POST: Form action to import personal bank export
     """
     if request.method == "POST":
-        form = BankImportForm(request.POST, request.FILES)
+        form = PersonalBankImportForm(request.POST, request.FILES)
         if form.is_valid():
-            new_import = form.save()
+            form.save()
             return redirect('pairing')
         else:
-            return render(request, 'file_import.html', {'form': form})
+            return render(request, 'file_import_personal.html', {'form': form})
     else:
-        form = BankImportForm()
-        return render(request, 'file_import.html', {'form': form})
+        form = PersonalBankImportForm()
+        return render(request, 'file_import_personal.html', {'form': form})
 
 
 @login_required

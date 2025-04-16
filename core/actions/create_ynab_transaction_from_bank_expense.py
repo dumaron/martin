@@ -6,7 +6,7 @@ from datetime import datetime
 
 def create_ynab_transaction_from_bank_expense(bank_expense, memo, ynab_category):
     """
-      Creates a YNAB transaction from a bank expense and pairs them together
+    Creates a YNAB transaction from a bank expense and pairs them together
     """
 
     amount = bank_expense.amount

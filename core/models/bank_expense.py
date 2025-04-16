@@ -13,6 +13,9 @@ class BankExpense(models.Model):
    paired_on = models.DateTimeField(null=True, blank=True)
    snoozed_on = models.DateTimeField(null=True, blank=True)
 
+   # Tells if the import is from a personal account (Unicredit, Fineco) or a shared one (Credem)
+   personal_account = models.BooleanField(default=True)
+
    class Meta:
       constraints = models.UniqueConstraint('name', 'date', 'amount', name='expense-uniqueness-name-date-amount'),
       db_table = 'bank_expenses'

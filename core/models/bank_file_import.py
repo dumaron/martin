@@ -1,6 +1,7 @@
 from django.db import models
 from core.integrations.file_reader import get_file_rows
 
+
 class BankFileImport(models.Model):
    class FileType(models.TextChoices):
       UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
@@ -12,6 +13,10 @@ class BankFileImport(models.Model):
    file_type = models.CharField(max_length=255, choices=FileType, default=FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT)
    bank_file = models.FileField(upload_to='uploads/')
    import_date = models.DateTimeField(auto_now_add=True)
+
+   # Tells if the import is from a personal account (Unicredit, Fineco) or a shared one (Credem)
+   # (note: there is a similar field on the BankExpense model. This makes it not well normalized, but handy)
+   personal_account = models.BooleanField(default=True)
 
    class Meta:
       db_table = 'bank_file_imports'
