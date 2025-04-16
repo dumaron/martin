@@ -2,6 +2,7 @@ from core.actions.sync_ynab_transactions import sync_ynab_transactions
 from core.integrations.ynab import create_transaction
 
 from datetime import datetime
+from settings.base import YNAB_PERSONAL_BUDGET_ID
 
 
 def create_ynab_transaction_from_bank_expense(bank_expense, memo, ynab_category):
@@ -21,6 +22,7 @@ def create_ynab_transaction_from_bank_expense(bank_expense, memo, ynab_category)
     bank_expense.save()
 
     # 3. Sync the YNAB transactions with the local database so that we can be sure the new transaction is available
-    sync_ynab_transactions(partial=False)
+    # TODO replace hard-coded budget id
+    sync_ynab_transactions(YNAB_PERSONAL_BUDGET_ID, partial=False)
 
     return remote_transaction

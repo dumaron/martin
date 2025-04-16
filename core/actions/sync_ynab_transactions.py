@@ -1,14 +1,14 @@
 from datetime import datetime
 
 from django.db.models import Max
+
 from core.integrations.ynab import get_uncleared_expenses
-from core.models import YnabTransaction, YnabImport
+from core.models import YnabImport, YnabTransaction
 
 
-def sync_ynab_transactions(partial=False) -> None:
+def sync_ynab_transactions(budget_id, partial=False) -> None:
    """
-   Sync YNAB transactions with local database using last import's server knowledge to get only new changes to
-   transactions
+   Sync YNAB transactions with the local database using last import's server knowledge to get only new changes to transactions
    """
 
    last_server_knowledge = (
@@ -19,7 +19,8 @@ def sync_ynab_transactions(partial=False) -> None:
    transactions = result.transactions
    new_server_knowledge = result.server_knowledge
 
-   ynab_import = YnabImport(execution_datetime=datetime.now(), server_knowledge=new_server_knowledge)
+   ynab_import = YnabImport(execution_datetime=datetime.now(), server_knowledge=new_server_knowledge,
+                            budget_id=budget_id)
    ynab_import.save()
 
    for t in transactions:
@@ -43,5 +44,6 @@ def sync_ynab_transactions(partial=False) -> None:
             'debt_transaction_type': t.debt_transaction_type,
             'deleted': t.deleted,
             'local_import': ynab_import,
+            'budget_id': budget_id,
          },
       )
