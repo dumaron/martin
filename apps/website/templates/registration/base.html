@@ -1,15 +1,21 @@
 {% load static %}
 
 <html>
-    <head>
-        <title>Martin</title>
-        <link rel="stylesheet" href="{% static '/style.css' %}" />
-        {% block stylesheets %}{% endblock %}
-        <script src="{% static 'htmx-2.0.js' %}" type="module" defer></script>
-    </head>
-    <body>
-        <main class="content">
-            {% block content %}{% endblock %}
-        </main>
-    </body>
+<head>
+    <title>Martin</title>
+
+    <script>
+        // Immediately apply the saved theme before any rendering occurs
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+    </script>
+
+    <link rel="stylesheet" href="{% static '/style.css' %}"/>
+    <script src="{% static 'htmx-2.0.js' %}" type="module" defer></script>
+</head>
+<body>
+<main class="content">
+    {% block content %}{% endblock %}
+</main>
+</body>
 </html>
