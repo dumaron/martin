@@ -1,5 +1,5 @@
-from core.models import YnabCategory
 from core.integrations.ynab import get_categories
+from core.models import YnabCategory
 
 
 def sync_ynab_categories(budget_id) -> None :
@@ -11,5 +11,6 @@ def sync_ynab_categories(budget_id) -> None :
             defaults={
                 'name': category['name'],
                 'hidden': category['hidden'],
-                'category_group_name': category['category_group_name']
+                'category_group_name': category['category_group_name'],
+                'budget_id': budget_id
             })

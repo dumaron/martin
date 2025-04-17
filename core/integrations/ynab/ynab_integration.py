@@ -1,15 +1,22 @@
-from .schemas import YnabTransactionCreationResponse, YnabTransactionListResponse, YnabTransactionListData, ExternalYnabTransaction
-import settings
-import requests
 import json
-from itertools import chain
 from datetime import datetime
+from itertools import chain
 
+import requests
+
+import settings
 from settings import YNAB_ACCOUNT_ID
+
+from .schemas import (
+    ExternalYnabTransaction,
+    YnabTransactionCreationResponse,
+    YnabTransactionListData,
+    YnabTransactionListResponse,
+)
 
 is_development = settings.ENVIRONMENT == 'development'
 base_url = f'https://api.ynab.com/v1/budgets/{settings.YNAB_PERSONAL_BUDGET_ID}'
-base_url_budgetless = f'https://api.ynab.com/v1/budgets'
+base_url_budgetless = 'https://api.ynab.com/v1/budgets'
 headers = {
     'Authorization': f'Bearer {settings.YNAB_API_TOKEN}',
     'Content-Type': 'application/json'
@@ -57,21 +64,15 @@ def clear_transaction(transaction, amount=None):
 
 
 def get_categories(budget_id):
-    """
-    Upsert all YNAB categories on local database
-    """
+	"""
+	Upsert all YNAB categories on local database
+	"""
 
-    response = requests.get(
-        f'{base_url_budgetless}/{budget_id}/categories',
-        headers=headers
-    )
-
-    response.raise_for_status()
-
-    data = response.json()['data']
-    categories = list(chain.from_iterable(map(lambda x: x['categories'], data['category_groups'])))
-
-    return categories
+	response = requests.get(f'{base_url_budgetless}/{budget_id}/categories', headers=headers)
+	response.raise_for_status()
+	data = response.json()['data']
+	categories = list(chain.from_iterable(map(lambda x: x['categories'], data['category_groups'])))
+	return categories
 
 
 def create_transaction(amount, date, memo, ynab_category) -> ExternalYnabTransaction:

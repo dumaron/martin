@@ -2,14 +2,14 @@ from datetime import datetime, timedelta
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_GET, require_POST, require_http_methods
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from apps.website.forms import PersonalBankImportForm, YnabTransactionCreationForm
 from core.actions import (
-	create_ynab_transaction_from_bank_expense,
-	pair_bank_expense_with_ynab_transaction,
-	sync_ynab_categories,
-	sync_ynab_transactions,
+   create_ynab_transaction_from_bank_expense,
+   pair_bank_expense_with_ynab_transaction,
+   sync_ynab_categories,
+   sync_ynab_transactions,
 )
 from core.models import BankExpense, YnabCategory, YnabTransaction
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
@@ -153,6 +153,7 @@ def synchronize_ynab_categories(request):
    Synchronize YNAB categories with local database
    """
    sync_ynab_categories(YNAB_PERSONAL_BUDGET_ID)
+   sync_ynab_categories(YNAB_SHARED_BUDGET_ID)
    return redirect('ynab-synchronizations-list')
 
 
