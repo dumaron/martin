@@ -1,13 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action="{% url 'ynab-sync' %}" method="post">
-    <fieldset>
-        <legend>Actions</legend>
-        <button type="submit" name="ynab-sync" value="partial-sync">Sync from YNAB</button>
-    </fieldset>
-    {% csrf_token %}
-</form>
 <main id="pairing-v2">
     <div id="expense">
         <h1>{{ expense.name }}</h1>
@@ -24,13 +17,11 @@
         <div>
             <h2>No-pair actions</h2>
             <h3>Snooze the bank expense</h3>
-            <p>Lorem ipsum yadda yadda you know the rest</p>
             <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
                 {% csrf_token %}
                 </label><button type="submit">Snooze</button>
             </form>
             <h3>Create transaction from bank expense</h3>
-            <p>Well, here the help text can actually help</p>
             <form action="{% url 'create-ynab-transaction' %}" method="post">
                 {% csrf_token %}
                 {{ transaction_creation_form }}
@@ -85,16 +76,6 @@
             </form>
         </div>
         {% endif %}
-
-        <div id="ai-suggestions">
-            <h2>AI suggested</h2>
-            <button>Equalize and pair</button>
-        </div>
-
-        <div>
-            <h2>More</h2>
-            <button>Create new expense</button>
-        </div>
     </div>
 </main>
 {% endblock %}

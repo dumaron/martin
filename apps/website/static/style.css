@@ -28,7 +28,7 @@
 
 /* Dark theme */
 [data-theme="dark"] {
-    --color-text: rgb(120, 168, 119);
+    --color-text: #aaa;
     --color-text-secondary: #dddddd;
     --color-text-muted: #aaaaaa;
     --color-text-link: #8ab4f8;
@@ -36,13 +36,13 @@
 
     --color-background-primary: #121212;
     --color-background-secondary: #333333;
-    --color-background-hover: rgb(70, 118, 69);
-    --color-background-highlight: #555555;
-    --color-background-sidebar: #1e1e1e;
+    --color-background-hover: #667766;
+    --color-background-highlight: #364836;
+    --color-background-sidebar: #121212;
     --color-background-sidebar-hover: #444444;
 
-    --color-border-primary: #ffffff;
-    --color-border-secondary: #dddddd;
+    --color-border-primary: #bbb;
+    --color-border-secondary: #888;
     --color-border-muted: #777777;
     --color-border-light: #555555;
 }
@@ -129,6 +129,7 @@ aside {
     background-color: var(--color-background-sidebar);
     color: var(--color-text);
     min-height: 100vh;
+    border-right: 1px solid var(--color-background-sidebar-hover);
 }
 
 /* Sidebar Navigation */
@@ -276,7 +277,8 @@ table {
 }
 
 table, th, td {
-    border: 1px solid var(--color-border-secondary);
+    border: 0;
+    border-top: 1px solid var(--color-border-secondary);
     border-collapse: collapse;
 }
 
@@ -298,6 +300,7 @@ td.selection {
 }
 
 td.amount {
+    font-family: 'Berkeley Mono', monospace;
     background-color: var(--color-background-highlight);
     text-align: right;
     width: 6em;
@@ -317,6 +320,89 @@ form > div {
 fieldset {
     border: 1px solid var(--color-border-primary);
     margin: .6rem 1rem;
+}
+
+/* Button styling */
+button {
+    background-color: var(--color-background-secondary);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-muted);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin: 4px 0;
+    font-family: 'Berkeley Mono', monospace;
+    text-transform: uppercase;
+}
+
+button:hover {
+    background-color: var(--color-background-hover);
+}
+
+button:active {
+    border-color: var(--color-border-primary);
+}
+
+/* Submit button styling */
+input[type="submit"] {
+    background-color: var(--color-background-secondary);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-muted);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin: 4px 0;
+    font-family: 'Berkeley Mono', monospace;
+    text-transform: uppercase;
+}
+
+input[type="submit"]:hover {
+    background-color: var(--color-background-hover);
+}
+
+input[type="submit"]:active {
+    border-color: var(--color-border-primary);
+}
+
+/* File input styling */
+input[type="file"] {
+    background-color: var(--color-background-primary);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-secondary);
+    border-radius: 4px;
+    padding: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    margin: 4px 0;
+}
+
+/* Style the file input button part */
+input[type="file"]::file-selector-button {
+    background-color: var(--color-background-secondary);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-muted);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 12px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-family: 'Berkeley Mono', monospace;
+    text-transform: uppercase;
+}
+
+input[type="file"]::file-selector-button:hover {
+    background-color: var(--color-background-hover);
+}
+
+input[type="file"]:hover {
+    background-color: var(--color-background-hover);
+}
+
+input[type="file"]:focus {
+    outline: none;
+    border-color: var(--color-border-primary);
 }
 
 /* ==========================================================================
