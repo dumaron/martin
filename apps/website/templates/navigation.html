@@ -14,8 +14,19 @@
             <ul>
                 <li><span>Personal account</span>
                     <ul>
-                        <li><a href="{% url 'pairing' %}">Pair expenses</a></li>
-                        <li><a href="{% url 'file_import_personal' %}">Import bank data</a></li>
+                        <li><a href="{% url 'pairing' kind="personal" %}">Pair expenses</a></li>
+                        <li><a href="{% url 'file_import' kind="personal" %}">Import bank data</a></li>
+                    </ul>
+                </li>
+                <li><span>Shared account</span>
+                    <ul>
+                        <li><a href="{% url 'pairing' kind="shared" %}">Pair expenses</a></li>
+                        <li><a href="{% url 'file_import' kind="shared" %}">Import bank data</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <span>YNAB</span>
+                    <ul>
                         <li><a href="{% url 'ynab-synchronizations-list' %}">Synchronize with YNAB</a></li>
                     </ul>
                 </li>

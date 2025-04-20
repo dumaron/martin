@@ -2,7 +2,7 @@
 
 {% block content %}
 <main>
-    <form action="{% url 'file_import_personal' %}" method="post" enctype="multipart/form-data">
+    <form action="{% url 'file_import' kind=kind %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="Import">

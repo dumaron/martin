@@ -1,16 +1,24 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import include, path
 
-from apps.website.views import create_ynab_transaction, file_import_personal, martin_home_page, \
-   pair_expense_with_ynab_transaction, pairing_view, \
-   snooze_bankexpense, synchronize_ynab_categories, ynab_sync, ynab_synchronizations_list
+from apps.website.views import (
+   create_ynab_transaction,
+   file_import,
+   martin_home_page,
+   pair_expense_with_ynab_transaction,
+   pairing_view,
+   snooze_bankexpense,
+   synchronize_ynab_categories,
+   ynab_sync,
+   ynab_synchronizations_list,
+)
 
 urlpatterns = [
    path('', martin_home_page, name='martin_home_page'),
    path('admin/', admin.site.urls),
    path('accounts/', include('django.contrib.auth.urls')),
    path('finances/', include([
-      path('pairing', pairing_view, name='pairing'),
+      path('<str:kind>/pairing', pairing_view, name='pairing'),
 
       # pages
 
@@ -26,6 +34,6 @@ urlpatterns = [
       path('sync-ynab-categories', synchronize_ynab_categories, name='synchronize_ynab_categories'),
 
       # file import for personal bank expenses
-      path('personal/file-import', file_import_personal, name='file_import_personal'),
+      path('<str:kind>/file-import', file_import, name='file_import'),
    ])),
 ]

@@ -4,14 +4,14 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from apps.website.forms import PersonalBankImportForm, YnabTransactionCreationForm
+from apps.website.forms import PersonalBankImportForm, SharedBankImportForm, YnabTransactionCreationForm
 from core.actions import (
    create_ynab_transaction_from_bank_expense,
    pair_bank_expense_with_ynab_transaction,
    sync_ynab_categories,
    sync_ynab_transactions,
 )
-from core.models import BankExpense, YnabCategory, YnabTransaction
+from core.models import BankExpense, BankFileImport, YnabCategory, YnabTransaction
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 
@@ -44,21 +44,32 @@ def ynab_sync(request):
 
 @login_required
 @require_GET
-def pairing_view(request):
+def pairing_view(request, kind):
    """
    Second version of the pairing view. It is bank-expense centric: takes the oldest unpaired bank expense and shows
    some suggestions for pair-able YNAB transactions.
    """
-   first_unpaired_expense = BankExpense.objects.filter(snoozed_on=None, paired_on=None).order_by('date').first()
+
+   personal = kind == 'personal'
+   budget_id = YNAB_PERSONAL_BUDGET_ID if personal else YNAB_SHARED_BUDGET_ID
+
+   first_unpaired_expense = BankExpense.objects.filter(
+      snoozed_on=None,
+      paired_on=None,
+      personal_account=personal,
+   ).order_by('date').first()
 
    if first_unpaired_expense is None:
       return render(request, 'pairing_empty.html', {})
 
-   ynab_categories = YnabCategory.objects.filter(hidden=False)
+   ynab_categories = YnabCategory.objects.filter(hidden=False, budget_id=budget_id)
 
    same_amount_suggestions = (
       YnabTransaction.objects.filter(
-         deleted=False, amount=first_unpaired_expense.amount, cleared=YnabTransaction.ClearedStatuses.UNCLEARED
+         deleted=False,
+         amount=first_unpaired_expense.amount,
+         cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
+         budget_id=budget_id,
       )
       if first_unpaired_expense is not None
       else None
@@ -70,6 +81,7 @@ def pairing_view(request):
          date__lte=first_unpaired_expense.date + timedelta(days=3),
          date__gte=first_unpaired_expense.date - timedelta(days=3),
          cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
+         budget_id=budget_id
       )
       if first_unpaired_expense is not None
       else None
@@ -108,21 +120,34 @@ def pair_expense_with_ynab_transaction(request):
 
 
 @login_required
-def file_import_personal(request):
+def file_import(request, kind):
    """
-   GET: Page to allow importing bank exports for personal banks (Unicredit, Fineco)
+   GET: Page to allow importing bank exports from banks (Unicredit, Fineco, Credem)
    POST: Form action to import personal bank export
    """
+
+   personal = kind == 'personal'
+   form_constructor = PersonalBankImportForm if personal else SharedBankImportForm
+
    if request.method == 'POST':
-      form = PersonalBankImportForm(request.POST, request.FILES)
+      form = form_constructor(request.POST, request.FILES)
+      
       if form.is_valid():
-         form.save()
-         return redirect('pairing')
+
+         entity = form.save(commit=False)
+         
+         entity.personal_account = personal
+
+         if not personal:
+            entity.file_type = BankFileImport.FileType.CREDEM_CSV_EXPORT
+
+         entity.save()
+         return redirect('pairing', { 'kind': kind })
       else:
-         return render(request, 'file_import_personal.html', {'form': form})
+         return render(request, 'file_import.html', {'form': form, 'kind': kind})
    else:
-      form = PersonalBankImportForm()
-      return render(request, 'file_import_personal.html', {'form': form})
+      form = form_constructor()
+      return render(request, 'file_import.html', {'form': form, 'kind': kind})
 
 
 @login_required

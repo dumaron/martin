@@ -16,6 +16,7 @@ ruff = "*"
 openai = "*"
 python-telegram-bot = "*"
 pydantic = "*"
+django-tables2 = "*"
 
 [dev-packages]
 
