@@ -10,18 +10,20 @@
     --color-text: #000000;
     --color-text-secondary: #333333;
     --color-text-muted: #666666;
-    --color-text-link: darkslategrey;
+    --color-text-link: black;
     --color-text-inverted: #ffffff;
 
-    --color-background-primary: #ffffff;
+    /*--color-background-primary: rgb(237, 237, 239);*/
+    --color-background-primary: white;
+    --color-background-box: white;
     --color-background-secondary: gainsboro;
     --color-background-hover: bisque;
     --color-background-highlight: papayawhip;
-    --color-background-sidebar: #ffffff;
+    --color-background-sidebar: rgb(234, 235, 228);
     --color-background-sidebar-hover: #333333;
 
-    --color-border-primary: #000000;
-    --color-border-secondary: #333333;
+    --color-border-primary: #b3b3b6;
+    --color-border-secondary: #b3b3b6;
     --color-border-muted: #999999;
     --color-border-light: #aaaaaa;
 
@@ -37,6 +39,7 @@
     --color-text-inverted: #000000;
 
     --color-background-primary: #121212;
+    --color-background-box: #161616;
     --color-background-secondary: #333333;
     --color-background-hover: #667766;
     --color-background-highlight: #364836;
@@ -61,6 +64,11 @@ body {
     padding: 0;
     background-color: var(--color-background-primary);
     color: var(--color-text);
+    /*background-color: var(--color-background-box);*/
+
+}
+
+main {
 }
 
 td {
@@ -69,10 +77,10 @@ td {
 
 main {
     font-family: "SF Pro", "Helvetica", sans-serif;
-    padding: .6rem 1rem;
     grid-area: content;
+    margin: 0;
+    padding: 0;
     background-color: var(--color-background-primary);
-    color: var(--color-text);
 }
 
 th {
@@ -89,31 +97,27 @@ th {
     min-height: 100vh;
 }
 
-#pairing-v2 {
-    display: grid;
-    grid-template: "expense suggestions";
-    grid-template-columns: 60% 40%;
-}
-
-#suggestions {
-    grid-area: suggestions;
-}
-
-#expense {
-    grid-area: expense;
+div.fixed-content {
+    max-width:900px;
+    /*border-right: 1px solid var(--color-border-primary);*/
+    /*background-color: var(--color-background-box);*/
+    min-height: 100dvh;
+    color: var(--color-text);
+    margin: 0;
+    padding: .5em 2.1em;
 }
 
 /* ==========================================================================
    NAVIGATION & SIDEBAR
    ========================================================================== */
-#action-bar {
+/*#action-bar {
     height: var(--action-bar-height);
     padding: .2rem 1rem;
     border: 1px solid var(--color-border-primary);
     margin: 1rem;
     display: flex;
     align-items: center;
-}
+}*/
 
 #title {
     font-size: 24px;
@@ -133,7 +137,7 @@ aside {
     background-color: var(--color-background-sidebar);
     color: var(--color-text);
     min-height: 100vh;
-    border-right: 1px solid var(--color-background-sidebar-hover);
+    border-right: 1px solid var(--color-border-secondary);
 }
 
 /* Sidebar Navigation */
@@ -156,66 +160,12 @@ aside {
     margin-left: -8px;
 }
 
-.sidebar-links {
-    display: flex;
-    flex-direction: column;
-    margin-top: 1rem;
-}
-
-.sidebar-link {
-    display: block;
-    padding: 0.5rem 1rem;
-    color: var(--color-text-inverted);
-    text-decoration: none;
-    border: none;
-    border-radius: 0;
-    margin: 0;
-}
-
-.sidebar-link:hover, 
-.sidebar-link.active {
-    background-color: var(--color-background-sidebar-hover);
-    color: var(--color-text-inverted);
-}
-
-/* Tabs */
-.tab {
-    display: inline-block;
-    border: 1px solid var(--color-border-primary);
-    border-top-right-radius: 4px;
-    border-top-left-radius: 4px;
-    text-decoration: none;
-    padding: 4px;
-    margin-bottom: -1px;
-}
-
-.tab.active {
-    border-bottom-color: var(--color-background-primary);
-}
-
-.tab:hover, 
-.tab.active {
-    background-color: var(--color-background-primary);
-    color: var(--color-text);
-}
-
-.sub-navigation {
-    padding-top: .6rem;
-    border-bottom: 1px solid var(--color-border-primary);
-    padding-left: 1.6rem;
-    background-color: var(--color-background-secondary);
-}
-
-.sub-navigation .tab:not(.active) {
-    color: var(--color-border-light);
-    border-color: var(--color-border-light);
-    border-bottom-color: var(--color-border-primary);
-}
-
 /* ==========================================================================
    TREE STRUCTURE
    ========================================================================== */
 ul.tree {
+    /*font-family: 'Berkeley Mono', monospace;*/
+    /*letter-spacing: -0.05em;*/
     &, ul {
         list-style-type: none;
         padding: 0;
@@ -233,9 +183,12 @@ li {
 li a {
     text-decoration: underline;
     color: var(--color-text-link);
+    /*font-weight: bold;*/
+    font-weight: 700;
+
 }
 
-li a, 
+li a,
 li span {
     display: inline-block;
     padding: 2px 0;
@@ -444,4 +397,13 @@ input[type="file"]:focus {
 
 #main-quote figcaption {
     font-size: 1.5rem;
+}
+
+/* === PAIRING === */
+.emphasis {
+    margin-top: .5em;
+    margin-bottom: .5em;
+    font-family: 'Berkeley Mono', monospace;
+    font-weight: bold;
+    font-size: 18px;
 }

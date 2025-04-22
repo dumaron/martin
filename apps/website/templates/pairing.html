@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<main id="pairing-v2">
-    <div id="expense">
-        <h1>{{ expense.name }}</h1>
+<div class="fixed-content">
         <dl>
+            <dt>Description</dt>
+            <dd class="emphasis">{{ expense.name }}</dd>
             <dt>Date</dt>
             <dd>{{ expense.date | date:"d.m.Y" }}</dd>
             <dt>Amount</dt>
@@ -12,8 +12,6 @@
             <dt>Source</dt>
             <dd>{{ expense.file_import.file_type }}</dd>
         </dl>
-    </div>
-    <div id="suggestions">
         <div>
             <h2>No-pair actions</h2>
             <h3>Snooze the bank expense</h3>
@@ -35,6 +33,7 @@
             <form action="{% url 'pair-expense-transaction' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="expense" value="{{ expense.id }}" />
+                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
                 <h2>Same amount</h2>
                 <table>
                     <tbody>
@@ -76,6 +75,5 @@
             </form>
         </div>
         {% endif %}
-    </div>
-</main>
+</div>
 {% endblock %}

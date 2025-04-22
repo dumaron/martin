@@ -91,6 +91,7 @@ def pairing_view(request, kind):
       request,
       'pairing.html',
       {
+         'kind': kind,
          'expense': first_unpaired_expense,
          'same_amount_suggestions': same_amount_suggestions,
          'similar_date_suggestions': similar_date_suggestions,
@@ -105,18 +106,19 @@ def pairing_view(request, kind):
 @login_required
 @require_POST
 def pair_expense_with_ynab_transaction(request):
-   """
-   Pairs an expense with a YNAB transaction
-   """
-   transaction_id = request.POST['ynab-transaction']
-   expense_id = request.POST['expense']
-   override_amount = request.POST.get('override-amount', False) == 'true'
+	"""
+	Pairs an expense with a YNAB transaction
+	"""
+	transaction_id = request.POST['ynab-transaction']
+	expense_id = request.POST['expense']
+	override_amount = request.POST.get('override-amount', False) == 'true'
+	redirect_to = request.POST.get('redirect-to')
 
-   ynab_transaction = get_object_or_404(YnabTransaction, pk=transaction_id)
-   bank_expense = get_object_or_404(BankExpense, pk=expense_id)
+	ynab_transaction = get_object_or_404(YnabTransaction, pk=transaction_id)
+	bank_expense = get_object_or_404(BankExpense, pk=expense_id)
 
-   pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, override_amount)
-   return redirect('pairing')
+	pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, override_amount)
+	return redirect(redirect_to)
 
 
 @login_required
