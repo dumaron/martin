@@ -23,13 +23,13 @@ headers = {
 }
 
 
-def get_uncleared_expenses(server_knowledge) -> YnabTransactionListData:
+def get_uncleared_expenses(budget_id, server_knowledge) -> YnabTransactionListData:
     """
     Fetch and validate uncleared expenses from YNAB API
     """
 
     response = requests.get(
-        url=f'{base_url}/transactions?since_date=2023-08-01&last_knowledge_of_server={server_knowledge}',
+        url=f'{base_url_budgetless}/{budget_id}/transactions?since_date=2023-08-01&last_knowledge_of_server={server_knowledge}',
         headers=headers
     )
 

@@ -17,11 +17,13 @@
             <h3>Snooze the bank expense</h3>
             <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
                 {% csrf_token %}
-                </label><button type="submit">Snooze</button>
+                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
+                <button type="submit">Snooze</button>
             </form>
             <h3>Create transaction from bank expense</h3>
             <form action="{% url 'create-ynab-transaction' %}" method="post">
                 {% csrf_token %}
+                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
                 {{ transaction_creation_form }}
                 <button type="submit">Create transaction</button>
             </form>

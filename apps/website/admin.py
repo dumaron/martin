@@ -1,6 +1,7 @@
 from datetime import datetime
 
 from django.contrib import admin
+from settings.base import YNAB_PERSONAL_BUDGET_ID
 
 from core.models import (
     BankExpense,
@@ -37,6 +38,7 @@ class BankExpenseAdmin(admin.ModelAdmin):
         return obj.file_import.import_date
 
 
+
 class YnabTransactionAdmin(admin.ModelAdmin):
     list_display = ['date', 'amount', 'budget', 'memo', 'cleared', 'deleted']
     list_filter = ['date', 'cleared', 'deleted', 'budget']
@@ -44,7 +46,8 @@ class YnabTransactionAdmin(admin.ModelAdmin):
 
 
 class YnabImportAdmin(admin.ModelAdmin):
-    list_display = ['execution_datetime', 'server_knowledge']
+    list_display = ['budget', 'execution_datetime', 'server_knowledge']
+    list_filter = ['budget']
     
 
 class BankFileImportAdmin(admin.ModelAdmin):

@@ -164,8 +164,6 @@ aside {
    TREE STRUCTURE
    ========================================================================== */
 ul.tree {
-    /*font-family: 'Berkeley Mono', monospace;*/
-    /*letter-spacing: -0.05em;*/
     &, ul {
         list-style-type: none;
         padding: 0;

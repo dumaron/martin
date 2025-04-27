@@ -39,7 +39,7 @@ def ynab_sync(request):
    sync_ynab_transactions(YNAB_SHARED_BUDGET_ID, partial_mode)
    sync_ynab_transactions(YNAB_PERSONAL_BUDGET_ID, partial_mode)
 
-   return redirect('pairing')
+   return redirect('ynab-synchronizations-list')
 
 
 @login_required
@@ -159,9 +159,10 @@ def snooze_bankexpense(request, bankexpense_id):
    Snoozes a bank expense. Useful for expenses that are actually just money transfers, like reloading the debit card
    """
    expense = get_object_or_404(BankExpense, pk=bankexpense_id)
+   redirect_to = request.POST.get('redirect-to')
    expense.snoozed_on = datetime.now()
    expense.save()
-   return redirect('pairing')
+   return redirect(redirect_to)
 
 
 @login_required
@@ -198,11 +199,13 @@ def create_ynab_transaction(request):
    Returns redirect to pairing view on success, or None if form validation fails.
    """
    form = YnabTransactionCreationForm(request.POST)
+   redirect_to = request.POST.get('redirect-to')
+
    if form.is_valid():
       bank_expense = get_object_or_404(BankExpense, pk=form.cleaned_data['bank_expense_id'])
       memo = form.cleaned_data['memo']
       category_id = form.cleaned_data['ynab_category']
       create_ynab_transaction_from_bank_expense(bank_expense, memo, category_id)
-      return redirect('pairing')
+      return redirect(redirect_to)
    else:
       return
