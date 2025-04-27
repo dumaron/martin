@@ -62,8 +62,6 @@ def pairing_view(request, kind):
    if first_unpaired_expense is None:
       return render(request, 'pairing_empty.html', {})
 
-   ynab_categories = YnabCategory.objects.filter(hidden=False, budget_id=budget_id)
-
    same_amount_suggestions = (
       YnabTransaction.objects.filter(
          deleted=False,
@@ -71,8 +69,6 @@ def pairing_view(request, kind):
          cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
          budget_id=budget_id,
       )
-      if first_unpaired_expense is not None
-      else None
    )
 
    similar_date_suggestions = (
@@ -83,8 +79,6 @@ def pairing_view(request, kind):
          cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
          budget_id=budget_id
       )
-      if first_unpaired_expense is not None
-      else None
    )
 
    return render(
@@ -95,8 +89,8 @@ def pairing_view(request, kind):
          'expense': first_unpaired_expense,
          'same_amount_suggestions': same_amount_suggestions,
          'similar_date_suggestions': similar_date_suggestions,
-         'ynab_categories': ynab_categories,
          'transaction_creation_form': YnabTransactionCreationForm(
+            budget_id=budget_id,
             initial={'bank_expense_id': first_unpaired_expense.id}
          ),
       },

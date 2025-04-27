@@ -3,6 +3,7 @@ from django.db import models
 from core.models.ynab_budget import YnabBudget
 from core.models.ynab_import import YnabImport
 
+
 class YnabTransaction(models.Model):
    class ClearedStatuses(models.TextChoices):
       CLEARED = 'cleared'
