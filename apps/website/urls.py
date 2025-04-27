@@ -25,7 +25,7 @@ urlpatterns = [
 
       # mutations
       path('pair-expense-transaction', pair_expense_with_ynab_transaction, name='pair-expense-transaction'),
-      path('create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),
+      path('<str:kind>/create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),
       path('expenses/<int:bankexpense_id>/snooze', snooze_bankexpense, name='snooze-expense'),
 
       # ynab synchronizations

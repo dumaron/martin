@@ -1,5 +1,6 @@
 from django.db import models
 
+from core.models.ynab_account import YnabAccount
 from core.models.ynab_budget import YnabBudget
 from core.models.ynab_import import YnabImport
 
@@ -36,7 +37,7 @@ class YnabTransaction(models.Model):
    cleared = models.CharField(choices=ClearedStatuses, max_length=10)
    flag_color = models.CharField(null=True, blank=True, choices=FlagColors, max_length=6)
    flag_name = models.CharField(null=True, blank=True, max_length=64)
-   account_id = models.UUIDField(null=True, blank=True)
+   account = models.ForeignKey(YnabAccount, on_delete=models.CASCADE, null=True, blank=True)
    payee_id = models.UUIDField(null=True, blank=True)
    category_id = models.UUIDField(null=True, blank=True)
    transfer_account_id = models.UUIDField(null=True, blank=True)

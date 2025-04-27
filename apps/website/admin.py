@@ -1,13 +1,13 @@
 from datetime import datetime
 
 from django.contrib import admin
-from settings.base import YNAB_PERSONAL_BUDGET_ID
 
 from core.models import (
     BankExpense,
     BankFileImport,
     Event,
     Note,
+    YnabAccount,
     YnabBudget,
     YnabCategory,
     YnabImport,
@@ -54,6 +54,11 @@ class BankFileImportAdmin(admin.ModelAdmin):
     list_display = ['id', 'file_name', 'file_type', 'import_date']
 
 
+class YnabAccountAdmin(admin.ModelAdmin):
+    list_display = ['name', 'id', 'budget']
+    list_filter = ['budget']
+
+
 admin.site.register(Event)
 admin.site.register(Note)
 admin.site.register(BankFileImport, BankFileImportAdmin)
@@ -62,3 +67,4 @@ admin.site.register(YnabImport, YnabImportAdmin)
 admin.site.register(YnabTransaction, YnabTransactionAdmin)
 admin.site.register(YnabCategory)
 admin.site.register(YnabBudget)
+admin.site.register(YnabAccount, YnabAccountAdmin)
