@@ -3,7 +3,7 @@ import csv
 import tablib
 from django.db import models
 
-from core.models import BankExpense
+from core.models import BankTransaction
 
 
 class BankFileImport(models.Model):
@@ -18,10 +18,6 @@ class BankFileImport(models.Model):
    file_type = models.CharField(max_length=255, choices=FileType, default=FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT)
    bank_file = models.FileField(upload_to='uploads/')
    import_date = models.DateTimeField(auto_now_add=True)
-
-   # Tells if the import is from a personal account (Unicredit, Fineco) or a shared one (Credem)
-   # (note: there is a similar field on the BankExpense model. This makes it not well normalized, but handy)
-   personal_account = models.BooleanField(default=True)
 
    class Meta:
       db_table = 'bank_file_imports'
@@ -49,10 +45,10 @@ class BankFileImport(models.Model):
       imported = super().save(*args, **kwargs)
 
       strategy_mapping = {
-         BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT: BankExpense.from_unicredit_bank_account_csv_row,
-         BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT: BankExpense.from_unicredit_debit_card_csv_row,
-         BankFileImport.FileType.FINECO_BANK_ACCOUNT_XSLX_EXPORT: BankExpense.from_fineco_bank_account_xslx_row,
-         BankFileImport.FileType.CREDEM_CSV_EXPORT: BankExpense.from_credem_csv_row,
+         BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT: BankTransaction.from_unicredit_bank_account_csv_row,
+         BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT: BankTransaction.from_unicredit_debit_card_csv_row,
+         BankFileImport.FileType.FINECO_BANK_ACCOUNT_XSLX_EXPORT: BankTransaction.from_fineco_bank_account_xslx_row,
+         BankFileImport.FileType.CREDEM_CSV_EXPORT: BankTransaction.from_credem_csv_row,
       }
 
       file_parsing_strategy = strategy_mapping.get(self.file_type, None)
@@ -64,5 +60,5 @@ class BankFileImport(models.Model):
       # Given that we have a unique constraint based on SQL based on name, date and amount, the already-imported
       # expenses will trigger an error. However, by using `ignore_conflicts`, we can just simulate a behaviour where
       # the duplicates are just skipped
-      BankExpense.objects.bulk_create(expenses, ignore_conflicts=True)
+      BankTransaction.objects.bulk_create(expenses, ignore_conflicts=True)
       return imported

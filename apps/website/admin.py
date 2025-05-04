@@ -3,7 +3,8 @@ from datetime import datetime
 from django.contrib import admin
 
 from core.models import (
-    BankExpense,
+    BankAccount,
+    BankTransaction,
     BankFileImport,
     Event,
     Note,
@@ -21,11 +22,10 @@ def snooze(modeladmin, request, queryset):
 
 
 class BankExpenseAdmin(admin.ModelAdmin):
-    list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on', 'personal_account', 'file_type']
+    list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on', 'file_type']
     search_fields = ['name', 'amount']
     list_filter = [
         'file_import__file_type',
-        'personal_account',
         ('snoozed_on', admin.EmptyFieldListFilter),
         ('paired_on', admin.EmptyFieldListFilter),
     ]
@@ -59,12 +59,17 @@ class YnabAccountAdmin(admin.ModelAdmin):
     list_filter = ['budget']
 
 
+class BankAccountAdmin(admin.ModelAdmin):
+    list_display = ['name', 'iban']
+
+
 admin.site.register(Event)
 admin.site.register(Note)
 admin.site.register(BankFileImport, BankFileImportAdmin)
-admin.site.register(BankExpense, BankExpenseAdmin)
+admin.site.register(BankTransaction, BankExpenseAdmin)
 admin.site.register(YnabImport, YnabImportAdmin)
 admin.site.register(YnabTransaction, YnabTransactionAdmin)
 admin.site.register(YnabCategory)
 admin.site.register(YnabBudget)
 admin.site.register(YnabAccount, YnabAccountAdmin)
+admin.site.register(BankAccount, BankAccountAdmin)

@@ -4,8 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
-from apps.website.forms import PersonalBankImportForm, SharedBankImportForm, YnabTransactionCreationForm
-from core.models import BankExpense, BankFileImport, YnabTransaction
+from apps.website.forms import BankFileImportForm, YnabTransactionCreationForm
+from core.models import BankFileImport, BankTransaction, YnabTransaction
 from core.mutations import (
 	create_ynab_transaction_from_bank_expense,
 	pair_bank_expense_with_ynab_transaction,
@@ -54,7 +54,7 @@ def pairing_view(request, kind):
 	budget_id = YNAB_PERSONAL_BUDGET_ID if personal else YNAB_SHARED_BUDGET_ID
 
 	first_unpaired_expense = (
-		BankExpense.objects.filter(snoozed_on=None, paired_on=None, personal_account=personal)
+		BankTransaction.objects.filter(snoozed_on=None, paired_on=None, bank_account__personal=personal)
 		.order_by('date')
 		.first()
 	)
@@ -104,7 +104,7 @@ def pair_expense_with_ynab_transaction(request):
 	redirect_to = request.POST.get('redirect-to')
 
 	ynab_transaction = get_object_or_404(YnabTransaction, pk=transaction_id)
-	bank_expense = get_object_or_404(BankExpense, pk=expense_id)
+	bank_expense = get_object_or_404(BankTransaction, pk=expense_id)
 
 	pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, override_amount)
 	return redirect(redirect_to)
@@ -118,29 +118,22 @@ def file_import(request, kind):
 	"""
 
 	personal = kind == 'personal'
-	form_constructor = PersonalBankImportForm if personal else SharedBankImportForm
 
 	if request.method == 'POST':
-		form = form_constructor(request.POST, request.FILES)
+		form = BankFileImportForm(request.POST, request.FILES, personal=personal)
 
 		if form.is_valid():
-			entity = form.save(commit=False)
 
-			entity.personal_account = personal
+			if (not personal) and form.cleaned_data['file_type'] != BankFileImport.FileType.CREDEM_CSV_EXPORT:
+				raise Exception('Wrong file type for shared account')
 
-			# The only shared account we have is a Credem bank account, so it's impossible to import any other kind of
-			# file in shared mode.
-         # TODO move this value to when we send the form, and trigger error here if a Credem file is uploaded in personal mode
-         #      or vice versa
-			if not personal:
-				entity.file_type = BankFileImport.FileType.CREDEM_CSV_EXPORT
+			form.save()
 
-			entity.save()
 			return redirect('pairing', {'kind': kind})
 		else:
 			return render(request, 'file_import.html', {'form': form, 'kind': kind})
 	else:
-		form = form_constructor()
+		form = BankFileImportForm(personal=personal)
 		return render(request, 'file_import.html', {'form': form, 'kind': kind})
 
 
@@ -150,7 +143,7 @@ def snooze_bankexpense(request, bankexpense_id):
 	"""
 	Snoozes a bank expense. Useful for expenses that are actually just money transfers, like reloading the debit card
 	"""
-	expense = get_object_or_404(BankExpense, pk=bankexpense_id)
+	expense = get_object_or_404(BankTransaction, pk=bankexpense_id)
 	redirect_to = request.POST.get('redirect-to')
 	expense.snoozed_on = datetime.now()
 	expense.save()
@@ -197,7 +190,7 @@ def create_ynab_transaction(request, kind):
 	redirect_to = request.POST.get('redirect-to')
 
 	if form.is_valid():
-		bank_expense = get_object_or_404(BankExpense, pk=form.cleaned_data['bank_expense_id'])
+		bank_expense = get_object_or_404(BankTransaction, pk=form.cleaned_data['bank_expense_id'])
 		memo = form.cleaned_data['memo']
 		category_id = form.cleaned_data['ynab_category']
 		create_ynab_transaction_from_bank_expense(budget_id, bank_expense, memo, category_id)
