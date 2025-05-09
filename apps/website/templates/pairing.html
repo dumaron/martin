@@ -60,6 +60,7 @@
                 {% csrf_token %}
                 <input type="hidden" name="expense" value="{{ expense.id }}" />
                 <input type="hidden" name="override-amount" value="true" />
+                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
                 <h2>Similar date</h2>
                 <table>
                     <tbody>

@@ -15,3 +15,4 @@ class YnabCategory(models.Model):
 
    class Meta:
       db_table = 'ynab_categories'
+      verbose_name_plural = 'ynab categories'

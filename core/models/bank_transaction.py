@@ -6,6 +6,15 @@ from django.db import models
 def fix_italian_floating_point(string):
 	return string.replace('.', '').replace(',', '.')
 
+# I'm not happy about this approach, but it is a good compromise between creating a "proper" DB structure, which is
+# overkill and unnecessarily complex for my needs, and hard-coding too much stuff. Here I insert into code the IDs of
+# the three bank accounts I have on the database. Given that I use a clone of production DB for local development, and
+# that I don't change bank accounts often, I can rely on these values being stable enough.
+# I hope to discover a more elegant solution with time.
+UNICREDIT_BANK_ACCOUNT_ID = 1
+FINECO_BANK_ACCOUNT_ID = 2
+CREDEM_BANK_ACCOUNT_ID = 3
+
 
 class BankTransaction(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -32,8 +41,8 @@ class BankTransaction(models.Model):
 			name=row['Descrizione'].strip(),
 			amount=fix_italian_floating_point(row['Importo (EUR)']),
 			date=datetime.strptime(row['Data Registrazione'], '%d.%m.%Y'),
-			personal_account=file_import.personal_account,
 			file_import=file_import,
+			bank_account_id=UNICREDIT_BANK_ACCOUNT_ID,
 		)
 
 	@staticmethod
@@ -42,8 +51,8 @@ class BankTransaction(models.Model):
 			name=row['Descrizione'].strip(),
 			amount=fix_italian_floating_point(row['Importo']),
 			date=datetime.strptime(row['Data Registrazione'], '%d/%m/%Y'),
-			personal_account=file_import.personal_account,
 			file_import=file_import,
+			bank_account_id=UNICREDIT_BANK_ACCOUNT_ID,
 		)
 
 	@staticmethod
@@ -52,8 +61,8 @@ class BankTransaction(models.Model):
 			name=row['Descrizione_Completa'].strip(),
 			amount=float(row['Entrate'] or 0) + float(row['Uscite'] or 0),
 			date=datetime.strptime(row['Data'], '%d/%m/%Y'),
-			personal_account=file_import.personal_account,
 			file_import=file_import,
+			bank_account_id=FINECO_BANK_ACCOUNT_ID,
 		)
 
 	@staticmethod
@@ -62,8 +71,8 @@ class BankTransaction(models.Model):
 			name=row['Descrizione:'],
 			amount=float(fix_italian_floating_point(row['Importo']) or 0),
 			date=datetime.strptime(row['Data contabile'], '%d/%m/%Y'),
-			personal_account=file_import.personal_account,  # Should be always false as we only have a Credem shared account
 			file_import=file_import,
+			bank_account_id=CREDEM_BANK_ACCOUNT_ID,
 		)
 
 	def __str__(self):

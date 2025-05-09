@@ -73,7 +73,7 @@ def get_categories(budget_id):
 	return categories
 
 
-def create_transaction(budget_id, amount, date, memo, ynab_category) -> ExternalYnabTransaction:
+def create_transaction(budget_id, account_id, amount, date, memo, ynab_category) -> ExternalYnabTransaction:
 	"""
 	Creates a YNAB transaction on the YNAB remote database through API
 	"""
@@ -86,6 +86,7 @@ def create_transaction(budget_id, amount, date, memo, ynab_category) -> External
 			'cleared': 'cleared',
 			'memo': memo,
 			'category_id': str(ynab_category.id),
+			'account_id': str(account_id),
 			'deleted': False,
 		}}
 

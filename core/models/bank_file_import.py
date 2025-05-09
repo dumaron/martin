@@ -5,6 +5,8 @@ from django.db import models
 
 from core.models import BankTransaction
 
+UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
+
 
 class BankFileImport(models.Model):
    class FileType(models.TextChoices):
