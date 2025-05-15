@@ -1,8 +1,8 @@
 from datetime import datetime
 
 from core.integrations.ynab import create_transaction
-from core.mutations.sync_ynab_transactions import sync_ynab_transactions
 from core.models import YnabAccount
+from core.mutations.sync_ynab_transactions import sync_ynab_transactions
 
 
 def create_ynab_transaction_from_bank_expense(budget_id, bank_transaction, memo, ynab_category):

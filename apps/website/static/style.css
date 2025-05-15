@@ -7,10 +7,10 @@
     --main-navbar-height: 30px;
 
     /* Color variables - Light theme (default) */
-    --color-text: #000000;
+    --color-text: #1a1a1a;
     --color-text-secondary: #333333;
     --color-text-muted: #666666;
-    --color-text-link: black;
+    --color-text-link: white;
     --color-text-inverted: #ffffff;
 
     /*--color-background-primary: rgb(237, 237, 239);*/
@@ -19,14 +19,16 @@
     --color-background-secondary: gainsboro;
     --color-background-hover: bisque;
     --color-background-highlight: papayawhip;
-    --color-background-sidebar: rgb(234, 235, 228);
-    --color-background-sidebar-hover: #333333;
 
-    --color-border-primary: #b3b3b6;
+
+    /*--color-border-primary: red;*/
     --color-border-secondary: #b3b3b6;
     --color-border-muted: #999999;
     --color-border-light: #aaaaaa;
 
+    --color-sidebar: #1f1f1f;
+    --color-background-sidebar: rgb(169, 180, 195);
+    --color-sidebar-link: #1b1b1b;
     --color-btn-background: rgb(233, 233, 237);
 }
 
@@ -135,7 +137,7 @@ aside {
     display: block;
     grid-area: sidebar;
     background-color: var(--color-background-sidebar);
-    color: var(--color-text);
+    color: var(--color-sidebar);
     min-height: 100vh;
     border-right: 1px solid var(--color-border-secondary);
 }
@@ -164,10 +166,11 @@ aside {
    TREE STRUCTURE
    ========================================================================== */
 ul.tree {
+    font-family: "Inter V";
     &, ul {
         list-style-type: none;
         padding: 0;
-        padding-bottom: 4px;
+        padding-bottom: 6px;
     }
 }
 
@@ -180,16 +183,14 @@ li {
 
 li a {
     text-decoration: underline;
-    color: var(--color-text-link);
-    /*font-weight: bold;*/
+    color: var(--color-sidebar-link);
     font-weight: 700;
-
 }
 
 li a,
 li span {
     display: inline-block;
-    padding: 2px 0;
+    padding: 1px 0;
 }
 
 /* Vertical lines */

@@ -31,7 +31,7 @@ class BankFileImport(models.Model):
    def get_file_rows(self):
       if self.file_type == BankFileImport.FileType.FINECO_BANK_ACCOUNT_XSLX_EXPORT:
          # Fineco exports an XSLX file, so it need a different loader than the CSV one
-         return tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=6)
+         return tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=6).dict
       else:
          with open(self.bank_file.path, 'r') as text_mode_file:
             if self.file_type == BankFileImport.FileType.CREDEM_CSV_EXPORT:
