@@ -34,6 +34,6 @@ urlpatterns = [
       path('sync-ynab-categories', synchronize_ynab_categories, name='synchronize_ynab_categories'),
 
       # file import for personal bank expenses
-      path('<str:kind>/file-import', file_import, name='file_import'),
+      path('file-import', file_import, name='file_import'),
    ])),
 ]

@@ -1,0 +1,46 @@
+.tabs-container {
+  width: 100%;
+  margin: 20px 0;
+}
+
+.tabs-nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  border-bottom: 1px solid #444;
+}
+
+.tabs-nav li {
+  padding: 4px 8px;
+  cursor: pointer;
+  border: 1px solid #bbb;
+  border-bottom: 1px solid #444; /* Tutti i tab hanno bordo sotto */
+  /*border-radius: 5px 5px 0 0;*/
+  margin-right: 5px;
+  position: relative;
+  margin-bottom: -1px;
+  color: #999;
+  font-family: "Berkeley Mono";
+  text-transform: uppercase;
+}
+
+.tabs-nav li.active {
+  background-color: #fff;
+  border: 1px solid #444;
+  border-bottom: 1px solid #fff;
+  color: black;
+  font-weight: 600;
+}
+
+.tab-content {
+  display: none;
+  padding: 20px;
+  border: 1px solid #444;
+  border-top: none; /* Rimuove il bordo superiore dal pannello del contenuto */
+  background-color: #fff;
+}
+
+.tab-content.active {
+  display: block;
+}

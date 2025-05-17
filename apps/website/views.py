@@ -111,30 +111,24 @@ def pair_expense_with_ynab_transaction(request):
 
 
 @login_required
-def file_import(request, kind):
+def file_import(request):
 	"""
 	GET: Page to allow importing bank exports from banks (Unicredit, Fineco, Credem)
 	POST: Form action to import personal bank export
 	"""
 
-	personal = kind == 'personal'
-
 	if request.method == 'POST':
-		form = BankFileImportForm(request.POST, request.FILES, personal=personal)
+		form = BankFileImportForm(request.POST, request.FILES)
 
 		if form.is_valid():
-
-			if (not personal) and form.cleaned_data['file_type'] != BankFileImport.FileType.CREDEM_CSV_EXPORT:
-				raise Exception('Wrong file type for shared account')
-
 			form.save()
 
-			return redirect('pairing', {'kind': kind})
+			return redirect('pairing')
 		else:
-			return render(request, 'file_import.html', {'form': form, 'kind': kind})
+			return render(request, 'file_import.html', {'form': form })
 	else:
-		form = BankFileImportForm(personal=personal)
-		return render(request, 'file_import.html', {'form': form, 'kind': kind})
+		form = BankFileImportForm()
+		return render(request, 'file_import.html', {'form': form })
 
 
 @login_required

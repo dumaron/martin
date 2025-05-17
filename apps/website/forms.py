@@ -8,14 +8,6 @@ class BankFileImportForm(forms.ModelForm):
 		model = BankFileImport
 		fields = ['bank_file', 'file_type']
 
-	def __init__(self, *args, personal, **kwargs):
-		super().__init__(*args, **kwargs)
-
-		if not personal:
-			self.fields['file_type'].widget = forms.HiddenInput()
-			self.initial['file_type'] = BankFileImport.FileType.CREDEM_CSV_EXPORT
-
-
 
 class YnabTransactionCreationForm(forms.Form):
 	memo = forms.CharField(widget=forms.Textarea)

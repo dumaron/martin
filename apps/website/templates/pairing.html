@@ -2,6 +2,7 @@
 
 {% block content %}
 <div class="fixed-content">
+    <h1 class="mono">Pariring  bank transaction #{{ expense.id }}</h1>
         <dl>
             <dt>Description</dt>
             <dd class="emphasis">{{ expense.name }}</dd>
@@ -14,23 +15,18 @@
         </dl>
         <div>
             <h2>No-pair actions</h2>
-            <h3>Snooze the bank expense</h3>
-            <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
-                <button type="submit">Snooze</button>
-            </form>
-            <h3>Create transaction from bank expense</h3>
-            <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post">
-                {% csrf_token %}
-                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
-                {{ transaction_creation_form }}
-                <button type="submit">Create transaction</button>
-            </form>
+
+
         </div>
+<div class="tabs-container">
+  <ul class="tabs-nav">
+    <li class="tab-link active" data-tab="tab1">Pair</li>
+    <li class="tab-link" data-tab="tab2">Create</li>
+    <li class="tab-link" data-tab="tab3">Other</li>
+  </ul>
 
-
-        {% if same_amount_suggestions %}
+  <div id="tab1" class="tab-content active">
+      {% if same_amount_suggestions %}
         <div id="same-amount-suggestions">
             <form action="{% url 'pair-expense-transaction' %}" method="post">
                 {% csrf_token %}
@@ -78,5 +74,22 @@
             </form>
         </div>
         {% endif %}
-</div>
+  </div>
+  <div id="tab2" class="tab-content">
+      <h2>Create transaction from bank expense</h2>
+            <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
+                {{ transaction_creation_form }}
+                <button type="submit">Create transaction</button>
+            </form>
+  </div>
+    <div id="tab3" class="tab-content">
+    <h2>Snooze the bank expense</h2>
+        <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}" />
+            <button type="submit">Snooze</button>
+        </form>
+    </div>
 {% endblock %}

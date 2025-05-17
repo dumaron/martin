@@ -89,6 +89,17 @@ th {
     text-align: left;
 }
 
+.content {
+    padding: .5em 2.1em;
+}
+
+h1.mono {
+    /*font-family: "Berkeley Mono", monospace;*/
+    /*text-transform: uppercase;*/
+    border-bottom: 1px solid gray;
+    padding-bottom: 4px;
+}
+
 /* ==========================================================================
    LAYOUT
    ========================================================================== */
@@ -106,20 +117,11 @@ div.fixed-content {
     min-height: 100dvh;
     color: var(--color-text);
     margin: 0;
-    padding: .5em 2.1em;
 }
 
 /* ==========================================================================
    NAVIGATION & SIDEBAR
    ========================================================================== */
-/*#action-bar {
-    height: var(--action-bar-height);
-    padding: .2rem 1rem;
-    border: 1px solid var(--color-border-primary);
-    margin: 1rem;
-    display: flex;
-    align-items: center;
-}*/
 
 #title {
     font-size: 24px;
@@ -167,61 +169,67 @@ aside {
    ========================================================================== */
 ul.tree {
     font-family: "Inter V";
+
     &, ul {
         list-style-type: none;
         padding: 0;
         padding-bottom: 6px;
     }
-}
 
-li {
-    position: relative;
-    padding-left: 25px;
-    margin: 0;
-    font-size: 14px;
-}
 
-li a {
-    text-decoration: underline;
-    color: var(--color-sidebar-link);
-    font-weight: 700;
-}
+    li {
+        position: relative;
+        padding-left: 25px;
+        margin: 0;
+        font-size: 14px;
+    }
 
-li a,
-li span {
-    display: inline-block;
-    padding: 1px 0;
-}
+    li a {
+        text-decoration: underline;
+        color: var(--color-sidebar-link);
+        font-weight: 700;
+    }
 
-/* Vertical lines */
-li::before {
-    content: "";
-    position: absolute;
-    height: 100%;
-    left: 10px;
-    top: 0;
-    border-left: 1px solid var(--color-border-muted);
-}
+    li a,
+    li span {
+        display: inline-block;
+        padding: 1px 0;
+    }
 
-/* Horizontal lines */
-li::after {
-    content: "";
-    position: absolute;
-    width: 10px;
-    height: 1px;
-    left: 10px;
-    top: 9px;
-    border-top: 1px solid var(--color-border-muted);
-}
+    /* Vertical lines */
 
-/* Remove vertical line from last items */
-li:last-child::before {
-    height: 9px;
-}
+    li::before {
+        content: "";
+        position: absolute;
+        height: 100%;
+        left: 10px;
+        top: 0;
+        border-left: 1px solid var(--color-border-muted);
+    }
 
-/* First level doesn't need left border for first item */
-> ul > li:first-child::before {
-    border-left: none;
+    /* Horizontal lines */
+
+    li::after {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 1px;
+        left: 10px;
+        top: 9px;
+        border-top: 1px solid var(--color-border-muted);
+    }
+
+    /* Remove vertical line from last items */
+
+    li:last-child::before {
+        height: 9px;
+    }
+
+    /* First level doesn't need left border for first item */
+
+    > ul > li:first-child::before {
+        border-left: none;
+    }
 }
 
 /* ==========================================================================
@@ -289,59 +297,12 @@ button {
     cursor: pointer;
     margin: 4px 0;
     font-family: 'SF Pro', monospace;
-    /*text-transform: uppercase;*/
 }
 
 button:hover {
     background-color: rgb(243, 243, 247);
 }
 
-input[type="submit"]:hover {
-    background-color: var(--color-background-hover);
-}
-
-input[type="submit"]:active {
-    border-color: var(--color-border-primary);
-}
-
-/* File input styling */
-input[type="file"] {
-    background-color: var(--color-background-primary);
-    color: var(--color-text);
-    border: 1px solid var(--color-border-secondary);
-    border-radius: 4px;
-    padding: 6px;
-    font-size: 14px;
-    cursor: pointer;
-    margin: 4px 0;
-}
-
-/* Style the file input button part */
-input[type="file"]::file-selector-button {
-    background-color: var(--color-background-secondary);
-    color: var(--color-text-muted);
-    border: 1px solid var(--color-border-muted);
-    border-radius: 4px;
-    padding: 4px 6px;
-    font-size: 12px;
-    cursor: pointer;
-    margin-right: 10px;
-    font-family: 'Berkeley Mono', monospace;
-    text-transform: uppercase;
-}
-
-input[type="file"]::file-selector-button:hover {
-    background-color: var(--color-background-hover);
-}
-
-input[type="file"]:hover {
-    background-color: var(--color-background-hover);
-}
-
-input[type="file"]:focus {
-    outline: none;
-    border-color: var(--color-border-primary);
-}
 
 /* ==========================================================================
    THEME TOGGLE

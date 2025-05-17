@@ -2,7 +2,8 @@
 
 {% block content %}
 <main>
-    <form action="{% url 'file_import' kind=kind %}" method="post" enctype="multipart/form-data">
+    <h1>Import file from bank export</h1>
+    <form action="{% url 'file_import' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form }}
         <input type="submit" value="Import">
