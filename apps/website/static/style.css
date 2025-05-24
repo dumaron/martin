@@ -230,6 +230,11 @@ ul.tree {
     > ul > li:first-child::before {
         border-left: none;
     }
+
+    li a.active::after {
+        color: red;
+        content: "<-";
+    }
 }
 
 /* ==========================================================================

@@ -22,7 +22,7 @@ class BankTransaction(models.Model):
 	name = models.CharField(max_length=1024)
 	date = models.DateField()
 	amount = models.DecimalField(max_digits=10, decimal_places=2)
-	ynab_transaction_id = models.CharField(max_length=256, null=True, blank=True)
+	matched_ynab_transaction = models.ForeignKey('YnabTransaction', null=True, blank=True, on_delete=models.CASCADE)
 	paired_on = models.DateTimeField(null=True, blank=True)
 	snoozed_on = models.DateTimeField(null=True, blank=True)
 

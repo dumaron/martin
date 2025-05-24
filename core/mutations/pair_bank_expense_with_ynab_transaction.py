@@ -28,6 +28,6 @@ def pair_bank_expense_with_ynab_transaction(bank_expense, ynab_transaction, over
         ynab_transaction.save()
 
         # Now we can finally pair the bank expense with the cleared transaction
-        bank_expense.ynab_transaction_id = ynab_transaction.id
+        bank_expense.matched_ynab_transaction = ynab_transaction
         bank_expense.paired_on = datetime.now()
         bank_expense.save()

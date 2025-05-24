@@ -5,7 +5,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 from apps.website.forms import BankFileImportForm, YnabTransactionCreationForm
-from core.models import BankFileImport, BankTransaction, YnabTransaction
+from core.functions import get_similar_bank_transactions
+from core.models import BankTransaction, YnabTransaction
 from core.mutations import (
 	create_ynab_transaction_from_bank_expense,
 	pair_bank_expense_with_ynab_transaction,
@@ -191,3 +192,27 @@ def create_ynab_transaction(request, kind):
 		return redirect(redirect_to)
 	else:
 		return
+
+@login_required
+@require_GET
+def bank_transaction_detail(request, bank_transaction_id):
+	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
+	# similar_text = get_similar_bank_transactions(bank_transaction.name, bank_transaction_id, 10)
+	return render(request, 'bank_transation_detail.html', {
+		'bank_transaction': bank_transaction,
+		# 'similar_text': similar_text,
+	})
+
+@login_required
+@require_GET
+def bank_transaction_list(request):
+	# TODO implement with django_tables2
+	bank_transactions =  BankTransaction.objects.all().order_by('-date')
+	return render(request, 'bank_transaction_list.html', { 'bank_transactions': bank_transactions })
+
+
+@login_required
+@require_GET
+def ynab_transaction_detail(request, ynab_transaction_id):
+	ynab_transaction = get_object_or_404(YnabTransaction, pk=ynab_transaction_id)
+	return render(request, 'ynab_transaction_detail.html', { 'ynab_transaction': ynab_transaction })

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="fixed-content">
+        <h1>{{ ynab_transaction }}</h1>
+    <dl>
+        <dt>Description</dt>
+        <dd>{{ ynab_transaction.memo }}</dd>
+
+        <dt>Date</dt>
+        <dd>{{ ynab_transaction.date }}</dd>
+
+        <dt>Amount</dt>
+        <dd>{{ ynab_transaction.amount }}</dd>
+    </dl>
+    </div>
+{% endblock %}

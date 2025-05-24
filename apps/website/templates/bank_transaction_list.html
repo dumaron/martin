@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Description</th>
+        <th>Date</th>
+        <th>Amount</th>
+        <th>Bank account</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for bank_transaction in bank_transactions %}
+        <tr>
+            <td><a href="{% url 'bank_transaction_detail' bank_transaction_id=bank_transaction.id %}">#{{ bank_transaction.id }}</a></td>
+            <td>{{ bank_transaction.name }}</td>
+            <td>{{ bank_transaction.date }}</td>
+            <td>{{ bank_transaction.amount }}</td>
+            <td>{{ bank_transaction.bank_account }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+{% endblock %}

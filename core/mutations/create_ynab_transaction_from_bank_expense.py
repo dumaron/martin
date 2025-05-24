@@ -21,7 +21,7 @@ def create_ynab_transaction_from_bank_expense(budget_id, bank_transaction, memo,
 	remote_transaction = create_transaction(budget_id, account.id, amount, date, memo, ynab_category)
 
 	# 2. Pair the local bank expense with the YNAB transaction id
-	bank_transaction.ynab_transaction_id = remote_transaction.id
+	bank_transaction.matched_ynab_transaction = remote_transaction
 	bank_transaction.paired_on = datetime.now()
 	bank_transaction.save()
 

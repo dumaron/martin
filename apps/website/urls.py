@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 from apps.website.views import (
+   bank_transaction_detail,
+   bank_transaction_list,
    create_ynab_transaction,
    file_import,
    martin_home_page,
@@ -11,6 +13,7 @@ from apps.website.views import (
    synchronize_ynab_categories,
    ynab_sync,
    ynab_synchronizations_list,
+   ynab_transaction_detail,
 )
 
 urlpatterns = [
@@ -35,5 +38,10 @@ urlpatterns = [
 
       # file import for personal bank expenses
       path('file-import', file_import, name='file_import'),
+
+      # Low-level entities
+      path('bank_transactions', bank_transaction_list, name='bank_transaction_list'),
+      path('bank_transactions/<int:bank_transaction_id>', bank_transaction_detail, name='bank_transaction_detail'),
+      path('ynab_transactions/<str:ynab_transaction_id>', ynab_transaction_detail, name='ynab_transaction_detail'),
    ])),
 ]

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1>{{ bank_transaction }}</h1>
+    <dl>
+        <dt>Description</dt>
+        <dd class="emphasis">{{ bank_transaction.name }}</dd>
+
+        <dt>Date</dt>
+        <dd>{{ bank_transaction.date }}</dd>
+
+        <dt>Amount</dt>
+        <dd>{{ bank_transaction.amount }}</dd>
+
+        <dt>Bank account</dt>
+        <dd>{{ bank_transaction.bank_account }}</dd>
+
+        <dt>Imported by</dt>
+        <dd>{{ bank_transaction.file_import }}</dd>
+
+        <dt>Paired with</dt>
+        <dd>
+        {% if bank_transaction.matched_ynab_transaction %}
+            <a href="{% url 'ynab_transaction_detail' ynab_transaction_id=bank_transaction.matched_ynab_transaction.id %}">
+                {{ bank_transaction.matched_ynab_transaction }}
+            </a>
+        {% else %}
+            <span class="mono">NOT PAIRED</span>
+        {% endif %}
+        </dd>
+
+    </dl>
+</div>
+{% endblock %}
