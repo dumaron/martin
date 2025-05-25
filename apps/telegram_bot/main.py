@@ -1,8 +1,12 @@
 #!/usr/bin/env python
 import logging
-from telegram import Update
-from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 import os
+
+from pydub import AudioSegment
+from telegram import Update
+from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
+
+from core.integrations.openai import speech_to_text
 
 # Enable logging
 logging.basicConfig(
@@ -31,23 +35,38 @@ async def echo(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
    """Echo the user message."""
    await update.message.reply_text(update.message.text)
 
+async def ask_clara(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+   audio = await update.message.voice.get_file()
+   file_id = update.message.voice.file_unique_id
+   path = f'./tmp_files/{file_id}'
+   await audio.download_to_drive(path + '.oga')
+   segment = AudioSegment.from_ogg(path + '.oga')
+   segment.export(path + '.mp3')
+   mp3 = open(path + '.mp3', 'rb')
+   transcript = speech_to_text(mp3)
+   print(transcript)
+   os.remove(path + '.oga')
+   os.remove(path + '.mp3')
+
 
 def main() -> None:
-   """Start the bot."""
-   # Create the Application
-   application = ApplicationBuilder().token(TOKEN).build()
+	"""Start the bot."""
+	# Create the Application
+	application = ApplicationBuilder().token(TOKEN).build()
 
-   # Add handlers
-   application.add_handler(CommandHandler("start", start))
-   application.add_handler(CommandHandler("help", help_command))
+	# Add handlers
+	application.add_handler(CommandHandler('start', start))
+	application.add_handler(CommandHandler('help', help_command))
+	# test with audio messages
+	application.add_handler(MessageHandler(filters.AUDIO | filters.VOICE, ask_clara))
 
-   # Messages handler - will echo back any message
-   application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
+	# Messages handler - will echo back any message
+	application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, echo))
 
-   # Start the Bot
-   application.run_polling()
+	# Start the Bot
+	application.run_polling()
 
-   logger.info("Bot started")
+	logger.info('Bot started')
 
 
 if __name__ == '__main__':

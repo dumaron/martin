@@ -17,6 +17,7 @@ openai = "*"
 python-telegram-bot = "*"
 pydantic = "*"
 django-tables2 = "*"
+pydub = "*"
 
 [dev-packages]
 

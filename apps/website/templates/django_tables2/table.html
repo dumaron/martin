@@ -1,0 +1,48 @@
+{% load django_tables2 %}
+
+<table {{ table.attrs }}>
+    {% if table.show_header %}
+        <thead>
+            <tr>
+            {% for column in table.columns %}
+                <th {{ column.attrs.th }}>
+                    {% if column.orderable %}
+                        <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
+                    {% else %}
+                        {{ column.header }}
+                    {% endif %}
+                </th>
+            {% endfor %}
+            </tr>
+        </thead>
+    {% endif %}
+    <tbody>
+        {% for row in table.paginated_rows %}
+            <tr {{ row.attrs }}>
+                {% for column, cell in row.items %}
+                    <td {{ column.attrs.td }}>{{ cell }}</td>
+                {% endfor %}
+            </tr>
+        {% empty %}
+            {% if table.empty_text %}
+                <tr><td colspan="{{ table.columns|length }}">{{ table.empty_text }}</td></tr>
+            {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if table.page %}
+    <div class="pagination">
+        {% if table.page.has_previous %}
+            <a href="{% querystring table.prefixed_page_field=table.page.previous_page_number %}">previous</a>
+        {% endif %}
+        
+        <span>
+            Page {{ table.page.number }} of {{ table.page.paginator.num_pages }}
+        </span>
+        
+        {% if table.page.has_next %}
+            <a href="{% querystring table.prefixed_page_field=table.page.next_page_number %}">next</a>
+        {% endif %}
+    </div>
+{% endif %}

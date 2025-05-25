@@ -27,11 +27,14 @@
                         </li>
                     </ul>
                 </li>
-                <li><a href="{% url 'file_import' %}">Upload bank export</a></li>
-                <li><a href="{% url 'ynab-synchronizations-list' %}">Synchronize with YNAB</a></li>
+                <li><a href="{% url 'file_import' %}" class="{% active request 'file_import' %}">Upload bank export</a>
+                </li>
+                <li><a href="{% url 'ynab-synchronizations-list' %}"
+                       class="{% active request 'ynab-synchronizations-list' %}">Synchronize with YNAB</a></li>
                 <li>Low-level entities
                     <ul>
-                        <li><a href="{% url 'bank_transaction_list' %}">Bank transactions</a></li>
+                        <li><a href="{% url 'bank_transaction_list' %}"
+                               class="{% active request 'bank_transaction_list' %}">Bank transactions</a></li>
                     </ul>
                 </li>
             </ul>
@@ -39,14 +42,14 @@
     </ul>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const themeToggle = document.getElementById('theme-toggle');
             const currentTheme = localStorage.getItem('theme') || 'light';
 
             // Update button state based on current theme
             updateThemeToggleState(currentTheme);
 
-            themeToggle.addEventListener('click', function() {
+            themeToggle.addEventListener('click', function () {
                 const currentTheme = document.documentElement.getAttribute('data-theme');
                 const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 

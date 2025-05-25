@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'django.contrib.staticfiles',
     'django_htmx',
+    'django_tables2',
     'core',
     'apps.website'
 ]

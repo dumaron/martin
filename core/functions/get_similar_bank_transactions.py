@@ -26,10 +26,10 @@ def get_similar_bank_transactions(phrase, bank_transaction_id, amount=10):
 		 bank_transactions_fts.*,
 	    bm25(bank_transactions_fts) as relevance_score
 	FROM bank_transactions_fts
-	WHERE bank_transactions_fts MATCH 'yolo'
+	WHERE bank_transactions_fts MATCH %s
 	ORDER BY relevance_score
-	LIMIT ?
-""", [amount])
+	LIMIT %s
+""", [fts_query, amount])
 
 		rows = cursor.fetchall()
 

@@ -3,16 +3,26 @@
 {% block content %}
 <div class="fixed-content">
     <h1 class="mono">Pariring  bank transaction #{{ expense.id }}</h1>
-        <dl>
-            <dt>Description</dt>
-            <dd class="emphasis">{{ expense.name }}</dd>
-            <dt>Date</dt>
-            <dd>{{ expense.date | date:"d.m.Y" }}</dd>
-            <dt>Amount</dt>
-            <dd>{{ expense.amount }}€</dd>
-            <dt>Source</dt>
-            <dd>{{ expense.file_import.file_type }}</dd>
-        </dl>
+        <table>
+            <tbody>
+                <tr>
+                    <th>Description</th>
+                    <td class="emphasis">{{ expense.name }}</td>
+                </tr>
+                <tr>
+                    <th>Date</th>
+                    <td>{{ expense.date | date:"d.m.Y" }}</td>
+                </tr>
+                <tr>
+                    <th>Amount</th>
+                    <td>{{ expense.amount }}€</td>
+                </tr>
+                <tr>
+                    <th>Source</th>
+                    <td>{{ expense.file_import.file_type }}</td>
+                </tr>
+            </tbody>
+        </table>
         <div>
             <h2>No-pair actions</h2>
 

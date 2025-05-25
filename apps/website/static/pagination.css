@@ -1,0 +1,28 @@
+.pagination {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 1rem;
+	margin: 1rem 0;
+	padding: 1rem 0;
+}
+
+.pagination a {
+	padding: 0.5rem 1rem;
+	text-decoration: none;
+	color: #007bff;
+	border: 1px solid #dee2e6;
+	border-radius: 0.25rem;
+	transition: background-color 0.15s ease-in-out;
+}
+
+.pagination a:hover {
+	background-color: #e9ecef;
+	text-decoration: none;
+}
+
+.pagination span {
+	padding: 0.5rem 1rem;
+	color: #6c757d;
+	font-weight: 500;
+}

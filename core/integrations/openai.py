@@ -1,5 +1,6 @@
-from openai import OpenAI
 import os
+
+from openai import OpenAI
 
 singleton_client = None
 
@@ -13,12 +14,6 @@ def init_openai():
    return singleton_client
 
 
-def ask_ai(question: str) -> str:
+def speech_to_text(file):
    client = init_openai()
-   response = client.chat.completions.create(
-      model='gpt-4-1106-preview',
-      messages=[
-         {"role": "user", "content": question},
-      ],
-   )
-   return response.choices[0].message.content
+   return client.audio.transcriptions.create(model='whisper-1', file=file, language='en')

@@ -3,33 +3,81 @@
 {% block content %}
 <div class="fixed-content">
     <h1>{{ bank_transaction }}</h1>
-    <dl>
-        <dt>Description</dt>
-        <dd class="emphasis">{{ bank_transaction.name }}</dd>
-
-        <dt>Date</dt>
-        <dd>{{ bank_transaction.date }}</dd>
-
-        <dt>Amount</dt>
-        <dd>{{ bank_transaction.amount }}</dd>
-
-        <dt>Bank account</dt>
-        <dd>{{ bank_transaction.bank_account }}</dd>
-
-        <dt>Imported by</dt>
-        <dd>{{ bank_transaction.file_import }}</dd>
-
-        <dt>Paired with</dt>
-        <dd>
-        {% if bank_transaction.matched_ynab_transaction %}
-            <a href="{% url 'ynab_transaction_detail' ynab_transaction_id=bank_transaction.matched_ynab_transaction.id %}">
-                {{ bank_transaction.matched_ynab_transaction }}
-            </a>
-        {% else %}
-            <span class="mono">NOT PAIRED</span>
-        {% endif %}
-        </dd>
-
-    </dl>
+    
+    <div class="tabs-container">
+        <ul class="tabs-nav">
+            <li class="tab-link active" data-tab="details">Details</li>
+            <li class="tab-link" data-tab="similar">Similar Transactions</li>
+        </ul>
+        
+        <div id="details" class="tab-content active">
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Description</th>
+                        <td class="emphasis">{{ bank_transaction.name }}</td>
+                    </tr>
+                    <tr>
+                        <th>Date</th>
+                        <td>{{ bank_transaction.date }}</td>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td>{{ bank_transaction.amount }}</td>
+                    </tr>
+                    <tr>
+                        <th>Bank account</th>
+                        <td>{{ bank_transaction.bank_account }}</td>
+                    </tr>
+                    <tr>
+                        <th>Imported by</th>
+                        <td>{{ bank_transaction.file_import }}</td>
+                    </tr>
+                    <tr>
+                        <th>Paired with</th>
+                        <td>
+                        {% if bank_transaction.matched_ynab_transaction %}
+                            <a href="{% url 'ynab_transaction_detail' ynab_transaction_id=bank_transaction.matched_ynab_transaction.id %}">
+                                {{ bank_transaction.matched_ynab_transaction }}
+                            </a>
+                        {% else %}
+                            <span class="mono">NOT PAIRED</span>
+                        {% endif %}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="similar" class="tab-content">
+            <h3>Similar Transactions</h3>
+            {% if similar_text %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Description</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Bank Account</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for transaction in similar_text %}
+                            <tr>
+                                <td><a href="{% url 'bank_transaction_detail' bank_transaction_id=transaction.id %}">#{{ transaction.id }}</a></td>
+                                <td>{{ transaction.name }}</td>
+                                <td>{{ transaction.date }}</td>
+                                <td>{{ transaction.amount }}</td>
+                                <td>{{ transaction.bank_account }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>No similar transactions found.</p>
+            {% endif %}
+        </div>
+    </div>
 </div>
 {% endblock %}

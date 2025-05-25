@@ -231,9 +231,13 @@ ul.tree {
         border-left: none;
     }
 
-    li a.active::after {
+    li:has(a.active)::after {
         color: red;
-        content: "<-";
+        content: "->";
+        text-decoration: none;
+        width: 20px;
+        top: 0;
+        border: none;
     }
 }
 
@@ -246,13 +250,27 @@ table {
 }
 
 table, th, td {
-    border: 0;
-    border-top: 1px solid var(--color-border-secondary);
+    border: 1px solid var(--color-border-secondary);
     border-collapse: collapse;
 }
 
-tr:hover td {
+/*tr:hover td {
     background-color: var(--color-background-hover);
+}*/
+
+thead {
+    background-color: var(--color-background-secondary);
+}
+
+th {
+    font-family: "Berkeley Mono", monospace;
+    text-transform: uppercase;
+    font-size: 14px;
+    vertical-align: top;
+
+    a {
+        color: var(--color-text);
+    }
 }
 
 td {

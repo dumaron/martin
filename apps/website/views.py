@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import django_tables2 as tables
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
@@ -14,6 +15,19 @@ from core.mutations import (
 	sync_ynab_transactions,
 )
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
+
+
+class BankTransactionTable(tables.Table):
+	id = tables.LinkColumn('bank_transaction_detail', args=[tables.A('pk')], verbose_name='ID')
+	name = tables.Column(verbose_name='Description')
+	date = tables.DateColumn(verbose_name='Date')
+	amount = tables.Column(verbose_name='Amount')
+	bank_account = tables.Column(verbose_name='Bank Account')
+
+	class Meta:
+		model = BankTransaction
+		template_name = 'django_tables2/table.html'
+		fields = ('id', 'name', 'date', 'amount', 'bank_account')
 
 
 @login_required
@@ -197,18 +211,18 @@ def create_ynab_transaction(request, kind):
 @require_GET
 def bank_transaction_detail(request, bank_transaction_id):
 	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
-	# similar_text = get_similar_bank_transactions(bank_transaction.name, bank_transaction_id, 10)
+	similar_text = get_similar_bank_transactions(bank_transaction.name, bank_transaction_id, 10)
 	return render(request, 'bank_transation_detail.html', {
 		'bank_transaction': bank_transaction,
-		# 'similar_text': similar_text,
+		'similar_text': similar_text,
 	})
 
 @login_required
 @require_GET
 def bank_transaction_list(request):
-	# TODO implement with django_tables2
-	bank_transactions =  BankTransaction.objects.all().order_by('-date')
-	return render(request, 'bank_transaction_list.html', { 'bank_transactions': bank_transactions })
+	table = BankTransactionTable(BankTransaction.objects.all().order_by('-date'))
+	tables.RequestConfig(request).configure(table)
+	return render(request, 'bank_transaction_list.html', {'table': table})
 
 
 @login_required
