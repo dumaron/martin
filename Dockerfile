@@ -7,8 +7,7 @@ ENV PYTHONUNBUFFERED 1
 
 
 RUN apt-get update \
-    && apt-get install -y sqlite3 \
-    && apt-get install -y curl \
+    && apt-get install -y sqlite3 curl ffmpeg\
     && rm -rf /var/lib/apt/lists/*
 
 
