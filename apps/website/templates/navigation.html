@@ -14,18 +14,15 @@
         <li><a href="{% url 'martin_home_page' %}" class="{% active request 'martin_home_page' %}">Dashboard</a></li>
         <li>Finances
             <ul>
-                <li><span>Pair expenses</span>
-                    <ul>
-                        <li>
-                            <a href="{% url 'pairing' kind="personal" %}" class="{% active request 'pairing' %}">
-                                Personal account
-                            </a></li>
-                        <li>
-                            <a href="{% url 'pairing' kind="shared" %}" class="{% active request 'pairing' %}">
-                                Shared account
-                            </a>
-                        </li>
-                    </ul>
+                <li>
+                    <a href="{% url 'pairing' kind="personal" %}" class="{% active request 'pairing' kind='personal' %}">
+                        Pair personal expenses
+                    </a></li>
+                <li>
+                    <a href="{% url 'pairing' kind="shared" %}" class="{% active request 'pairing' kind='shared' %}">
+                        Pair shared expenses
+                    </a>
+                </li>
                 </li>
                 <li><a href="{% url 'file_import' %}" class="{% active request 'file_import' %}">Upload bank export</a>
                 </li>

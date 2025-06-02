@@ -2,55 +2,51 @@
 
 {% block content %}
 <div class="fixed-content">
-    <h1>{{ bank_transaction }}</h1>
+    <h1>Bank transaction #{{ bank_transaction.id }}</h1>
+
+    <table class="large">
+        <tbody>
+            <tr>
+                <th>Description</th>
+                <td class="emphasis">{{ bank_transaction.name }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ bank_transaction.date }}</td>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td>{{ bank_transaction.amount }}</td>
+            </tr>
+            <tr>
+                <th>Bank account</th>
+                <td>{{ bank_transaction.bank_account }}</td>
+            </tr>
+            <tr>
+                <th>Imported in</th>
+                <td>{{ bank_transaction.file_import }}</td>
+            </tr>
+            <tr>
+                <th>Paired with</th>
+                <td>
+                {% if bank_transaction.matched_ynab_transaction %}
+                    <a href="{% url 'ynab_transaction_detail' ynab_transaction_id=bank_transaction.matched_ynab_transaction.id %}">
+                        {{ bank_transaction.matched_ynab_transaction }}
+                    </a>
+                {% else %}
+                    <span class="mono">NOT PAIRED</span>
+                {% endif %}
+                </td>
+            </tr>
+        </tbody>
+    </table>
     
     <div class="tabs-container">
         <ul class="tabs-nav">
-            <li class="tab-link active" data-tab="details">Details</li>
-            <li class="tab-link" data-tab="similar">Similar Transactions</li>
+            <li class="tab-link active" data-tab="similar">Similar Transactions</li>
         </ul>
-        
-        <div id="details" class="tab-content active">
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Description</th>
-                        <td class="emphasis">{{ bank_transaction.name }}</td>
-                    </tr>
-                    <tr>
-                        <th>Date</th>
-                        <td>{{ bank_transaction.date }}</td>
-                    </tr>
-                    <tr>
-                        <th>Amount</th>
-                        <td>{{ bank_transaction.amount }}</td>
-                    </tr>
-                    <tr>
-                        <th>Bank account</th>
-                        <td>{{ bank_transaction.bank_account }}</td>
-                    </tr>
-                    <tr>
-                        <th>Imported by</th>
-                        <td>{{ bank_transaction.file_import }}</td>
-                    </tr>
-                    <tr>
-                        <th>Paired with</th>
-                        <td>
-                        {% if bank_transaction.matched_ynab_transaction %}
-                            <a href="{% url 'ynab_transaction_detail' ynab_transaction_id=bank_transaction.matched_ynab_transaction.id %}">
-                                {{ bank_transaction.matched_ynab_transaction }}
-                            </a>
-                        {% else %}
-                            <span class="mono">NOT PAIRED</span>
-                        {% endif %}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-        
-        <div id="similar" class="tab-content">
-            <h3>Similar Transactions</h3>
+
+        <div id="similar" class="tab-content active">
             {% if similar_text %}
                 <table>
                     <thead>
@@ -59,7 +55,7 @@
                             <th>Description</th>
                             <th>Date</th>
                             <th>Amount</th>
-                            <th>Bank Account</th>
+                            <th>Bank</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -67,9 +63,13 @@
                             <tr>
                                 <td><a href="{% url 'bank_transaction_detail' bank_transaction_id=transaction.id %}">#{{ transaction.id }}</a></td>
                                 <td>{{ transaction.name }}</td>
-                                <td>{{ transaction.date }}</td>
+                                <td class="date">{{ transaction.date | date:"d.m.Y"}}</td>
                                 <td>{{ transaction.amount }}</td>
-                                <td>{{ transaction.bank_account }}</td>
+                                <td>
+                                    <span class="{% if transaction.bank_account.id == 3 %}credem{% endif %}">
+                                        {{ transaction.bank_account }}
+                                    </span>
+                                </td>
                             </tr>
                         {% endfor %}
                     </tbody>

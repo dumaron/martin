@@ -1,0 +1,13 @@
+table.large {
+    border-collapse: separate;
+    border-spacing: 0 1px;
+
+    th, td, & {
+        border: none;
+    }
+
+    th {
+        vertical-align: top;
+        padding: 0 1em 0 0;
+    }
+}
