@@ -3,6 +3,7 @@ db.sqlite3.bk
 db.sqlite3-shm
 .env
 uploads/
+media/
 .idea/
 **/*.pyc
 *.pyc

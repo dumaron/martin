@@ -63,7 +63,7 @@
 ## General
 
 ### Improve menu
-- [ ] Rework menu to avoid "Finaces" section and to have "Flows", "Dashboards", "Low-level entities"
+- [x] Rework menu to avoid "Finaces" section and to have "Flows", "Dashboards", "Low-level entities"
 - [ ] Improve the "active" menu templatetag to support nested routes
 
 ### Improve tables
@@ -73,4 +73,4 @@
 
 ### Daily memory
 - [ ] Try to install the S3 image provider for Django
-- [ ] Setup an S3 account
+- [x] Setup an S3 account (went with Google Cloud storage)

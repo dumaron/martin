@@ -1,7 +1,8 @@
 from core.models.bank_account import BankAccount
-from core.models.bank_transaction import BankTransaction
 from core.models.bank_file_import import BankFileImport
+from core.models.bank_transaction import BankTransaction
 from core.models.event import Event
+from core.models.memory import Memory
 from core.models.note import Note
 from core.models.ynab_account import YnabAccount
 from core.models.ynab_budget import YnabBudget
@@ -19,5 +20,6 @@ __all__ = [
     'YnabTransaction',
     'YnabBudget',
     'YnabAccount',
-    'BankAccount'
+    'BankAccount',
+    'Memory',
 ]
