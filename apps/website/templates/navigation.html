@@ -11,31 +11,46 @@
     <div id="title">Martin</div>
 
     <ul class="tree">
-        <li><a href="{% url 'martin_home_page' %}" class="{% active request 'martin_home_page' %}">Dashboard</a></li>
-        <li>Finances
+        <li><a href="{% url 'martin_home_page' %}" class="{% active request 'martin_home_page' %}">Good morning</a></li>
+        <li>
+            Flows
             <ul>
                 <li>
-                    <a href="{% url 'pairing' kind="personal" %}" class="{% active request 'pairing' kind='personal' %}">
-                        Pair personal expenses
-                    </a></li>
-                <li>
-                    <a href="{% url 'pairing' kind="shared" %}" class="{% active request 'pairing' kind='shared' %}">
-                        Pair shared expenses
+                    <a href="{% url 'pairing' kind="personal" %}"
+                       class="{% active request 'pairing' kind='personal' %}">
+                        Pair personal YNAB expenses
                     </a>
                 </li>
+                <li>
+                    <a href="{% url 'pairing' kind="shared" %}"
+                       class="{% active request 'pairing' kind='shared' %}">
+                        Pair shared YNAB expenses
+                    </a>
                 </li>
+            </ul>
+        </li>
+        <li>Dashboards
+            <ul>
+                <li>TODO</li>
+            </ul>
+        </li>
+        <li>
+            Data ingestion
+            <ul>
                 <li><a href="{% url 'file_import' %}" class="{% active request 'file_import' %}">Upload bank export</a>
                 </li>
                 <li><a href="{% url 'ynab-synchronizations-list' %}"
                        class="{% active request 'ynab-synchronizations-list' %}">Synchronize with YNAB</a></li>
-                <li>Low-level entities
-                    <ul>
-                        <li><a href="{% url 'bank_transaction_list' %}"
-                               class="{% active request 'bank_transaction_list' %}">Bank transactions</a></li>
-                    </ul>
-                </li>
             </ul>
         </li>
+        <li>
+            Low-level entities
+            <ul>
+                <li><a href="{% url 'bank_transaction_list' %}"
+                       class="{% active request 'bank_transaction_list' %}">Bank transactions</a></li>
+            </ul>
+        </li>
+
     </ul>
 
     <script>
