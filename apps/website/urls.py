@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
@@ -42,4 +44,4 @@ urlpatterns = [
       path('bank_transactions/<int:bank_transaction_id>', bank_transaction_detail, name='bank_transaction_detail'),
       path('ynab_transactions/<str:ynab_transaction_id>', ynab_transaction_detail, name='ynab_transaction_detail'),
    ])),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

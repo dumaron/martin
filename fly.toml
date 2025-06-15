@@ -26,5 +26,5 @@ console_command = '/code/manage.py shell'
   url_prefix = '/static/'
 
 [mounts]
-  source="martin_sqlite"
-  destination="/db"
+  source="martin_storage"
+  destination="/storage"

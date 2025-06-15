@@ -4,9 +4,10 @@ from django.contrib import admin
 
 from core.models import (
     BankAccount,
-    BankTransaction,
     BankFileImport,
+    BankTransaction,
     Event,
+    Memory,
     Note,
     YnabAccount,
     YnabBudget,
@@ -63,6 +64,13 @@ class BankAccountAdmin(admin.ModelAdmin):
     list_display = ['name', 'iban']
 
 
+class MemoryAdmin(admin.ModelAdmin):
+    list_display = ['id', 'date', 'description']
+    search_fields = ['description']
+    list_filter = ['date']
+
+
+
 admin.site.register(Event)
 admin.site.register(Note)
 admin.site.register(BankFileImport, BankFileImportAdmin)
@@ -73,3 +81,4 @@ admin.site.register(YnabCategory)
 admin.site.register(YnabBudget)
 admin.site.register(YnabAccount, YnabAccountAdmin)
 admin.site.register(BankAccount, BankAccountAdmin)
+admin.site.register(Memory, MemoryAdmin)

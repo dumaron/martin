@@ -3,7 +3,7 @@ import csv
 import tablib
 from django.db import models
 
-from core.models import BankTransaction
+from core.models.bank_transaction import BankTransaction
 
 UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
 
