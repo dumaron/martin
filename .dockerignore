@@ -1,4 +1,7 @@
 fly.toml
 .git/
-*.sqlite3
+*.sqlite3*
 .env
+*.md
+uploads/
+media/
