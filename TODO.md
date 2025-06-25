@@ -22,6 +22,7 @@
 - [ ] Try changing the algorithm for similar transactions by removing some "too common" words and including some of the words at the end of the text
 - [ ] Try developing a new version of the table that includes a new row below the main one with the potentially paired YNAB transaction
 - [ ] Try adding a new column to the similar transactions which tells the percentage of different chars from the original text - after removing numbers and signs
+- [ ] Add a text about the fact that this tab is useful for looking transaction with similar names and check what they have been paired with
 
 #### Improve "Pairing" tabs
 - [ ] Add a message for when there are no suggestions in pairing, both for exact match and similar date
@@ -34,6 +35,7 @@
 #### Warnings for potentially duplicate bank transactions
 - [ ] Chat with claude about how to create fixtures for integration tests on Django
 - [ ] Try creating a test situation for that on local database and implement basic widget to show the warning
+- [ ]
 
 #### Implement mistakes
 - [ ] Extend the bank transaction model with a boolean field to tell if it's a mistake
@@ -72,5 +74,5 @@
 ## Motivation
 
 ### Daily memory
-- [ ] Try to install the S3 image provider for Django
-- [x] Setup an S3 account (went with Google Cloud storage)
+- [x] Try to install the S3 image provider for Django (not needed anymore)
+- [x] Setup an S3 account (went for Fly.io base volumes)
