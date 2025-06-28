@@ -5,14 +5,13 @@ from django.db import connection
 from core.models import BankTransaction
 
 
-# TODO
 def get_similar_bank_transactions(phrase, bank_transaction_id, amount=10):
 	"""
 	Still TODO
 	"""
 	# Extract meaningful terms
 	words = re.findall(r'\b[a-zA-Z]{3,}\b', phrase.lower())
-	meaningful_words = words[:5]
+	meaningful_words = words[-5:]
 
 	if not meaningful_words:
 		return BankTransaction.objects.none()

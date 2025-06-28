@@ -1,2 +1,1 @@
 0 0 2 * * * * cd /code && python scripts/backup_db.py # backups the database every day at 2am
-0 0 1 * * * * cd /code && python manage.py increase_todos_priority  # increase todos priority daily (if needed)

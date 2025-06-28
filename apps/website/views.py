@@ -82,7 +82,7 @@ def pairing_view(request, kind):
 		deleted=False,
 		amount=first_unpaired_expense.amount,
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
-		# budget_id=budget_id,
+		budget_id=budget_id,
 	)
 
 	similar_date_suggestions = YnabTransaction.objects.filter(
@@ -90,7 +90,7 @@ def pairing_view(request, kind):
 		date__lte=first_unpaired_expense.date + timedelta(days=3),
 		date__gte=first_unpaired_expense.date - timedelta(days=3),
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
-		# budget_id=budget_id,
+		budget_id=budget_id,
 	)
 
 	# bank's exports are unreliable: many times they changed description text for the same transaction between two
