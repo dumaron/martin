@@ -93,16 +93,7 @@ def pairing_view(request, kind):
 		budget_id=budget_id,
 	)
 
-	# bank's exports are unreliable: many times they changed description text for the same transaction between two
-	# exports, making matching unreliable. If I had already matched a bank transaction from a previous import and then
-	# the duplicate appears, I might be fooled into creating a new YNAB trasnaction, believing I have made a mistake.
-	# Let's show something to fix the issue
-	potential_duplicate = (
-		BankTransaction.objects
-		.filter(amount=first_unpaired_expense.amount, date=first_unpaired_expense.date)
-		.exclude(id=first_unpaired_expense.id)
-		.first()
-	)
+	potential_duplicate = first_unpaired_expense.get_potential_duplicate()
 
 	similar_bank_transactions = get_similar_bank_transactions(first_unpaired_expense.name, first_unpaired_expense.id, 5)
 

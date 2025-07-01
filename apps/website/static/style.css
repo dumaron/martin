@@ -92,9 +92,7 @@ main {
 }
 
 h1.mono {
-    /*font-family: "Berkeley Mono", monospace;*/
-    /*text-transform: uppercase;*/
-    border-bottom: 1px solid gray;
+    border-bottom: 1px solid #444;
     padding-bottom: 4px;
 }
 
@@ -106,15 +104,6 @@ h1.mono {
     grid-template-columns: minmax(200px, 300px) 1fr;
     grid-template-areas: "sidebar content";
     min-height: 100vh;
-}
-
-div.fixed-content {
-    max-width:900px;
-    /*border-right: 1px solid var(--color-border-primary);*/
-    /*background-color: var(--color-background-box);*/
-    min-height: 100dvh;
-    color: var(--color-text);
-    margin: 0;
 }
 
 /* ==========================================================================
