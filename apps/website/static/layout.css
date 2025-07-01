@@ -1,0 +1,14 @@
+.content {
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+}
+
+
+.fixed-content {
+    flex: 1;
+    max-width:900px;
+    min-height: 100dvh;
+    color: var(--color-text);
+    margin: 0;
+}
