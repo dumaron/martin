@@ -1,14 +1,25 @@
 #suggestions {
-    margin-top: 55px;
+    margin-top: 48px;
     /*background-color: var(--color-background-highlight);*/
-    border: 1px solid #444;
-    padding: 1rem;
     min-width: 200px;
     max-width: 400px;
     flex-shrink: 0;
+
+    .warning {
+
+    }
+
+    fieldset {
+        border: 1px solid #444;
+    }
+
+    legend {
+        text-transform: uppercase;
+        font-family: "Berkeley Mono", monospace;
+        font-weight: 700;
+        background-color: palegoldenrod;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
 }
 
-#suggestions .warning {
-    color: #333;
-    font-weight: bold;
-}
