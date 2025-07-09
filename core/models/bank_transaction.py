@@ -75,5 +75,18 @@ class BankTransaction(models.Model):
 			bank_account_id=CREDEM_BANK_ACCOUNT_ID,
 		)
 
+	def get_potential_duplicate(self):
+		"""
+		Find potential duplicate bank transactions with the same amount and date.
+		Bank exports are unreliable: many times they change description text for the same transaction
+		between two exports, making matching unreliable.
+		"""
+		return (
+			BankTransaction.objects
+			.filter(amount=self.amount, date=self.date)
+			.exclude(id=self.id)
+			.first()
+		)
+
 	def __str__(self):
 		return self.name

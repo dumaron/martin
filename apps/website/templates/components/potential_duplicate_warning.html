@@ -1,0 +1,35 @@
+<fieldset class="warning">
+    <legend>Potential duplicate detected</legend>
+    <table class="large">
+        <tbody>
+        <tr>
+            <th>Description</th>
+            <td>{{ potential_duplicate.name }}</td>
+        </tr>
+        <tr>
+            <th>Imported on</th>
+            <td>{{ potential_duplicate.file_import.import_date }}</td>
+        </tr>
+        <tr>
+            <th>Bank</th>
+            <td>{{ potential_duplicate.bank_account }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>
+                {% if potential_duplicate.matched_ynab_transaction %}
+                PAIRED
+                {% else %}
+                NOT PAIRED
+                {% endif %}
+            </td>
+        </tr>
+        {% if potential_duplicate.matched_ynab_transaction %}
+        <tr>
+            <th>Matched memo</th>
+            <td> {{ potential_duplicate.matched_ynab_transaction.memo }}</td>
+        </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</fieldset>

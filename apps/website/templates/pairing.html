@@ -2,9 +2,13 @@
 
 {% block content %}
     <div class="fixed-content">
-        <h1 class="mono">Pariring bank transaction #{{ expense.id }}</h1>
+        <h1 class="mono">Pairing bank transaction #{{ expense.id }}</h1>
         <table class="large">
             <tbody>
+            <tr>
+                <th>ID</th>
+                <td class="mono">{{ expense.id }}</td>
+            </tr>
             <tr>
                 <th>Description</th>
                 <td class="emphasis">{{ expense.name }}</td>
@@ -98,6 +102,7 @@
                     <tbody>
                     {% for transaction in similar_bank_transactions %}
                         <tr>
+                            <td class="mono">{{ transaction.id }}</td>
                             <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
                             <td>{{ transaction.name }}</td>
                             <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
@@ -118,10 +123,7 @@
     </div>
     <div id="suggestions">
     {% if potential_duplicate %}
-        <div class="warning">
-            Potential duplicate:
-        {{ potential_duplicate.name }}
-        </div>
+        {% include "components/potential_duplicate_warning.html" with potential_duplicate=potential_duplicate %}
     {% endif %}
     </div>
 {% endblock %}
