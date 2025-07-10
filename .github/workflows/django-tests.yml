@@ -1,0 +1,29 @@
+name: Django Tests
+
+on:
+  pull_request:
+    branches: [ main ]
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pipenv'
+    
+    - name: Install dependencies
+      run: |
+        pip install pipenv
+        pipenv install --dev --python 3.12
+    
+    - name: Run Django tests
+      run: |
+        DJANGO_SETTINGS_MODULE=settings.test pipenv run python manage.py test
