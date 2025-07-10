@@ -290,11 +290,6 @@ form > div {
     margin-bottom: .4rem;
 }
 
-/*fieldset {
-    border: 1px solid var(--color-border-primary);
-    margin: .6rem 1rem;
-}*/
-
 /* Button styling */
 button {
     background-color: var(--color-btn-background);

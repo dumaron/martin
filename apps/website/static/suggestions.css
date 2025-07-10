@@ -1,13 +1,8 @@
 #suggestions {
     margin-top: 48px;
-    /*background-color: var(--color-background-highlight);*/
     min-width: 200px;
     max-width: 400px;
     flex-shrink: 0;
-
-    .warning {
-
-    }
 
     fieldset {
         border: 1px solid #444;

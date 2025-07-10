@@ -71,7 +71,7 @@ def pairing_view(request, kind):
 	first_unpaired_expense = (
 		BankTransaction.objects
 		.filter(snoozed_on=None, paired_on=None, bank_account__personal=personal)
-		.order_by('date')
+		.order_by('date', 'id')  # <- sort by ID technically not needed, but AI convinced me it's useful to avoid undeterministic behaviors during tests
 		.first()
 	)
 

@@ -7,7 +7,7 @@ def fix_italian_floating_point(string):
 	return string.replace('.', '').replace(',', '.')
 
 # I'm not happy about this approach, but it is a good compromise between creating a "proper" DB structure, which is
-# overkill and unnecessarily complex for my needs, and hard-coding too much stuff. Here I insert into code the IDs of
+# overkill and unnecessarily complex for my needs, and hard-coding too much stuff. Here I inserted into code the IDs of
 # the three bank accounts I have on the database. Given that I use a clone of production DB for local development, and
 # that I don't change bank accounts often, I can rely on these values being stable enough.
 # I hope to discover a more elegant solution with time.
@@ -78,8 +78,8 @@ class BankTransaction(models.Model):
 	def get_potential_duplicate(self):
 		"""
 		Find potential duplicate bank transactions with the same amount and date.
-		Bank exports are unreliable: many times they change description text for the same transaction
-		between two exports, making matching unreliable.
+		Bank exports are unreliable: many times they change description text for the same transaction between two exports,
+		making matching unreliable.
 		"""
 		return (
 			BankTransaction.objects
