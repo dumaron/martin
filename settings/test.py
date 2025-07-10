@@ -7,6 +7,7 @@ DEBUG = False
 
 # Use temporary directories for media files in tests
 MEDIA_ROOT = os.path.join(tempfile.gettempdir(), 'test_media')
+os.makedirs(MEDIA_ROOT, exist_ok=True)
 MEDIA_URL = '/media/'
 
 # Use in-memory database for faster tests
