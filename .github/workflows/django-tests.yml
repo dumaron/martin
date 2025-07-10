@@ -29,4 +29,4 @@ jobs:
     
     - name: Run Django tests
       run: |
-        pipenv run python manage.py test
+        DJANGO_SETTINGS_MODULE=settings.test pipenv run python manage.py test
