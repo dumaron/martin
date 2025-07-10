@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run: |
         pip install pipenv
-        pipenv install --dev
+        pipenv install --dev --python 3.12
     
     - name: Run Django tests
       run: |
