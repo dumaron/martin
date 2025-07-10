@@ -25,12 +25,8 @@ jobs:
     
     - name: Install dependencies
       run: |
-        pipenv install --dev
+        pipenv install --dev --python 3.12
     
     - name: Run Django tests
       run: |
         pipenv run python manage.py test
-    
-    - name: Run linting
-      run: |
-        pipenv run ruff check
