@@ -65,7 +65,7 @@ class ActiveTemplateTagTest(TestCase):
         self.assertEqual(result, '')
 
     def test_match_children_true_matches_child_pages(self):
-        """Test that child pages match when """
+        """Test that child pages match when match_children=True"""
         request = self.factory.get('/blog/123/')
         request.path = '/blog/123/'
         
