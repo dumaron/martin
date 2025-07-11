@@ -76,7 +76,7 @@ class ActiveTemplateTagTest(TestCase):
         self.assertEqual(result, 'active')
 
     def test_match_children_with_deep_nesting(self):
-        """Test that deeply nested child pages match when """
+        """Test that deeply nested child pages match when match_children=True"""
         request = self.factory.get('/blog/123/edit/comments/')
         request.path = '/blog/123/edit/comments/'
         
