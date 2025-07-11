@@ -61,7 +61,7 @@ def pairing_view(request, kind):
 			'transaction_creation_form': YnabTransactionCreationForm(
 				budget_id=budget_id, initial={'bank_expense_id': first_unpaired_expense.id}
 			),
-			'potential_duplicate': potential_duplicate if potential_duplicate else None,
+'potential_duplicate': potential_duplicate,
 			'similar_bank_transactions': similar_bank_transactions,
 		},
 	)
