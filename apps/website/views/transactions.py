@@ -25,7 +25,7 @@ class BankTransactionTable(tables.Table):
 def bank_transaction_detail(request, bank_transaction_id):
 	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
 	similar_text = get_similar_bank_transactions(bank_transaction.name, bank_transaction_id, 10)
-	return render(request, 'bank_transation_detail.html', {
+	return render(request, 'bank_transaction_detail.html', {
 		'bank_transaction': bank_transaction,
 		'similar_text': similar_text,
 	})
