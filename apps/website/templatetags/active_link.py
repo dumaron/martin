@@ -25,13 +25,13 @@ def active(request, url_name, css_class='active', match_children=True, **kwargs)
         if match_children and current_path.startswith(target_url + '/'):
             return css_class
             
-    except NoReverseMatch:
+    except:
         # If reverse fails, try fallback URL name matching for compatibility
         try:
             resolved = resolve(request.path)
             if resolved.url_name == url_name and not kwargs:
                 return css_class
-        except Resolver404:
+        except:
             # If resolve also fails, we can't do any matching
             pass
         
