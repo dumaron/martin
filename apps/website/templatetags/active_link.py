@@ -22,7 +22,7 @@ def active(request, url_name, css_class='active', match_children=True, **kwargs)
             return css_class
         
         # Check for child page match if enabled
-        if match_children and current_path.startswith(target_url + '/'):
+        if match_children and target_url and current_path.startswith(target_url + '/'):
             return css_class
             
     except:
