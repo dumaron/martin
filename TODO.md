@@ -33,9 +33,8 @@
 - [ ] Add quick links to bank import or dashboard
 
 #### Warnings for potentially duplicate bank transactions
-- [ ] Chat with claude about how to create fixtures for integration tests on Django
-- [ ] Try creating a test situation for that on local database and implement basic widget to show the warning
-- [ ]
+- [x] Chat with claude about how to create fixtures for integration tests on Django
+- [x] Try creating a test situation for that on local database and implement basic widget to show the warning
 
 #### Implement mistakes
 - [ ] Extend the bank transaction model with a boolean field to tell if it's a mistake
@@ -66,7 +65,7 @@
 
 ### Improve menu
 - [x] Rework menu to avoid "Finaces" section and to have "Flows", "Dashboards", "Low-level entities"
-- [ ] Improve the "active" menu templatetag to support nested routes
+- [x] Improve the "active" menu templatetag to support nested routes
 
 ### Improve tables
 - [ ] Try a new version of tables' CSS, right now they're barely usable
