@@ -1,5 +1,5 @@
 from django import template
-from django.urls import resolve, reverse
+from django.urls import NoReverseMatch, Resolver404, resolve, reverse
 
 register = template.Library()
 
