@@ -44,6 +44,14 @@
                             <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
                             <h2>Same amount</h2>
                             <table>
+                                <thead>
+                                    <tr>
+                                        <th class="hidden" scope="col"></th>
+                                        <th scope="col">Amount</th>
+                                        <th scope="col">Memo</th>
+                                        <th scope="col">Date</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                 {% for transaction in same_amount_suggestions %}
                                     <tr>
@@ -70,6 +78,14 @@
                             <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
                             <h2>Similar date</h2>
                             <table>
+                                <thead>
+                                    <tr>
+                                        <th class="hidden"></th>
+                                        <th>Amount</th>
+                                        <th>Memo</th>
+                                        <th>Date</th>
+                                    </tr>
+                                </thead>
                                 <tbody>
                                 {% for transaction in similar_date_suggestions %}
                                     <tr>
@@ -99,6 +115,14 @@
         <div id="tab3" class="tab-content">
                 <h2>Similar bank transactions</h2>
                 <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Amount</th>
+                            <th>Name</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
                     <tbody>
                     {% for transaction in similar_bank_transactions %}
                         <tr>
