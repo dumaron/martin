@@ -4,92 +4,131 @@
 
 /* Base table structure - Excel sheet appearance */
 table {
-    width: 100%;
-    margin-bottom: 1rem;
-    border-collapse: collapse;
-    border: 1px solid var(--color-border-secondary);
-    background-color: var(--color-background-box);
+	width: 100%;
+	margin-bottom: 1rem;
+	border-collapse: collapse;
+	border: 1px solid #b3b3b6;
+	background-color: #ffffff;
 }
 
 /* All cells have borders like Excel grid */
 table th,
 table td {
-    border: 1px solid var(--color-border-secondary);
-    font-size: 13px;
-    padding: 3px 5px;
-    position: relative;
+	border: 1px solid #b3b3b6;
+	font-size: 13px;
+	padding: 3px 5px;
+	position: relative;
 }
 
 th {
-    text-align: center;
-    font-weight: 600;
-    color: var(--color-text-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    background-color: var(--color-background-secondary);
+	text-align: center;
+	font-weight: 600;
+	color: #333333;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	background-color: #f0f0f0;
 }
 
 th a {
-    color: var(--color-text-secondary);
-    text-decoration: none;
+	color: #333333;
+	text-decoration: none;
+	font-weight: 600;
 }
 
 th a:hover {
-    color: var(--color-text);
+	color: #1a1a1a;
 }
 
 /* Hidden header - invisible but occupies space */
 th.hidden {
-    color: transparent;
-    background-color: transparent;
-    border-top-color: transparent;
-    border-left-color: transparent;
+	color: transparent;
+	background-color: transparent;
+	border-top-color: transparent;
+	border-left-color: transparent;
 }
 
 /* Table cells - Excel cell appearance */
 td {
-    background-color: var(--color-background-box);
-    transition: background-color 0.15s ease;
+	background-color: #ffffff;
+	transition: background-color 0.15s ease;
 }
 
 /* Hover effect like Excel cell selection */
 tr:hover td {
-    background-color: var(--color-background-hover);
+	background-color: rgba(255, 239, 204, 0.3);
 }
 
 /* Focus/selection effect */
 td:hover {
-    background-color: var(--color-background-highlight);
-    cursor: pointer;
+	background-color: rgba(255, 239, 204, 0.5);
+	cursor: pointer;
 }
 
 /* Specific cell types with Excel-like formatting */
 td.date {
-    width: 6em;
-    text-align: center;
-    font-family: 'Berkeley Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
-    font-size: 12px;
+	width: 6em;
+	text-align: center;
+	font-family: 'Berkeley Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+	font-size: 12px;
 }
 
 td.selection {
-    width: 2em;
-    text-align: center;
-    background-color: var(--color-background-box);
+	width: 2em;
+	text-align: center;
+	background-color: #ffffff;
 }
 
 td.amount {
-    width: 6em;
-    text-align: right;
-    font-family: 'Berkeley Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
-    font-size: 12px;
-    font-weight: 500;
-    background-color: var(--color-background-highlight);
+	width: 6em;
+	text-align: right;
+	font-family: 'Berkeley Mono', 'SF Mono', Monaco, 'Cascadia Code', monospace;
+	font-size: 12px;
+	font-weight: 500;
+	background-color: #fff8dc;
 }
 
-/* Dark theme support - CSS variables handle most theming automatically */
-/* Only specific overrides needed for dark theme */
+/* Dark theme support */
+[data-theme="dark"] table {
+	background-color: #161616;
+	border-color: #888;
+}
+
+[data-theme="dark"] table th,
+[data-theme="dark"] table td {
+	border-color: #888;
+}
+
+[data-theme="dark"] th {
+	background-color: #333333;
+	color: #dddddd;
+}
+
+[data-theme="dark"] th a {
+	color: #dddddd;
+}
+
+[data-theme="dark"] th a:hover {
+	color: #ffffff;
+}
+
+[data-theme="dark"] td {
+	background-color: #161616;
+}
+
+[data-theme="dark"] tr:hover td {
+	background-color: rgba(102, 119, 102, 0.3);
+}
+
+[data-theme="dark"] td:hover {
+	background-color: rgba(102, 119, 102, 0.5);
+}
+
+[data-theme="dark"] td.selection {
+	background-color: #161616;
+}
+
 [data-theme="dark"] td.amount {
-    background-color: #1a2e1a;
+	background-color: #1a2e1a;
 }
 
 /* ==========================================================================
@@ -98,33 +137,33 @@ td.amount {
 
 /* Large table variant - minimal borders, spaced rows (preserved) */
 table.large {
-    border-collapse: separate;
-    border-spacing: 0 1px;
-    border: none;
-    background: transparent;
+	border-collapse: separate;
+	border-spacing: 0 1px;
+	border: none;
+	background: transparent;
 }
 
 table.large th,
 table.large td {
-    border: none;
-    background: transparent;
+	border: none;
+	background: transparent;
 }
 
 table.large th {
-    padding: 0 1em 0 0;
-    background: transparent;
-    text-transform: none;
-    font-size: 14px;
-    font-weight: bold;
-    letter-spacing: normal;
-    text-align: left;
+	padding: 0 1em 0 0;
+	background: transparent;
+	text-transform: none;
+	font-size: 14px;
+	font-weight: bold;
+	letter-spacing: normal;
+	text-align: left;
 }
 
 table.large tr:hover td {
-    background: transparent;
+	background: transparent;
 }
 
 table.large td:hover {
-    background: transparent;
-    cursor: default;
+	background: transparent;
+	cursor: default;
 }
