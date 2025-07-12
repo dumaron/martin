@@ -1,40 +1,46 @@
-/* General table styling */
+/* ==========================================================================
+   TABLE STYLING
+   ========================================================================== */
+
+/* Base table structure */
 table {
 	width: 100%;
 	margin-bottom: 1rem;
+	border-collapse: collapse;
 }
 
 table, th, td {
 	border-top: 1px solid var(--color-border-secondary);
-	border-collapse: collapse;
 }
 
+/* Shared cell styling */
+th, td {
+	font-size: 14px;
+	padding: .2em;
+}
 
+/* Table header */
 thead {
 	background-color: var(--color-background-secondary);
 }
 
 th {
-	font-size: 14px;
 	text-align: left;
 	padding: .2em .5em;
 	border: 2px solid white;
 	vertical-align: top;
-
-	a {
-		color: var(--color-text);
-	}
 }
 
+th a {
+	color: var(--color-text);
+}
+
+/* Table cells */
 td {
-	font-size: 14px;
 	height: 1.8em;
-	padding: .2em;
-	padding-top: .2em;
-	padding-bottom: .2em;
 }
 
-/* Specific table cell types */
+/* Specific cell types */
 td.date {
 	width: 6em;
 }
@@ -44,22 +50,26 @@ td.selection {
 }
 
 td.amount {
-	background-color: var(--color-background-highlight);
-	text-align: right;
 	width: 6em;
+	text-align: right;
+	background-color: var(--color-background-highlight);
 }
 
-/* Large table variant */
+/* ==========================================================================
+   TABLE VARIANTS
+   ========================================================================== */
+
+/* Large table variant - minimal borders, spaced rows */
 table.large {
 	border-collapse: separate;
 	border-spacing: 0 1px;
+}
 
-	th, td, & {
-		border: none;
-	}
+table.large th,
+table.large td {
+	border: none;
+}
 
-	th {
-		vertical-align: top;
-		padding: 0 1em 0 0;
-	}
+table.large th {
+	padding: 0 1em 0 0;
 }
