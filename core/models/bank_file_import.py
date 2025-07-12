@@ -6,6 +6,7 @@ from django.db import models
 from core.models.bank_transaction import BankTransaction
 
 UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
+FINECO_XLSX_HEADER_ROWS_TO_SKIP = 9
 
 
 class BankFileImport(models.Model):
@@ -31,7 +32,7 @@ class BankFileImport(models.Model):
    def get_file_rows(self):
       if self.file_type == BankFileImport.FileType.FINECO_BANK_ACCOUNT_XSLX_EXPORT:
          # Fineco exports an XSLX file, so it needs a different loader than the CSV one
-         return tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=9).dict
+         return tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=FINECO_XLSX_HEADER_ROWS_TO_SKIP).dict
       else:
          with open(self.bank_file.path, 'r') as text_mode_file:
             if self.file_type == BankFileImport.FileType.CREDEM_CSV_EXPORT:
