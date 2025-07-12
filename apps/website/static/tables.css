@@ -1,13 +1,65 @@
+/* General table styling */
+table {
+	width: 100%;
+	margin-bottom: 1rem;
+}
+
+table, th, td {
+	border-top: 1px solid var(--color-border-secondary);
+	border-collapse: collapse;
+}
+
+
+thead {
+	background-color: var(--color-background-secondary);
+}
+
+th {
+	font-size: 14px;
+	text-align: left;
+	padding: .2em .5em;
+	border: 2px solid white;
+	vertical-align: top;
+
+	a {
+		color: var(--color-text);
+	}
+}
+
+td {
+	font-size: 14px;
+	height: 1.8em;
+	padding: .2em;
+	padding-top: .2em;
+	padding-bottom: .2em;
+}
+
+/* Specific table cell types */
+td.date {
+	width: 6em;
+}
+
+td.selection {
+	width: 1em;
+}
+
+td.amount {
+	background-color: var(--color-background-highlight);
+	text-align: right;
+	width: 6em;
+}
+
+/* Large table variant */
 table.large {
-    border-collapse: separate;
-    border-spacing: 0 1px;
+	border-collapse: separate;
+	border-spacing: 0 1px;
 
-    th, td, & {
-        border: none;
-    }
+	th, td, & {
+		border: none;
+	}
 
-    th {
-        vertical-align: top;
-        padding: 0 1em 0 0;
-    }
+	th {
+		vertical-align: top;
+		padding: 0 1em 0 0;
+	}
 }

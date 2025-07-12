@@ -73,11 +73,6 @@ body {
 main {
 }
 
-td {
-    font-size: 14px;
-    padding-top: .2em;
-    padding-bottom: .2em;
-}
 
 main {
     font-family: "SF Pro", "Helvetica", sans-serif;
@@ -228,56 +223,6 @@ ul.tree {
     }
 }
 
-/* ==========================================================================
-   TABLES
-   ========================================================================== */
-table {
-    width: 100%;
-    margin-bottom: 1rem;
-}
-
-table, th, td {
-    border-top: 1px solid var(--color-border-secondary);
-    border-collapse: collapse;
-}
-
-/*tr:hover td {
-    background-color: var(--color-background-hover);
-}*/
-
-thead {
-    background-color: var(--color-background-secondary);
-}
-
-th {
-    font-size: 14px;
-    text-align: left;
-    padding: .2em .5em;
-    border: 2px solid white;
-
-    a {
-        color: var(--color-text);
-    }
-}
-
-td {
-    height: 1.8em;
-    padding: .2em;
-}
-
-td.date {
-    width: 6em;
-}
-
-td.selection {
-    width: 1em;
-}
-
-td.amount {
-    background-color: var(--color-background-highlight);
-    text-align: right;
-    width: 6em;
-}
 
 /* ==========================================================================
    FORMS
