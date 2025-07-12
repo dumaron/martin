@@ -60,7 +60,7 @@ class BankTransaction(models.Model):
 		return BankTransaction(
 			name=row['Descrizione_Completa'].strip(),
 			amount=float(row['Entrate'] or 0) + float(row['Uscite'] or 0),
-			date=datetime.strptime(row['Data'], '%d/%m/%Y'),
+			date=row['Data_Operazione'],
 			file_import=file_import,
 			bank_account_id=FINECO_BANK_ACCOUNT_ID,
 		)

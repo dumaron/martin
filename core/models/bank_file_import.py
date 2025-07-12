@@ -6,12 +6,13 @@ from django.db import models
 from core.models.bank_transaction import BankTransaction
 
 UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
+FINECO_XLSX_HEADER_ROWS_TO_SKIP = 9
 
 
 class BankFileImport(models.Model):
    class FileType(models.TextChoices):
       UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
-      FINECO_BANK_ACCOUNT_XSLX_EXPORT = 'FINECO_BANK_ACCOUNT_XLSX_EXPORT'
+      FINECO_BANK_ACCOUNT_XLSX_EXPORT = 'FINECO_BANK_ACCOUNT_XLSX_EXPORT'
       UNICREDIT_DEBIT_CARD_CSV_EXPORT = 'UNICREDIT_DEBIT_CARD_CSV_EXPORT'
       CREDEM_CSV_EXPORT = 'CREDEM_CSV_EXPORT'
 
@@ -29,9 +30,9 @@ class BankFileImport(models.Model):
 
 
    def get_file_rows(self):
-      if self.file_type == BankFileImport.FileType.FINECO_BANK_ACCOUNT_XSLX_EXPORT:
-         # Fineco exports an XSLX file, so it need a different loader than the CSV one
-         return tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=6).dict
+      if self.file_type == BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT:
+         # Fineco exports an XLSX file, so it needs a different loader than the CSV one
+         return tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=FINECO_XLSX_HEADER_ROWS_TO_SKIP).dict
       else:
          with open(self.bank_file.path, 'r') as text_mode_file:
             if self.file_type == BankFileImport.FileType.CREDEM_CSV_EXPORT:
@@ -49,7 +50,7 @@ class BankFileImport(models.Model):
       strategy_mapping = {
          BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT: BankTransaction.from_unicredit_bank_account_csv_row,
          BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT: BankTransaction.from_unicredit_debit_card_csv_row,
-         BankFileImport.FileType.FINECO_BANK_ACCOUNT_XSLX_EXPORT: BankTransaction.from_fineco_bank_account_xslx_row,
+         BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT: BankTransaction.from_fineco_bank_account_xslx_row,
          BankFileImport.FileType.CREDEM_CSV_EXPORT: BankTransaction.from_credem_csv_row,
       }
 
