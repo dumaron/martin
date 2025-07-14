@@ -3,17 +3,17 @@ from datetime import datetime
 from django.contrib import admin
 
 from core.models import (
-	BankAccount,
-	BankFileImport,
-	BankTransaction,
-	Event,
-	Memory,
-	Inbox,
-	YnabAccount,
-	YnabBudget,
-	YnabCategory,
-	YnabImport,
-	YnabTransaction,
+    BankAccount,
+    BankFileImport,
+    BankTransaction,
+    Event,
+    Memory,
+    Inbox,
+    YnabAccount,
+    YnabBudget,
+    YnabCategory,
+    YnabImport,
+    YnabTransaction,
 )
 
 
