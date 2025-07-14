@@ -8,7 +8,7 @@ from core.models import (
     BankTransaction,
     Event,
     Memory,
-    Note,
+    Inbox,
     YnabAccount,
     YnabBudget,
     YnabCategory,
@@ -72,7 +72,7 @@ class MemoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Event)
-admin.site.register(Note)
+admin.site.register(Inbox)
 admin.site.register(BankFileImport, BankFileImportAdmin)
 admin.site.register(BankTransaction, BankExpenseAdmin)
 admin.site.register(YnabImport, YnabImportAdmin)

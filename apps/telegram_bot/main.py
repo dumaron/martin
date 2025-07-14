@@ -31,7 +31,7 @@ TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
 
 
 from core.integrations.openai import speech_to_text
-from core.models import Note
+from core.models import Inbox
 
 
 # Command handlers
@@ -51,9 +51,9 @@ async def save_audio_note(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 	segment.export(path + '.mp3')
 	mp3 = open(path + '.mp3', 'rb')
 	transcript = await sync_to_async(speech_to_text)(mp3)
-	note = Note(content=transcript.text)
+	note = Inbox(content=transcript.text)
 	await sync_to_async(note.save)()
-	await update.message.reply_text('Note saved')
+	await update.message.reply_text('Saved to inbox')
 	os.remove(path + '.oga')
 	os.remove(path + '.mp3')
 
