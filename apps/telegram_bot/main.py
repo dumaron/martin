@@ -53,7 +53,7 @@ async def save_audio_note(update: Update, context: ContextTypes.DEFAULT_TYPE) ->
 	transcript = await sync_to_async(speech_to_text)(mp3)
 	note = Inbox(content=transcript.text)
 	await sync_to_async(note.save)()
-	await update.message.reply_text('Note saved')
+	await update.message.reply_text('Saved to inbox')
 	os.remove(path + '.oga')
 	os.remove(path + '.mp3')
 
