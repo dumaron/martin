@@ -3,17 +3,17 @@ from datetime import datetime
 from django.contrib import admin
 
 from core.models import (
-    BankAccount,
-    BankFileImport,
-    BankTransaction,
-    Event,
-    Memory,
-    Note,
-    YnabAccount,
-    YnabBudget,
-    YnabCategory,
-    YnabImport,
-    YnabTransaction,
+	BankAccount,
+	BankFileImport,
+	BankTransaction,
+	Event,
+	Memory,
+	Inbox,
+	YnabAccount,
+	YnabBudget,
+	YnabCategory,
+	YnabImport,
+	YnabTransaction,
 )
 
 
@@ -72,7 +72,7 @@ class MemoryAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Event)
-admin.site.register(Note)
+admin.site.register(Inbox)
 admin.site.register(BankFileImport, BankFileImportAdmin)
 admin.site.register(BankTransaction, BankExpenseAdmin)
 admin.site.register(YnabImport, YnabImportAdmin)
