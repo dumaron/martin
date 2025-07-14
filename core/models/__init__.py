@@ -14,7 +14,7 @@ __all__ = [
     'BankTransaction',
     'BankFileImport',
     'Event',
-	'Inbox',
+    'Inbox',
     'YnabCategory',
     'YnabImport',
     'YnabTransaction',
