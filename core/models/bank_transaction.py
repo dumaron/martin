@@ -26,6 +26,13 @@ class BankTransaction(models.Model):
 	paired_on = models.DateTimeField(null=True, blank=True)
 	snoozed_on = models.DateTimeField(null=True, blank=True)
 
+	# We consider "duplicate" bank transactions the ones that are the same transaction in the real world, but have a
+	# slightly different description in the original bank exports. This is often caused by banks changing transaction
+	# description from one import to another.
+	# I want to link the two (or more??) transactions together, as it can be useful in the future to list all the
+	# possible variations in the future.
+	duplicate_of = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
+
 	# The bank account this expense is coming from.
 	bank_account = models.ForeignKey('BankAccount', on_delete=models.PROTECT)
 
