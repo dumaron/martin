@@ -13,6 +13,7 @@ from apps.website.views.transactions import (
 	ynab_transaction_detail,
 	BankTransactionTable,
 )
+from apps.website.views.link_duplicate_bank_transaction import link_duplicate_bank_transaction
 
 __all__ = [
 	'martin_home_page',
@@ -28,4 +29,5 @@ __all__ = [
 	'bank_transaction_list',
 	'ynab_transaction_detail',
 	'BankTransactionTable',
+	'link_duplicate_bank_transaction',
 ]
