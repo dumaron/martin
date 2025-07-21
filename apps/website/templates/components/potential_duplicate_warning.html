@@ -32,4 +32,24 @@
         {% endif %}
         </tbody>
     </table>
+
+    <h2>Actions</h2>
+    <ul class="compact">
+        <li>
+            <form action="{% url 'link-duplicate-bank-transaction' duplicate_transaction_id=expense.id %}" method="get">
+                <input type="hidden" name="bank_transaction" value="{{ potential_duplicate.id }}"/>
+                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+                <button type="submit" class="warning-button">Mark current transaction as duplicate</button>
+            </form>
+        </li>
+    </ul>
+
+    <h2>Quick links</h2>
+    <ul class="compact">
+        <li>
+            <a href="{% url 'bank_transaction_detail' bank_transaction_id=potential_duplicate.id %}">
+                See BT{{ potential_duplicate.id }} detail
+            </a>
+        </li>
+    </ul>
 </fieldset>

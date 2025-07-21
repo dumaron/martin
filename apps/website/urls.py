@@ -8,6 +8,7 @@ from apps.website.views import (
    bank_transaction_list,
    create_ynab_transaction,
    file_import,
+   link_duplicate_bank_transaction,
    martin_home_page,
    pair_expense_with_ynab_transaction,
    pairing_view,
@@ -30,6 +31,7 @@ urlpatterns = [
       path('pair-expense-transaction', pair_expense_with_ynab_transaction, name='pair-expense-transaction'),
       path('<str:kind>/create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),
       path('expenses/<int:bankexpense_id>/snooze', snooze_bankexpense, name='snooze-expense'),
+      path('bank_transactions/<int:duplicate_transaction_id>/link-duplicate', link_duplicate_bank_transaction, name='link-duplicate-bank-transaction'),
 
       # ynab synchronizations
       path('ynab-synchronizations', ynab_synchronizations_list, name='ynab-synchronizations-list'),
