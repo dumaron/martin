@@ -71,7 +71,9 @@ class PairingViewIntegrationTest(TestCase):
 
 		# Check that the potential duplicate warning is present in the HTML
 		self.assertContains(response, 'Potential duplicate detected')
-		self.assertContains(response, 'Original Transaction')
+		# Check that the highlighted text appears (parts of "Original Transaction" will be highlighted)
+		self.assertContains(response, 'Transaction')  # This part should appear unhighlighted
+		self.assertContains(response, '<span style="background-color: #ffcccc')  # Highlighting spans should be present
 
 		# Check that the potential duplicate data is passed to the template
 		self.assertIsNotNone(response.context['potential_duplicate'])
