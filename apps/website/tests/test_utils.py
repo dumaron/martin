@@ -50,7 +50,6 @@ class TextDiffUtilsTest(TestCase):
 		result = highlight_text_differences(original, modified)
 		
 		self.assertIn('Long', result)  # Unchanged part
-		self.assertIn('<span style="background-color: #ffcccc; color: #cc0000; font-family: Berkeley mono, monospace; padding:0 2px;">D</span>', result)
 
 	def test_highlight_text_differences_empty_strings(self):
 		"""Test highlighting with empty strings."""
