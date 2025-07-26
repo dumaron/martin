@@ -4,7 +4,13 @@
         <tbody>
         <tr>
             <th>Description</th>
-            <td>{{ potential_duplicate.name }}</td>
+            <td>
+                {% if potential_duplicate_highlighted %}
+                    {{ potential_duplicate_highlighted|safe }}
+                {% else %}
+                    {{ potential_duplicate.name }}
+                {% endif %}
+            </td>
         </tr>
         <tr>
             <th>Imported on</th>

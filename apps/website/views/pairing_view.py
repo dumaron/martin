@@ -5,6 +5,7 @@ from django.shortcuts import render
 from django.views.decorators.http import require_GET
 
 from apps.website.forms import YnabTransactionCreationForm
+from apps.website.utils import highlight_text_differences
 from core.functions import get_similar_bank_transactions
 from core.models import BankTransaction, YnabTransaction
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
@@ -47,8 +48,16 @@ def pairing_view(request, kind):
 	)
 
 	potential_duplicate = first_unpaired_expense.get_potential_duplicate()
+	potential_duplicate_highlighted = None
 
-	similar_bank_transactions = get_similar_bank_transactions(first_unpaired_expense.name, first_unpaired_expense.id, 5)
+	if potential_duplicate:
+		potential_duplicate_highlighted = highlight_text_differences(
+			first_unpaired_expense.name, potential_duplicate.name
+		)
+
+	similar_bank_transactions = get_similar_bank_transactions(
+		first_unpaired_expense.name, first_unpaired_expense.id, 5
+	)
 
 	return render(
 		request,
@@ -61,7 +70,8 @@ def pairing_view(request, kind):
 			'transaction_creation_form': YnabTransactionCreationForm(
 				budget_id=budget_id, initial={'bank_expense_id': first_unpaired_expense.id}
 			),
-'potential_duplicate': potential_duplicate,
+			'potential_duplicate': potential_duplicate,
+			'potential_duplicate_highlighted': potential_duplicate_highlighted,
 			'similar_bank_transactions': similar_bank_transactions,
 		},
 	)

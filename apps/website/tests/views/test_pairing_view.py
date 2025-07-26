@@ -16,17 +16,11 @@ class PairingViewTest(TestCase):
 	def setUp(self):
 		"""Set up test data."""
 		# Create a test user
-		self.user = User.objects.create_user(
-			username='testuser',
-			email='test@example.com',
-			password='testpass123'
-		)
-		
+		self.user = User.objects.create_user(username='testuser', email='test@example.com', password='testpass123')
+
 		# Create a test bank account
 		self.bank_account = BankAccount.objects.create(
-			name='Test Bank Account',
-			iban='IT60X0542811101000000123456',
-			personal=True
+			name='Test Bank Account', iban='IT60X0542811101000000123456', personal=True
 		)
 
 		# Create a mock CSV file for testing
@@ -38,7 +32,7 @@ class PairingViewTest(TestCase):
 			self.file_import = BankFileImport.objects.create(
 				file_name='test_import.csv',
 				file_type=BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT,
-				bank_file=mock_file
+				bank_file=mock_file,
 			)
 
 		# Create test transactions
@@ -47,7 +41,7 @@ class PairingViewTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		self.duplicate_transaction = BankTransaction.objects.create(
@@ -56,7 +50,7 @@ class PairingViewTest(TestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
-			duplicate_of=self.original_transaction
+			duplicate_of=self.original_transaction,
 		)
 
 		self.client = Client()
@@ -65,16 +59,16 @@ class PairingViewTest(TestCase):
 	def test_pairing_view_excludes_duplicates(self, mock_get_similar):
 		"""Test that the pairing view excludes transactions marked as duplicates."""
 		mock_get_similar.return_value = BankTransaction.objects.none()
-		
+
 		self.client.force_login(self.user)
-		
+
 		# Get the pairing view for personal transactions
 		url = reverse('pairing', kwargs={'kind': 'personal'})
 		response = self.client.get(url)
-		
+
 		# Should return 200 OK
 		self.assertEqual(response.status_code, 200)
-		
+
 		# The view should show the original transaction, not the duplicate
 		self.assertEqual(response.context['expense'], self.original_transaction)
 		self.assertNotEqual(response.context['expense'], self.duplicate_transaction)
@@ -83,17 +77,63 @@ class PairingViewTest(TestCase):
 	def test_pairing_view_with_only_duplicates(self, mock_get_similar):
 		"""Test that the pairing view shows empty when only duplicates exist."""
 		mock_get_similar.return_value = BankTransaction.objects.none()
-		
+
 		self.client.force_login(self.user)
-		
+
 		# Mark the original transaction as a duplicate too
 		self.original_transaction.duplicate_of = self.duplicate_transaction
 		self.original_transaction.save()
-		
+
 		# Get the pairing view for personal transactions
 		url = reverse('pairing', kwargs={'kind': 'personal'})
 		response = self.client.get(url)
-		
+
 		# Should return 200 OK but show empty template
 		self.assertEqual(response.status_code, 200)
 		self.assertTemplateUsed(response, 'pairing_empty.html')
+
+	@patch('apps.website.views.pairing_view.get_similar_bank_transactions')
+	def test_pairing_view_shows_difflib_for_potential_duplicates(self, mock_get_similar):
+		"""Test that the pairing view shows difflib output for potential duplicates."""
+		mock_get_similar.return_value = BankTransaction.objects.none()
+
+		# Remove existing transactions to have a clean slate
+		BankTransaction.objects.all().delete()
+
+		# Create a main transaction (will be shown in pairing view)
+		main_transaction = BankTransaction.objects.create(
+			name='Main Transaction',
+			date=date(2024, 1, 15),
+			amount=Decimal('100.50'),
+			file_import=self.file_import,
+			bank_account=self.bank_account,
+		)
+
+		# Create a potential duplicate with slightly different name but same date/amount
+		potential_duplicate = BankTransaction.objects.create(
+			name='Slightly Different Transaction Name',
+			date=date(2024, 1, 15),
+			amount=Decimal('100.50'),
+			file_import=self.file_import,
+			bank_account=self.bank_account,
+		)
+
+		self.client.force_login(self.user)
+
+		# Get the pairing view for personal transactions
+		url = reverse('pairing', kwargs={'kind': 'personal'})
+		response = self.client.get(url)
+
+		# Should return 200 OK
+		self.assertEqual(response.status_code, 200)
+		
+		# Should have potential_duplicate in context
+		self.assertIsNotNone(response.context['potential_duplicate'])
+		
+		# Should have potential_duplicate_highlighted in context
+		self.assertIsNotNone(response.context['potential_duplicate_highlighted'])
+		
+		# The highlighted content should contain HTML spans for differences
+		highlighted_content = response.context['potential_duplicate_highlighted']
+		self.assertIn('<span style=', highlighted_content)
+		self.assertIn('background-color: #ffcccc', highlighted_content)
