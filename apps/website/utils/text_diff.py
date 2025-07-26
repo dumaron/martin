@@ -41,7 +41,7 @@ def highlight_text_differences(original_text, modified_text):
 		elif tag == 'delete':
 			# Character exists in original but not in modified - show deletion marker
 			highlighted_text.append(
-				f'<span style="background-color: #ffcccc; color: #cc0000; font-family: Berkeley mono, monospace; padding:0 2px;">D</span>'
+				f'<span style="background-color: #ffcccc; color: #cc0000; font-family: Berkeley Mono, monospace; padding:0 2px;">D</span>'
 			)
 	
 	return ''.join(highlighted_text)
