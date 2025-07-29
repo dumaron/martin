@@ -1,14 +1,41 @@
 {% extends 'base.html' %}
 
-{% block subnavigation %}
-    <nav class="sub-navigation"></nav>
+{% load static %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static '/home.css' %}" />
 {% endblock %}
 
 {% block content %}
-    <figure id="main-quote">
-        <blockquote>
-            Love as a principle and order as the basis; progress as the goal
-        </blockquote>
-        <figcaption>Auguste Comte</figcaption>
-    </figure>
+    <div>
+    <h1>Welcome back, Stefano</h1>
+    
+    {% if memory %}
+        <div class="memory-display">
+            <div class="memory-image">
+                <img src="{{ memory.photo.url }}" alt="Memory {{ memory.id }}" />
+            </div>
+            <div class="memory-details">
+                {% if memory.description %}
+                    <p class="memory-description">{{ memory.description }}</p>
+                {% endif %}
+                <div class="memory-metadata">
+                    {% if memory.date %}
+                        <div class="memory-field"><strong>Date:</strong> {{ memory.date | date:"d.m.Y" }}</div>
+                    {% endif %}
+                    {% if memory.location %}
+                        <div class="memory-field"><strong>Location:</strong> {{ memory.location }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    {% else %}
+        <figure id="main-quote">
+            <blockquote>
+                Love as a principle and order as the basis; progress as the goal
+            </blockquote>
+            <figcaption>Auguste Comte</figcaption>
+        </figure>
+    {% endif %}
+    </div>>
 {% endblock %}
