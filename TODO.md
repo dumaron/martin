@@ -68,7 +68,7 @@
 - [x] Improve the "active" menu templatetag to support nested routes
 
 ### Improve tables
-- [ ] Try a new version of tables' CSS, right now they're barely usable
+- [x] Try a new version of tables' CSS, right now they're barely usable
 
 ## Motivation
 
