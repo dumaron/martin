@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="{% static '/banks.css' %}" />
         <link rel="stylesheet" href="{% static '/suggestions.css' %}" />
         <link rel="stylesheet" href="{% static '/layout.css' %}" />
+        {% block stylesheets %}{% endblock %}
         <script src="{% static 'htmx-2.0.js' %}" type="module" defer></script>
         <script src="{% static 'tabs.js' %}" type="module" defer></script>
     </head>
