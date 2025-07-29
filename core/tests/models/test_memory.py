@@ -107,3 +107,46 @@ class MemorySelectMemoryForTodayTest(TestCase):
 				Memory.select_memory_for_today()
 
 		self.assertEqual(str(context.exception), 'No memories found')
+
+	def test_select_memory_for_today_selects_from_oldest_memories(self):
+		"""Test that select_memory_for_today selects from memories ordered by last_selected_on (oldest first)."""
+		today = date.today()
+
+		# Create memories with different selection dates to test ordering
+		memory_recent = Memory.objects.create(
+			photo=self.test_photo1, description='Recent memory', last_selected_on=date(2024, 12, 1)
+		)
+
+		memory_older = Memory.objects.create(
+			photo=self.test_photo2, description='Older memory', last_selected_on=date(2024, 6, 1)
+		)
+
+		memory_oldest = Memory.objects.create(
+			photo=self.test_photo3, description='Oldest memory', last_selected_on=date(2024, 1, 1)
+		)
+
+		# Create memory with null last_selected_on (should be ordered first)
+		memory_never_selected = Memory.objects.create(
+			photo=SimpleUploadedFile('photo4.jpg', b'photo4 content', content_type='image/jpeg'),
+			description='Never selected memory',
+			last_selected_on=None,
+		)
+
+		# Mock random.choice to capture what memories are passed to it
+		with (
+			patch('core.models.memory.datetime') as mock_datetime,
+			patch('core.models.memory.random.choice') as mock_choice,
+		):
+			mock_datetime.today.return_value = datetime.combine(today, datetime.min.time())
+			mock_choice.return_value = memory_never_selected
+
+			# Capture the arguments passed to random.choice
+			Memory.select_memory_for_today()
+
+			# Verify random.choice was called with memories ordered by last_selected_on (oldest first)
+			called_memories = list(mock_choice.call_args[0][0])  # Get the queryset passed to random.choice
+
+			# The queryset should contain memories ordered by last_selected_on (ascending, nulls first)
+			# Since we're taking the first 10 and we have 4 memories, all should be included
+			expected_order = [memory_never_selected, memory_oldest, memory_older, memory_recent]
+			self.assertEqual(called_memories, expected_order)
