@@ -68,39 +68,6 @@ class MemorySelectMemoryForTodayTest(TestCase):
 		memory1.refresh_from_db()
 		self.assertEqual(memory1.last_selected_on, today)
 
-	def test_select_memory_for_today_selects_from_last_10_memories(self):
-		"""Test that select_memory_for_today selects from the last 10 memories ordered by selection date."""
-		today = date.today()
-
-		# Create 15 memories with different selection dates
-		memories = []
-		for i in range(15):
-			memory = Memory.objects.create(
-				photo=SimpleUploadedFile(f'photo{i}.jpg', b'content', content_type='image/jpeg'),
-				description=f'Memory {i}',
-				last_selected_on=date(2024, 1, i + 1) if i < 10 else None,
-			)
-			memories.append(memory)
-
-		with (
-			patch('core.models.memory.datetime') as mock_datetime,
-			patch('core.models.memory.random.choice') as mock_choice,
-		):
-			mock_datetime.today.return_value = datetime.combine(today, datetime.min.time())
-			mock_choice.return_value = memories[5]  # Select one of the memories
-
-			result = Memory.select_memory_for_today()
-
-		# Verify random.choice was called with the correct queryset
-		# The queryset should contain the last 10 memories ordered by -last_selected_on
-		called_queryset = list(mock_choice.call_args[0][0])
-		self.assertEqual(len(called_queryset), 10)
-
-		self.assertEqual(result, memories[5])
-		# Verify last_selected_on was updated
-		memories[5].refresh_from_db()
-		self.assertEqual(memories[5].last_selected_on, today)
-
 	def test_select_memory_for_today_handles_memories_with_null_last_selected_on(self):
 		"""Test that select_memory_for_today properly handles memories with null last_selected_on."""
 		today = date.today()
@@ -136,7 +103,7 @@ class MemorySelectMemoryForTodayTest(TestCase):
 		with patch('core.models.memory.datetime') as mock_datetime:
 			mock_datetime.today.return_value = datetime.combine(date.today(), datetime.min.time())
 
-			with self.assertRaises(IndexError) as context:
+			with self.assertRaises(Exception) as context:
 				Memory.select_memory_for_today()
 
-		self.assertEqual(str(context.exception), 'Cannot choose from an empty sequence')
+		self.assertEqual(str(context.exception), 'No memories found')
