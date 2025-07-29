@@ -26,7 +26,7 @@ class Memory(models.Model):
 		Select a memory to be shown today among the one never selected before or selected a long time ago
 		"""
 
-		today = datetime.today()
+		today = datetime.today().date()
 
 		# If a memory has already been selected for being shown today, we just return it
 		already_selected_memory = Memory.objects.filter(last_selected_on=today).first()
