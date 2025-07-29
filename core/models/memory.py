@@ -36,12 +36,12 @@ class Memory(models.Model):
 
 		# Otherwise we take the last 10 ordered by selection date, and we randomly return one of them
 		last_10_memories = Memory.objects.order_by('-last_selected_on')[:10]
-		selected_memory = random.choice(last_10_memories)
-
-		# If there is no memory (weird? empty DB?) raise an exception, this is not supposed to happen
-		if selected_memory is None:
+		
+		# If there are no memories (weird? empty DB?) raise an exception, this is not supposed to happen
+		if not last_10_memories:
 			raise Exception('No memories found') # that error message looks so cool...
-
+		
+		selected_memory = random.choice(last_10_memories)
 		selected_memory.last_selected_on = today
 		selected_memory.save()
 
