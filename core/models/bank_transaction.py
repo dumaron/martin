@@ -120,7 +120,7 @@ class BankTransaction(models.Model):
 		WHERE bank_transactions_fts MATCH %s
 		AND bank_transactions_fts.id != %s
 		ORDER BY relevance_score ASC
-		LIMIT 100 -- Look at the big comment below for an explanation
+		LIMIT 100 -- Over-fetch up to 100 results for post-filtering; this avoids excessive result sets and ensures enough candidates for similarity matching.
 	""",
 				[fts_query, self.id],
 			)
