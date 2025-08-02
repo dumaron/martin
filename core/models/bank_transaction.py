@@ -119,7 +119,7 @@ class BankTransaction(models.Model):
 		FROM bank_transactions_fts
 		WHERE bank_transactions_fts MATCH %s
 		AND bank_transactions_fts.id != %s
-		ORDER BY relevance_score DESC
+		ORDER BY relevance_score ASC
 		LIMIT 100 -- Look at the big comment below for an explanation
 	""",
 				[fts_query, self.id],
