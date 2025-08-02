@@ -23,9 +23,12 @@ def pairing_view(request, kind):
 	budget_id = YNAB_PERSONAL_BUDGET_ID if personal else YNAB_SHARED_BUDGET_ID
 
 	first_unpaired_expense = (
-		BankTransaction.objects
-		.filter(snoozed_on=None, paired_on=None, duplicate_of=None, bank_account__personal=personal)
-		.order_by('date', 'id')  # <- sort by ID technically not needed, but AI convinced me it's useful to avoid undeterministic behaviors during tests
+		BankTransaction.objects.filter(
+			snoozed_on=None, paired_on=None, duplicate_of=None, bank_account__personal=personal
+		)
+		.order_by(
+			'date', 'id'
+		)  # <- sort by ID technically not needed, but AI convinced me it's useful to avoid undeterministic behaviors during tests
 		.first()
 	)
 

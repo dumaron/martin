@@ -28,7 +28,7 @@ class TextDiffUtilsTest(TestCase):
 		original = 'Original Transaction'
 		modified = 'Original Payment'
 		result = highlight_text_differences(original, modified)
-		
+
 		# Should contain both highlighted and unhighlighted parts
 		self.assertIn('Original', result)  # Unchanged part should be preserved
 		self.assertIn('<span style="background-color: #ffcccc', result)  # Changed part
@@ -39,7 +39,7 @@ class TextDiffUtilsTest(TestCase):
 		original = 'Short'
 		modified = 'Short text'
 		result = highlight_text_differences(original, modified)
-		
+
 		self.assertIn('Short', result)  # Unchanged part
 		self.assertIn('<span style="background-color: #ffcccc; color: #cc0000;"> text</span>', result)
 
@@ -48,7 +48,7 @@ class TextDiffUtilsTest(TestCase):
 		original = 'Long text'
 		modified = 'Long'
 		result = highlight_text_differences(original, modified)
-		
+
 		self.assertIn('Long', result)  # Unchanged part
 
 	def test_highlight_text_differences_empty_strings(self):
@@ -62,7 +62,7 @@ class TextDiffUtilsTest(TestCase):
 		original = 'Normal text'
 		modified = 'Text with <script>alert("xss")</script>'
 		result = highlight_text_differences(original, modified)
-		
+
 		# Should not contain actual HTML tags, only our highlighting spans
 		self.assertNotIn('<script>', result)
 		self.assertIn('&lt;script&gt;', result)

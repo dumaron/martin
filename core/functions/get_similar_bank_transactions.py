@@ -20,7 +20,8 @@ def get_similar_bank_transactions(phrase, bank_transaction_id, amount=10):
 	fts_query = ' OR '.join([f'"{word}"' for word in meaningful_words])
 
 	with connection.cursor() as cursor:
-		cursor.execute("""
+		cursor.execute(
+			"""
 	SELECT
 		 bank_transactions_fts.*,
 	    bm25(bank_transactions_fts) as relevance_score
@@ -28,7 +29,9 @@ def get_similar_bank_transactions(phrase, bank_transaction_id, amount=10):
 	WHERE bank_transactions_fts MATCH %s
 	ORDER BY relevance_score
 	LIMIT %s
-""", [fts_query, amount])
+""",
+			[fts_query, amount],
+		)
 
 		rows = cursor.fetchall()
 

@@ -25,10 +25,12 @@ class BankTransactionTable(tables.Table):
 def bank_transaction_detail(request, bank_transaction_id):
 	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
 	similar_text = get_similar_bank_transactions(bank_transaction.name, bank_transaction_id, 10)
-	return render(request, 'bank_transaction_detail.html', {
-		'bank_transaction': bank_transaction,
-		'similar_text': similar_text,
-	})
+	return render(
+		request,
+		'bank_transaction_detail.html',
+		{'bank_transaction': bank_transaction, 'similar_text': similar_text},
+	)
+
 
 @login_required
 @require_GET
@@ -42,4 +44,4 @@ def bank_transaction_list(request):
 @require_GET
 def ynab_transaction_detail(request, ynab_transaction_id):
 	ynab_transaction = get_object_or_404(YnabTransaction, pk=ynab_transaction_id)
-	return render(request, 'ynab_transaction_detail.html', { 'ynab_transaction': ynab_transaction })
+	return render(request, 'ynab_transaction_detail.html', {'ynab_transaction': ynab_transaction})

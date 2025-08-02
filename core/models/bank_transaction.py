@@ -6,6 +6,7 @@ from django.db import models
 def fix_italian_floating_point(string):
 	return string.replace('.', '').replace(',', '.')
 
+
 # I'm not happy about this approach, but it is a good compromise between creating a "proper" DB structure, which is
 # overkill and unnecessarily complex for my needs, and hard-coding too much stuff. Here I inserted into code the IDs of
 # the three bank accounts I have on the database. Given that I use a clone of production DB for local development, and
@@ -22,7 +23,9 @@ class BankTransaction(models.Model):
 	name = models.CharField(max_length=1024)
 	date = models.DateField()
 	amount = models.DecimalField(max_digits=10, decimal_places=2)
-	matched_ynab_transaction = models.ForeignKey('YnabTransaction', null=True, blank=True, on_delete=models.CASCADE)
+	matched_ynab_transaction = models.ForeignKey(
+		'YnabTransaction', null=True, blank=True, on_delete=models.CASCADE
+	)
 	paired_on = models.DateTimeField(null=True, blank=True)
 	snoozed_on = models.DateTimeField(null=True, blank=True)
 
@@ -82,18 +85,13 @@ class BankTransaction(models.Model):
 			bank_account_id=CREDEM_BANK_ACCOUNT_ID,
 		)
 
-	def get_potential_duplicate(self):
+	def get_potential_duplicate(self) -> 'BankTransaction' or None:
 		"""
 		Find potential duplicate bank transactions with the same amount and date.
 		Bank exports are unreliable: many times they change description text for the same transaction between two exports,
 		making matching unreliable.
 		"""
-		return (
-			BankTransaction.objects
-			.filter(amount=self.amount, date=self.date)
-			.exclude(id=self.id)
-			.first()
-		)
+		return BankTransaction.objects.filter(amount=self.amount, date=self.date).exclude(id=self.id).first()
 
 	def __str__(self):
 		return self.name

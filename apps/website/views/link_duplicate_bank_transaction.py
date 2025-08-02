@@ -15,11 +15,11 @@ def link_duplicate_bank_transaction(request, duplicate_transaction_id):
 	"""
 	# Get the original transaction ID from the query parameter
 	original_transaction_id_str = request.GET.get('bank_transaction')
-	
+
 	# Validate that the bank_transaction parameter was provided
 	if not original_transaction_id_str:
 		return HttpResponseBadRequest('bank_transaction parameter is required')
-	
+
 	original_transaction_id = int(original_transaction_id_str)
 
 	# Get both transactions

@@ -10,6 +10,9 @@ from pydub import AudioSegment
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
+from core.integrations.openai import speech_to_text
+from core.models import Inbox
+
 # Add the project root to Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
@@ -22,25 +25,17 @@ else:
 	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.prod')
 django.setup()
 
-# Enable logging
-# logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
-# logger = logging.getLogger(__name__)
 
 # Define your bot token (you'll get this from BotFather)
 TOKEN = os.getenv('TELEGRAM_BOT_TOKEN')
-
-
-from core.integrations.openai import speech_to_text
-from core.models import Inbox
 
 
 # Command handlers
 async def generic_handler(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	"""Send a message when the command /start is issued."""
 	user = update.effective_user
-	await update.message.reply_text(
-		f'Hi {user.first_name}! I am your bot.'
-	)
+	await update.message.reply_text(f'Hi {user.first_name}! I am your bot.')
+
 
 async def save_audio_note(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 	audio = await update.message.voice.get_file()

@@ -12,10 +12,10 @@ def sync_ynab_transactions(budget_id, partial=False) -> None:
 	"""
 
 	last_server_knowledge = (
-		YnabImport
-		.objects
-		.filter(budget_id=budget_id)
-		.aggregate(Max('server_knowledge'))['server_knowledge__max'] or 0 if partial else 0
+		YnabImport.objects.filter(budget_id=budget_id).aggregate(Max('server_knowledge'))['server_knowledge__max']
+		or 0
+		if partial
+		else 0
 	)
 
 	result = get_uncleared_expenses(budget_id, last_server_knowledge)
@@ -23,9 +23,7 @@ def sync_ynab_transactions(budget_id, partial=False) -> None:
 	new_server_knowledge = result.server_knowledge
 
 	ynab_import = YnabImport(
-		execution_datetime=datetime.now(),
-		server_knowledge=new_server_knowledge,
-		budget_id=budget_id,
+		execution_datetime=datetime.now(), server_knowledge=new_server_knowledge, budget_id=budget_id
 	)
 	ynab_import.save()
 

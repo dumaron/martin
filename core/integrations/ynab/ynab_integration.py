@@ -15,10 +15,7 @@ from .schemas import (
 
 is_development = settings.ENVIRONMENT == 'development'
 base_url = 'https://api.ynab.com/v1/budgets'
-headers = {
-	'Authorization': f'Bearer {settings.YNAB_API_TOKEN}',
-	'Content-Type': 'application/json'
-}
+headers = {'Authorization': f'Bearer {settings.YNAB_API_TOKEN}', 'Content-Type': 'application/json'}
 
 
 def get_uncleared_expenses(budget_id, server_knowledge) -> YnabTransactionListData:
@@ -28,7 +25,7 @@ def get_uncleared_expenses(budget_id, server_knowledge) -> YnabTransactionListDa
 
 	response = requests.get(
 		url=f'{base_url}/{budget_id}/transactions?since_date=2023-08-01&last_knowledge_of_server={server_knowledge}',
-		headers=headers
+		headers=headers,
 	)
 
 	response.raise_for_status()
@@ -40,10 +37,7 @@ def get_uncleared_expenses(budget_id, server_knowledge) -> YnabTransactionListDa
 
 def clear_transaction(transaction, amount=None):
 	data = {
-		'transaction': {
-			'account_id': str(transaction.account_id),
-			'cleared': transaction.ClearedStatuses.CLEARED,
-		}
+		'transaction': {'account_id': str(transaction.account_id), 'cleared': transaction.ClearedStatuses.CLEARED}
 	}
 
 	if amount is not None:
@@ -53,7 +47,7 @@ def clear_transaction(transaction, amount=None):
 	response = requests.put(
 		url=f'{base_url}/{transaction.budget_id}/transactions/{str(transaction.id)}',
 		headers=headers,
-		data=json.dumps(data)
+		data=json.dumps(data),
 	)
 
 	response.raise_for_status()
@@ -88,13 +82,10 @@ def create_transaction(budget_id, account_id, amount, date, memo, ynab_category)
 			'category_id': str(ynab_category.id),
 			'account_id': str(account_id),
 			'deleted': False,
-		}}
+		}
+	}
 
-	response = requests.post(
-		f'{base_url}/{budget_id}/transactions',
-		headers=headers,
-		data=json.dumps(data)
-	)
+	response = requests.post(f'{base_url}/{budget_id}/transactions', headers=headers, data=json.dumps(data))
 
 	response.raise_for_status()
 

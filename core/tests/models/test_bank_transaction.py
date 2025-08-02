@@ -8,7 +8,6 @@ from django.test import TestCase
 from core.models import BankAccount, BankFileImport, BankTransaction
 
 
-
 class BankTransactionGetPotentialDuplicateTest(TestCase):
 	"""Test the get_potential_duplicate method of BankTransaction model."""
 
@@ -16,9 +15,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 		"""Set up test data."""
 		# Create a test bank account
 		self.bank_account = BankAccount.objects.create(
-			name='Test Bank Account',
-			iban='IT60X0542811101000000123456',
-			personal=True
+			name='Test Bank Account', iban='IT60X0542811101000000123456', personal=True
 		)
 
 		# Create a mock CSV file for testing
@@ -30,7 +27,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			self.file_import = BankFileImport.objects.create(
 				file_name='test_import.csv',
 				file_type=BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT,
-				bank_file=mock_file
+				bank_file=mock_file,
 			)
 
 	def test_get_potential_duplicate_returns_none_when_no_duplicates(self):
@@ -40,7 +37,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		result = transaction.get_potential_duplicate()
@@ -55,7 +52,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Create second transaction with same amount and date but different name
@@ -64,7 +61,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		result = transaction2.get_potential_duplicate()
@@ -80,7 +77,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Create second transaction with same amount but different date
@@ -89,7 +86,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 16),  # Different date
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		result = transaction2.get_potential_duplicate()
@@ -105,7 +102,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Create second transaction with same date but different amount
@@ -114,7 +111,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('200.75'),  # Different amount
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		result = transaction2.get_potential_duplicate()
@@ -130,7 +127,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Create second transaction with same amount and date
@@ -139,7 +136,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Create third transaction with same amount and date
@@ -148,7 +145,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		result = transaction3.get_potential_duplicate()
@@ -160,9 +157,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 		"""Test that get_potential_duplicate works across different bank accounts."""
 		# Create second bank account
 		bank_account2 = BankAccount.objects.create(
-			name='Second Bank Account',
-			iban='IT60X0542811101000000654321',
-			personal=True
+			name='Second Bank Account', iban='IT60X0542811101000000654321', personal=True
 		)
 
 		# Create transaction in first bank account
@@ -171,7 +166,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Create transaction in second bank account with same amount and date
@@ -180,7 +175,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=bank_account2
+			bank_account=bank_account2,
 		)
 
 		result = transaction2.get_potential_duplicate()
@@ -195,14 +190,18 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 	def setUp(self):
 		# Create a mock XLSX file for testing
 		test_xlsx_content = b'Test XLSX content'
-		mock_file = SimpleUploadedFile('test_fineco.xlsx', test_xlsx_content, content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+		mock_file = SimpleUploadedFile(
+			'test_fineco.xlsx',
+			test_xlsx_content,
+			content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+		)
 
 		# Mock the file processing to avoid actual file operations during testing
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			self.file_import = BankFileImport.objects.create(
 				file_name='test_fineco.xlsx',
 				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
-				bank_file=mock_file
+				bank_file=mock_file,
 			)
 
 	def test_from_fineco_bank_account_xslx_row_with_income_only(self):
@@ -211,7 +210,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': '  Test Income Transaction  ',
 			'Entrate': 150.75,
 			'Uscite': 0,
-			'Data_Operazione': date(2024, 3, 15)
+			'Data_Operazione': date(2024, 3, 15),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -228,7 +227,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Test Expense Transaction',
 			'Entrate': 0,
 			'Uscite': -85.30,
-			'Data_Operazione': date(2024, 3, 20)
+			'Data_Operazione': date(2024, 3, 20),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -245,7 +244,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Transaction with both values',
 			'Entrate': 100.0,
 			'Uscite': -25.0,
-			'Data_Operazione': date(2024, 3, 25)
+			'Data_Operazione': date(2024, 3, 25),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -262,7 +261,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Zero amount transaction',
 			'Entrate': 0,
 			'Uscite': 0,
-			'Data_Operazione': date(2024, 3, 30)
+			'Data_Operazione': date(2024, 3, 30),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -279,7 +278,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Transaction with None values',
 			'Entrate': None,
 			'Uscite': None,
-			'Data_Operazione': date(2024, 4, 1)
+			'Data_Operazione': date(2024, 4, 1),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -296,7 +295,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Mixed None and value',
 			'Entrate': 250.0,
 			'Uscite': None,
-			'Data_Operazione': date(2024, 4, 5)
+			'Data_Operazione': date(2024, 4, 5),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -313,7 +312,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': '   \t  Whitespace Transaction  \n  ',
 			'Entrate': 100.0,
 			'Uscite': 0,
-			'Data_Operazione': date(2024, 4, 10)
+			'Data_Operazione': date(2024, 4, 10),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -326,7 +325,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Decimal Transaction',
 			'Entrate': 123.456,
 			'Uscite': -45.789,
-			'Data_Operazione': date(2024, 4, 15)
+			'Data_Operazione': date(2024, 4, 15),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -336,5 +335,3 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.date, date(2024, 4, 15))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
-
-

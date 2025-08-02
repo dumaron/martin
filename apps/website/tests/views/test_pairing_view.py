@@ -101,7 +101,7 @@ class PairingViewTest(TestCase):
 		BankTransaction.objects.all().delete()
 
 		# Create a main transaction (will be shown in pairing view)
-		main_transaction = BankTransaction.objects.create(
+		BankTransaction.objects.create(
 			name='Main Transaction',
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
@@ -110,7 +110,7 @@ class PairingViewTest(TestCase):
 		)
 
 		# Create a potential duplicate with slightly different name but same date/amount
-		potential_duplicate = BankTransaction.objects.create(
+		BankTransaction.objects.create(
 			name='Slightly Different Transaction Name',
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
@@ -126,13 +126,13 @@ class PairingViewTest(TestCase):
 
 		# Should return 200 OK
 		self.assertEqual(response.status_code, 200)
-		
+
 		# Should have potential_duplicate in context
 		self.assertIsNotNone(response.context['potential_duplicate'])
-		
+
 		# Should have potential_duplicate_highlighted in context
 		self.assertIsNotNone(response.context['potential_duplicate_highlighted'])
-		
+
 		# The highlighted content should contain HTML spans for differences
 		highlighted_content = response.context['potential_duplicate_highlighted']
 		self.assertIn('<span style=', highlighted_content)

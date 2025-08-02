@@ -35,5 +35,4 @@ def create_ynab_transaction_from_bank_expense(budget_id, bank_transaction, memo,
 	bank_transaction.paired_on = datetime.now()
 	bank_transaction.save()
 
-
 	return

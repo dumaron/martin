@@ -22,9 +22,7 @@ class PairingViewIntegrationTest(TestCase):
 
 		# Create a test bank account
 		self.bank_account = BankAccount.objects.create(
-			name='Test Bank Account',
-			iban='IT60X0542811101000000123456',
-			personal=True
+			name='Test Bank Account', iban='IT60X0542811101000000123456', personal=True
 		)
 
 		# Create a mock CSV file for testing
@@ -36,7 +34,7 @@ class PairingViewIntegrationTest(TestCase):
 			self.file_import = BankFileImport.objects.create(
 				file_name='test_import.csv',
 				file_type=BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT,
-				bank_file=mock_file
+				bank_file=mock_file,
 			)
 
 	@patch('apps.website.views.pairing_view.get_similar_bank_transactions')
@@ -46,12 +44,12 @@ class PairingViewIntegrationTest(TestCase):
 		mock_get_similar.return_value = []
 
 		# Create first transaction (this will be the one shown in pairing view since it's oldest)
-		current_transaction = BankTransaction.objects.create(
+		BankTransaction.objects.create(
 			name='Current Transaction',
 			date=date(2024, 1, 14),  # Earlier date so it's shown first
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Create a second transaction (potential duplicate with same date and amount)
@@ -60,7 +58,7 @@ class PairingViewIntegrationTest(TestCase):
 			date=date(2024, 1, 14),  # Same date for duplicate detection
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Get the pairing view
@@ -73,7 +71,9 @@ class PairingViewIntegrationTest(TestCase):
 		self.assertContains(response, 'Potential duplicate detected')
 		# Check that the highlighted text appears (parts of "Original Transaction" will be highlighted)
 		self.assertContains(response, 'Transaction')  # This part should appear unhighlighted
-		self.assertContains(response, '<span style="background-color: #ffcccc')  # Highlighting spans should be present
+		self.assertContains(
+			response, '<span style="background-color: #ffcccc'
+		)  # Highlighting spans should be present
 
 		# Check that the potential duplicate data is passed to the template
 		self.assertIsNotNone(response.context['potential_duplicate'])
@@ -92,7 +92,7 @@ class PairingViewIntegrationTest(TestCase):
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
-			bank_account=self.bank_account
+			bank_account=self.bank_account,
 		)
 
 		# Get the pairing view
