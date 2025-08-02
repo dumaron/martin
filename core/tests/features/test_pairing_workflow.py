@@ -37,7 +37,7 @@ class PairingViewIntegrationTest(TestCase):
 				bank_file=mock_file,
 			)
 
-	@patch('apps.website.views.pairing_view.get_similar_bank_transactions')
+	@patch.object(BankTransaction, 'get_similar_transactions')
 	def test_pairing_view_displays_potential_duplicate_widget_when_duplicate_exists(self, mock_get_similar):
 		"""Test that pairing view displays potential duplicate widget when a duplicate exists."""
 		# Mock the similar bank transactions function to avoid FTS table dependency
@@ -80,7 +80,7 @@ class PairingViewIntegrationTest(TestCase):
 		# The current transaction should find the duplicate transaction
 		self.assertEqual(response.context['potential_duplicate'], duplicate_transaction)
 
-	@patch('apps.website.views.pairing_view.get_similar_bank_transactions')
+	@patch.object(BankTransaction, 'get_similar_transactions')
 	def test_pairing_view_does_not_display_potential_duplicate_widget_when_no_duplicate(self, mock_get_similar):
 		"""Test that pairing view does not display potential duplicate widget when no duplicate exists."""
 		# Mock the similar bank transactions function to avoid FTS table dependency

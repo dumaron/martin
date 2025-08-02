@@ -3,7 +3,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET
 
-from core.functions import get_similar_bank_transactions
 from core.models import BankTransaction, YnabTransaction
 
 
@@ -24,7 +23,7 @@ class BankTransactionTable(tables.Table):
 @require_GET
 def bank_transaction_detail(request, bank_transaction_id):
 	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
-	similar_text = get_similar_bank_transactions(bank_transaction.name, bank_transaction_id, 10)
+	similar_text = bank_transaction.get_similar_transactions(10)
 	return render(
 		request,
 		'bank_transaction_detail.html',
