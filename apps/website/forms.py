@@ -10,7 +10,7 @@ class BankFileImportForm(forms.ModelForm):
 
 
 class YnabTransactionCreationForm(forms.Form):
-	memo = forms.CharField(widget=forms.Textarea)
+	memo = forms.CharField()
 	bank_expense_id = forms.IntegerField(widget=forms.HiddenInput)
 	ynab_category = forms.ModelChoiceField(queryset=YnabCategory.objects.none())
 

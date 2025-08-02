@@ -27,99 +27,86 @@
             </tr>
             </tbody>
         </table>
-        <div class="tabs-container">
-            <ul class="tabs-nav">
-                <li class="tab-link active" data-tab="tab1">Pair</li>
-                <li class="tab-link" data-tab="tab2">Create</li>
-                <li class="tab-link" data-tab="tab4">Other</li>
-            </ul>
 
-            <div id="tab1" class="tab-content active">
-                {% if same_amount_suggestions %}
-                    <div id="same-amount-suggestions">
-                        <form action="{% url 'pair-expense-transaction' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="expense" value="{{ expense.id }}"/>
-                            <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
-                            <h2>Same amount</h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="hidden" scope="col"></th>
-                                        <th scope="col">Amount</th>
-                                        <th scope="col">Memo</th>
-                                        <th scope="col">Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for transaction in same_amount_suggestions %}
-                                    <tr>
-                                        <td class="selection"><input type="radio" name="ynab-transaction"
-                                                                     value="{{ transaction.id }}"/></td>
-                                        <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
-                                        <td>{{ transaction.memo }}</td>
-                                        <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <button type="submit">Pair expenses</button>
-                        </form>
-                    </div>
-                {% endif %}
-
-                {% if similar_date_suggestions %}
-                    <div id="similar-date-suggestions">
-                        <form action="{% url 'pair-expense-transaction' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" name="expense" value="{{ expense.id }}"/>
-                            <input type="hidden" name="override-amount" value="true"/>
-                            <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
-                            <h2>Similar date</h2>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th class="hidden"></th>
-                                        <th>Amount</th>
-                                        <th>Memo</th>
-                                        <th>Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                {% for transaction in similar_date_suggestions %}
-                                    <tr>
-                                        <td class="selection"><input type="radio" name="ynab-transaction"
-                                                                     value="{{ transaction.id }}"/></td>
-                                        <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
-                                        <td>{{ transaction.memo }}</td>
-                                        <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
-                                    </tr>
-                                {% endfor %}
-                                </tbody>
-                            </table>
-                            <button type="submit">Equalize and pair</button>
-                        </form>
-                    </div>
-                {% endif %}
-            </div>
-            <div id="tab2" class="tab-content">
-                <h2>Create transaction from bank expense</h2>
-                <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post">
+        {% if same_amount_suggestions %}
+            <div id="same-amount-suggestions">
+                <form action="{% url 'pair-expense-transaction' %}" method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="expense" value="{{ expense.id }}"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
-                    {{ transaction_creation_form }}
-                    <button type="submit">Create transaction</button>
+                    <h2>Same amount</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="hidden" scope="col"></th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Memo</th>
+                                <th scope="col">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in same_amount_suggestions %}
+                            <tr>
+                                <td class="selection"><input type="radio" name="ynab-transaction"
+                                                             value="{{ transaction.id }}"/></td>
+                                <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
+                                <td>{{ transaction.memo }}</td>
+                                <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <button type="submit">Pair expenses</button>
                 </form>
             </div>
-            <div id="tab4" class="tab-content">
-                <h2>Snooze the bank expense</h2>
-                <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
+        {% endif %}
+
+        {% if similar_date_suggestions %}
+            <div id="similar-date-suggestions">
+                <form action="{% url 'pair-expense-transaction' %}" method="post">
                     {% csrf_token %}
+                    <input type="hidden" name="expense" value="{{ expense.id }}"/>
+                    <input type="hidden" name="override-amount" value="true"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
-                    <button type="submit">Snooze</button>
+                    <h2>Similar date</h2>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="hidden"></th>
+                                <th>Amount</th>
+                                <th>Memo</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for transaction in similar_date_suggestions %}
+                            <tr>
+                                <td class="selection"><input type="radio" name="ynab-transaction"
+                                                             value="{{ transaction.id }}"/></td>
+                                <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
+                                <td>{{ transaction.memo }}</td>
+                                <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                    <button type="submit">Equalize and pair</button>
                 </form>
             </div>
-        </div>
+        {% endif %}
+        <h2>Create transaction from bank expense</h2>
+        <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+            {{ transaction_creation_form }}
+            <button type="submit">Create transaction</button>
+        </form>
+        <h2>Snooze the bank expense</h2>
+        <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+            <button type="submit">Snooze</button>
+        </form>
     </div>
     <div id="suggestions">
     {% if potential_duplicate %}
