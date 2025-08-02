@@ -4,14 +4,17 @@ from django.db import connection
 
 from core.models import BankTransaction
 
+COMMON_WORDS = ['parma', 'credito', 'pagamento', 'debint', 'debito', 'internazionale']
+
 
 def get_similar_bank_transactions(phrase, bank_transaction_id, amount=10):
 	"""
-	Still TODO
+	Get the bank transactions with the most similar description of the one of the given bank transaction.
 	"""
+
 	# Extract meaningful terms
 	words = re.findall(r'\b[a-zA-Z]{3,}\b', phrase.lower())
-	meaningful_words = words[-5:]
+	meaningful_words = [word for word in words if word not in COMMON_WORDS][-5:]
 
 	if not meaningful_words:
 		return BankTransaction.objects.none()
@@ -27,10 +30,11 @@ def get_similar_bank_transactions(phrase, bank_transaction_id, amount=10):
 	    bm25(bank_transactions_fts) as relevance_score
 	FROM bank_transactions_fts
 	WHERE bank_transactions_fts MATCH %s
-	ORDER BY relevance_score
-	LIMIT %s
+	AND bank_transactions_fts.id != %s
+	ORDER BY relevance_score DESC
+	LIMIT 100 -- Look at the big comment below for an explanation
 """,
-			[fts_query, amount],
+			[fts_query, bank_transaction_id],
 		)
 
 		rows = cursor.fetchall()
@@ -39,6 +43,10 @@ def get_similar_bank_transactions(phrase, bank_transaction_id, amount=10):
 		transaction_ids = [row[0] for row in rows]
 
 		# Get corresponding BankTransaction objects
-		results = BankTransaction.objects.filter(id__in=transaction_ids)
+		# It would have been also ok to filter for duplicates in the FTS query, if only the field for duplication was available.
+		# I didn't want to get that table too "dirty", so I opted instead for over-fetching ids from the virtual table, and then
+		# completing the filter here. If this ever leads to errors, I can always add a column to the virtual table and then
+		# filter duplicates in the original query.
+		results = BankTransaction.objects.filter(id__in=transaction_ids, duplicate_of__isnull=True)[:amount]
 
 		return results
