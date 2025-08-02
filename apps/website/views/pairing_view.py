@@ -6,7 +6,6 @@ from django.views.decorators.http import require_GET
 
 from apps.website.forms import YnabTransactionCreationForm
 from apps.website.utils import highlight_text_differences
-from core.functions import get_similar_bank_transactions
 from core.models import BankTransaction, YnabTransaction
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
@@ -26,9 +25,8 @@ def pairing_view(request, kind):
 		BankTransaction.objects.filter(
 			snoozed_on=None, paired_on=None, duplicate_of=None, bank_account__personal=personal
 		)
-		.order_by(
-			'date', 'id'
-		)  # <- sort by ID technically not needed, but AI convinced me it's useful to avoid undeterministic behaviors during tests
+		# ↓ sort by ID technically not needed, but AI convinced me it's useful to avoid undeterministic behaviors during tests
+		.order_by('date', 'id')
 		.first()
 	)
 
@@ -58,9 +56,6 @@ def pairing_view(request, kind):
 			first_unpaired_expense.name, potential_duplicate.name
 		)
 
-	similar_bank_transactions = get_similar_bank_transactions(
-		first_unpaired_expense.name, first_unpaired_expense.id, 5
-	)
 
 	return render(
 		request,
@@ -75,6 +70,5 @@ def pairing_view(request, kind):
 			),
 			'potential_duplicate': potential_duplicate,
 			'potential_duplicate_highlighted': potential_duplicate_highlighted,
-			'similar_bank_transactions': similar_bank_transactions,
 		},
 	)

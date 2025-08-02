@@ -31,7 +31,6 @@
             <ul class="tabs-nav">
                 <li class="tab-link active" data-tab="tab1">Pair</li>
                 <li class="tab-link" data-tab="tab2">Create</li>
-                <li class="tab-link" data-tab="tab3">Investigate</li>
                 <li class="tab-link" data-tab="tab4">Other</li>
             </ul>
 
@@ -111,29 +110,6 @@
                     {{ transaction_creation_form }}
                     <button type="submit">Create transaction</button>
                 </form>
-            </div>
-        <div id="tab3" class="tab-content">
-                <h2>Similar bank transactions</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Amount</th>
-                            <th>Name</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    {% for transaction in similar_bank_transactions %}
-                        <tr>
-                            <td class="mono">{{ transaction.id }}</td>
-                            <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
-                            <td>{{ transaction.name }}</td>
-                            <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
-                        </tr>
-                    {% endfor %}
-                    </tbody>
-                </table>
             </div>
             <div id="tab4" class="tab-content">
                 <h2>Snooze the bank expense</h2>
