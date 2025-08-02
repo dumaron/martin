@@ -22,19 +22,23 @@
                 <td>{{ expense.amount }}€</td>
             </tr>
             <tr>
-                <th>Source</th>
-                <td>{{ expense.file_import.file_type }}</td>
+                <th>Account</th>
+                <td>{{ expense.bank_account }}</td>
+            </tr>
+            <tr>
+                <th>Imported in</th>
+                <td>{{ expense.file_import }}</td>
             </tr>
             </tbody>
         </table>
 
+        <h2>Same amount</h2>
         {% if same_amount_suggestions %}
             <div id="same-amount-suggestions">
                 <form action="{% url 'pair-expense-transaction' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="expense" value="{{ expense.id }}"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
-                    <h2>Same amount</h2>
                     <table>
                         <thead>
                             <tr>
@@ -59,8 +63,11 @@
                     <button type="submit">Pair expenses</button>
                 </form>
             </div>
+        {% else %}
+            <p>No uncleared YNAB transaction with the same amount found.</p>
         {% endif %}
 
+        <h2>Similar date</h2>
         {% if similar_date_suggestions %}
             <div id="similar-date-suggestions">
                 <form action="{% url 'pair-expense-transaction' %}" method="post">
@@ -68,7 +75,6 @@
                     <input type="hidden" name="expense" value="{{ expense.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
-                    <h2>Similar date</h2>
                     <table>
                         <thead>
                             <tr>
@@ -93,6 +99,8 @@
                     <button type="submit">Equalize and pair</button>
                 </form>
             </div>
+        {% else %}
+            <p>No uncleared YNAB transaction found within the date range.</p>
         {% endif %}
         <h2>Create transaction from bank expense</h2>
         <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post">
