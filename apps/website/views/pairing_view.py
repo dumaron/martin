@@ -56,7 +56,6 @@ def pairing_view(request, kind):
 			first_unpaired_expense.name, potential_duplicate.name
 		)
 
-	similar_bank_transactions = first_unpaired_expense.get_similar_transactions(5)
 
 	return render(
 		request,
@@ -71,6 +70,5 @@ def pairing_view(request, kind):
 			),
 			'potential_duplicate': potential_duplicate,
 			'potential_duplicate_highlighted': potential_duplicate_highlighted,
-			'similar_bank_transactions': similar_bank_transactions,
 		},
 	)

@@ -55,10 +55,8 @@ class PairingViewTest(TestCase):
 
 		self.client = Client()
 
-	@patch.object(BankTransaction, 'get_similar_transactions')
-	def test_pairing_view_excludes_duplicates(self, mock_get_similar):
+	def test_pairing_view_excludes_duplicates(self):
 		"""Test that the pairing view excludes transactions marked as duplicates."""
-		mock_get_similar.return_value = BankTransaction.objects.none()
 
 		self.client.force_login(self.user)
 
@@ -73,10 +71,8 @@ class PairingViewTest(TestCase):
 		self.assertEqual(response.context['expense'], self.original_transaction)
 		self.assertNotEqual(response.context['expense'], self.duplicate_transaction)
 
-	@patch.object(BankTransaction, 'get_similar_transactions')
-	def test_pairing_view_with_only_duplicates(self, mock_get_similar):
+	def test_pairing_view_with_only_duplicates(self):
 		"""Test that the pairing view shows empty when only duplicates exist."""
-		mock_get_similar.return_value = BankTransaction.objects.none()
 
 		self.client.force_login(self.user)
 
@@ -92,10 +88,8 @@ class PairingViewTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 		self.assertTemplateUsed(response, 'pairing_empty.html')
 
-	@patch.object(BankTransaction, 'get_similar_transactions')
-	def test_pairing_view_shows_difflib_for_potential_duplicates(self, mock_get_similar):
+	def test_pairing_view_shows_difflib_for_potential_duplicates(self):
 		"""Test that the pairing view shows difflib output for potential duplicates."""
-		mock_get_similar.return_value = BankTransaction.objects.none()
 
 		# Remove existing transactions to have a clean slate
 		BankTransaction.objects.all().delete()

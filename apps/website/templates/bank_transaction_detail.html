@@ -41,43 +41,5 @@
         </tbody>
     </table>
     
-    <div class="tabs-container">
-        <ul class="tabs-nav">
-            <li class="tab-link active" data-tab="similar">Similar Transactions</li>
-        </ul>
-
-        <div id="similar" class="tab-content active">
-            {% if similar_text %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Description</th>
-                            <th>Date</th>
-                            <th>Amount</th>
-                            <th>Bank</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for transaction in similar_text %}
-                            <tr>
-                                <td><a href="{% url 'bank_transaction_detail' bank_transaction_id=transaction.id %}">#{{ transaction.id }}</a></td>
-                                <td>{{ transaction.name }}</td>
-                                <td class="date">{{ transaction.date | date:"d.m.Y"}}</td>
-                                <td>{{ transaction.amount }}</td>
-                                <td>
-                                    <span class="{% if transaction.bank_account.id == 3 %}credem{% endif %}">
-                                        {{ transaction.bank_account }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <p>No similar transactions found.</p>
-            {% endif %}
-        </div>
-    </div>
 </div>
 {% endblock %}
