@@ -27,7 +27,11 @@
             </tr>
             <tr>
                 <th>Imported in</th>
-                <td>{{ expense.file_import }}</td>
+                <td>
+                    <a href="{% url 'bank_file_import_detail' bank_file_import_id=expense.file_import.id %}">
+                        {{ expense.file_import }}
+                    </a>
+                </td>
             </tr>
             </tbody>
         </table>

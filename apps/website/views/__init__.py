@@ -8,6 +8,8 @@ from apps.website.views.snooze_bankexpense import snooze_bankexpense
 from apps.website.views.synchronize_ynab_categories import synchronize_ynab_categories
 from apps.website.views.transactions import (
 	BankTransactionTable,
+	bank_file_import_detail,
+	bank_file_import_list,
 	bank_transaction_detail,
 	bank_transaction_list,
 	ynab_transaction_detail,
@@ -25,6 +27,8 @@ __all__ = [
 	'ynab_sync',
 	'ynab_synchronizations_list',
 	'synchronize_ynab_categories',
+	'bank_file_import_detail',
+	'bank_file_import_list',
 	'bank_transaction_detail',
 	'bank_transaction_list',
 	'ynab_transaction_detail',

@@ -4,6 +4,8 @@ from django.contrib import admin
 from django.urls import include, path
 
 from apps.website.views import (
+	bank_file_import_detail,
+	bank_file_import_list,
 	bank_transaction_detail,
 	bank_transaction_list,
 	create_ynab_transaction,
@@ -47,6 +49,10 @@ urlpatterns = [
 				path('bank_transactions', bank_transaction_list, name='bank_transaction_list'),
 				path(
 					'bank_transactions/<int:bank_transaction_id>', bank_transaction_detail, name='bank_transaction_detail'
+				),
+				path('bank_file_imports', bank_file_import_list, name='bank_file_import_list'),
+				path(
+					'bank_file_imports/<int:bank_file_import_id>', bank_file_import_detail, name='bank_file_import_detail'
 				),
 				path(
 					'ynab_transactions/<str:ynab_transaction_id>', ynab_transaction_detail, name='ynab_transaction_detail'

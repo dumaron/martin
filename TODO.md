@@ -11,21 +11,19 @@
 ### Pairing
 
 - [ ] Fix CSS for main table: the `th` seems to be slightly higher than the `td`
-- [ ] Show bank account as an element of the main table
-- [ ] Create low-level pages (both list and detail) for bank imports
-- [ ] Switch "memo" field in creation from a textarea to an input
+- [x] Show bank account as an element of the main table
+- [x] Create low-level pages (both list and detail) for bank imports
+- [x] Switch "memo" field in creation from a textarea to an input
 
 #### Improve category selection by replacing native `select` with [TomSelect](https://github.com/orchidjs/tom-select)
 - [ ] Try to change the category creation select by making it load with Tom Select
 
 #### Improve "Analysis" tab
-- [ ] Try changing the algorithm for similar transactions by removing some "too common" words and including some of the words at the end of the text
+- [x] Try changing the algorithm for similar transactions by removing some "too common" words and including some of the words at the end of the text
 - [ ] Try developing a new version of the table that includes a new row below the main one with the potentially paired YNAB transaction
-- [ ] Try adding a new column to the similar transactions which tells the percentage of different chars from the original text - after removing numbers and signs
-- [ ] Add a text about the fact that this tab is useful for looking transaction with similar names and check what they have been paired with
 
 #### Improve "Pairing" tabs
-- [ ] Add a message for when there are no suggestions in pairing, both for exact match and similar date
+- [x] Add a message for when there are no suggestions in pairing, both for exact match and similar date
 - [ ] Add a column for the suggestions to show the difference in days from the bank transactions
 
 #### Review "Nothing to pair page"
