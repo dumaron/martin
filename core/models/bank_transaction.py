@@ -17,7 +17,7 @@ UNICREDIT_BANK_ACCOUNT_ID = 1
 FINECO_BANK_ACCOUNT_ID = 2
 CREDEM_BANK_ACCOUNT_ID = 3
 
-COMMON_WORDS = ['parma', 'credito', 'pagamento', 'debint', 'debito', 'internazionale']
+COMMON_WORDS = {'parma', 'credito', 'pagamento', 'debint', 'debito', 'internazionale'}
 
 
 class BankTransaction(models.Model):
