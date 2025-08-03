@@ -1,5 +1,6 @@
 import django_tables2 as tables
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.shortcuts import get_object_or_404, render
 from django.views.decorators.http import require_GET
 
@@ -39,8 +40,6 @@ class BankFileImportTable(tables.Table):
 		}
 		return file_type_to_bank.get(record.file_type, record.file_type)
 
-	def render_transaction_count(self, record):
-		return record.transaction_count
 
 
 @login_required
@@ -89,6 +88,6 @@ def bank_file_import_detail(request, bank_file_import_id):
 @login_required
 @require_GET
 def bank_file_import_list(request):
-	table = BankFileImportTable(BankFileImport.objects.all().order_by('-import_date'))
+	table = BankFileImportTable(BankFileImport.objects.annotate(transaction_count=Count('banktransaction')).order_by('-import_date'))
 	tables.RequestConfig(request).configure(table)
 	return render(request, 'bank_file_import_list.html', {'table': table})
