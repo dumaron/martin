@@ -15,9 +15,9 @@ def file_import(request):
 		form = BankFileImportForm(request.POST, request.FILES)
 
 		if form.is_valid():
-			form.save()
+			bank_file_import = form.save()
 
-			return redirect('file_import')  # TODO create file import detail page
+			return redirect('bank_file_import_detail', bank_file_import_id=bank_file_import.id)
 		else:
 			return render(request, 'file_import.html', {'form': form})
 	else:

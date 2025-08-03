@@ -24,7 +24,11 @@
             </tr>
             <tr>
                 <th>Imported in</th>
-                <td>{{ bank_transaction.file_import }}</td>
+                <td>
+                    <a href="{% url 'bank_file_import_detail' bank_file_import_id=bank_transaction.file_import.id %}">
+                        {{ bank_transaction.file_import }}
+                    </a>
+                </td>
             </tr>
             <tr>
                 <th>Paired with</th>
