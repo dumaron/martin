@@ -59,10 +59,10 @@ class BankFileImport(models.Model):
 
 		# When saving, we want it to create many single transactions entries as per file (if a strategy is defined)
 		rows = self.get_file_rows()
-		expenses = [file_parsing_strategy(row, self) for row in rows]
+		bank_transactions = [file_parsing_strategy(row, self) for row in rows]
 
 		# Given that we have a unique constraint based on SQL based on name, date and amount, the already-imported
 		# transactions will trigger an error. However, by using `ignore_conflicts`, we can just simulate a behavior where
 		# the duplicates are just skipped
-		BankTransaction.objects.bulk_create(expenses, ignore_conflicts=True)
+		BankTransaction.objects.bulk_create(bank_transactions, ignore_conflicts=True)
 		return imported

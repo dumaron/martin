@@ -4,7 +4,7 @@ from django.views.decorators.http import require_POST
 
 from apps.website.forms import YnabTransactionCreationForm
 from core.models import BankTransaction
-from core.mutations import create_ynab_transaction_from_bank_expense
+from core.mutations import create_ynab_transaction_from_bank_transaction
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 
@@ -12,10 +12,10 @@ from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 @require_POST
 def create_ynab_transaction(request, kind):
 	"""
-	Creates a new YNAB transaction based on a bank expense and form data.
+	Creates a new YNAB transaction based on a bank transaction and form data.
 
 	Takes a POST request with form data containing:
-	- bank_expense_id: ID of the BankExpense to create transaction from
+	- bank_transaction_id: ID of the BankTransaction to create transaction from
 	- memo: Optional memo text for the transaction
 	- ynab_category: Category ID to assign to the transaction
 
@@ -28,10 +28,10 @@ def create_ynab_transaction(request, kind):
 	redirect_to = request.POST.get('redirect-to')
 
 	if form.is_valid():
-		bank_expense = get_object_or_404(BankTransaction, pk=form.cleaned_data['bank_transaction_id'])
+		bank_transaction = get_object_or_404(BankTransaction, pk=form.cleaned_data['bank_transaction_id'])
 		memo = form.cleaned_data['memo']
 		category_id = form.cleaned_data['ynab_category']
-		create_ynab_transaction_from_bank_expense(budget_id, bank_expense, memo, category_id)
+		create_ynab_transaction_from_bank_transaction(budget_id, bank_transaction, memo, category_id)
 		return redirect(redirect_to)
 	else:
 		return

@@ -41,16 +41,11 @@ class BankFileImportTable(tables.Table):
 		return file_type_to_bank.get(record.file_type, record.file_type)
 
 
-
 @login_required
 @require_GET
 def bank_transaction_detail(request, bank_transaction_id):
 	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
-	return render(
-		request,
-		'bank_transaction_detail.html',
-		{'bank_transaction': bank_transaction},
-	)
+	return render(request, 'bank_transaction_detail.html', {'bank_transaction': bank_transaction})
 
 
 @login_required
@@ -78,16 +73,15 @@ def bank_file_import_detail(request, bank_file_import_id):
 	return render(
 		request,
 		'bank_file_import_detail.html',
-		{
-			'bank_file_import': bank_file_import,
-			'bank_transactions_table': bank_transactions_table,
-		},
+		{'bank_file_import': bank_file_import, 'bank_transactions_table': bank_transactions_table},
 	)
 
 
 @login_required
 @require_GET
 def bank_file_import_list(request):
-	table = BankFileImportTable(BankFileImport.objects.annotate(transaction_count=Count('banktransaction')).order_by('-import_date'))
+	table = BankFileImportTable(
+		BankFileImport.objects.annotate(transaction_count=Count('banktransaction')).order_by('-import_date')
+	)
 	tables.RequestConfig(request).configure(table)
 	return render(request, 'bank_file_import_list.html', {'table': table})

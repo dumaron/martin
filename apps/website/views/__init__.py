@@ -4,7 +4,7 @@ from apps.website.views.home import martin_home_page
 from apps.website.views.link_duplicate_bank_transaction import link_duplicate_bank_transaction
 from apps.website.views.pair_expense import match_transactions
 from apps.website.views.pairing_view import pairing_view
-from apps.website.views.snooze_bankexpense import snooze_bank_transaction
+from apps.website.views.snooze_bank_transaction import snooze_bank_transaction
 from apps.website.views.synchronize_ynab_categories import synchronize_ynab_categories
 from apps.website.views.transactions import (
 	BankTransactionTable,

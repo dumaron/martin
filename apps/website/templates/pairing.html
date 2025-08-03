@@ -76,7 +76,7 @@
             <div id="similar-date-suggestions">
                 <form action="{% url 'pair-transactions' %}" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="expense" value="{{ bank_transaction.id }}"/>
+                    <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
                     <table>

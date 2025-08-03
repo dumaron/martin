@@ -56,7 +56,6 @@ def pairing_view(request, kind):
 			first_unpaired_bank_transaction.name, potential_duplicate.name
 		)
 
-
 	return render(
 		request,
 		'pairing.html',

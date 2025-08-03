@@ -5,7 +5,7 @@ from core.models import YnabAccount, YnabTransaction
 from core.mutations.sync_ynab_transactions import sync_ynab_transactions
 
 
-def create_ynab_transaction_from_bank_expense(budget_id, bank_transaction, memo, ynab_category) -> None:
+def create_ynab_transaction_from_bank_transaction(budget_id, bank_transaction, memo, ynab_category) -> None:
 	"""
 	Creates a YNAB transaction from a bank transaction and matches them together
 	"""
@@ -36,3 +36,4 @@ def create_ynab_transaction_from_bank_expense(budget_id, bank_transaction, memo,
 	bank_transaction.save()
 
 	return
+

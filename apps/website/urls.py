@@ -33,7 +33,9 @@ urlpatterns = [
 				# mutations
 				path('pair-transactions', match_transactions, name='pair-transactions'),
 				path('<str:kind>/create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),
-				path('bank-transactions/<int:bank_transaction_id>/snooze', snooze_bank_transaction, name='snooze-transaction'),
+				path(
+					'bank-transactions/<int:bank_transaction_id>/snooze', snooze_bank_transaction, name='snooze-transaction'
+				),
 				path(
 					'bank_transactions/<int:duplicate_transaction_id>/link-duplicate',
 					link_duplicate_bank_transaction,

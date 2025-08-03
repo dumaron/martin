@@ -41,7 +41,7 @@ class BankTransaction(models.Model):
 
 	class Meta:
 		constraints = (
-			models.UniqueConstraint('name', 'date', 'amount', name='expense-uniqueness-name-date-amount'),
+			models.UniqueConstraint('name', 'date', 'amount', name='bank-transaction-uniqueness-name-date-amount'),
 		)
 		db_table = 'bank_transactions'
 
