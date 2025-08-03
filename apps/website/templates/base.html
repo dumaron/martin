@@ -10,15 +10,14 @@
         document.documentElement.setAttribute('data-theme', savedTheme);
         </script>
 
-        <link rel="stylesheet" href="{% static '/style.css' %}" />
-        <link rel="stylesheet" href="{% static '/forms.css' %}" />
-        <link rel="stylesheet" href="{% static '/tabs.css' %}" />
-        <link rel="stylesheet" href="{% static '/tables.css' %}" />
-        <link rel="stylesheet" href="{% static '/banks.css' %}" />
-        <link rel="stylesheet" href="{% static '/suggestions.css' %}" />
-        <link rel="stylesheet" href="{% static '/layout.css' %}" />
         <link rel="stylesheet" href="{% static '/tom-select/tom-select.css' %}" />
-        <link rel="stylesheet" href="{% static '/tom-select-custom.css' %}" />
+        <link rel="stylesheet" href="{% static '/styles/style.css' %}" />
+        <link rel="stylesheet" href="{% static '/styles/forms.css' %}" />
+        <link rel="stylesheet" href="{% static '/styles/tabs.css' %}" />
+        <link rel="stylesheet" href="{% static '/styles/tables.css' %}" />
+        <link rel="stylesheet" href="{% static '/styles/banks.css' %}" />
+        <link rel="stylesheet" href="{% static '/styles/suggestions.css' %}" />
+        <link rel="stylesheet" href="{% static '/styles/layout.css' %}" />
 
         {% block stylesheets %}{% endblock %}
         <script src="{% static 'htmx-2.0.js' %}" type="module" defer></script>

@@ -107,7 +107,7 @@
             <p>No uncleared YNAB transaction found within the date range.</p>
         {% endif %}
         <h2>Create YNAB transaction</h2>
-        <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post">
+        <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post" class="pairing-form">
             {% csrf_token %}
             <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
             {{ transaction_creation_form.bank_transaction_id }}

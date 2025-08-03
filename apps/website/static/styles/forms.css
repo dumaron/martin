@@ -10,3 +10,22 @@ input[type="text"], input[type="email"], input[type="password"], input[type="url
     min-height: 28px;
     box-sizing: border-box;
 }
+
+
+/* Tom Select customization */
+.ts-wrapper,
+.pairing-form input[type="text"] {
+    width: 300px;
+}
+
+.ts-control {
+    border: 1px solid var(--color-border-muted);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 13px;
+    font-family: 'SF Pro', monospace;
+
+    input {
+        width: 100px !important;
+    }
+}
