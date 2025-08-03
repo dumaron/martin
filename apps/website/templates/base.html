@@ -11,14 +11,19 @@
         </script>
 
         <link rel="stylesheet" href="{% static '/style.css' %}" />
+        <link rel="stylesheet" href="{% static '/forms.css' %}" />
         <link rel="stylesheet" href="{% static '/tabs.css' %}" />
         <link rel="stylesheet" href="{% static '/tables.css' %}" />
         <link rel="stylesheet" href="{% static '/banks.css' %}" />
         <link rel="stylesheet" href="{% static '/suggestions.css' %}" />
         <link rel="stylesheet" href="{% static '/layout.css' %}" />
+        <link rel="stylesheet" href="{% static '/tom-select/tom-select.css' %}" />
+        <link rel="stylesheet" href="{% static '/tom-select-custom.css' %}" />
+
         {% block stylesheets %}{% endblock %}
         <script src="{% static 'htmx-2.0.js' %}" type="module" defer></script>
         <script src="{% static 'tabs.js' %}" type="module" defer></script>
+        <script src="{% static 'tom-select/tom-select.complete.js' %}" type="module" defer></script>
     </head>
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-boost="false">
         <div class="grid-content">
@@ -29,5 +34,10 @@
                 {% block content %}{% endblock %}
             </main>
         </div>
+        <script>
+            window.addEventListener('load', function () {
+                new TomSelect('.tom-select', {});
+            });
+        </script>
     </body>
 </html>
