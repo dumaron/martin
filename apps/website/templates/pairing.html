@@ -2,34 +2,34 @@
 
 {% block content %}
     <div class="fixed-content">
-        <h1 class="mono">Pairing bank transaction #{{ expense.id }}</h1>
+        <h1 class="mono">Pairing bank transaction #{{ bank_transaction.id }}</h1>
         <table class="large">
             <tbody>
             <tr>
                 <th>ID</th>
-                <td class="mono">{{ expense.id }}</td>
+                <td class="mono">{{ bank_transaction.id }}</td>
             </tr>
             <tr>
                 <th>Description</th>
-                <td class="emphasis">{{ expense.name }}</td>
+                <td class="emphasis">{{ bank_transaction.name }}</td>
             </tr>
             <tr>
                 <th>Date</th>
-                <td>{{ expense.date | date:"d.m.Y" }}</td>
+                <td>{{ bank_transaction.date | date:"d.m.Y" }}</td>
             </tr>
             <tr>
                 <th>Amount</th>
-                <td>{{ expense.amount }}€</td>
+                <td>{{ bank_transaction.amount }}€</td>
             </tr>
             <tr>
                 <th>Account</th>
-                <td>{{ expense.bank_account }}</td>
+                <td>{{ bank_transaction.bank_account }}</td>
             </tr>
             <tr>
                 <th>Imported in</th>
                 <td>
-                    <a href="{% url 'bank_file_import_detail' bank_file_import_id=expense.file_import.id %}">
-                        {{ expense.file_import }}
+                    <a href="{% url 'bank_file_import_detail' bank_file_import_id=bank_transaction.file_import.id %}">
+                        {{ bank_transaction.file_import }}
                     </a>
                 </td>
             </tr>
@@ -39,9 +39,9 @@
         <h2>Same amount</h2>
         {% if same_amount_suggestions %}
             <div id="same-amount-suggestions">
-                <form action="{% url 'pair-expense-transaction' %}" method="post">
+                <form action="{% url 'pair-transactions' %}" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="expense" value="{{ expense.id }}"/>
+                    <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
                     <table>
                         <thead>
@@ -74,9 +74,9 @@
         <h2>Similar date</h2>
         {% if similar_date_suggestions %}
             <div id="similar-date-suggestions">
-                <form action="{% url 'pair-expense-transaction' %}" method="post">
+                <form action="{% url 'pair-transactions' %}" method="post">
                     {% csrf_token %}
-                    <input type="hidden" name="expense" value="{{ expense.id }}"/>
+                    <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
                     <table>
@@ -106,15 +106,15 @@
         {% else %}
             <p>No uncleared YNAB transaction found within the date range.</p>
         {% endif %}
-        <h2>Create transaction from bank expense</h2>
+        <h2>Create YNAB transaction</h2>
         <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
             {{ transaction_creation_form }}
             <button type="submit">Create transaction</button>
         </form>
-        <h2>Snooze the bank expense</h2>
-        <form action="{% url 'snooze-expense' bankexpense_id=expense.id %}" method="post">
+        <h2>Snooze the bank transaction</h2>
+        <form action="{% url 'snooze-transaction' bank_transaction_id=bank_transaction.id %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
             <button type="submit">Snooze</button>

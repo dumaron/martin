@@ -22,7 +22,7 @@ def snooze(modeladmin, request, queryset):
 	queryset.update(snoozed_on=datetime.now())
 
 
-class BankExpenseAdmin(admin.ModelAdmin):
+class BankTransactionAdmin(admin.ModelAdmin):
 	list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on', 'file_type']
 	search_fields = ['name', 'amount']
 	list_filter = [
@@ -72,7 +72,7 @@ class MemoryAdmin(admin.ModelAdmin):
 admin.site.register(Event)
 admin.site.register(Inbox)
 admin.site.register(BankFileImport, BankFileImportAdmin)
-admin.site.register(BankTransaction, BankExpenseAdmin)
+admin.site.register(BankTransaction, BankTransactionAdmin)
 admin.site.register(YnabImport, YnabImportAdmin)
 admin.site.register(YnabTransaction, YnabTransactionAdmin)
 admin.site.register(YnabCategory)

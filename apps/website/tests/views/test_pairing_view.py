@@ -68,8 +68,8 @@ class PairingViewTest(TestCase):
 		self.assertEqual(response.status_code, 200)
 
 		# The view should show the original transaction, not the duplicate
-		self.assertEqual(response.context['expense'], self.original_transaction)
-		self.assertNotEqual(response.context['expense'], self.duplicate_transaction)
+		self.assertEqual(response.context['bank_transaction'], self.original_transaction)
+		self.assertNotEqual(response.context['bank_transaction'], self.duplicate_transaction)
 
 	def test_pairing_view_with_only_duplicates(self):
 		"""Test that the pairing view shows empty when only duplicates exist."""

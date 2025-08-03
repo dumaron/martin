@@ -36,12 +36,12 @@ class BankTransaction(models.Model):
 	# possible variations in the future.
 	duplicate_of = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
 
-	# The bank account this expense is coming from.
+	# The bank account this transaction is coming from.
 	bank_account = models.ForeignKey('BankAccount', on_delete=models.PROTECT)
 
 	class Meta:
 		constraints = (
-			models.UniqueConstraint('name', 'date', 'amount', name='expense-uniqueness-name-date-amount'),
+			models.UniqueConstraint('name', 'date', 'amount', name='bank-transaction-uniqueness-name-date-amount'),
 		)
 		db_table = 'bank_transactions'
 

@@ -12,9 +12,9 @@ from apps.website.views import (
 	file_import,
 	link_duplicate_bank_transaction,
 	martin_home_page,
-	pair_expense_with_ynab_transaction,
+	match_transactions,
 	pairing_view,
-	snooze_bankexpense,
+	snooze_bank_transaction,
 	synchronize_ynab_categories,
 	ynab_sync,
 	ynab_synchronizations_list,
@@ -31,9 +31,11 @@ urlpatterns = [
 			[
 				path('<str:kind>/pairing', pairing_view, name='pairing'),
 				# mutations
-				path('pair-expense-transaction', pair_expense_with_ynab_transaction, name='pair-expense-transaction'),
+				path('pair-transactions', match_transactions, name='pair-transactions'),
 				path('<str:kind>/create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),
-				path('expenses/<int:bankexpense_id>/snooze', snooze_bankexpense, name='snooze-expense'),
+				path(
+					'bank-transactions/<int:bank_transaction_id>/snooze', snooze_bank_transaction, name='snooze-transaction'
+				),
 				path(
 					'bank_transactions/<int:duplicate_transaction_id>/link-duplicate',
 					link_duplicate_bank_transaction,
@@ -43,7 +45,7 @@ urlpatterns = [
 				path('ynab-synchronizations', ynab_synchronizations_list, name='ynab-synchronizations-list'),
 				path('ynab-sync', ynab_sync, name='ynab-sync'),
 				path('sync-ynab-categories', synchronize_ynab_categories, name='synchronize_ynab_categories'),
-				# file import for personal bank expenses
+				# file import for personal bank transactions
 				path('file-import', file_import, name='file_import'),
 				# Low-level entities
 				path('bank_transactions', bank_transaction_list, name='bank_transaction_list'),
