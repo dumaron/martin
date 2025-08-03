@@ -7,7 +7,7 @@ from core.mutations.sync_ynab_transactions import sync_ynab_transactions
 
 def create_ynab_transaction_from_bank_expense(budget_id, bank_transaction, memo, ynab_category) -> None:
 	"""
-	Creates a YNAB transaction from a bank expense and pairs them together
+	Creates a YNAB transaction from a bank transaction and matches them together
 	"""
 
 	amount = bank_transaction.amount
@@ -24,13 +24,13 @@ def create_ynab_transaction_from_bank_expense(budget_id, bank_transaction, memo,
 	# I'm not super-happy about having to perform a partial refresh on every create, as it might make the creation action
 	# more complex than it should be. In my mind, I would have just created a local version of the YNAB transaction just
 	# created.
-	# However, due to some choices about the model, this would miss a TNAB import, which is required...
+	# However, due to some choices about the model, this would miss a YNAB import, which is required...
 	# The most pragmatic choice is to just trigger a refresh, being somewhat confident that the newly created transaction
 	# will be there.
 	sync_ynab_transactions(budget_id, partial=True)
 	local_ynab_transaction = YnabTransaction.objects.filter(id=remote_transaction.id).first()
 
-	# 3. Pair the local bank expense with the YNAB transaction id
+	# 3. Pair the local bank transaction with the YNAB transaction id
 	bank_transaction.matched_ynab_transaction = local_ynab_transaction
 	bank_transaction.paired_on = datetime.now()
 	bank_transaction.save()

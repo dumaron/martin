@@ -20,7 +20,7 @@ headers = {'Authorization': f'Bearer {settings.YNAB_API_TOKEN}', 'Content-Type':
 
 def get_uncleared_expenses(budget_id, server_knowledge) -> YnabTransactionListData:
 	"""
-	Fetch and validate uncleared expenses from YNAB API
+	Fetch and validate uncleared transactions from YNAB API
 	"""
 
 	response = requests.get(

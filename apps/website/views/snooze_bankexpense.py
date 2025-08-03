@@ -9,12 +9,12 @@ from core.models import BankTransaction
 
 @login_required
 @require_POST
-def snooze_bankexpense(request, bankexpense_id):
+def snooze_bank_transaction(request, bankexpense_id):
 	"""
-	Snoozes a bank expense. Useful for expenses that are actually just money transfers, like reloading the debit card
+	Snoozes a bank transaction. Useful for transactions that are actually just money transfers like reloading the debit card
 	"""
-	expense = get_object_or_404(BankTransaction, pk=bankexpense_id)
+	bank_transaction = get_object_or_404(BankTransaction, pk=bankexpense_id)
 	redirect_to = request.POST.get('redirect-to')
-	expense.snoozed_on = datetime.now()
-	expense.save()
+	bank_transaction.snoozed_on = datetime.now()
+	bank_transaction.save()
 	return redirect(redirect_to)

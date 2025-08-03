@@ -2,9 +2,9 @@ from apps.website.views.create_ynab_transaction import create_ynab_transaction
 from apps.website.views.file_import import file_import
 from apps.website.views.home import martin_home_page
 from apps.website.views.link_duplicate_bank_transaction import link_duplicate_bank_transaction
-from apps.website.views.pair_expense import pair_expense_with_ynab_transaction
+from apps.website.views.pair_expense import match_transactions
 from apps.website.views.pairing_view import pairing_view
-from apps.website.views.snooze_bankexpense import snooze_bankexpense
+from apps.website.views.snooze_bankexpense import snooze_bank_transaction
 from apps.website.views.synchronize_ynab_categories import synchronize_ynab_categories
 from apps.website.views.transactions import (
 	BankTransactionTable,
@@ -20,8 +20,8 @@ from apps.website.views.ynab_synchronizations_list import ynab_synchronizations_
 __all__ = [
 	'martin_home_page',
 	'pairing_view',
-	'pair_expense_with_ynab_transaction',
-	'snooze_bankexpense',
+	'match_transactions',
+	'snooze_bank_transaction',
 	'create_ynab_transaction',
 	'file_import',
 	'ynab_sync',

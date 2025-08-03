@@ -11,7 +11,7 @@ class BankFileImportForm(forms.ModelForm):
 
 class YnabTransactionCreationForm(forms.Form):
 	memo = forms.CharField()
-	bank_expense_id = forms.IntegerField(widget=forms.HiddenInput)
+	bank_transaction_id = forms.IntegerField(widget=forms.HiddenInput)
 	ynab_category = forms.ModelChoiceField(queryset=YnabCategory.objects.none())
 
 	def __init__(self, *args, budget_id, **kwargs):

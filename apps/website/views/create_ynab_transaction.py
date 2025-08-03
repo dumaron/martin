@@ -28,7 +28,7 @@ def create_ynab_transaction(request, kind):
 	redirect_to = request.POST.get('redirect-to')
 
 	if form.is_valid():
-		bank_expense = get_object_or_404(BankTransaction, pk=form.cleaned_data['bank_expense_id'])
+		bank_expense = get_object_or_404(BankTransaction, pk=form.cleaned_data['bank_transaction_id'])
 		memo = form.cleaned_data['memo']
 		category_id = form.cleaned_data['ynab_category']
 		create_ynab_transaction_from_bank_expense(budget_id, bank_expense, memo, category_id)
