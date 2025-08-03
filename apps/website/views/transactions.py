@@ -40,7 +40,7 @@ class BankFileImportTable(tables.Table):
 		return file_type_to_bank.get(record.file_type, record.file_type)
 
 	def render_transaction_count(self, record):
-		return BankTransaction.objects.filter(file_import=record).count()
+		return record.transaction_count
 
 
 @login_required
