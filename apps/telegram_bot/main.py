@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# import logging
 import os
 import sys
 
@@ -10,11 +8,11 @@ from pydub import AudioSegment
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes, MessageHandler, filters
 
-from core.integrations.openai import speech_to_text
-from core.models import Inbox
 
 # Add the project root to Python path
+# I REALLY REALLY want to learn a proper way to fix this. Shipping it only because otherwise fly.io fails to start the server
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
 
 # Setup Django
 load_dotenv()
@@ -24,6 +22,10 @@ if is_dev:
 else:
 	os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings.prod')
 django.setup()
+
+
+from core.integrations.openai import speech_to_text
+from core.models import Inbox
 
 
 # Define your bot token (you'll get this from BotFather)
