@@ -1,5 +1,13 @@
 {% extends 'base.html' %}
 
+{% block stylesheets %}
+    <style>
+        .creation-form-label {
+            width: 150px;
+        }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div class="fixed-content">
         <h1 class="mono">Pairing bank transaction #{{ bank_transaction.id }}</h1>
@@ -114,11 +122,11 @@
             <table class="large">
                 <tbody>
                 <tr>
-                    <th style="width: 150px;">{{ transaction_creation_form.memo.label_tag }}</th>
+                    <th class="creation-form-label">{{ transaction_creation_form.memo.label_tag }}</th>
                     <td>{{ transaction_creation_form.memo }}</td>
                 </tr>
                 <tr>
-                    <th style="width: 150px;">{{ transaction_creation_form.ynab_category.label_tag }}</th>
+                    <th class="creation-form-label">{{ transaction_creation_form.ynab_category.label_tag }}</th>
                     <td>{{ transaction_creation_form.ynab_category }}</td>
                 </tr>
                 </tbody>
