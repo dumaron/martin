@@ -16,6 +16,7 @@ from apps.website.views import (
 	pairing_view,
 	snooze_bank_transaction,
 	synchronize_ynab_categories,
+	time_box_page,
 	ynab_sync,
 	ynab_synchronizations_list,
 	ynab_transaction_detail,
@@ -25,12 +26,12 @@ urlpatterns = [
 	path('', martin_home_page, name='martin_home_page'),
 	path('admin/', admin.site.urls),
 	path('accounts/', include('django.contrib.auth.urls')),
+	path('time-box', time_box_page, name='time_box_flow'),
 	path(
 		'finances/',
 		include(
 			[
 				path('<str:kind>/pairing', pairing_view, name='pairing'),
-				# mutations
 				path('pair-transactions', match_transactions, name='pair-transactions'),
 				path('<str:kind>/create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),
 				path(
@@ -41,13 +42,10 @@ urlpatterns = [
 					link_duplicate_bank_transaction,
 					name='link-duplicate-bank-transaction',
 				),
-				# ynab synchronizations
 				path('ynab-synchronizations', ynab_synchronizations_list, name='ynab-synchronizations-list'),
 				path('ynab-sync', ynab_sync, name='ynab-sync'),
 				path('sync-ynab-categories', synchronize_ynab_categories, name='synchronize_ynab_categories'),
-				# file import for personal bank transactions
 				path('file-import', file_import, name='file_import'),
-				# Low-level entities
 				path('bank_transactions', bank_transaction_list, name='bank_transaction_list'),
 				path(
 					'bank_transactions/<int:bank_transaction_id>', bank_transaction_detail, name='bank_transaction_detail'

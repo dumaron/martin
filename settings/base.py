@@ -28,6 +28,7 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'django_htmx',
 	'django_tables2',
+	'django_tasks',
 	'core',
 	'apps.website',
 ]

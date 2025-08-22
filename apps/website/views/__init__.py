@@ -6,6 +6,7 @@ from apps.website.views.pair_expense import match_transactions
 from apps.website.views.pairing_view import pairing_view
 from apps.website.views.snooze_bank_transaction import snooze_bank_transaction
 from apps.website.views.synchronize_ynab_categories import synchronize_ynab_categories
+from apps.website.views.time_box import time_box_page
 from apps.website.views.transactions import (
 	BankTransactionTable,
 	bank_file_import_detail,
@@ -34,4 +35,5 @@ __all__ = [
 	'ynab_transaction_detail',
 	'BankTransactionTable',
 	'link_duplicate_bank_transaction',
+	'time_box_page'
 ]

@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Time Box Flow</h1>
+
+	{% if active_time_box %}
+		<div>
+			<h2>Active Time Box</h2>
+			<div class="timer-display" id="timer-display">00:00</div>
+
+			<div class="progress-bar">
+				<div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+			</div>
+
+			<div id="status-message" class="status-message" style="display: none;"></div>
+
+			<div class="btn-group">
+				<form method="post" action="{% url 'stop_time_box' %}">
+					{% csrf_token %}
+					<input type="hidden" name="time_box_id" value="{{ active_time_box.id }}">
+					<button type="submit" class="btn btn-danger">Stop Time Box</button>
+				</form>
+			</div>
+		</div>
+
+	{% else %}
+		<div>
+			<h2>Start New Time Box</h2>
+			<form method="post" action="{% url 'start_time_box' %}">
+				{% csrf_token %}
+				<div class="form-group">
+					<label for="max_duration_minutes">Duration (minutes):</label>
+					<input
+						type="number"
+						id="max_duration_minutes"
+						name="max_duration_minutes"
+						value="25"
+						min="1"
+						max="180"
+						class="form-control"
+						required
+					>
+				</div>
+				<div class="btn-group">
+					<button type="submit" class="btn btn-primary">Start Time Box</button>
+				</div>
+			</form>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}

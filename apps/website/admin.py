@@ -9,6 +9,7 @@ from core.models import (
 	Event,
 	Inbox,
 	Memory,
+	TimeBox,
 	YnabAccount,
 	YnabBudget,
 	YnabCategory,
@@ -69,6 +70,77 @@ class MemoryAdmin(admin.ModelAdmin):
 	list_filter = ['date']
 
 
+class TimeBoxAdmin(admin.ModelAdmin):
+	list_display = ['id', 'started_on', 'ended_on', 'duration_display', 'max_duration_minutes', 'status_display', 'has_been_interrupted']
+	list_filter = [
+		('ended_on', admin.EmptyFieldListFilter),
+		'has_been_interrupted',
+		'started_on',
+		'max_duration_minutes',
+	]
+	search_fields = []
+	readonly_fields = ['duration_display', 'status_display', 'elapsed_time']
+	ordering = ['-started_on']
+	
+	def get_readonly_fields(self, request, obj=None):
+		"""Show readonly fields only in change form, not add form."""
+		if obj:  # Editing existing object
+			return self.readonly_fields
+		else:  # Adding new object
+			return []
+	
+	def duration_display(self, obj):
+		"""Display the actual duration of the time box."""
+		if obj.ended_on:
+			duration = obj.ended_on - obj.started_on
+			minutes = int(duration.total_seconds() // 60)
+			seconds = int(duration.total_seconds() % 60)
+			return f"{minutes}m {seconds}s"
+		else:
+			from django.utils import timezone
+			duration = timezone.now() - obj.started_on
+			minutes = int(duration.total_seconds() // 60)
+			seconds = int(duration.total_seconds() % 60)
+			return f"{minutes}m {seconds}s (ongoing)"
+	duration_display.short_description = "Actual Duration"
+	
+	def status_display(self, obj):
+		"""Display the status of the time box."""
+		if not obj.ended_on:
+			return "🟢 Active"
+		elif obj.has_been_interrupted:
+			return "🟡 Interrupted"
+		else:
+			# Check if it completed the full duration
+			from django.utils import timezone
+			duration = obj.ended_on - obj.started_on
+			max_duration_seconds = obj.max_duration_minutes * 60
+			if duration.total_seconds() >= max_duration_seconds - 5:  # Allow 5 second tolerance
+				return "✅ Completed"
+			else:
+				return "🟡 Ended Early"
+	status_display.short_description = "Status"
+	
+	def elapsed_time(self, obj):
+		"""Show elapsed time for read-only display."""
+		from django.utils import timezone
+		if obj.ended_on:
+			elapsed = obj.ended_on - obj.started_on
+		else:
+			elapsed = timezone.now() - obj.started_on
+		
+		total_seconds = int(elapsed.total_seconds())
+		hours = total_seconds // 3600
+		minutes = (total_seconds % 3600) // 60
+		seconds = total_seconds % 60
+		
+		if hours > 0:
+			return f"{hours}h {minutes}m {seconds}s"
+		else:
+			return f"{minutes}m {seconds}s"
+	elapsed_time.short_description = "Elapsed Time"
+
+
 admin.site.register(Event)
 admin.site.register(Inbox)
 admin.site.register(BankFileImport, BankFileImportAdmin)
@@ -80,3 +152,4 @@ admin.site.register(YnabBudget)
 admin.site.register(YnabAccount, YnabAccountAdmin)
 admin.site.register(BankAccount, BankAccountAdmin)
 admin.site.register(Memory, MemoryAdmin)
+admin.site.register(TimeBox, TimeBoxAdmin)

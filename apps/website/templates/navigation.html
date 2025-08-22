@@ -16,6 +16,11 @@
             Flows
             <ul>
                 <li>
+                    <a href="{% url 'time_box_flow' %}" class="{% active request 'time_box_flow' %}">
+                        Time Box Flow
+                    </a>
+                </li>
+                <li>
                     <a href="{% url 'pairing' kind="personal" %}"
                        class="{% active request 'pairing' kind='personal' %}">
                         Pair personal YNAB expenses
