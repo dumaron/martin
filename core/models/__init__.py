@@ -4,6 +4,8 @@ from core.models.bank_transaction import BankTransaction
 from core.models.event import Event
 from core.models.inbox import Inbox
 from core.models.memory import Memory
+from core.models.project import Project
+from core.models.task import Task
 from core.models.ynab_account import YnabAccount
 from core.models.ynab_budget import YnabBudget
 from core.models.ynab_category import YnabCategory
@@ -15,6 +17,8 @@ __all__ = [
 	'BankFileImport',
 	'Event',
 	'Inbox',
+	'Project',
+	'Task',
 	'YnabCategory',
 	'YnabImport',
 	'YnabTransaction',

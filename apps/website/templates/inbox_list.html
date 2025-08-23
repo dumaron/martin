@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load django_tables2 %}
+
+{% block title %}Inbox Items{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1 class="mono">Inbox Items</h1>
+    
+    {% render_table table %}
+    
+    <h2>Capture New Item</h2>
+    <form action="{% url 'inbox_create' %}" method="get">
+        <button type="submit">+ New Inbox Item</button>
+    </form>
+</div>
+{% endblock %}

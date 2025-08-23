@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+    <style>
+        .creation-form-label {
+            width: 120px;
+        }
+        #id_title {
+            width: 100%;
+            max-width: 400px;
+        }
+        #id_description {
+            width: 100%;
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Create New Project{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1 class="mono">Create New Project</h1>
+
+    <form method="post" class="pairing-form">
+        {% csrf_token %}
+        <table class="large">
+            <tbody>
+                <tr>
+                    <th class="creation-form-label">{{ form.title.label_tag }}</th>
+                    <td>
+                        {{ form.title }}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="creation-form-label">{{ form.description.label_tag }}</th>
+                    <td>
+                        {{ form.description }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">Create Project</button>
+    </form>
+
+    <h2>Cancel</h2>
+    <form action="{% url 'project_list' %}" method="get">
+        <button type="submit">Back to Projects</button>
+    </form>
+</div>
+{% endblock %}

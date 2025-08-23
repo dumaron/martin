@@ -10,12 +10,23 @@ from apps.website.views import (
 	bank_transaction_list,
 	create_ynab_transaction,
 	file_import,
+	flow_page,
+	inbox_create,
+	inbox_detail,
+	inbox_list,
 	link_duplicate_bank_transaction,
 	martin_home_page,
 	match_transactions,
 	pairing_view,
+	process_inbox_item,
+	project_create,
+	project_detail,
+	project_list,
+	project_update_status,
 	snooze_bank_transaction,
 	synchronize_ynab_categories,
+	task_create,
+	task_mark_done,
 	ynab_sync,
 	ynab_synchronizations_list,
 	ynab_transaction_detail,
@@ -25,6 +36,9 @@ urlpatterns = [
 	path('', martin_home_page, name='martin_home_page'),
 	path('admin/', admin.site.urls),
 	path('accounts/', include('django.contrib.auth.urls')),
+	# GTD flow
+	path('gtd/flow', flow_page, name='flow_page'),
+	path('gtd/process/<int:inbox_id>', process_inbox_item, name='process_inbox_item'),
 	path(
 		'finances/',
 		include(
@@ -59,6 +73,16 @@ urlpatterns = [
 				path(
 					'ynab_transactions/<str:ynab_transaction_id>', ynab_transaction_detail, name='ynab_transaction_detail'
 				),
+				# GTD system
+				path('projects', project_list, name='project_list'),
+				path('projects/create', project_create, name='project_create'),
+				path('projects/<int:project_id>', project_detail, name='project_detail'),
+				path('projects/<int:project_id>/update-status', project_update_status, name='project_update_status'),
+				path('projects/<int:project_id>/tasks/create', task_create, name='task_create'),
+				path('tasks/<int:task_id>/mark-done', task_mark_done, name='task_mark_done'),
+				path('inboxes', inbox_list, name='inbox_list'),
+				path('inboxes/create', inbox_create, name='inbox_create'),
+				path('inboxes/<int:inbox_id>', inbox_detail, name='inbox_detail'),
 			]
 		),
 	),

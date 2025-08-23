@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+    <style>
+        .project-status {
+            font-weight: 600;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .status-active { background-color: #d4edda; color: #155724; }
+        .status-suspended { background-color: #fff3cd; color: #856404; }
+        .status-archived { background-color: #d1ecf1; color: #0c5460; }
+        .status-done { background-color: #d1ecf1; color: #0c5460; }
+        
+        .task-toggle-btn {
+            background: none;
+            border: 1px solid var(--color-border-light);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .task-toggle-btn:hover {
+            background-color: var(--color-background-hover);
+        }
+        
+        .task-done .task-toggle-btn {
+            background-color: #28a745;
+            color: white;
+            border-color: #28a745;
+        }
+        
+        .task-row {
+            display: flex;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--color-border-light);
+        }
+        
+        .task-row:last-child {
+            border-bottom: none;
+        }
+        
+        .task-content {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .task-done .task-content {
+            opacity: 0.6;
+            text-decoration: line-through;
+        }
+        
+        .task-title {
+            font-weight: 500;
+            margin: 0 0 2px 0;
+            font-size: 14px;
+        }
+        
+        .task-description {
+            color: var(--color-text-muted);
+            margin: 0 0 4px 0;
+            font-size: 13px;
+        }
+        
+        .task-meta {
+            color: var(--color-text-muted);
+            font-size: 12px;
+        }
+        
+        .emphasis {
+            font-weight: 600;
+            color: var(--color-text-secondary);
+        }
+        
+        .task-section {
+            background-color: var(--color-background-box);
+            border: 1px solid var(--color-border-light);
+            border-radius: 4px;
+            padding: 16px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %}
+    <div class="fixed-content">
+        <h1 class="mono">Project #{{ project.id }}: {{ project.title }}</h1>
+        
+        <table class="large">
+            <tbody>
+                <tr>
+                    <th>ID</th>
+                    <td class="mono">{{ project.id }}</td>
+                </tr>
+                <tr>
+                    <th>Title</th>
+                    <td class="emphasis">{{ project.title }}</td>
+                </tr>
+                {% if project.description %}
+                <tr>
+                    <th>Description</th>
+                    <td>{{ project.description }}</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th>Status</th>
+                    <td>
+                        <span class="project-status status-{{ project.status }}">
+                            {{ project.get_status_display }}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Created</th>
+                    <td>{{ project.created_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <th>Last Updated</th>
+                    <td>{{ project.updated_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <th>Tasks</th>
+                    <td>
+                        {{ tasks|length }} total
+                        {% if tasks %}
+                            {% regroup tasks by is_done as task_groups %}
+                            {% for group in task_groups %}
+                                {% if group.grouper %}
+                                    ({{ group.list|length }} completed)
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Change Project Status</h2>
+        <form method="post" action="{% url 'project_update_status' project.id %}">
+            {% csrf_token %}
+            <table class="large">
+                <tbody>
+                    <tr>
+                        <th>{{ status_form.status.label_tag }}</th>
+                        <td>
+                            {{ status_form.status }}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="submit">Update Status</button>
+        </form>
+
+        <h2>Tasks ({{ tasks.count }})</h2>
+        {% if tasks %}
+            <div class="task-section">
+                {% for task in tasks %}
+                    <div class="task-row {% if task.is_done %}task-done{% endif %}">
+                        <form method="post" action="{% url 'task_mark_done' task.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="submit" class="task-toggle-btn" title="{% if task.is_done %}Mark as incomplete{% else %}Mark as complete{% endif %}">
+                                {% if task.is_done %}✓{% else %}○{% endif %}
+                            </button>
+                        </form>
+                        <div class="task-content">
+                            <div class="task-title">{{ task.title }}</div>
+                            {% if task.description %}
+                                <div class="task-description">{{ task.description }}</div>
+                            {% endif %}
+                            <div class="task-meta">
+                                Created: {{ task.created_at|date:"d.m.Y H:i" }}
+                                {% if task.completed_at %}
+                                    | Completed: {{ task.completed_at|date:"d.m.Y H:i" }}
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>No tasks yet. <a href="{% url 'task_create' project.id %}">Add the first task</a>.</p>
+        {% endif %}
+
+        <h2>Add New Task</h2>
+        <form action="{% url 'task_create' project.id %}" method="get">
+            <button type="submit">+ Add Task</button>
+        </form>
+    </div>
+{% endblock %}

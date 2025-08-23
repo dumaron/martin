@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+    <style>
+        .creation-form-label {
+            width: 120px;
+        }
+        #id_title {
+            width: 100%;
+            max-width: 400px;
+        }
+        #id_description {
+            width: 100%;
+            max-width: 400px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Add Task to {{ project.title }}{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1 class="mono">Add Task to Project #{{ project.id }}</h1>
+
+    <table class="large">
+        <tbody>
+            <tr>
+                <th>Project</th>
+                <td class="emphasis">{{ project.title }}</td>
+            </tr>
+            <tr>
+                <th>Status</th>
+                <td>{{ project.get_status_display }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>Create Task</h2>
+    <form method="post" class="pairing-form">
+        {% csrf_token %}
+        <table class="large">
+            <tbody>
+                <tr>
+                    <th class="creation-form-label">{{ form.title.label_tag }}</th>
+                    <td>
+                        {{ form.title }}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="creation-form-label">{{ form.description.label_tag }}</th>
+                    <td>
+                        {{ form.description }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">Add Task</button>
+    </form>
+
+    <h2>Cancel</h2>
+    <form action="{% url 'project_detail' project.id %}" method="get">
+        <button type="submit">Back to Project</button>
+    </form>
+</div>
+{% endblock %}

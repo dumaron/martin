@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block stylesheets %}
+    <style>
+        .creation-form-label {
+            width: 120px;
+        }
+        #id_content {
+            width: 100%;
+            max-width: 500px;
+        }
+    </style>
+{% endblock %}
+
+{% block title %}Create Inbox Item{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1 class="mono">Capture New Inbox Item</h1>
+
+    <h2>Quick Capture</h2>
+    <p>Capture whatever is on your mind - you'll process it later</p>
+    
+    <form method="post" class="pairing-form">
+        {% csrf_token %}
+        <table class="large">
+            <tbody>
+                <tr>
+                    <th class="creation-form-label">{{ form.content.label_tag }}</th>
+                    <td>
+                        {{ form.content }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">Capture Item</button>
+    </form>
+
+    <h2>Cancel</h2>
+    <form action="{% url 'inbox_list' %}" method="get">
+        <button type="submit">Back to Inbox</button>
+    </form>
+</div>
+{% endblock %}

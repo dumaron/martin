@@ -1,11 +1,25 @@
 from apps.website.views.create_ynab_transaction import create_ynab_transaction
 from apps.website.views.file_import import file_import
 from apps.website.views.home import martin_home_page
+from apps.website.views.inbox_processing import (
+	flow_page,
+	inbox_create,
+	inbox_detail,
+	inbox_list,
+	process_inbox_item,
+)
 from apps.website.views.link_duplicate_bank_transaction import link_duplicate_bank_transaction
 from apps.website.views.pair_expense import match_transactions
 from apps.website.views.pairing_view import pairing_view
+from apps.website.views.projects import (
+	project_create,
+	project_detail,
+	project_list,
+	project_update_status,
+)
 from apps.website.views.snooze_bank_transaction import snooze_bank_transaction
 from apps.website.views.synchronize_ynab_categories import synchronize_ynab_categories
+from apps.website.views.tasks import task_create, task_mark_done
 from apps.website.views.transactions import (
 	BankTransactionTable,
 	bank_file_import_detail,
@@ -34,4 +48,16 @@ __all__ = [
 	'ynab_transaction_detail',
 	'BankTransactionTable',
 	'link_duplicate_bank_transaction',
+	# GTD views
+	'project_list',
+	'project_detail',
+	'project_create',
+	'project_update_status',
+	'task_create',
+	'task_mark_done',
+	'inbox_list',
+	'inbox_create',
+	'inbox_detail',
+	'flow_page',
+	'process_inbox_item',
 ]
