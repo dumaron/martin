@@ -16,6 +16,12 @@
             Flows
             <ul>
                 <li>
+                    <a href="{% url 'simple_tasks' %}"
+                       class="{% active request 'simple_tasks' %}">
+                        Simple tasks
+                    </a>
+                </li>
+                <li>
                     <a href="{% url 'flow_page' %}"
                        class="{% active request 'flow_page' %}">
                         Process inbox

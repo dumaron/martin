@@ -22,9 +22,11 @@ from apps.website.views import (
 	project_detail,
 	project_list,
 	project_update_status,
+	simple_tasks,
 	snooze_bank_transaction,
 	synchronize_ynab_categories,
 	task_create,
+	task_mark_aborted,
 	task_mark_done,
 	ynab_sync,
 	ynab_synchronizations_list,
@@ -38,6 +40,7 @@ urlpatterns = [
 	# GTD flow
 	path('gtd/flow', flow_page, name='flow_page'),
 	path('gtd/process/<int:inbox_id>', process_inbox_item, name='process_inbox_item'),
+	path('gtd/simple-tasks', simple_tasks, name='simple_tasks'),
 	path('<str:kind>/pairing', pairing_view, name='pairing'),
 	# mutations
 	path('pair-transactions', match_transactions, name='pair-transactions'),
@@ -75,6 +78,7 @@ urlpatterns = [
 	path('projects/<int:project_id>/update-status', project_update_status, name='project_update_status'),
 	path('projects/<int:project_id>/tasks/create', task_create, name='task_create'),
 	path('tasks/<int:task_id>/mark-done', task_mark_done, name='task_mark_done'),
+	path('tasks/<int:task_id>/mark-aborted', task_mark_aborted, name='task_mark_aborted'),
 	path('inboxes/create', inbox_create, name='inbox_create'),
 	path('inboxes/<int:inbox_id>', inbox_detail, name='inbox_detail'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

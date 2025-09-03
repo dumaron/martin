@@ -18,7 +18,7 @@ from apps.website.views.projects import (
 )
 from apps.website.views.snooze_bank_transaction import snooze_bank_transaction
 from apps.website.views.synchronize_ynab_categories import synchronize_ynab_categories
-from apps.website.views.tasks import task_create, task_mark_done
+from apps.website.views.tasks import simple_tasks, task_create, task_mark_aborted, task_mark_done
 from apps.website.views.transactions import (
 	BankTransactionTable,
 	bank_file_import_detail,
@@ -51,7 +51,9 @@ __all__ = [
 	'project_detail',
 	'project_create',
 	'project_update_status',
+	'simple_tasks',
 	'task_create',
+	'task_mark_aborted',
 	'task_mark_done',
 	'inbox_create',
 	'inbox_detail',

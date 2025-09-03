@@ -46,10 +46,16 @@ class ProjectStatusForm(forms.Form):
 class TaskForm(forms.ModelForm):
 	class Meta:
 		model = Task
-		fields = ['description']
+		fields = ['description', 'project']
 		widgets = {
-			'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional task description'}),
+			'description': forms.TextInput(attrs={'placeholder': 'Enter task description'}),
+			'project': forms.Select(attrs={'class': 'tom-select'}),
 		}
+	
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['project'].empty_label = "No project (standalone task)"
+		self.fields['project'].required = False
 
 
 class InboxForm(forms.ModelForm):
