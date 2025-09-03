@@ -20,7 +20,7 @@ class ProjectTable(tables.Table):
 		fields = ('title', 'status', 'task_count', 'created_at')
 
 	def render_task_count(self, record):
-		done_count = record.tasks.filter(is_done=True).count()
+		done_count = record.tasks.filter(status=['pending', 'active']).count()
 		total_count = record.tasks.count()
 		return f'{done_count}/{total_count}'
 

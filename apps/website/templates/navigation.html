@@ -18,7 +18,7 @@
                 <li>
                     <a href="{% url 'flow_page' %}"
                        class="{% active request 'flow_page' %}">
-                        📥 Process Inbox (GTD)
+                        Process inbox
                     </a>
                 </li>
                 <li>
@@ -53,9 +53,7 @@
             Low-level entities
             <ul>
                 <li><a href="{% url 'project_list' %}"
-                       class="{% active request 'project_list' %}">📂 Projects</a></li>
-                <li><a href="{% url 'inbox_list' %}"
-                       class="{% active request 'inbox_list' %}">📥 Inbox Items</a></li>
+                       class="{% active request 'project_list' %}">Projects</a></li>
                 <li><a href="{% url 'bank_transaction_list' %}"
                        class="{% active request 'bank_transaction_list' %}">Bank transactions</a></li>
                 <li><a href="{% url 'bank_file_import_list' %}"

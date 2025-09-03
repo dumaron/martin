@@ -20,13 +20,6 @@ class InboxTable(tables.Table):
 		fields = ('content', 'created_at', 'processed')
 
 
-@login_required
-@require_GET
-def inbox_list(request):
-	inboxes = Inbox.objects.all()
-	table = InboxTable(inboxes)
-	return render(request, 'inbox_list.html', {'table': table})
-
 
 @login_required
 def inbox_create(request):
@@ -53,58 +46,21 @@ def inbox_detail(request, inbox_id):
 @require_GET
 def flow_page(request):
 	# Get the oldest unprocessed inbox item
-	oldest_inbox = Inbox.objects.filter(processed=False).order_by('created_at').first()
+	oldest_inbox = Inbox.objects.filter(processed_at__isnull=True).order_by('created_at').first()
 	
 	if not oldest_inbox:
-		messages.info(request, 'No unprocessed inbox items!')
+		# TODO no, let's redirect to the flow page but with an empty message
 		return redirect('inbox_list')
 	
 	projects = Project.objects.filter(status='active')
-	return render(request, 'flow_page.html', {'inbox': oldest_inbox, 'projects': projects})
+	return render(request, 'process_inboxes_page.html', {'inbox': oldest_inbox, 'projects': projects})
 
 
 @login_required
 @require_POST
 def process_inbox_item(request, inbox_id):
 	inbox = get_object_or_404(Inbox, pk=inbox_id)
-	action = request.POST.get('action')
-	
-	if action == 'create_project':
-		title = request.POST.get('project_title')
-		description = request.POST.get('project_description', '')
-		
-		if title:
-			project = Project.objects.create(title=title, description=description)
-			inbox.created_project = project
-			inbox.processed = True
-			inbox.processed_at = timezone.now()
-			inbox.save()
-			messages.success(request, f'Created project "{project.title}" from inbox item!')
-		else:
-			messages.error(request, 'Project title is required.')
-			return redirect('flow_page')
-	
-	elif action == 'create_task':
-		project_id = request.POST.get('project_id')
-		title = request.POST.get('task_title')
-		description = request.POST.get('task_description', '')
-		
-		if project_id and title:
-			project = get_object_or_404(Project, pk=project_id)
-			task = Task.objects.create(title=title, description=description, project=project)
-			inbox.created_task = task
-			inbox.processed = True
-			inbox.processed_at = timezone.now()
-			inbox.save()
-			messages.success(request, f'Created task "{task.title}" in project "{project.title}" from inbox item!')
-		else:
-			messages.error(request, 'Project and task title are required.')
-			return redirect('flow_page')
-	
-	elif action == 'mark_done':
-		inbox.processed = True
-		inbox.processed_at = timezone.now()
-		inbox.save()
-		messages.success(request, 'Inbox item marked as processed.')
-	
+	inbox.processed_at = timezone.now()
+	inbox.save()
+
 	return redirect('flow_page')

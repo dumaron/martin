@@ -5,7 +5,6 @@ from apps.website.views.inbox_processing import (
 	flow_page,
 	inbox_create,
 	inbox_detail,
-	inbox_list,
 	process_inbox_item,
 )
 from apps.website.views.link_duplicate_bank_transaction import link_duplicate_bank_transaction
@@ -48,14 +47,12 @@ __all__ = [
 	'ynab_transaction_detail',
 	'BankTransactionTable',
 	'link_duplicate_bank_transaction',
-	# GTD views
 	'project_list',
 	'project_detail',
 	'project_create',
 	'project_update_status',
 	'task_create',
 	'task_mark_done',
-	'inbox_list',
 	'inbox_create',
 	'inbox_detail',
 	'flow_page',
