@@ -15,12 +15,7 @@
         <li>
             Flows
             <ul>
-                <li>
-                    <a href="{% url 'simple_tasks' %}"
-                       class="{% active request 'simple_tasks' %}">
-                        Simple tasks
-                    </a>
-                </li>
+
                 <li>
                     <a href="{% url 'flow_page' %}"
                        class="{% active request 'flow_page' %}">
@@ -37,6 +32,22 @@
                     <a href="{% url 'pairing' kind="shared" %}"
                        class="{% active request 'pairing' kind='shared' %}">
                         Pair shared YNAB expenses
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>Pages
+            <ul>
+                <li>
+                    <a href="{% url 'simple_tasks' %}"
+                       class="{% active request 'simple_tasks' %}">
+                        Simple tasks
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'inbox_create' %}"
+                       class="{% active request 'inbox_create' %}">
+                        Add inbox item
                     </a>
                 </li>
             </ul>

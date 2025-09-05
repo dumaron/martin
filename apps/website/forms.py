@@ -63,7 +63,7 @@ class InboxForm(forms.ModelForm):
 		model = Inbox
 		fields = ['content']
 		widgets = {
-			'content': forms.Textarea(attrs={'rows': 4, 'placeholder': 'What\'s on your mind? Ideas, tasks, thoughts...'}),
+			'content': forms.Textarea(attrs={'rows': 4, 'placeholder': ''}),
 		}
 
 

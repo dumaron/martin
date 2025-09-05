@@ -4,7 +4,6 @@ from apps.website.views.home import martin_home_page
 from apps.website.views.inbox_processing import (
 	flow_page,
 	inbox_create,
-	inbox_detail,
 	process_inbox_item,
 )
 from apps.website.views.link_duplicate_bank_transaction import link_duplicate_bank_transaction
@@ -56,7 +55,6 @@ __all__ = [
 	'task_mark_aborted',
 	'task_mark_done',
 	'inbox_create',
-	'inbox_detail',
 	'flow_page',
 	'process_inbox_item',
 ]

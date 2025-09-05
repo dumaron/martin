@@ -12,7 +12,6 @@ from apps.website.views import (
 	file_import,
 	flow_page,
 	inbox_create,
-	inbox_detail,
 	link_duplicate_bank_transaction,
 	martin_home_page,
 	match_transactions,
@@ -80,5 +79,4 @@ urlpatterns = [
 	path('tasks/<int:task_id>/mark-done', task_mark_done, name='task_mark_done'),
 	path('tasks/<int:task_id>/mark-aborted', task_mark_aborted, name='task_mark_aborted'),
 	path('inboxes/create', inbox_create, name='inbox_create'),
-	path('inboxes/<int:inbox_id>', inbox_detail, name='inbox_detail'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

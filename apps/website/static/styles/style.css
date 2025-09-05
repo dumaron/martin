@@ -137,9 +137,9 @@ aside {
     padding-left: 16px;
 }
 
-#sidebar-navigation > ul > li > ul {
+#sidebar-navigation > ul > li {
     margin-left: 0;
-    padding-bottom: 8px;
+    padding-bottom: 4px;
 }
 
 #sidebar-navigation > ul ul li {
@@ -305,4 +305,10 @@ button:hover {
 
 #main-quote figcaption {
     font-size: 1.5rem;
+}
+
+pre {
+    display: inline-block;
+    padding: 3px 6px;
+    background-color: gainsboro;
 }
