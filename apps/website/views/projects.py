@@ -61,7 +61,6 @@ def project_create(request):
 		form = ProjectForm(request.POST)
 		if form.is_valid():
 			project = form.save()
-			messages.success(request, f'Project "{project.title}" created successfully!')
 			return redirect('project_detail', project_id=project.id)
 	else:
 		form = ProjectForm()
@@ -80,10 +79,5 @@ def project_update_status(request, project_id):
 		if new_status:  # Make sure it's not empty
 			project.status = new_status
 			project.save()
-			messages.success(request, f'Project status updated to {project.get_status_display()}')
-		else:
-			messages.error(request, 'Please select a status')
-	else:
-		messages.error(request, 'Invalid status')
-	
+
 	return redirect('project_detail', project_id=project.id)

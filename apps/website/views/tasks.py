@@ -1,4 +1,3 @@
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
@@ -18,7 +17,6 @@ def task_create(request, project_id):
 			task = form.save(commit=False)
 			task.project = project
 			task.save()
-			messages.success(request, f'Task "{task.title}" added to project!')
 			return redirect('project_detail', project_id=project.id)
 	else:
 		form = TaskForm()
@@ -35,13 +33,11 @@ def task_mark_done(request, task_id):
 		task.status = 'completed'
 		task.completed_at = timezone.now()
 		task.save()
-		messages.success(request, f'Task "{task.description[:50]}" marked as done!')
 	else:
 		task.status = 'active'
 		task.completed_at = None
 		task.save()
-		messages.success(request, f'Task "{task.description[:50]}" reopened!')
-	
+
 	return redirect('simple_tasks')
 
 
@@ -54,13 +50,11 @@ def task_mark_aborted(request, task_id):
 		task.status = 'aborted'
 		task.completed_at = None
 		task.save()
-		messages.success(request, f'Task "{task.description[:50]}" marked as aborted!')
 	else:
 		task.status = 'active'
 		task.completed_at = None
 		task.save()
-		messages.success(request, f'Task "{task.description[:50]}" reopened!')
-	
+
 	return redirect('simple_tasks')
 
 
@@ -69,11 +63,8 @@ def simple_tasks(request):
 	if request.method == 'POST':
 		form = TaskForm(request.POST)
 		if form.is_valid():
-			task = form.save()
-			messages.success(request, f'Task "{task.description[:50]}" created successfully!')
-			return redirect('simple_tasks')
-	else:
-		form = TaskForm()
-	
+			form.save()
+
+	clean_form = TaskForm()
 	tasks = Task.objects.filter(status__in=['pending', 'active'])
-	return render(request, 'simple_tasks.html', {'tasks': tasks, 'form': form})
+	return render(request, 'simple_tasks.html', {'tasks': tasks, 'form': clean_form})

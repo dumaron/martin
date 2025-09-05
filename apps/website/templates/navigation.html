@@ -1,13 +1,6 @@
 {% load active_link %}
 
 <nav id="sidebar-navigation">
-    <div id="view-mode-selector">
-        <button id="theme-toggle" class="theme-toggle-btn">
-            <span class="light-mode-label">light️</span>
-            <span class="dark-mode-label">dark</span>
-        </button>
-    </div>
-
     <div id="title">Martin</div>
 
     <ul class="tree">
@@ -77,36 +70,5 @@
                        class="{% active request 'bank_file_import_list' %}">Bank imports</a></li>
             </ul>
         </li>
-
     </ul>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const themeToggle = document.getElementById('theme-toggle');
-            const currentTheme = localStorage.getItem('theme') || 'light';
-
-            // Update button state based on current theme
-            updateThemeToggleState(currentTheme);
-
-            themeToggle.addEventListener('click', function () {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-                // Update theme
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-
-                // Update button state
-                updateThemeToggleState(newTheme);
-            });
-
-            function updateThemeToggleState(theme) {
-                if (theme === 'dark') {
-                    themeToggle.classList.add('dark-mode');
-                } else {
-                    themeToggle.classList.remove('dark-mode');
-                }
-            }
-        });
-    </script>
 </nav>

@@ -1,23 +1,5 @@
 {% extends "base.html" %}
 
-{% block stylesheets %}
-    <style>
-        .creation-form-label {
-            width: 120px;
-        }
-        #id_title {
-            width: 100%;
-            max-width: 400px;
-        }
-        #id_description {
-            width: 100%;
-            max-width: 400px;
-        }
-    </style>
-{% endblock %}
-
-{% block title %}Add Task to {{ project.title }}{% endblock %}
-
 {% block content %}
 <div class="fixed-content">
     <h1>Add Task to Project #{{ project.id }}</h1>
@@ -55,11 +37,6 @@
             </tbody>
         </table>
         <button type="submit">Add Task</button>
-    </form>
-
-    <h2>Cancel</h2>
-    <form action="{% url 'project_detail' project.id %}" method="get">
-        <button type="submit">Back to Project</button>
     </form>
 </div>
 {% endblock %}

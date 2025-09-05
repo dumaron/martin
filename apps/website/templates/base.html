@@ -4,12 +4,6 @@
     <head>
         <title>Martin</title>
 
-        <script>
-        // Immediately apply the saved theme before any rendering occurs
-        const savedTheme = localStorage.getItem('theme') || 'light';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        </script>
-
         <link rel="stylesheet" href="{% static '/tom-select/tom-select.css' %}" />
         <link rel="stylesheet" href="{% static '/styles/style.css' %}" />
         <link rel="stylesheet" href="{% static '/styles/forms.css' %}" />
@@ -35,6 +29,8 @@
             </main>
         </div>
         <script>
+
+            // Initialize Tom Select on all available selects
             window.addEventListener('load', function () {
                 new TomSelect('.tom-select', {});
             });
