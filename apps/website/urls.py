@@ -60,16 +60,10 @@ urlpatterns = [
 	path('file-import', file_import, name='file_import'),
 	# Low-level entities
 	path('bank_transactions', bank_transaction_list, name='bank_transaction_list'),
-	path(
-		'bank_transactions/<int:bank_transaction_id>', bank_transaction_detail, name='bank_transaction_detail'
-	),
+	path('bank_transactions/<int:bank_transaction_id>', bank_transaction_detail, name='bank_transaction_detail'),
 	path('bank_file_imports', bank_file_import_list, name='bank_file_import_list'),
-	path(
-		'bank_file_imports/<int:bank_file_import_id>', bank_file_import_detail, name='bank_file_import_detail'
-	),
-	path(
-		'ynab_transactions/<str:ynab_transaction_id>', ynab_transaction_detail, name='ynab_transaction_detail'
-	),
+	path('bank_file_imports/<int:bank_file_import_id>', bank_file_import_detail, name='bank_file_import_detail'),
+	path('ynab_transactions/<str:ynab_transaction_id>', ynab_transaction_detail, name='ynab_transaction_detail'),
 	# GTD system
 	path('projects', project_list, name='project_list'),
 	path('projects/create', project_create, name='project_create'),

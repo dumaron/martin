@@ -5,48 +5,39 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+	dependencies = [('core', '0006_project_alter_inbox_options_remove_inbox_reviewed_and_more')]
 
-    dependencies = [
-        ('core', '0006_project_alter_inbox_options_remove_inbox_reviewed_and_more'),
-    ]
-
-    operations = [
-        migrations.AlterModelOptions(
-            name='inbox',
-            options={'ordering': ['created_at']},
-        ),
-        migrations.AlterModelOptions(
-            name='task',
-            options={'ordering': ['-created_at']},
-        ),
-        migrations.RemoveField(
-            model_name='inbox',
-            name='created_project',
-        ),
-        migrations.RemoveField(
-            model_name='inbox',
-            name='created_task',
-        ),
-        migrations.RemoveField(
-            model_name='inbox',
-            name='processed',
-        ),
-        migrations.RemoveField(
-            model_name='task',
-            name='is_done',
-        ),
-        migrations.RemoveField(
-            model_name='task',
-            name='title',
-        ),
-        migrations.AddField(
-            model_name='task',
-            name='status',
-            field=models.CharField(choices=[('active', 'Active'), ('completed', 'Completed'), ('pending', 'Pending'), ('aborted', 'Aborted')], default='pending', max_length=20),
-        ),
-        migrations.AlterField(
-            model_name='task',
-            name='project',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='tasks', to='core.project'),
-        ),
-    ]
+	operations = [
+		migrations.AlterModelOptions(name='inbox', options={'ordering': ['created_at']}),
+		migrations.AlterModelOptions(name='task', options={'ordering': ['-created_at']}),
+		migrations.RemoveField(model_name='inbox', name='created_project'),
+		migrations.RemoveField(model_name='inbox', name='created_task'),
+		migrations.RemoveField(model_name='inbox', name='processed'),
+		migrations.RemoveField(model_name='task', name='is_done'),
+		migrations.RemoveField(model_name='task', name='title'),
+		migrations.AddField(
+			model_name='task',
+			name='status',
+			field=models.CharField(
+				choices=[
+					('active', 'Active'),
+					('completed', 'Completed'),
+					('pending', 'Pending'),
+					('aborted', 'Aborted'),
+				],
+				default='pending',
+				max_length=20,
+			),
+		),
+		migrations.AlterField(
+			model_name='task',
+			name='project',
+			field=models.ForeignKey(
+				blank=True,
+				null=True,
+				on_delete=django.db.models.deletion.CASCADE,
+				related_name='tasks',
+				to='core.project',
+			),
+		),
+	]

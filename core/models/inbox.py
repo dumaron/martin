@@ -10,7 +10,6 @@ class Inbox(models.Model):
 	@property
 	def processed(self):
 		return self.processed_at is not None
-	
 
 	def __str__(self):
 		status = '✓' if self.processed else '◯'

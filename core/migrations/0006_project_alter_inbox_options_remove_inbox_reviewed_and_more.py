@@ -5,67 +5,70 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+	dependencies = [('core', '0005_remove_banktransaction_expense_uniqueness_name_date_amount_and_more')]
 
-    dependencies = [
-        ('core', '0005_remove_banktransaction_expense_uniqueness_name_date_amount_and_more'),
-    ]
-
-    operations = [
-        migrations.CreateModel(
-            name='Project',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField(blank=True)),
-                ('status', models.CharField(choices=[('active', 'Active'), ('suspended', 'Suspended'), ('archived', 'Archived'), ('done', 'Done')], default='active', max_length=20)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-            ],
-            options={
-                'ordering': ['-created_at'],
-            },
-        ),
-        migrations.AlterModelOptions(
-            name='inbox',
-            options={'ordering': ['processed', 'created_at']},
-        ),
-        migrations.RemoveField(
-            model_name='inbox',
-            name='reviewed',
-        ),
-        migrations.AddField(
-            model_name='inbox',
-            name='processed',
-            field=models.BooleanField(default=False),
-        ),
-        migrations.AddField(
-            model_name='inbox',
-            name='processed_at',
-            field=models.DateTimeField(blank=True, null=True),
-        ),
-        migrations.AddField(
-            model_name='inbox',
-            name='created_project',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='source_inboxes', to='core.project'),
-        ),
-        migrations.CreateModel(
-            name='Task',
-            fields=[
-                ('id', models.AutoField(primary_key=True, serialize=False)),
-                ('title', models.CharField(max_length=255)),
-                ('description', models.TextField(blank=True)),
-                ('is_done', models.BooleanField(default=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('completed_at', models.DateTimeField(blank=True, null=True)),
-                ('project', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tasks', to='core.project')),
-            ],
-            options={
-                'ordering': ['is_done', '-created_at'],
-            },
-        ),
-        migrations.AddField(
-            model_name='inbox',
-            name='created_task',
-            field=models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='source_inboxes', to='core.task'),
-        ),
-    ]
+	operations = [
+		migrations.CreateModel(
+			name='Project',
+			fields=[
+				('id', models.AutoField(primary_key=True, serialize=False)),
+				('title', models.CharField(max_length=255)),
+				('description', models.TextField(blank=True)),
+				(
+					'status',
+					models.CharField(
+						choices=[('active', 'Active'), ('suspended', 'Suspended'), ('archived', 'Archived'), ('done', 'Done')],
+						default='active',
+						max_length=20,
+					),
+				),
+				('created_at', models.DateTimeField(auto_now_add=True)),
+				('updated_at', models.DateTimeField(auto_now=True)),
+			],
+			options={'ordering': ['-created_at']},
+		),
+		migrations.AlterModelOptions(name='inbox', options={'ordering': ['processed', 'created_at']}),
+		migrations.RemoveField(model_name='inbox', name='reviewed'),
+		migrations.AddField(model_name='inbox', name='processed', field=models.BooleanField(default=False)),
+		migrations.AddField(
+			model_name='inbox', name='processed_at', field=models.DateTimeField(blank=True, null=True)
+		),
+		migrations.AddField(
+			model_name='inbox',
+			name='created_project',
+			field=models.ForeignKey(
+				blank=True,
+				null=True,
+				on_delete=django.db.models.deletion.SET_NULL,
+				related_name='source_inboxes',
+				to='core.project',
+			),
+		),
+		migrations.CreateModel(
+			name='Task',
+			fields=[
+				('id', models.AutoField(primary_key=True, serialize=False)),
+				('title', models.CharField(max_length=255)),
+				('description', models.TextField(blank=True)),
+				('is_done', models.BooleanField(default=False)),
+				('created_at', models.DateTimeField(auto_now_add=True)),
+				('completed_at', models.DateTimeField(blank=True, null=True)),
+				(
+					'project',
+					models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tasks', to='core.project'),
+				),
+			],
+			options={'ordering': ['is_done', '-created_at']},
+		),
+		migrations.AddField(
+			model_name='inbox',
+			name='created_task',
+			field=models.ForeignKey(
+				blank=True,
+				null=True,
+				on_delete=django.db.models.deletion.SET_NULL,
+				related_name='source_inboxes',
+				to='core.task',
+			),
+		),
+	]

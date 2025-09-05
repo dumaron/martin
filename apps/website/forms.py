@@ -26,6 +26,7 @@ class YnabTransactionCreationForm(forms.Form):
 
 # GTD Forms
 
+
 class ProjectForm(forms.ModelForm):
 	class Meta:
 		model = Project
@@ -39,7 +40,7 @@ class ProjectForm(forms.ModelForm):
 class ProjectStatusForm(forms.Form):
 	status = forms.ChoiceField(
 		choices=[('', 'Choose status...')] + Project.STATUS_CHOICES,
-		widget=forms.Select(attrs={'class': 'tom-select'})
+		widget=forms.Select(attrs={'class': 'tom-select'}),
 	)
 
 
@@ -51,10 +52,10 @@ class TaskForm(forms.ModelForm):
 			'description': forms.TextInput(attrs={'placeholder': 'Enter task description'}),
 			'project': forms.Select(attrs={'class': 'tom-select'}),
 		}
-	
+
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		self.fields['project'].empty_label = "No project (standalone task)"
+		self.fields['project'].empty_label = 'No project (standalone task)'
 		self.fields['project'].required = False
 
 
@@ -62,9 +63,7 @@ class InboxForm(forms.ModelForm):
 	class Meta:
 		model = Inbox
 		fields = ['content']
-		widgets = {
-			'content': forms.Textarea(attrs={'rows': 4, 'placeholder': ''}),
-		}
+		widgets = {'content': forms.Textarea(attrs={'rows': 4, 'placeholder': ''})}
 
 
 class InboxProcessingForm(forms.Form):
@@ -73,31 +72,27 @@ class InboxProcessingForm(forms.Form):
 		('create_task', 'Add Task to Project'),
 		('mark_done', 'Mark as Processed'),
 	]
-	
+
 	action = forms.ChoiceField(choices=ACTION_CHOICES, widget=forms.RadioSelect)
-	
+
 	# Project creation fields
 	project_title = forms.CharField(
-		required=False,
-		widget=forms.TextInput(attrs={'placeholder': 'Enter project title'})
+		required=False, widget=forms.TextInput(attrs={'placeholder': 'Enter project title'})
 	)
 	project_description = forms.CharField(
-		required=False,
-		widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Optional project description'})
+		required=False, widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Optional project description'})
 	)
-	
+
 	# Task creation fields
 	project_id = forms.ModelChoiceField(
 		queryset=Project.objects.filter(status='active'),
 		required=False,
-		empty_label="Choose a project...",
-		widget=forms.Select(attrs={'class': 'tom-select'})
+		empty_label='Choose a project...',
+		widget=forms.Select(attrs={'class': 'tom-select'}),
 	)
 	task_title = forms.CharField(
-		required=False,
-		widget=forms.TextInput(attrs={'placeholder': 'Enter task title'})
+		required=False, widget=forms.TextInput(attrs={'placeholder': 'Enter task title'})
 	)
 	task_description = forms.CharField(
-		required=False,
-		widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Optional task description'})
+		required=False, widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Optional task description'})
 	)

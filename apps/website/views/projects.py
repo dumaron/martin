@@ -1,5 +1,4 @@
 import django_tables2 as tables
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
@@ -25,12 +24,7 @@ class ProjectTable(tables.Table):
 		return f'{done_count}/{total_count}'
 
 	def render_status(self, record):
-		status_icons = {
-			'active': '▶️',
-			'suspended': '⏸️',
-			'archived': '📦',
-			'done': '✅',
-		}
+		status_icons = {'active': '▶️', 'suspended': '⏸️', 'archived': '📦', 'done': '✅'}
 		return f'{status_icons.get(record.status, "")} {record.get_status_display()}'
 
 
@@ -48,11 +42,9 @@ def project_detail(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
 	tasks = project.tasks.all()
 	status_form = ProjectStatusForm(initial={'status': project.status})
-	return render(request, 'project_detail.html', {
-		'project': project, 
-		'tasks': tasks, 
-		'status_form': status_form
-	})
+	return render(
+		request, 'project_detail.html', {'project': project, 'tasks': tasks, 'status_form': status_form}
+	)
 
 
 @login_required
@@ -64,7 +56,7 @@ def project_create(request):
 			return redirect('project_detail', project_id=project.id)
 	else:
 		form = ProjectForm()
-	
+
 	return render(request, 'project_create.html', {'form': form})
 
 
@@ -73,7 +65,7 @@ def project_create(request):
 def project_update_status(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
 	form = ProjectStatusForm(request.POST)
-	
+
 	if form.is_valid():
 		new_status = form.cleaned_data['status']
 		if new_status:  # Make sure it's not empty
