@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Process Inbox - GTD Flow{% endblock %}
-
 {% block content %}
     <div class="fixed-content">
-        <h1>Processing inbox item #{{ inbox.id }}</h1>
+        <h1>Processing inbox</h1>
+        {%  if inbox %}
         
         <table class="large">
             <tbody>
@@ -31,5 +30,9 @@
                 <button type="submit">Mark as Processed</button>
             </form>
         </div>
+    {% else %}
+        <pre>No inbox to process.</pre>
+    {% endif %}
+
     </div>
 {% endblock %}

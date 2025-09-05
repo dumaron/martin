@@ -308,6 +308,7 @@ button:hover {
 }
 
 pre {
+    text-transform: uppercase;
     display: inline-block;
     padding: 3px 6px;
     background-color: gainsboro;

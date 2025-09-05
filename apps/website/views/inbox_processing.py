@@ -28,12 +28,8 @@ def inbox_create(request):
 def flow_page(request):
 	# Get the oldest unprocessed inbox item
 	oldest_inbox = Inbox.objects.filter(processed_at__isnull=True).order_by('created_at').first()
-
-	if not oldest_inbox:
-		# TODO no, let's redirect to the flow page but with an empty message
-		return redirect('inbox_list')
-
 	projects = Project.objects.filter(status='active')
+
 	return render(request, 'process_inboxes_page.html', {'inbox': oldest_inbox, 'projects': projects})
 
 
