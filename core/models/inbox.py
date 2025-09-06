@@ -5,10 +5,16 @@ class Inbox(models.Model):
 	id = models.AutoField(primary_key=True)
 	content = models.TextField()
 	created_at = models.DateTimeField(auto_now_add=True)
-	reviewed = models.BooleanField(default=False)
+	processed_at = models.DateTimeField(null=True, blank=True)
+
+	@property
+	def processed(self):
+		return self.processed_at is not None
 
 	def __str__(self):
-		return self.content
+		status = '✓' if self.processed else '◯'
+		return f'{status} {self.content[:50]}'
 
 	class Meta:
 		db_table = 'inboxes'
+		ordering = ['created_at']

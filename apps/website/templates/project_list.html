@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% load django_tables2 %}
+
+{% block title %}Projects{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1>Projects</h1>
+    
+    {% render_table table %}
+    
+    <h2>Create New Project</h2>
+    <form action="{% url 'project_create' %}" method="get">
+        <button type="submit">+ New Project</button>
+    </form>
+</div>
+{% endblock %}

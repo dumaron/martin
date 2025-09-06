@@ -1,13 +1,6 @@
 {% load active_link %}
 
 <nav id="sidebar-navigation">
-    <div id="view-mode-selector">
-        <button id="theme-toggle" class="theme-toggle-btn">
-            <span class="light-mode-label">light️</span>
-            <span class="dark-mode-label">dark</span>
-        </button>
-    </div>
-
     <div id="title">Martin</div>
 
     <ul class="tree">
@@ -15,6 +8,13 @@
         <li>
             Flows
             <ul>
+
+                <li>
+                    <a href="{% url 'flow_page' %}"
+                       class="{% active request 'flow_page' %}">
+                        Process inbox
+                    </a>
+                </li>
                 <li>
                     <a href="{% url 'pairing' kind="personal" %}"
                        class="{% active request 'pairing' kind='personal' %}">
@@ -25,6 +25,22 @@
                     <a href="{% url 'pairing' kind="shared" %}"
                        class="{% active request 'pairing' kind='shared' %}">
                         Pair shared YNAB expenses
+                    </a>
+                </li>
+            </ul>
+        </li>
+        <li>Pages
+            <ul>
+                <li>
+                    <a href="{% url 'simple_tasks' %}"
+                       class="{% active request 'simple_tasks' %}">
+                        Simple tasks
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'inbox_create' %}"
+                       class="{% active request 'inbox_create' %}">
+                        Add inbox item
                     </a>
                 </li>
             </ul>
@@ -46,42 +62,13 @@
         <li>
             Low-level entities
             <ul>
+                <li><a href="{% url 'project_list' %}"
+                       class="{% active request 'project_list' %}">Projects</a></li>
                 <li><a href="{% url 'bank_transaction_list' %}"
                        class="{% active request 'bank_transaction_list' %}">Bank transactions</a></li>
                 <li><a href="{% url 'bank_file_import_list' %}"
                        class="{% active request 'bank_file_import_list' %}">Bank imports</a></li>
             </ul>
         </li>
-
     </ul>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const themeToggle = document.getElementById('theme-toggle');
-            const currentTheme = localStorage.getItem('theme') || 'light';
-
-            // Update button state based on current theme
-            updateThemeToggleState(currentTheme);
-
-            themeToggle.addEventListener('click', function () {
-                const currentTheme = document.documentElement.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-
-                // Update theme
-                document.documentElement.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-
-                // Update button state
-                updateThemeToggleState(newTheme);
-            });
-
-            function updateThemeToggleState(theme) {
-                if (theme === 'dark') {
-                    themeToggle.classList.add('dark-mode');
-                } else {
-                    themeToggle.classList.remove('dark-mode');
-                }
-            }
-        });
-    </script>
 </nav>

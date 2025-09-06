@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="fixed-content">
+        <h1>Processing inbox</h1>
+        {%  if inbox %}
+        
+        <table class="large">
+            <tbody>
+                <tr>
+                    <th>ID</th>
+                    <td class="mono">{{ inbox.id }}</td>
+                </tr>
+                <tr>
+                    <th>Content</th>
+                    <td class="emphasis">{{ inbox.content }}</td>
+                </tr>
+                <tr>
+                    <th>Created</th>
+                    <td>{{ inbox.created_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="processing-section">
+            <h2>Mark as Processed</h2>
+            <form action="{% url 'process_inbox_item' inbox.id %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="mark_done">
+                <button type="submit">Mark as Processed</button>
+            </form>
+        </div>
+    {% else %}
+        <pre>No inbox to process.</pre>
+    {% endif %}
+
+    </div>
+{% endblock %}

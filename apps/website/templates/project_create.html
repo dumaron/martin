@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1>Create New Project</h1>
+
+    <form method="post">
+        {% csrf_token %}
+        <table class="large">
+            <tbody>
+                <tr>
+                    <th class="creation-form-label">{{ form.title.label_tag }}</th>
+                    <td>
+                        {{ form.title }}
+                    </td>
+                </tr>
+                <tr>
+                    <th class="creation-form-label">{{ form.description.label_tag }}</th>
+                    <td>
+                        {{ form.description }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <button type="submit">Create Project</button>
+    </form>
+</div>
+{% endblock %}
