@@ -9,11 +9,9 @@ from core.models import Memory
 @require_GET
 def martin_home_page(request):
 	"""
-	The Martin initial page. Tomorrow it'll contain pictures of the people I love, or inspiring quotes/images.
-	Right now, I need to adapt.
+	TODO write a description
 	"""
 
-	# Select a memory for today
 	try:
 		selected_memory = Memory.select_memory_for_today()
 	except (IndexError, Exception):

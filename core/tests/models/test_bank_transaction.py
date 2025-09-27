@@ -218,7 +218,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.name, 'Test Income Transaction')
 		self.assertEqual(transaction.amount, 150.75)
 		self.assertEqual(transaction.date, date(2024, 3, 15))
-		self.assertEqual(transaction.file_import, self.file_import)
+		self.assertEqual(transaction.import_bank_export_page, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
 	def test_from_fineco_bank_account_xslx_row_with_expense_only(self):
@@ -235,7 +235,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.name, 'Test Expense Transaction')
 		self.assertEqual(transaction.amount, -85.30)
 		self.assertEqual(transaction.date, date(2024, 3, 20))
-		self.assertEqual(transaction.file_import, self.file_import)
+		self.assertEqual(transaction.import_bank_export_page, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
 	def test_from_fineco_bank_account_xslx_row_with_both_values(self):
@@ -252,7 +252,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.name, 'Transaction with both values')
 		self.assertEqual(transaction.amount, 75.0)  # 100.0 + (-25.0)
 		self.assertEqual(transaction.date, date(2024, 3, 25))
-		self.assertEqual(transaction.file_import, self.file_import)
+		self.assertEqual(transaction.import_bank_export_page, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_with_zero_values(self):
@@ -269,7 +269,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.name, 'Zero amount transaction')
 		self.assertEqual(transaction.amount, 0.0)
 		self.assertEqual(transaction.date, date(2024, 3, 30))
-		self.assertEqual(transaction.file_import, self.file_import)
+		self.assertEqual(transaction.import_bank_export_page, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_with_none_values(self):
@@ -286,7 +286,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.name, 'Transaction with None values')
 		self.assertEqual(transaction.amount, 0.0)  # None or 0 + None or 0 = 0.0
 		self.assertEqual(transaction.date, date(2024, 4, 1))
-		self.assertEqual(transaction.file_import, self.file_import)
+		self.assertEqual(transaction.import_bank_export_page, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_with_mixed_none_and_value(self):
@@ -303,7 +303,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.name, 'Mixed None and value')
 		self.assertEqual(transaction.amount, 250.0)  # 250.0 + 0
 		self.assertEqual(transaction.date, date(2024, 4, 5))
-		self.assertEqual(transaction.file_import, self.file_import)
+		self.assertEqual(transaction.import_bank_export_page, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_strips_whitespace_from_description(self):
@@ -333,5 +333,5 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.name, 'Decimal Transaction')
 		self.assertAlmostEqual(transaction.amount, 77.667, places=3)  # 123.456 + (-45.789)
 		self.assertEqual(transaction.date, date(2024, 4, 15))
-		self.assertEqual(transaction.file_import, self.file_import)
+		self.assertEqual(transaction.import_bank_export_page, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
