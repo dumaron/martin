@@ -98,10 +98,11 @@ def pair_transactions(request):
 
 @login_required
 @require_POST
-def snooze_bank_transaction(request, bank_transaction_id):
+def snooze_bank_transaction(request):
 	"""
 	Snoozes a bank transaction. Useful for transactions that are actually just money transfers like reloading the debit card
 	"""
+	bank_transaction_id = int(request.POST.get('bank_transaction'))
 	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
 	redirect_to = request.POST.get('redirect-to')
 	bank_transaction.snoozed_on = datetime.now()
@@ -161,8 +162,10 @@ def create_ynab_transaction(request, kind):
 	- memo: Optional memo text for the transaction
 	- ynab_category: Category ID to assign to the transaction
 
-	Returns redirect to pairing view on success, or None if form validation fails."""
+	Returns redirect to pairing view on success, or None if form validation fails.
+	"""
 
+	# TODO NOW THE KIND NEEDS TO BE PASSED BY FORM VALUE!!
 	personal = kind == 'personal'
 	budget_id = YNAB_PERSONAL_BUDGET_ID if personal else YNAB_SHARED_BUDGET_ID
 	form = YnabTransactionCreationForm(request.POST, budget_id=budget_id)

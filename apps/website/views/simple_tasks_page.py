@@ -47,7 +47,7 @@ def mark_task_as_completed(request, task_id):
 		task.completed_at = timezone.now()
 		task.save()
 
-	return redirect('simple_tasks')
+	return redirect('simple_tasks_page')
 
 
 @login_required
@@ -60,4 +60,4 @@ def abort_task(request, task_id):
 		task.completed_at = None
 		task.save()
 
-	return redirect('simple_tasks')
+	return redirect('simple_tasks_page')

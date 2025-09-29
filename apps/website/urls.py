@@ -30,7 +30,7 @@ urlpatterns = [
 	#
 	# HOME PAGE ---------------------------------------------------------------------------------------------------------
 	#
-	path('', views.welcome_page, name='welcome_page'),
+	path('', views.welcome_page.martin_home_page, name='welcome_page'),
 	#
 	#
 	# PAIR TRANSACTIONS FLOW PAGE ---------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ urlpatterns = [
 	),
 	path(
 		'flows/pair-transactions/link-duplicate-bank-transactions',
-		views.pair_transactions_page.link_duplicate_bank_transactions,
+		views.pair_transactions_page.link_duplicate_bank_transaction,
 		name='link_duplicate_bank_transactions',
 	),
 	path(
@@ -75,7 +75,7 @@ urlpatterns = [
 	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
 	#
 	path('pages/simple-tasks/', views.simple_tasks_page.simple_tasks_page, name='simple_tasks_page'),
-	path('pages/simple-tasks/create-task', views.simple_tasks_page.create_task, name='create_task'),
+	path('pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'),
 	path(
 		'pages/simple-tasks/mark-as-completed',
 		views.simple_tasks_page.mark_task_as_completed,
@@ -86,7 +86,7 @@ urlpatterns = [
 	#
 	# ADD INBOX PAGE ----------------------------------------------------------------------------------------------------
 	#
-	path('pages/create-inbox-item', views.capture_inbox_item_page.capture_inbox, name='create_inbox_item_page'),
+	path('pages/create-inbox-item', views.capture_inbox_item_page.capture_inbox, name='capture_inbox_page'),
 	path(
 		'pages/create-inbox-item/create', views.capture_inbox_item_page.capture_inbox, name='capture_inbox_item'
 	),
@@ -119,7 +119,6 @@ urlpatterns = [
 		name='synchronize_ynab_categories',
 	),
 	path('integrations/ynab/sync', views.ynab_integration_page.ynab_sync, name='ynab_sync'),
-	path('integrations/ynab/file-import', views.ynab_integration_page.file_import, name='file_import'),
 	#
 	#
 	# BANK FILE IMPORT MODEL --------------------------------------------------------------------------------------------
@@ -139,6 +138,7 @@ urlpatterns = [
 	#
 	# BANK TRANSACTION MODEL --------------------------------------------------------------------------------------------
 	#
+	path('models/bank-transaction', views.bank_transaction_model.bank_transaction_list, name='bank_transaction_list'),
 	path(
 		'models/bank-transaction/<int:bank_transaction_id>',
 		views.bank_transaction_model.bank_transaction_detail,
@@ -162,7 +162,7 @@ urlpatterns = [
 	path('models/project/<int:project_id>', views.project_model.project_detail, name='project_detail'),
 	path(
 		'models/project/<int:project_id>/update-status',
-		views.project_model.update_status,
+		views.project_model.project_update_status,
 		name='update_project_status',
 	),
 	#

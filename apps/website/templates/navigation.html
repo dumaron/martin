@@ -4,26 +4,26 @@
     <div id="title">Martin</div>
 
     <ul class="tree">
-        <li><a href="{% url 'martin_home_page' %}" class="{% active request 'martin_home_page' 'active' False %}">Welcome back</a></li>
+        <li><a href="{% url 'welcome_page' %}" class="{% active request 'welcome_page' 'active' False %}">Welcome back</a></li>
         <li>
             Flows
             <ul>
 
                 <li>
-                    <a href="{% url 'flow_page' %}"
-                       class="{% active request 'flow_page' %}">
+                    <a href="{% url 'process_inboxes_page' %}"
+                       class="{% active request 'process_inboxes_page' %}">
                         Process inbox
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'pairing' kind="personal" %}"
-                       class="{% active request 'pairing' kind='personal' %}">
+                    <a href="{% url 'pair_transactions_page' kind="personal" %}"
+                       class="{% active request 'pair_transactions_page' kind='personal' %}">
                         Pair personal YNAB expenses
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'pairing' kind="shared" %}"
-                       class="{% active request 'pairing' kind='shared' %}">
+                    <a href="{% url 'pair_transactions_page' kind="shared" %}"
+                       class="{% active request 'pair_transactions_page' kind='shared' %}">
                         Pair shared YNAB expenses
                     </a>
                 </li>
@@ -32,14 +32,14 @@
         <li>Pages
             <ul>
                 <li>
-                    <a href="{% url 'simple_tasks' %}"
-                       class="{% active request 'simple_tasks' %}">
+                    <a href="{% url 'simple_tasks_page' %}"
+                       class="{% active request 'simple_tasks_page' %}">
                         Simple tasks
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'inbox_create' %}"
-                       class="{% active request 'inbox_create' %}">
+                    <a href="{% url 'capture_inbox_page' %}"
+                       class="{% active request 'capture_inbox_page' %}">
                         Add inbox item
                     </a>
                 </li>
@@ -53,10 +53,10 @@
         <li>
             Data ingestion
             <ul>
-                <li><a href="{% url 'file_import' %}" class="{% active request 'file_import' %}">Upload bank export</a>
+                <li><a href="{% url 'import_bank_export_page' %}" class="{% active request 'import_bank_export_page' %}">Upload bank export</a>
                 </li>
-                <li><a href="{% url 'ynab-synchronizations-list' %}"
-                       class="{% active request 'ynab-synchronizations-list' %}">Synchronize with YNAB</a></li>
+                <li><a href="{% url 'ynab_integration_page' %}"
+                       class="{% active request 'ynab_integration_page' %}">Synchronize with YNAB</a></li>
             </ul>
         </li>
         <li>

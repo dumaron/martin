@@ -23,7 +23,7 @@ def synchronize_ynab_categories(request):
 	"""
 	sync_ynab_categories(YNAB_PERSONAL_BUDGET_ID)
 	sync_ynab_categories(YNAB_SHARED_BUDGET_ID)
-	return redirect('ynab-synchronizations-list')
+	return redirect('ynab_integration_page')
 
 
 @login_required
@@ -39,5 +39,5 @@ def ynab_sync(request):
 	sync_ynab_transactions(YNAB_SHARED_BUDGET_ID, partial_mode)
 	sync_ynab_transactions(YNAB_PERSONAL_BUDGET_ID, partial_mode)
 
-	return redirect('ynab-synchronizations-list')
+	return redirect('ynab_integration_page')
 
