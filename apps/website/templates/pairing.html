@@ -50,7 +50,7 @@
                 <form action="{% url 'pair-transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
-                    <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
                     <table>
                         <thead>
                             <tr>
@@ -86,7 +86,7 @@
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>
-                    <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
                     <table>
                         <thead>
                             <tr>
