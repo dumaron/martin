@@ -75,11 +75,11 @@ urlpatterns = [
 	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
 	#
 	path('pages/simple-tasks/', views.simple_tasks_page.simple_tasks_page, name='simple_tasks_page'),
-	path('pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'),
+	path('pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'), # TODO also this one is on project detail
 	path(
 		'pages/simple-tasks/mark-as-completed',
 		views.simple_tasks_page.mark_task_as_completed,
-		name='mark_task_as_completed',
+		name='mark_task_as_completed', # TODO WAT?!? Now this is also in the project detail... damn
 	),
 	path('pages/simple-tasks/abort-task', views.simple_tasks_page.abort_task, name='abort_task'),
 	#

@@ -42,9 +42,10 @@
     <h2>Actions</h2>
     <ul class="compact">
         <li>
-            <form action="{% url 'link-duplicate-bank-transaction' duplicate_transaction_id=bank_transaction.id %}" method="get">
+            <form action="{% url 'link_duplicate_bank_transactions' %}" method="get">
+{# TODO !!! this now need the transaction id to be as a form field!                #}
                 <input type="hidden" name="bank_transaction" value="{{ potential_duplicate.id }}"/>
-                <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+                <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
                 <button type="submit" class="warning-button">Mark current transaction as duplicate</button>
             </form>
         </li>

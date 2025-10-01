@@ -113,11 +113,14 @@ def snooze_bank_transaction(request):
 # TODO make this request a POST
 @login_required
 @require_GET
-def link_duplicate_bank_transaction(request, duplicate_transaction_id):
+def link_duplicate_bank_transaction(request):
 	"""
 	Links a bank transaction as a duplicate of another transaction.
 	The transaction ID from the URL becomes a duplicate of the transaction from the query parameter.
 	"""
+
+
+	# TODO now the duplicate_transaction_id field needs to come from the form!!
 
 	# Get the original transaction ID from the query parameter
 	original_transaction_id_str = request.GET.get('bank_transaction')

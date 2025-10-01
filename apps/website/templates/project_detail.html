@@ -145,7 +145,7 @@
         </table>
 
         <h2>Change Project Status</h2>
-        <form method="post" action="{% url 'project_update_status' project.id %}">
+        <form method="post" action="{% url 'update_project_status' project.id %}">
             {% csrf_token %}
             <table class="large">
                 <tbody>
@@ -165,7 +165,7 @@
             <div class="task-section">
                 {% for task in tasks %}
                     <div class="task-row {% if task.is_done %}task-done{% endif %}">
-                        <form method="post" action="{% url 'task_mark_done' task.id %}" style="display: inline;">
+                        <form method="post" action="{% url 'mark_task_as_completed' %}" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit" class="task-toggle-btn" title="{% if task.is_done %}Mark as incomplete{% else %}Mark as complete{% endif %}">
                                 {% if task.is_done %}✓{% else %}○{% endif %}
@@ -187,11 +187,11 @@
                 {% endfor %}
             </div>
         {% else %}
-            <p>No tasks yet. <a href="{% url 'task_create' project.id %}">Add the first task</a>.</p>
+            <p>No tasks yet.</p>
         {% endif %}
 
         <h2>Add New Task</h2>
-        <form action="{% url 'task_create' project.id %}" method="get">
+        <form action="{% url 'create_task' %}" method="get">
             <button type="submit">+ Add Task</button>
         </form>
     </div>
