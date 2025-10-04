@@ -165,7 +165,8 @@
             <div class="task-section">
                 {% for task in tasks %}
                     <div class="task-row {% if task.is_done %}task-done{% endif %}">
-                        <form method="post" action="{% url 'mark_task_as_completed' %}" style="display: inline;">
+{#                    TODO check WTF is happening here #}
+                        <form method="post" action="{% url 'project_mark_task_complete_action' project_id=project.id %}" style="display: inline;">
                             {% csrf_token %}
                             <button type="submit" class="task-toggle-btn" title="{% if task.is_done %}Mark as incomplete{% else %}Mark as complete{% endif %}">
                                 {% if task.is_done %}✓{% else %}○{% endif %}

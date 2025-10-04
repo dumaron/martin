@@ -40,6 +40,7 @@ def task_create(request, project_id):
 @login_required
 @require_POST
 def mark_task_as_completed(request):
+	task_id = int(request.POST.get('task_id'))
 	task = get_object_or_404(Task, pk=task_id)
 
 	if task.status != 'completed':
@@ -53,6 +54,7 @@ def mark_task_as_completed(request):
 @login_required
 @require_POST
 def abort_task(request):
+	task_id = int(request.POST.get('task_id'))
 	task = get_object_or_404(Task, pk=task_id)
 
 	if task.status != 'aborted':

@@ -23,6 +23,7 @@ breadcrumbs, which don't match with the navigation menu. Things are moving a lot
 with things being messy and not perfect.
 
 """
+
 urlpatterns = [
 	path('admin/', admin.site.urls),
 	path('accounts/', include('django.contrib.auth.urls')),
@@ -75,11 +76,13 @@ urlpatterns = [
 	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
 	#
 	path('pages/simple-tasks/', views.simple_tasks_page.simple_tasks_page, name='simple_tasks_page'),
-	path('pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'), # TODO also this one is on project detail
+	path(
+		'pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'
+	),
 	path(
 		'pages/simple-tasks/mark-as-completed',
 		views.simple_tasks_page.mark_task_as_completed,
-		name='mark_task_as_completed', # TODO WAT?!? Now this is also in the project detail... damn
+		name='mark_task_as_completed',
 	),
 	path('pages/simple-tasks/abort-task', views.simple_tasks_page.abort_task, name='abort_task'),
 	#
@@ -138,7 +141,9 @@ urlpatterns = [
 	#
 	# BANK TRANSACTION MODEL --------------------------------------------------------------------------------------------
 	#
-	path('models/bank-transaction', views.bank_transaction_model.bank_transaction_list, name='bank_transaction_list'),
+	path(
+		'models/bank-transaction', views.bank_transaction_model.bank_transaction_list, name='bank_transaction_list'
+	),
 	path(
 		'models/bank-transaction/<int:bank_transaction_id>',
 		views.bank_transaction_model.bank_transaction_detail,
@@ -165,6 +170,12 @@ urlpatterns = [
 		views.project_model.project_update_status,
 		name='update_project_status',
 	),
+	path(
+		route='models/project/<int:project_id>/mark_task_complete',
+		view=views.project_model.mark_task_as_completed,
+		name='project_mark_task_complete_action',
+	),
 	#
 	#
+	# TASK MODEL --------------------------------------------------------------------------------------------------------
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

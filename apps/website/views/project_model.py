@@ -1,10 +1,11 @@
 import django_tables2 as tables
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.website.forms import ProjectForm, ProjectStatusForm
-from core.models import Project
+from core.models import Project, Task
 
 
 class ProjectTable(tables.Table):
@@ -71,5 +72,25 @@ def project_update_status(request, project_id):
 		if new_status:  # Make sure it's not empty
 			project.status = new_status
 			project.save()
+
+	return redirect('project_detail', project_id=project.id)
+
+
+class TaskForm(forms.ModelForm):
+	class Meta:
+		model = Task
+		fields = ['description']
+		widgets = { 'description': forms.TextInput(attrs={'placeholder': 'Enter task description'}) }
+
+@login_required
+@require_POST
+def mark_task_as_completed(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	form = TaskForm(request.POST)
+
+	if form.is_valid():
+		task = form.save(commit=False)
+		task.project = project
+		task.save()
 
 	return redirect('project_detail', project_id=project.id)
