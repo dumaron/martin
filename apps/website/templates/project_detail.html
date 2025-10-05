@@ -165,9 +165,9 @@
             <div class="task-section">
                 {% for task in tasks %}
                     <div class="task-row {% if task.is_done %}task-done{% endif %}">
-{#                    TODO check WTF is happening here #}
                         <form method="post" action="{% url 'project_mark_task_complete_action' project_id=project.id %}" style="display: inline;">
                             {% csrf_token %}
+                            <input type="hidden" name="task_id" value="{{ task.id }}" />
                             <button type="submit" class="task-toggle-btn" title="{% if task.is_done %}Mark as incomplete{% else %}Mark as complete{% endif %}">
                                 {% if task.is_done %}✓{% else %}○{% endif %}
                             </button>
@@ -190,10 +190,5 @@
         {% else %}
             <p>No tasks yet.</p>
         {% endif %}
-
-        <h2>Add New Task</h2>
-        <form action="{% url 'create_task' %}" method="get">
-            <button type="submit">+ Add Task</button>
-        </form>
     </div>
 {% endblock %}
