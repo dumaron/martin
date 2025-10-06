@@ -42,7 +42,7 @@
     <h2>Actions</h2>
     <ul class="compact">
         <li>
-            <form action="{% url 'link_duplicate_bank_transactions' %}" method="get">
+            <form action="{% url 'link_duplicate_bank_transactions' %}" method="post">
                 <input type="hidden" name="bank_transaction_id" value="{{ potential_duplicate.id }}"/>
                 <input type="hidden" name="target_bank_transaction_id" value="{{ target_bank_transaction.id }}"/>
                 <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>

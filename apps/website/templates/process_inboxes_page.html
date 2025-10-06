@@ -24,9 +24,9 @@
 
         <div class="processing-section">
             <h2>Mark as Processed</h2>
-            <form action="{% url 'process_inbox_item' inbox.id %}" method="post">
+            <form action="{% url 'process_inbox' %}" method="post">
                 {% csrf_token %}
-                <input type="hidden" name="action" value="mark_done">
+                <input type="hidden" name="inbox_id" value="{{ inbox.id }}">
                 <button type="submit">Mark as Processed</button>
             </form>
         </div>

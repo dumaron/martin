@@ -19,8 +19,10 @@ def process_inboxes_page(request):
 
 @login_required
 @require_POST
-def process_inbox(request, inbox_id):
+def process_inbox(request):
 	# TODO write description for process_inbox_item action
+
+	inbox_id = int(request.POST.get('inbox_id'))
 	inbox = get_object_or_404(Inbox, pk=inbox_id)
 	inbox.processed_at = timezone.now()
 	inbox.save()

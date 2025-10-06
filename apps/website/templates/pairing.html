@@ -47,7 +47,7 @@
         <h2>Same amount</h2>
         {% if same_amount_suggestions %}
             <div id="same-amount-suggestions">
-                <form action="{% url 'pair-transactions' %}" method="post">
+                <form action="{% url 'pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
@@ -82,7 +82,7 @@
         <h2>Similar date</h2>
         {% if similar_date_suggestions %}
             <div id="similar-date-suggestions">
-                <form action="{% url 'pair-transactions' %}" method="post">
+                <form action="{% url 'pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>

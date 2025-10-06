@@ -154,7 +154,7 @@ urlpatterns = [
 	# YNAB TRANSACTION MODEL --------------------------------------------------------------------------------------------
 	#
 	path(
-		'models/ynab-transaction/<int:ynab_transaction_id>',
+		'models/ynab-transaction/<str:ynab_transaction_id>',
 		views.ynab_transaction_model.ynab_transaction_detail,
 		name='ynab_transaction_detail',
 	),
