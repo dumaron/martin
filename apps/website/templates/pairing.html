@@ -144,7 +144,7 @@
     </div>
     <div id="suggestions">
     {% if potential_duplicate %}
-        {% include "components/potential_duplicate_warning.html" with potential_duplicate=potential_duplicate %}
+        {% include "components/potential_duplicate_warning.html" with potential_duplicate=potential_duplicate target_bank_transaction=bank_transaction%}
     {% endif %}
     </div>
 {% endblock %}
