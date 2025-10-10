@@ -1,4 +1,3 @@
-
 from . import welcome_page
 from . import pair_transactions_page
 from . import process_inboxes_page

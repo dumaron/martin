@@ -19,3 +19,10 @@ but I plan to add more in the future. Maybe some APIs, that will be considered s
 
 This means the code must not assume that everything is about web pages. It must be designed to be easily extensible to
 new presentation layers.
+
+-------
+
+TODO add:
+- No useless OOP or objects
+- Complex mutations in /mutations
+- Views are organized by being user-centric, not REST-like

@@ -57,10 +57,13 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 	def test_requires_login(self):
 		"""Test that the view requires authentication."""
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': self.original_transaction.id,
-			'target_bank_transaction_id': self.duplicate_transaction.id,
-		})
+		response = self.client.post(
+			url,
+			{
+				'bank_transaction_id': self.original_transaction.id,
+				'target_bank_transaction_id': self.duplicate_transaction.id,
+			},
+		)
 
 		# Should redirect to login
 		self.assertEqual(response.status_code, 302)
@@ -81,10 +84,9 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		self.client.force_login(self.user)
 
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': 99999,
-			'target_bank_transaction_id': self.duplicate_transaction.id,
-		})
+		response = self.client.post(
+			url, {'bank_transaction_id': 99999, 'target_bank_transaction_id': self.duplicate_transaction.id}
+		)
 
 		# Should return 404 Not Found
 		self.assertEqual(response.status_code, 404)
@@ -94,10 +96,9 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		self.client.force_login(self.user)
 
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': self.original_transaction.id,
-			'target_bank_transaction_id': 99999,
-		})
+		response = self.client.post(
+			url, {'bank_transaction_id': self.original_transaction.id, 'target_bank_transaction_id': 99999}
+		)
 
 		# Should return 404 Not Found
 		self.assertEqual(response.status_code, 404)
@@ -110,11 +111,14 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		self.assertIsNone(self.duplicate_transaction.duplicate_of)
 
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': self.original_transaction.id,
-			'target_bank_transaction_id': self.duplicate_transaction.id,
-			'redirect-to': '/test-redirect/',
-		})
+		response = self.client.post(
+			url,
+			{
+				'bank_transaction_id': self.original_transaction.id,
+				'target_bank_transaction_id': self.duplicate_transaction.id,
+				'redirect-to': '/test-redirect/',
+			},
+		)
 
 		# Should redirect successfully
 		self.assertEqual(response.status_code, 302)
@@ -130,11 +134,14 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 
 		custom_redirect = '/custom/redirect/path/'
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': self.original_transaction.id,
-			'target_bank_transaction_id': self.duplicate_transaction.id,
-			'redirect-to': custom_redirect,
-		})
+		response = self.client.post(
+			url,
+			{
+				'bank_transaction_id': self.original_transaction.id,
+				'target_bank_transaction_id': self.duplicate_transaction.id,
+				'redirect-to': custom_redirect,
+			},
+		)
 
 		# Should redirect to the custom URL
 		self.assertEqual(response.status_code, 302)
@@ -145,10 +152,13 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		self.client.force_login(self.user)
 
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': self.duplicate_transaction.id,
-			'target_bank_transaction_id': self.duplicate_transaction.id,
-		})
+		response = self.client.post(
+			url,
+			{
+				'bank_transaction_id': self.duplicate_transaction.id,
+				'target_bank_transaction_id': self.duplicate_transaction.id,
+			},
+		)
 
 		# Should return 400 Bad Request
 		self.assertEqual(response.status_code, 400)
@@ -177,10 +187,10 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 
 		# Now try to link duplicate to third transaction (should fail)
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': third_transaction.id,
-			'target_bank_transaction_id': self.duplicate_transaction.id,
-		})
+		response = self.client.post(
+			url,
+			{'bank_transaction_id': third_transaction.id, 'target_bank_transaction_id': self.duplicate_transaction.id},
+		)
 
 		# Should return 400 Bad Request
 		self.assertEqual(response.status_code, 400)
@@ -197,11 +207,14 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		self.client.force_login(self.user)
 
 		url = reverse('link_duplicate_bank_transactions')
-		response = self.client.post(url, {
-			'bank_transaction_id': self.original_transaction.id,
-			'target_bank_transaction_id': self.duplicate_transaction.id,
-			'redirect-to': '/test-redirect/',
-		})
+		response = self.client.post(
+			url,
+			{
+				'bank_transaction_id': self.original_transaction.id,
+				'target_bank_transaction_id': self.duplicate_transaction.id,
+				'redirect-to': '/test-redirect/',
+			},
+		)
 
 		# Should redirect successfully
 		self.assertEqual(response.status_code, 302)

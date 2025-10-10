@@ -31,4 +31,3 @@ def pair_bank_transaction_with_ynab_transaction(bank_transaction, ynab_transacti
 		bank_transaction.matched_ynab_transaction = ynab_transaction
 		bank_transaction.paired_on = datetime.now()
 		bank_transaction.save()
-

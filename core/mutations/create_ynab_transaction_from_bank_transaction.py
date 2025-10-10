@@ -36,4 +36,3 @@ def create_ynab_transaction_from_bank_transaction(budget_id, bank_transaction, m
 	bank_transaction.save()
 
 	return
-

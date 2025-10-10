@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.website.forms import YnabTransactionCreationForm
@@ -16,6 +17,7 @@ from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 
 # TODO update description
+@login_required
 @require_GET
 def pair_transactions_page(request, kind):
 	"""
@@ -141,7 +143,10 @@ def link_duplicate_bank_transaction(request):
 	target_transaction.save()
 
 	# Redirect back to the original transaction detail page or wherever specified
-	redirect_to = request.POST.get('redirect-to', f'/finances/bank_transactions/{target_bank_transaction_id}')
+	default_redirect = reverse(
+		'bank_transaction_detail', kwargs={'bank_transaction_id': target_bank_transaction_id}
+	)
+	redirect_to = request.POST.get('redirect-to', default_redirect)
 	return redirect(redirect_to)
 
 
@@ -171,4 +176,4 @@ def create_ynab_transaction(request, kind):
 		create_ynab_transaction_from_bank_transaction(budget_id, bank_transaction, memo, category_id)
 		return redirect(redirect_to)
 	else:
-		return # TODO fix this, maybe returning an HTTP code?
+		return HttpResponseBadRequest('Invalid form data')

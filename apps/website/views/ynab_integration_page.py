@@ -40,4 +40,3 @@ def ynab_sync(request):
 	sync_ynab_transactions(YNAB_PERSONAL_BUDGET_ID, partial_mode)
 
 	return redirect('ynab_integration_page')
-

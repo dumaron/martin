@@ -19,5 +19,3 @@ def capture_inbox(request):
 	return render(
 		request, 'inbox_create.html', {'form': new_creation_form, 'creation_success': creation_success}
 	)
-
-
