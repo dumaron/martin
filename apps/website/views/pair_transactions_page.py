@@ -110,7 +110,6 @@ def snooze_bank_transaction(request):
 	return redirect(redirect_to)
 
 
-# TODO make this request a POST
 @login_required
 @require_POST
 def link_duplicate_bank_transaction(request):
@@ -119,11 +118,8 @@ def link_duplicate_bank_transaction(request):
 	The transaction ID from the URL becomes a duplicate of the transaction from the query parameter.
 	"""
 
-	# TODO This is not working now...
-
-	# Get the original transaction ID from the query parameter
-	target_bank_transaction_id = int(request.POST.get('bank_transaction_id'))
-	duplicate_transaction_id = int(request.POST.get('duplicate_transaction_id'))
+	duplicate_transaction_id = int(request.POST.get('bank_transaction_id'))
+	target_bank_transaction_id = int(request.POST.get('target_bank_transaction_id'))
 
 	# Get both transactions
 	duplicate_transaction = get_object_or_404(BankTransaction, pk=duplicate_transaction_id)
@@ -140,13 +136,12 @@ def link_duplicate_bank_transaction(request):
 		return HttpResponseBadRequest('Transaction is already marked as a duplicate of another transaction')
 
 	# Make the URL transaction a duplicate of the query parameter transaction
-	# THOUGHT Should this be a BankTransaction method? And maybe all the validation too should be there?
+	# THOUGHT: Should this be a BankTransaction method? And maybe all the validation too should be there?
 	target_transaction.duplicate_of = duplicate_transaction
 	target_transaction.save()
 
 	# Redirect back to the original transaction detail page or wherever specified
-	# TODO given the new pages structure, think if this still makes sense
-	redirect_to = request.GET.get('redirect-to', f'/finances/bank_transactions/{target_bank_transaction_id}')
+	redirect_to = request.POST.get('redirect-to', f'/finances/bank_transactions/{target_bank_transaction_id}')
 	return redirect(redirect_to)
 
 
@@ -164,8 +159,7 @@ def create_ynab_transaction(request, kind):
 	Returns redirect to pairing view on success, or None if form validation fails.
 	"""
 
-	# TODO NOW THE KIND NEEDS TO BE PASSED BY FORM VALUE!!
-	personal = kind == 'personal'
+	personal = request.POST.get('kind') == 'personal'
 	budget_id = YNAB_PERSONAL_BUDGET_ID if personal else YNAB_SHARED_BUDGET_ID
 	form = YnabTransactionCreationForm(request.POST, budget_id=budget_id)
 	redirect_to = request.POST.get('redirect-to')

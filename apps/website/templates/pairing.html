@@ -117,6 +117,7 @@
         <h2>Create YNAB transaction</h2>
         <form action="{% url 'create_ynab_transaction' %}" method="post" class="pairing-form">
             {% csrf_token %}
+            <input type="hidden" name="kind" value="{{ kind }}" />
             <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
             {{ transaction_creation_form.bank_transaction_id }}
             <table class="large">
