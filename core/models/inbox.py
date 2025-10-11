@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Inbox(models.Model):
@@ -18,3 +19,6 @@ class Inbox(models.Model):
 	class Meta:
 		db_table = 'inboxes'
 		ordering = ['created_at']
+
+	def created_days_ago(self):
+		return (timezone.now() - self.created_at).days

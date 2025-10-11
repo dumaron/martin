@@ -17,7 +17,11 @@
                 </tr>
                 <tr>
                     <th>Created</th>
-                    <td>{{ inbox.created_at|date:"d.m.Y H:i" }}</td>
+                    <td class="date">{{ inbox.created_at|date:"d.m.Y H:i" }}</td>
+                </tr>
+                <tr>
+                    <th>Age</th>
+                    <td>{{ inbox.created_days_ago }} day{{ inbox.created_days_ago|pluralize }}</td>
                 </tr>
             </tbody>
         </table>
