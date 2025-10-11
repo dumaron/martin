@@ -33,10 +33,10 @@ class BankTransactionAdmin(admin.ModelAdmin):
 	actions = [snooze]
 
 	def file_type(self, obj):
-		return obj.file_import.file_type
+		return obj.import_bank_export_page.file_type
 
 	def imported_on(self, obj):
-		return obj.file_import.import_date
+		return obj.import_bank_export_page.import_date
 
 
 class YnabTransactionAdmin(admin.ModelAdmin):

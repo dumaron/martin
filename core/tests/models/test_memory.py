@@ -95,19 +95,6 @@ class MemorySelectMemoryForTodayTest(TestCase):
 		memory2.refresh_from_db()
 		self.assertEqual(memory2.last_selected_on, today)
 
-	def test_select_memory_for_today_raises_exception_when_no_memories(self):
-		"""Test that select_memory_for_today raises exception when no memories exist."""
-		# Ensure no memories exist
-		Memory.objects.all().delete()
-
-		with patch('core.models.memory.datetime') as mock_datetime:
-			mock_datetime.today.return_value = datetime.combine(date.today(), datetime.min.time())
-
-			with self.assertRaises(Exception) as context:
-				Memory.select_memory_for_today()
-
-		self.assertEqual(str(context.exception), 'No memories found')
-
 	def test_select_memory_for_today_selects_from_oldest_memories(self):
 		"""Test that select_memory_for_today selects from memories ordered by last_selected_on (oldest first)."""
 		today = date.today()

@@ -65,14 +65,16 @@ table th:nth-child(3) {
                         <td>{{ task.id }}</td>
                         <td>{{ task.description|default:"Untitled task" }}</td>
                         <td>
-                            <form method="post" action="{% url 'task_mark_done' task.id %}" style="display: inline; margin-right: 5px;">
+                            <form method="post" action="{% url 'mark_task_as_completed' %}" style="display: inline; margin-right: 5px;">
                                 {% csrf_token %}
+                                <input type="hidden" name="task_id" value="{{ task.id }}">
                                 <button type="submit">
                                     {% if task.status == 'completed' %}Reopen{% else %}Mark Done{% endif %}
                                 </button>
                             </form>
-                            <form method="post" action="{% url 'task_mark_aborted' task.id %}" style="display: inline;">
+                            <form method="post" action="{% url 'abort_task' %}" style="display: inline;">
                                 {% csrf_token %}
+                                <input type="hidden" name="task_id" value="{{ task.id }}">
                                 <button type="submit">
                                     {% if task.status == 'aborted' %}Reopen{% else %}Abort{% endif %}
                                 </button>

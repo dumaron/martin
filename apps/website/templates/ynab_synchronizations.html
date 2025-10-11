@@ -8,7 +8,7 @@
         Import and merge all changes in YNAB transactions happened after the last import.
         This method uses the <code>server_knowledge</code> attribute to obtain all the changes.
     </p>
-    <form action="{% url 'ynab-sync' %}" method="post">
+    <form action="{% url 'ynab_sync' %}" method="post">
         {% csrf_token %}
         <button type="submit" name="ynab-sync" value="partial-sync">Partial sync</button>
     </form>
@@ -18,7 +18,7 @@
         Import and merge all transactions available on YNAB.
         Missing transactions will be considered deleted as YNAB docs suggest.
     </p>
-    <form action="{% url 'ynab-sync' %}" method="post">
+    <form action="{% url 'ynab_sync' %}" method="post">
         {% csrf_token %}
         <button type="submit" name="ynab-sync" value="total-sync">Complete sync</button>
     </form>

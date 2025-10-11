@@ -21,7 +21,7 @@ class Memory(models.Model):
 		verbose_name_plural = 'memories'
 
 	@staticmethod
-	def select_memory_for_today():
+	def select_memory_for_today() -> 'Memory | None':
 		"""
 		Select a memory to be shown today among the one never selected before or selected a long time ago
 		"""
@@ -39,7 +39,7 @@ class Memory(models.Model):
 
 		# If there are no memories (weird? empty DB?) raise an exception, this is not supposed to happen
 		if not last_10_memories:
-			raise Exception('No memories found')  # that error message looks so cool...
+			return None
 
 		selected_memory = random.choice(last_10_memories)
 		selected_memory.last_selected_on = today

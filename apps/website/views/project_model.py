@@ -1,10 +1,12 @@
+from datetime import timezone
+
 import django_tables2 as tables
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.website.forms import ProjectForm, ProjectStatusForm
-from core.models import Project
+from core.models import Project, Task
 
 
 class ProjectTable(tables.Table):
@@ -73,3 +75,18 @@ def project_update_status(request, project_id):
 			project.save()
 
 	return redirect('project_detail', project_id=project.id)
+
+
+@login_required
+@require_POST
+def mark_task_as_completed(request, project_id):
+	task_id = int(request.POST.get('task_id'))
+	task = get_object_or_404(Task, pk=task_id)
+
+	# TODO make this mutation a single method on the model
+	if task.status != 'completed':
+		task.status = 'completed'
+		task.completed_at = timezone.now()
+		task.save()
+
+	return redirect('project_detail', project_id=project_id)

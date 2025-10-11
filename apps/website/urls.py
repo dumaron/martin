@@ -3,74 +3,177 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-from apps.website.views import (
-	bank_file_import_detail,
-	bank_file_import_list,
-	bank_transaction_detail,
-	bank_transaction_list,
-	create_ynab_transaction,
-	file_import,
-	flow_page,
-	inbox_create,
-	link_duplicate_bank_transaction,
-	martin_home_page,
-	match_transactions,
-	pairing_view,
-	process_inbox_item,
-	project_create,
-	project_detail,
-	project_list,
-	project_update_status,
-	simple_tasks,
-	snooze_bank_transaction,
-	synchronize_ynab_categories,
-	task_create,
-	task_mark_aborted,
-	task_mark_done,
-	ynab_sync,
-	ynab_synchronizations_list,
-	ynab_transaction_detail,
-)
+from apps.website import views
+
+"""
+After some back and forth on what URLs should represent, I decided to go with an approach where they represent HTML
+pages and actions (intended as form submit). So they are more representation-oriented than model-oriented. They take
+inspiration more from the old PHP world than the REST approach which appeared a couple years after the first.
+
+Everything is coupled in a reasonable way IMHO: 
+	>>> code is shaped after how the user (me) will use the application. <<<
+
+Enjoy the benefit of not having to make everything generic: too much decoupling can be harmful in context where it's not
+needed. If more "frontends" (intended as API, telegram bots, etc.) will be added, then we might have an actual reason to
+rework coupling.
+
+I know that the URLs nesting structure is somewhat incorrect. After all, why putting things under `/pages`
+if no `/pages` page exists? But I think it helps me reason for now. If you notice, URls also don't match with the
+breadcrumbs, which don't match with the navigation menu. Things are moving a lot, I'm learning and reasoning, keep peace
+with things being messy and not perfect.
+
+"""
 
 urlpatterns = [
-	path('', martin_home_page, name='martin_home_page'),
 	path('admin/', admin.site.urls),
 	path('accounts/', include('django.contrib.auth.urls')),
-	# GTD flow
-	path('gtd/flow', flow_page, name='flow_page'),
-	path('gtd/process/<int:inbox_id>', process_inbox_item, name='process_inbox_item'),
-	path('gtd/simple-tasks', simple_tasks, name='simple_tasks'),
-	path('<str:kind>/pairing', pairing_view, name='pairing'),
-	# mutations
-	path('pair-transactions', match_transactions, name='pair-transactions'),
-	path('<str:kind>/create-ynab-transaction', create_ynab_transaction, name='create-ynab-transaction'),
+	#
+	#
+	# HOME PAGE ---------------------------------------------------------------------------------------------------------
+	#
+	path('', views.welcome_page.martin_home_page, name='welcome_page'),
+	#
+	#
+	# PAIR TRANSACTIONS FLOW PAGE ---------------------------------------------------------------------------------------
+	#
 	path(
-		'bank-transactions/<int:bank_transaction_id>/snooze', snooze_bank_transaction, name='snooze-transaction'
+		route='flows/pair-transactions/<str:kind>',
+		view=views.pair_transactions_page.pair_transactions_page,
+		name='pair_transactions_page',
 	),
 	path(
-		'bank_transactions/<int:duplicate_transaction_id>/link-duplicate',
-		link_duplicate_bank_transaction,
-		name='link-duplicate-bank-transaction',
+		'flows/pair-transactions/pair-transactions',
+		views.pair_transactions_page.pair_transactions,
+		name='pair_transactions',
 	),
-	# ynab synchronizations
-	path('ynab-synchronizations', ynab_synchronizations_list, name='ynab-synchronizations-list'),
-	path('ynab-sync', ynab_sync, name='ynab-sync'),
-	path('sync-ynab-categories', synchronize_ynab_categories, name='synchronize_ynab_categories'),
-	# file import for personal bank transactions
-	path('file-import', file_import, name='file_import'),
-	# Low-level entities
-	path('bank_transactions', bank_transaction_list, name='bank_transaction_list'),
-	path('bank_transactions/<int:bank_transaction_id>', bank_transaction_detail, name='bank_transaction_detail'),
-	path('bank_file_imports', bank_file_import_list, name='bank_file_import_list'),
-	path('bank_file_imports/<int:bank_file_import_id>', bank_file_import_detail, name='bank_file_import_detail'),
-	path('ynab_transactions/<str:ynab_transaction_id>', ynab_transaction_detail, name='ynab_transaction_detail'),
-	# GTD system
-	path('projects', project_list, name='project_list'),
-	path('projects/create', project_create, name='project_create'),
-	path('projects/<int:project_id>', project_detail, name='project_detail'),
-	path('projects/<int:project_id>/update-status', project_update_status, name='project_update_status'),
-	path('projects/<int:project_id>/tasks/create', task_create, name='task_create'),
-	path('tasks/<int:task_id>/mark-done', task_mark_done, name='task_mark_done'),
-	path('tasks/<int:task_id>/mark-aborted', task_mark_aborted, name='task_mark_aborted'),
-	path('inboxes/create', inbox_create, name='inbox_create'),
+	path(
+		'flows/pair-transactions/snooze-bank-transaction',
+		views.pair_transactions_page.snooze_bank_transaction,
+		name='snooze_bank_transaction',
+	),
+	path(
+		'flows/pair-transactions/link-duplicate-bank-transactions/',
+		views.pair_transactions_page.link_duplicate_bank_transaction,
+		name='link_duplicate_bank_transactions',
+	),
+	path(
+		'flows/pair-transactions/create-ynab-transaction',
+		views.pair_transactions_page.create_ynab_transaction,
+		name='create_ynab_transaction',
+	),
+	#
+	#
+	# PROCESS INBOXES FLOW PAGE -----------------------------------------------------------------------------------------
+	#
+	path(
+		route='flows/process-inboxes/',
+		view=views.process_inboxes_page.process_inboxes_page,
+		name='process_inboxes_page',
+	),
+	path('flows/process-inboxes/process-inbox', views.process_inboxes_page.process_inbox, name='process_inbox'),
+	#
+	#
+	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
+	#
+	path('pages/simple-tasks/', views.simple_tasks_page.simple_tasks_page, name='simple_tasks_page'),
+	path('pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'),
+	path(
+		'pages/simple-tasks/mark-as-completed',
+		views.simple_tasks_page.mark_task_as_completed,
+		name='mark_task_as_completed',
+	),
+	path('pages/simple-tasks/abort-task', views.simple_tasks_page.abort_task, name='abort_task'),
+	#
+	#
+	# ADD INBOX PAGE ----------------------------------------------------------------------------------------------------
+	#
+	path('pages/create-inbox-item', views.capture_inbox_item_page.capture_inbox, name='capture_inbox_page'),
+	path(
+		'pages/create-inbox-item/create', views.capture_inbox_item_page.capture_inbox, name='capture_inbox_item'
+	),
+	#
+	#
+	# IMPORT FILE PAGE --------------------------------------------------------------------------------------------------
+	#
+	path(
+		'pages/import-bank-export',
+		views.bank_export_import_page.import_bank_export_page,
+		name='import_bank_export_page',
+	),
+	path(
+		'pages/import-bank-export/import',
+		views.bank_export_import_page.import_bank_export_page,
+		name='import_bank_export',
+	),
+	#
+	#
+	# YNAB INTEGRATION PAGE ---------------------------------------------------------------------------------------------
+	#
+	path(
+		route='integrations/ynab',
+		view=views.ynab_integration_page.ynab_integration_page,
+		name='ynab_integration_page',
+	),
+	path(
+		route='integrations/ynab/synchronize-categories',
+		view=views.ynab_integration_page.synchronize_ynab_categories,
+		name='synchronize_ynab_categories',
+	),
+	path('integrations/ynab/sync', views.ynab_integration_page.ynab_sync, name='ynab_sync'),
+	#
+	#
+	# BANK FILE IMPORT MODEL --------------------------------------------------------------------------------------------
+	# I need to find a good way to centralize some of this view logic. Maybe with class-based views? Mah.
+	#
+	path(
+		route='models/bank-file-import',
+		view=views.bank_file_import_model.bank_file_import_list,
+		name='bank_file_import_list',
+	),
+	path(
+		route='models/bank-file-import/<int:bank_file_import_id>',
+		view=views.bank_file_import_model.bank_file_import_detail,
+		name='bank_file_import_detail',
+	),
+	#
+	#
+	# BANK TRANSACTION MODEL --------------------------------------------------------------------------------------------
+	#
+	path(
+		'models/bank-transaction', views.bank_transaction_model.bank_transaction_list, name='bank_transaction_list'
+	),
+	path(
+		'models/bank-transaction/<int:bank_transaction_id>',
+		views.bank_transaction_model.bank_transaction_detail,
+		name='bank_transaction_detail',
+	),
+	#
+	#
+	# YNAB TRANSACTION MODEL --------------------------------------------------------------------------------------------
+	#
+	path(
+		'models/ynab-transaction/<str:ynab_transaction_id>',
+		views.ynab_transaction_model.ynab_transaction_detail,
+		name='ynab_transaction_detail',
+	),
+	#
+	#
+	# PROJECT MODEL -----------------------------------------------------------------------------------------------------
+	#
+	path('models/project', views.project_model.project_list, name='project_list'),
+	path('models/project/create', views.project_model.project_create, name='project_create'),
+	path('models/project/<int:project_id>', views.project_model.project_detail, name='project_detail'),
+	path(
+		'models/project/<int:project_id>/update-status',
+		views.project_model.project_update_status,
+		name='update_project_status',
+	),
+	path(
+		route='models/project/<int:project_id>/mark_task_complete',
+		view=views.project_model.mark_task_as_completed,
+		name='project_mark_task_complete_action',
+	),
+	#
+	#
+	# TASK MODEL --------------------------------------------------------------------------------------------------------
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

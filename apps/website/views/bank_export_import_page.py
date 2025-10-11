@@ -5,7 +5,8 @@ from apps.website.forms import BankFileImportForm
 
 
 @login_required
-def file_import(request):
+def import_bank_export_page(request):
+	# TODO split this into GET and POST
 	"""
 	GET: Page to allow importing bank exports from banks (Unicredit, Fineco, Credem)
 	POST: Form action to import personal bank export

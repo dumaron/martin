@@ -47,10 +47,10 @@
         <h2>Same amount</h2>
         {% if same_amount_suggestions %}
             <div id="same-amount-suggestions">
-                <form action="{% url 'pair-transactions' %}" method="post">
+                <form action="{% url 'pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
-                    <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
                     <table>
                         <thead>
                             <tr>
@@ -82,11 +82,11 @@
         <h2>Similar date</h2>
         {% if similar_date_suggestions %}
             <div id="similar-date-suggestions">
-                <form action="{% url 'pair-transactions' %}" method="post">
+                <form action="{% url 'pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>
-                    <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
                     <table>
                         <thead>
                             <tr>
@@ -115,9 +115,10 @@
             <p>No uncleared YNAB transaction found within the date range.</p>
         {% endif %}
         <h2>Create YNAB transaction</h2>
-        <form action="{% url 'create-ynab-transaction' kind=kind %}" method="post" class="pairing-form">
+        <form action="{% url 'create_ynab_transaction' %}" method="post" class="pairing-form">
             {% csrf_token %}
-            <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+            <input type="hidden" name="kind" value="{{ kind }}" />
+            <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
             {{ transaction_creation_form.bank_transaction_id }}
             <table class="large">
                 <tbody>
@@ -128,21 +129,23 @@
                 <tr>
                     <th class="creation-form-label">{{ transaction_creation_form.ynab_category.label_tag }}</th>
                     <td>{{ transaction_creation_form.ynab_category }}</td>
+                    <td>{{ transaction_creation_form.ynab_category }}</td>
                 </tr>
                 </tbody>
             </table>
             <button type="submit">Create transaction</button>
         </form>
         <h2>Snooze the bank transaction</h2>
-        <form action="{% url 'snooze-transaction' bank_transaction_id=bank_transaction.id %}" method="post">
+        <form action="{% url 'snooze_bank_transaction' %}" method="post">
             {% csrf_token %}
-            <input type="hidden" name="redirect-to" value="{% url 'pairing' kind=kind %}"/>
+            <input type="hidden" name="bank_transaction_id" value="{{ bank_transaction.id }}"/>
+            <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
             <button type="submit">Snooze</button>
         </form>
     </div>
     <div id="suggestions">
     {% if potential_duplicate %}
-        {% include "components/potential_duplicate_warning.html" with potential_duplicate=potential_duplicate %}
+        {% include "components/potential_duplicate_warning.html" with potential_duplicate=potential_duplicate target_bank_transaction=bank_transaction%}
     {% endif %}
     </div>
 {% endblock %}
