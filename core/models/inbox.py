@@ -20,6 +20,5 @@ class Inbox(models.Model):
 		db_table = 'inboxes'
 		ordering = ['created_at']
 
-
 	def created_days_ago(self):
 		return (timezone.now() - self.created_at).days

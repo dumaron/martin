@@ -21,7 +21,7 @@
                 </tr>
                 <tr>
                     <th>Age</th>
-                    <td>{{ inbox.created_days_ago }} days</td>
+                    <td>{{ inbox.created_days_ago }} day{{ inbox.created_days_ago|pluralize }}</td>
                 </tr>
             </tbody>
         </table>
