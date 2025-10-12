@@ -58,16 +58,18 @@
                                 <th scope="col">Amount</th>
                                 <th scope="col">Memo</th>
                                 <th scope="col">Date</th>
+                                <th scope="col">Date Diff</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for transaction in same_amount_suggestions %}
+                        {% for suggestion in same_amount_suggestions %}
                             <tr>
                                 <td class="selection"><input type="radio" name="ynab-transaction"
-                                                             value="{{ transaction.id }}"/></td>
-                                <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
-                                <td>{{ transaction.memo }}</td>
-                                <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
+                                                             value="{{ suggestion.transaction.id }}"/></td>
+                                <td class="amount">{{ suggestion.transaction.amount | floatformat:2 }}</td>
+                                <td>{{ suggestion.transaction.memo }}</td>
+                                <td class="date">{{ suggestion.transaction.date | date:"d.m.Y" }}</td>
+                                <td class="date-diff">{{ suggestion.date_diff }} days</td>
                             </tr>
                         {% endfor %}
                         </tbody>

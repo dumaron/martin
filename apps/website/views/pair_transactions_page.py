@@ -40,12 +40,21 @@ def pair_transactions_page(request, kind):
 	if first_unpaired_bank_transaction is None:
 		return render(request, 'pairing_empty.html', {})
 
-	same_amount_suggestions = list(YnabTransaction.objects.filter(
+	same_amount_ynab_transactions = YnabTransaction.objects.filter(
 		deleted=False,
 		amount=first_unpaired_bank_transaction.amount,
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
 		budget_id=budget_id,
-	))
+	)
+
+	# Add date difference for each suggestion
+	same_amount_suggestions = [
+		{
+			'transaction': transaction,
+			'date_diff': (first_unpaired_bank_transaction.date - transaction.date).days,
+		}
+		for transaction in same_amount_ynab_transactions
+	]
 
 	similar_date_suggestions = YnabTransaction.objects.filter(
 		deleted=False,
@@ -53,7 +62,7 @@ def pair_transactions_page(request, kind):
 		date__gte=first_unpaired_bank_transaction.date - timedelta(days=3),
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
 		budget_id=budget_id,
-	).exclude(id__in=[s.id for s in same_amount_suggestions])
+	).exclude(id__in=[s['transaction'].id for s in same_amount_suggestions])
 
 	potential_duplicate = first_unpaired_bank_transaction.get_potential_duplicate()
 	potential_duplicate_highlighted = None
