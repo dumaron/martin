@@ -69,7 +69,7 @@
                                 <td class="amount">{{ suggestion.transaction.amount | floatformat:2 }}</td>
                                 <td>{{ suggestion.transaction.memo }}</td>
                                 <td class="date">{{ suggestion.transaction.date | date:"d.m.Y" }}</td>
-                                <td class="date-diff">{{ suggestion.date_diff }} days</td>
+                                <td class="date-diff date">{{ suggestion.date_diff }} day{{ suggestion.date_diff|pluralize }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

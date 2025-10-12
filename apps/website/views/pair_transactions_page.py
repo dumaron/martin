@@ -62,7 +62,7 @@ def pair_transactions_page(request, kind):
 		date__gte=first_unpaired_bank_transaction.date - timedelta(days=3),
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
 		budget_id=budget_id,
-	).exclude(id__in=[s['transaction'].id for s in same_amount_suggestions])
+	).exclude(id__in=same_amount_ynab_transactions.values_list('id', flat=True))
 
 	potential_duplicate = first_unpaired_bank_transaction.get_potential_duplicate()
 	potential_duplicate_highlighted = None
