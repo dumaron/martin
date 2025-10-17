@@ -93,6 +93,24 @@ urlpatterns = [
 	),
 	#
 	#
+	# DAILY SUGGESTIONS INTRO PAGE --------------------------------------------------------------------------------------
+	#
+	path(
+		'pages/daily-suggestions',
+		views.daily_suggestion_editor_page.daily_suggestions_intro_page,
+		name='daily_suggestions_intro_page',
+	),
+	#
+	#
+	# DAILY SUGGESTIONS EDITOR PAGE -------------------------------------------------------------------------------------
+	#
+	path(
+		'pages/daily-suggestions/<str:date>',
+		views.daily_suggestion_editor_page.daily_suggestions_editor_page,
+		name='daily_suggestions_editor_page',
+	),
+	#
+	#
 	# IMPORT FILE PAGE --------------------------------------------------------------------------------------------------
 	#
 	path(
@@ -175,5 +193,5 @@ urlpatterns = [
 	),
 	#
 	#
-	# TASK MODEL --------------------------------------------------------------------------------------------------------
+	#
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

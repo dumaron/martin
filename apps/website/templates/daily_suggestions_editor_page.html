@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="fixed-content">
+        <h1>{{ daily_suggestion }}</h1>
+        <form method="post">
+            <div>
+            <textarea name="content" rows="10" cols="40">{{ daily_suggestion.content }}</textarea>
+            </div>
+            <button type="submit">Save</button>
+        </form>
+    <div class="fixed-content">
+{% endblock %}

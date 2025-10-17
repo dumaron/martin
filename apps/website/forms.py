@@ -64,35 +64,3 @@ class InboxForm(forms.ModelForm):
 		model = Inbox
 		fields = ['content']
 		widgets = {'content': forms.Textarea(attrs={'rows': 4, 'placeholder': ''})}
-
-
-class InboxProcessingForm(forms.Form):
-	ACTION_CHOICES = [
-		('create_project', 'Create New Project'),
-		('create_task', 'Add Task to Project'),
-		('mark_done', 'Mark as Processed'),
-	]
-
-	action = forms.ChoiceField(choices=ACTION_CHOICES, widget=forms.RadioSelect)
-
-	# Project creation fields
-	project_title = forms.CharField(
-		required=False, widget=forms.TextInput(attrs={'placeholder': 'Enter project title'})
-	)
-	project_description = forms.CharField(
-		required=False, widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Optional project description'})
-	)
-
-	# Task creation fields
-	project_id = forms.ModelChoiceField(
-		queryset=Project.objects.filter(status='active'),
-		required=False,
-		empty_label='Choose a project...',
-		widget=forms.Select(attrs={'class': 'tom-select'}),
-	)
-	task_title = forms.CharField(
-		required=False, widget=forms.TextInput(attrs={'placeholder': 'Enter task title'})
-	)
-	task_description = forms.CharField(
-		required=False, widget=forms.Textarea(attrs={'rows': 2, 'placeholder': 'Optional task description'})
-	)
