@@ -1,19 +1,15 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from apps.website.forms import TaskForm
 from core.models import Project, Task
 
 
 @login_required
+@require_GET
 def simple_tasks_page(request):
-	if request.method == 'POST':
-		form = TaskForm(request.POST)
-		if form.is_valid():
-			form.save()
-
 	clean_form = TaskForm()
 	tasks = Task.objects.filter(status__in=['pending', 'active'])
 	return render(request, 'simple_tasks.html', {'tasks': tasks, 'form': clean_form})
