@@ -116,6 +116,8 @@
         {% else %}
             <p>No uncleared YNAB transaction found within the date range.</p>
         {% endif %}
+
+
         <h2>Create YNAB transaction</h2>
         <form action="{% url 'create_ynab_transaction' %}" method="post" class="pairing-form">
             {% csrf_token %}
@@ -130,7 +132,6 @@
                 </tr>
                 <tr>
                     <th class="creation-form-label">{{ transaction_creation_form.ynab_category.label_tag }}</th>
-                    <td>{{ transaction_creation_form.ynab_category }}</td>
                     <td>{{ transaction_creation_form.ynab_category }}</td>
                 </tr>
                 </tbody>
