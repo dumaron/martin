@@ -3,6 +3,7 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
+import apps.website.views.daily_suggestions_intro_page
 from apps.website import views
 
 """
@@ -97,7 +98,7 @@ urlpatterns = [
 	#
 	path(
 		'pages/daily-suggestions',
-		views.daily_suggestion_editor_page.daily_suggestions_intro_page,
+		apps.website.views.daily_suggestions_intro_page.daily_suggestions_intro_page,
 		name='daily_suggestions_intro_page',
 	),
 	#
@@ -109,6 +110,8 @@ urlpatterns = [
 		views.daily_suggestion_editor_page.daily_suggestions_editor_page,
 		name='daily_suggestions_editor_page',
 	),
+	path('pages/daily-suggestions/<str:date>/save', views.daily_suggestion_editor_page.save_daily_suggestion, name='save_daily_suggestion'),
+	path('pages/daily-suggestions/<str:date>.pdf', views.daily_suggestion_editor_page.daily_suggestion_pdf, name='daily_suggestion_pdf'),
 	#
 	#
 	# IMPORT FILE PAGE --------------------------------------------------------------------------------------------------
