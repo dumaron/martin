@@ -3,12 +3,15 @@
 {% block content %}
     <div class="fixed-content">
         <h1>{{ daily_suggestion }}</h1>
-        <form method="post">
+        <form method="post" action="{% url 'save_daily_suggestion' date=daily_suggestion.date %}">
             {% csrf_token %}
             <div>
                 <textarea name="content" rows="10" cols="40">{{ daily_suggestion.content|default:'' }}</textarea>
             </div>
             <button type="submit">Save</button>
         </form>
+        <div>
+            <a href="{% url 'daily_suggestion_pdf' date=daily_suggestion.date %}">Download PDF</a>
+        </div>
     <div class="fixed-content">
 {% endblock %}

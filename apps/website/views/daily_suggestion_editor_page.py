@@ -1,6 +1,11 @@
+import os
+from pathlib import Path
+
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
+from fpdf import FPDF
 
 from core.models import DailySuggestion
 
@@ -25,4 +30,44 @@ def save_daily_suggestion(request, date):
 @login_required
 @require_GET
 def daily_suggestion_pdf(request, date):
-	pass
+	daily_suggestion = get_object_or_404(DailySuggestion, date=date)
+
+	# Create PDF
+	pdf = FPDF()
+	pdf.add_page()
+
+	# Try to add Berkeley Mono font
+	berkeley_regular = '/Users/duma/Library/Fonts/BerkeleyMono-Regular.otf'
+	berkeley_bold = '/Users/duma/Library/Fonts/BerkeleyMono-Bold.otf'
+
+	if berkeley_regular:
+		pdf.add_font('BerkeleyMono', '', berkeley_regular)
+	if berkeley_bold:
+		pdf.add_font('BerkeleyMono', 'B', berkeley_bold)
+
+	# Add date as headline
+	if berkeley_bold:
+		pdf.set_font('BerkeleyMono', 'B', 24)
+	else:
+		pdf.set_font('Times', 'B', 24)
+	pdf.cell(0, 20, str(date), ln=True, align='L')
+	pdf.ln(10)
+
+	# Add daily suggestion content
+	if berkeley_regular:
+		pdf.set_font('BerkeleyMono', '', 12)
+	else:
+		pdf.set_font('Times', '', 12)
+	if daily_suggestion.content:
+		pdf.multi_cell(0, 5, daily_suggestion.content)
+	else:
+		pdf.multi_cell(0, 5, 'No content available.')
+
+	# Generate PDF output
+	pdf_output = bytes(pdf.output())
+
+	# Create HTTP response
+	response = HttpResponse(pdf_output, content_type='application/pdf')
+	response['Content-Disposition'] = f'attachment; filename="daily_suggestion_{date}.pdf"'
+
+	return response

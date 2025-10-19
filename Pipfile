@@ -18,6 +18,7 @@ python-telegram-bot = "*"
 pydantic = "*"
 django-tables2 = "*"
 pydub = "*"
+fpdf2 = "*"
 
 [dev-packages]
 
