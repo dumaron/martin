@@ -93,6 +93,34 @@ urlpatterns = [
 	),
 	#
 	#
+	# DAILY SUGGESTIONS INTRO PAGE --------------------------------------------------------------------------------------
+	#
+	path(
+		'pages/daily-suggestions',
+		views.daily_suggestions_intro_page.daily_suggestions_intro_page,
+		name='daily_suggestions_intro_page',
+	),
+	#
+	#
+	# DAILY SUGGESTIONS EDITOR PAGE -------------------------------------------------------------------------------------
+	#
+	path(
+		'pages/daily-suggestions/<str:date>',
+		views.daily_suggestion_editor_page.daily_suggestions_editor_page,
+		name='daily_suggestions_editor_page',
+	),
+	path(
+		'pages/daily-suggestions/<str:date>/save',
+		views.daily_suggestion_editor_page.save_daily_suggestion,
+		name='save_daily_suggestion',
+	),
+	path(
+		'pages/daily-suggestions/<str:date>/pdf',
+		views.daily_suggestion_editor_page.daily_suggestion_pdf,
+		name='daily_suggestion_pdf',
+	),
+	#
+	#
 	# IMPORT FILE PAGE --------------------------------------------------------------------------------------------------
 	#
 	path(
@@ -175,5 +203,5 @@ urlpatterns = [
 	),
 	#
 	#
-	# TASK MODEL --------------------------------------------------------------------------------------------------------
+	#
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -49,10 +49,7 @@ def pair_transactions_page(request, kind):
 
 	# Add date difference for each suggestion
 	same_amount_suggestions = [
-		{
-			'transaction': transaction,
-			'date_diff': (first_unpaired_bank_transaction.date - transaction.date).days,
-		}
+		{'transaction': transaction, 'date_diff': (first_unpaired_bank_transaction.date - transaction.date).days}
 		for transaction in same_amount_ynab_transactions
 	]
 

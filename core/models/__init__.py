@@ -1,6 +1,7 @@
 from core.models.bank_account import BankAccount
 from core.models.bank_file_import import BankFileImport
 from core.models.bank_transaction import BankTransaction
+from core.models.daily_suggestion import DailySuggestion
 from core.models.event import Event
 from core.models.inbox import Inbox
 from core.models.memory import Memory
@@ -15,6 +16,7 @@ from core.models.ynab_transaction import YnabTransaction
 __all__ = [
 	'BankTransaction',
 	'BankFileImport',
+	'DailySuggestion',
 	'Event',
 	'Inbox',
 	'Project',
