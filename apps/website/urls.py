@@ -3,7 +3,6 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 
-import apps.website.views.daily_suggestions_intro_page
 from apps.website import views
 
 """
@@ -98,7 +97,7 @@ urlpatterns = [
 	#
 	path(
 		'pages/daily-suggestions',
-		apps.website.views.daily_suggestions_intro_page.daily_suggestions_intro_page,
+		views.daily_suggestions_intro_page.daily_suggestions_intro_page,
 		name='daily_suggestions_intro_page',
 	),
 	#

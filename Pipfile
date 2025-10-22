@@ -18,7 +18,7 @@ python-telegram-bot = "*"
 pydantic = "*"
 django-tables2 = "*"
 pydub = "*"
-fpdf2 = "*"
+fpdf2 = "==2.8.4"
 
 [dev-packages]
 

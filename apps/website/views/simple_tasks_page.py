@@ -19,16 +19,13 @@ def simple_tasks_page(request):
 @require_POST
 def task_create(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
+	form = TaskForm(request.POST)
 
-	if request.method == 'POST':
-		form = TaskForm(request.POST)
-		if form.is_valid():
-			task = form.save(commit=False)
-			task.project = project
-			task.save()
-			return redirect('project_detail', project_id=project.id)
-	else:
-		form = TaskForm()
+	if form.is_valid():
+		task = form.save(commit=False)
+		task.project = project
+		task.save()
+		return redirect('project_detail', project_id=project.id)
 
 	return render(request, 'task_create.html', {'project': project, 'form': form})
 

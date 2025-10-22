@@ -1,6 +1,3 @@
-import os
-from pathlib import Path
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -13,7 +10,7 @@ from core.models import DailySuggestion
 @login_required
 @require_GET
 def daily_suggestions_editor_page(request, date):
-	daily_suggestion = DailySuggestion.get_or_create(date)
+	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date)
 	return render(request, 'daily_suggestions_editor_page.html', {'daily_suggestion': daily_suggestion})
 
 
@@ -21,7 +18,7 @@ def daily_suggestions_editor_page(request, date):
 @require_POST
 def save_daily_suggestion(request, date):
 	content = request.POST.get('content')
-	daily_suggestion = DailySuggestion.get_or_create(date)
+	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date)
 	daily_suggestion.content = content
 	daily_suggestion.save()
 	return redirect('daily_suggestions_editor_page', date=date)
