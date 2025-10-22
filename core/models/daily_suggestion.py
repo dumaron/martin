@@ -6,4 +6,7 @@ class DailySuggestion(models.Model):
 	content = models.TextField(null=True, blank=True)
 
 	def __str__(self):
-		return f'Daily suggestions {self.date}'
+		return f'Daily suggestions for {self.date}'
+
+	class Meta:
+		db_table = 'daily_suggestions'
