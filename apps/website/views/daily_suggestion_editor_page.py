@@ -36,19 +36,19 @@ def daily_suggestion_pdf(request, date):
 	pdf = FPDF()
 	pdf.add_page()
 
-	berkeley_regular = '/Users/duma/Library/Fonts/BerkeleyMono-Regular.otf'
-	berkeley_bold = '/Users/duma/Library/Fonts/BerkeleyMono-Bold.otf'
+	# berkeley_regular = '/Users/duma/Library/Fonts/BerkeleyMono-Regular.otf'
+	# berkeley_bold = '/Users/duma/Library/Fonts/BerkeleyMono-Bold.otf'
 
-	pdf.add_font('BerkeleyMono', '', berkeley_regular)
-	pdf.add_font('BerkeleyMono', 'B', berkeley_bold)
+	# pdf.add_font('BerkeleyMono', '', berkeley_regular)
+	# pdf.add_font('BerkeleyMono', 'B', berkeley_bold)
 
 	# Add date as headline
-	pdf.set_font('BerkeleyMono', 'B', 16)
+	pdf.set_font('Times', 'B', 16)
 	pdf.cell(0, 20, str(date), ln=True, align='L')
 	pdf.ln(10)
 
 	# Add daily suggestion content
-	pdf.set_font('BerkeleyMono', '', 10)
+	pdf.set_font('Times', '', 10)
 
 	if daily_suggestion.content:
 		pdf.multi_cell(0, 5, daily_suggestion.content)
