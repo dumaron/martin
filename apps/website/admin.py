@@ -9,6 +9,7 @@ from core.models import (
 	Event,
 	Inbox,
 	Memory,
+	RecurringSuggestion,
 	YnabAccount,
 	YnabBudget,
 	YnabCategory,
@@ -80,3 +81,4 @@ admin.site.register(YnabBudget)
 admin.site.register(YnabAccount, YnabAccountAdmin)
 admin.site.register(BankAccount, BankAccountAdmin)
 admin.site.register(Memory, MemoryAdmin)
+admin.site.register(RecurringSuggestion)

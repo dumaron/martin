@@ -1,6 +1,3 @@
-import datetime
-from datetime import datetime
-
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -42,7 +39,7 @@ def daily_suggestion_pdf(request, date):
 	# pdf.add_font('BerkeleyMono', '', berkeley_regular)
 	# pdf.add_font('BerkeleyMono', 'B', berkeley_bold)
 
-	# Add date as headline
+	# Add date as a headline
 	pdf.set_font('Times', 'B', 16)
 	pdf.cell(0, 20, str(date), ln=True, align='L')
 	pdf.ln(10)

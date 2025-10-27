@@ -6,6 +6,7 @@ from core.models.event import Event
 from core.models.inbox import Inbox
 from core.models.memory import Memory
 from core.models.project import Project
+from core.models.recurring_suggestion import RecurringSuggestion
 from core.models.task import Task
 from core.models.ynab_account import YnabAccount
 from core.models.ynab_budget import YnabBudget
@@ -28,4 +29,5 @@ __all__ = [
 	'YnabAccount',
 	'BankAccount',
 	'Memory',
+	'RecurringSuggestion',
 ]

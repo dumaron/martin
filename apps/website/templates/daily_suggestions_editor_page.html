@@ -6,7 +6,7 @@
         <form method="post" action="{% url 'save_daily_suggestion' date=daily_suggestion.date %}">
             {% csrf_token %}
             <div>
-                <textarea name="content" rows="10" cols="40">{{ daily_suggestion.content|default:'' }}</textarea>
+                <textarea name="content" rows="20" cols="80">{{ daily_suggestion.content|default:'' }}</textarea>
             </div>
             <button type="submit">Save</button>
         </form>
