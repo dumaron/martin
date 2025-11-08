@@ -28,7 +28,6 @@ INSTALLED_APPS = [
 	'django.contrib.staticfiles',
 	'django_htmx',
 	'django_tables2',
-	'recurrence',
 	'core',
 	'apps.website',
 ]

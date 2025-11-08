@@ -13,6 +13,7 @@ from core.models.ynab_budget import YnabBudget
 from core.models.ynab_category import YnabCategory
 from core.models.ynab_import import YnabImport
 from core.models.ynab_transaction import YnabTransaction
+from core.models.recurrence_rule import RecurrenceRule
 
 __all__ = [
 	'BankTransaction',
@@ -30,4 +31,5 @@ __all__ = [
 	'BankAccount',
 	'Memory',
 	'RecurringSuggestion',
+	'RecurrenceRule',
 ]

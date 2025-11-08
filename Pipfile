@@ -19,7 +19,6 @@ pydantic = "*"
 django-tables2 = "*"
 pydub = "*"
 fpdf2 = "==2.8.4"
-django-recurrence = "==1.11.1"
 
 [dev-packages]
 
