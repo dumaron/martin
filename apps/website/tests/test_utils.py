@@ -67,3 +67,32 @@ class TextDiffUtilsTest(TestCase):
 		self.assertNotIn('<script>', result)
 		self.assertIn('&lt;script&gt;', result)
 		self.assertIn('<span style="background-color: #ffcccc', result)
+
+	def test_highlight_text_differences_multiple_spaces_in_original(self):
+		"""Test that multiple consecutive spaces in original are highlighted when removed in modified."""
+		original = 'Text with    multiple    spaces'
+		modified = 'Text with multiple spaces'
+		result = highlight_text_differences(original, modified)
+
+		# The removed spaces should be indicated by deletion markers
+		self.assertIn('D', result)
+		# Should have highlighting to show the difference
+		self.assertIn('<span style="background-color: #ffcccc', result)
+		# Should show multiple D markers to indicate multiple deleted spaces (3 spaces deleted after "with")
+		# Count the number of consecutive D markers
+		d_marker = '<span style="background-color: #ffcccc; color: #cc0000; font-family: Berkeley Mono, monospace; padding:0 2px;">D</span>'
+		# There should be at least 3 consecutive D markers (for the 3 extra spaces)
+		triple_d = d_marker * 3
+		self.assertIn(triple_d, result, 'Should show multiple D markers for multiple deleted spaces')
+
+	def test_highlight_text_differences_multiple_spaces_in_modified(self):
+		"""Test that multiple consecutive spaces in modified are highlighted when not in original."""
+		original = 'Text with single spaces'
+		modified = 'Text with    single    spaces'
+		result = highlight_text_differences(original, modified)
+
+		# The extra spaces should be highlighted
+		self.assertIn('<span style="background-color: #ffcccc', result)
+		# Multiple spaces should be preserved in HTML (using &nbsp; or similar)
+		# Currently this FAILS because HTML collapses consecutive spaces
+		self.assertIn('&nbsp;', result, 'Multiple spaces should be preserved with &nbsp; to be visible in HTML')
