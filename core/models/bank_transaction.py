@@ -1,25 +1,13 @@
 from datetime import datetime
 
 from django.db import models
-from toolz import pipe
 
 
-# Look at these functions... gross. I really miss JS and ramda, being able to chain functions in a much cleaner way.
-# Something like `const fix_italian_floating_point = pipe(str.replace('.', ''), str.replace(',', '.'))`
-# Tried toolz... I mean, it works, but it's still far from a good result imho.
 def fix_italian_floating_point(string):
-	return pipe(
-  		string,
-  		lambda s: s.replace('.', ''),
-  		lambda s: s.replace(',', '.'),
-  	)
+	return string.replace('.', '').replace(',', '.')
 
 def clean_description(name):
-	return pipe(
-		name,
-		str.split,
-		' '.join,
-	)
+	return ' '.join(name.split())
 
 
 # I'm not happy about this approach, but it is a good compromise between creating a "proper" DB structure, which is
