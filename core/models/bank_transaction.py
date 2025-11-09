@@ -1,10 +1,23 @@
 from datetime import datetime
 
 from django.db import models
+from toolz import pipe
 
 
 def fix_italian_floating_point(string):
-	return string.replace('.', '').replace(',', '.')
+	return pipe(
+  		string,
+  		lambda s: s.replace('.', ''),
+  		lambda s: s.replace(',', '.'),
+  	)
+
+def clean_description(name):
+	return pipe(
+		name,
+		str.strip,
+		str.split,
+		' '.join,
+	)
 
 
 # I'm not happy about this approach, but it is a good compromise between creating a "proper" DB structure, which is
@@ -45,47 +58,47 @@ class BankTransaction(models.Model):
 		)
 		db_table = 'bank_transactions'
 
-	@staticmethod
-	def from_unicredit_bank_account_csv_row(row, file_import):
-		return BankTransaction(
-			name=row['Descrizione'].strip(),
+	@classmethod
+	def from_unicredit_bank_account_csv_row(cls, row, file_import):
+		return cls(
+			name=clean_description(row['Descrizione']),
 			amount=fix_italian_floating_point(row['Importo (EUR)']),
 			date=datetime.strptime(row['Data Registrazione'], '%d.%m.%Y'),
 			file_import=file_import,
 			bank_account_id=UNICREDIT_BANK_ACCOUNT_ID,
 		)
 
-	@staticmethod
-	def from_unicredit_debit_card_csv_row(row, file_import):
-		return BankTransaction(
-			name=row['Descrizione'].strip(),
+	@classmethod
+	def from_unicredit_debit_card_csv_row(cls, row, file_import):
+		return cls(
+			name=clean_description(row['Descrizione']),
 			amount=fix_italian_floating_point(row['Importo']),
 			date=datetime.strptime(row['Data Registrazione'], '%d/%m/%Y'),
 			file_import=file_import,
 			bank_account_id=UNICREDIT_BANK_ACCOUNT_ID,
 		)
 
-	@staticmethod
-	def from_fineco_bank_account_xslx_row(row, file_import):
-		return BankTransaction(
-			name=row['Descrizione_Completa'].strip(),
+	@classmethod
+	def from_fineco_bank_account_xslx_row(cls, row, file_import):
+		return cls(
+			name=clean_description(row['Descrizione_Completa']),
 			amount=float(row['Entrate'] or 0) + float(row['Uscite'] or 0),
 			date=row['Data_Operazione'],
 			file_import=file_import,
 			bank_account_id=FINECO_BANK_ACCOUNT_ID,
 		)
 
-	@staticmethod
-	def from_credem_csv_row(row, file_import):
-		return BankTransaction(
-			name=row['Descrizione:'],
+	@classmethod
+	def from_credem_csv_row(cls, row, file_import):
+		return cls(
+			name=clean_description(row['Descrizione:']),
 			amount=float(fix_italian_floating_point(row['Importo']) or 0),
 			date=datetime.strptime(row['Data contabile'], '%d/%m/%Y'),
 			file_import=file_import,
 			bank_account_id=CREDEM_BANK_ACCOUNT_ID,
 		)
 
-	def get_potential_duplicate(self) -> 'BankTransaction' or None:
+	def get_potential_duplicate(self):
 		"""
 		Find potential duplicate bank transactions with the same amount and date.
 		Bank exports are unreliable: many times they change description text for the same transaction between two exports,

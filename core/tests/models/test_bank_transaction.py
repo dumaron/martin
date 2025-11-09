@@ -307,9 +307,9 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_strips_whitespace_from_description(self):
-		"""Test that description whitespace is properly stripped."""
+		"""Test that description whitespace is properly cleaned."""
 		row = {
-			'Descrizione_Completa': '   \t  Whitespace Transaction  \n  ',
+			'Descrizione_Completa': '   \t  Whitespace    Transaction  \n\t Test  ',
 			'Entrate': 100.0,
 			'Uscite': 0,
 			'Data_Operazione': date(2024, 4, 10),
@@ -317,7 +317,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Whitespace Transaction')
+		self.assertEqual(transaction.name, 'Whitespace Transaction Test')
 
 	def test_from_fineco_bank_account_xslx_row_with_decimal_amounts(self):
 		"""Test creating BankTransaction from Fineco XLSX row with decimal amounts."""

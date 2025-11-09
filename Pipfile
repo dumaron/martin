@@ -19,6 +19,7 @@ pydantic = "*"
 django-tables2 = "*"
 pydub = "*"
 fpdf2 = "==2.8.4"
+toolz = "*"
 
 [dev-packages]
 
