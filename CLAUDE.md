@@ -23,3 +23,4 @@
 - Error handling: Use try/except with specific exceptions
 - Comments: Docstrings for complex functions
 - Structure: Follow Django app-based architecture
+- Always add newly created files to git staging area.

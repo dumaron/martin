@@ -14,4 +14,16 @@
             <a href="{% url 'daily_suggestion_pdf' date=daily_suggestion.date %}">Download PDF</a>
         </div>
     </div>
+    <div id="suggestions">
+    {% if active_recurring_suggestions %}
+        <fieldset>
+            <legend>Recurring suggestions</legend>
+            <ul>
+            {% for suggestion in active_recurring_suggestions %}
+                <li>{{ suggestion.content }}</li>
+            {% endfor %}
+            </ul>
+        </fieldset>
+    {% endif %}
+    </div>
 {% endblock %}

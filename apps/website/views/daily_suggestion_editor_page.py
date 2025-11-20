@@ -1,17 +1,24 @@
+from datetime import datetime
+
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 from fpdf import FPDF
 
-from core.models import DailySuggestion
+from core.models import DailySuggestion, RecurringSuggestion
 
 
 @login_required
 @require_GET
 def daily_suggestions_editor_page(request, date):
 	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
-	return render(request, 'daily_suggestions_editor_page.html', {'daily_suggestion': daily_suggestion})
+	date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+	active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
+	return render(request, 'daily_suggestions_editor_page.html', {
+		'daily_suggestion': daily_suggestion,
+		'active_recurring_suggestions': active_recurring_suggestions
+	})
 
 
 @login_required

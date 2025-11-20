@@ -1,5 +1,7 @@
 from django.db import models
 
+from core.models.recurrence_rule import RecurrenceRule
+
 
 class RecurringSuggestion(models.Model):
 	id = models.AutoField(primary_key=True)
@@ -15,4 +17,6 @@ class RecurringSuggestion(models.Model):
 
 	@classmethod
 	def get_actives_in_date(cls, date):
-		return cls.objects.filter(start_date__lte=date, end_date__gte=date)
+		active_rules = RecurrenceRule.get_active_in_date(date)
+		active_suggestion_ids = active_rules.values_list('suggestion_id', flat=True)
+		return cls.objects.filter(id__in=active_suggestion_ids).all()
