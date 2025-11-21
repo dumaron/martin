@@ -6,13 +6,13 @@
 
     fieldset {
         border: 1px solid #444;
+        min-width: 400px;
     }
 
     legend {
         text-transform: uppercase;
         font-family: "Berkeley Mono", monospace;
         font-weight: 700;
-        background-color: palegoldenrod;
         font-size: 16px;
         margin-bottom: 10px;
     }
@@ -33,6 +33,22 @@
         text-transform: uppercase;
         margin-top: 1em;
         padding: 0 .2em;
+    }
+
+    /* WARNING VARIATION */
+    .warning {
+        legend {
+            background-color: palegoldenrod;
+        }
+    }
+
+    /* WIP */
+    .title {
+        text-transform: uppercase;
+        font-family: "Berkeley Mono", monospace;
+        font-weight: 700;
+        font-size: 16px;
+        margin-bottom: 10px;
     }
 }
 

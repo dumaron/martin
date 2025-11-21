@@ -32,6 +32,15 @@ def save_daily_suggestion(request, date):
 
 
 @login_required
+def add_recurrent_suggestion_to_daily_suggestion(request, date, suggestion_id):
+	daily_suggestion = get_object_or_404(DailySuggestion, date=date)
+	suggestion = get_object_or_404(RecurringSuggestion, id=suggestion_id)
+	daily_suggestion.content += f'\n[ ] {suggestion.content}'
+	daily_suggestion.save()
+	return redirect('daily_suggestions_editor_page', date=date)
+
+
+@login_required
 @require_GET
 def daily_suggestion_pdf(request, date):
 	daily_suggestion = get_object_or_404(DailySuggestion, date=date)

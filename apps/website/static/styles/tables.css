@@ -139,34 +139,34 @@ table.large {
 	border-spacing: 0 1px;
 	border: none;
 	background: transparent;
-}
 
-table.large th,
-table.large td {
-	border: none;
-	background: transparent;
-}
 
-table.large th {
-	padding: 0 1em 0 0;
-	background: transparent;
-	text-transform: none;
-	font-size: 14px;
-	font-weight: bold;
-	letter-spacing: normal;
-	text-align: left;
-}
+    th, td {
+        border: none;
+        background: transparent;
+    }
 
-table.large tr:hover td {
-	background: transparent;
-}
+    th {
+        padding: 0 1em 0 0;
+	    background: transparent;
+	    text-transform: none;
+	    font-size: 14px;
+	    font-weight: bold;
+	    letter-spacing: normal;
+	    text-align: left;
+    }
 
-table.large td:hover {
-	background: transparent;
-	cursor: default;
-}
+    td {
+        width: auto;
+        text-align: left;
+    }
 
-table.large td {
-    width: auto;
-    text-align: left;
+    tr:hover td {
+        background: transparent;
+    }
+
+    td:hover {
+        cursor: default;
+        background: transparent;
+    }
 }

@@ -16,14 +16,19 @@
     </div>
     <div id="suggestions">
     {% if active_recurring_suggestions %}
-        <fieldset>
-            <legend>Recurring suggestions</legend>
-            <ul>
+        <div>
+            <div class="title">Recurring suggestions</div>
+            <table class="large">
+            <tbody>
             {% for suggestion in active_recurring_suggestions %}
-                <li>{{ suggestion.content }}</li>
+                <tr>
+                    <td>{{ suggestion.content }}</td>
+                    <td style="width: 10px;"><button type="button">Add</button></td>
+                </tr>
             {% endfor %}
-            </ul>
-        </fieldset>
+            </tbody>
+            </table>
+        </div>
     {% endif %}
     </div>
 {% endblock %}
