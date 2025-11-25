@@ -4,8 +4,7 @@
     max-width: 400px;
     flex-shrink: 0;
 
-    fieldset {
-        border: 1px solid #444;
+    > div {
         min-width: 400px;
     }
 
@@ -37,8 +36,10 @@
 
     /* WARNING VARIATION */
     .warning {
-        legend {
-            background-color: palegoldenrod;
+        .title {
+            background-color: rgb(256, 240, 95);
+            border: 1px solid black;
+            padding: 2px 5px;
         }
     }
 
@@ -48,7 +49,7 @@
         font-family: "Berkeley Mono", monospace;
         font-weight: 700;
         font-size: 16px;
-        margin-bottom: 10px;
+        margin-bottom: 3px;
     }
 }
 

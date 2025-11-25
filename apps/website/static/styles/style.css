@@ -3,7 +3,6 @@
    ========================================================================== */
 :root {
     /* Layout variables */
-    --action-bar-height: 30px;
     --main-navbar-height: 30px;
 
     /* Color variables - Light theme (default) */
@@ -243,6 +242,7 @@ ul.tree {
     /*
     I spent so much time trying to implement a CSS-only version of a sidebar with full red lines and arrows before each
     selected item. And once I got it working... I didn't like that.
+
     Now, I know I should delete that, but... I am afraid I will forgot it, and find it again will be hard.
     After all, if I'm proud of something, why not share it with the world?
 
@@ -269,39 +269,4 @@ ul.tree {
     li:has(~ li a.active)::before {
         border-left: 1px solid red;
     }*/
-}
-
-
-/* ==========================================================================
-   FORMS
-   ========================================================================== */
-form {
-    margin-bottom: 0;
-}
-
-form > div {
-    margin-bottom: .4rem;
-}
-
-/* Button styling */
-button {
-    background-color: var(--color-btn-background);
-    color: var(--color-text);
-    border: 1px solid var(--color-border-muted);
-    border-radius: 4px;
-    padding: 4px 6px;
-    font-size: 13px;
-    cursor: pointer;
-    margin: 4px 0;
-}
-
-button:hover {
-    background-color: rgb(243, 243, 247);
-}
-
-pre {
-    text-transform: uppercase;
-    display: inline-block;
-    padding: 3px 6px;
-    background-color: gainsboro;
 }

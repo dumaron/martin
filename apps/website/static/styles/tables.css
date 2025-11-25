@@ -61,7 +61,6 @@ tr:hover td {
 /* Focus/selection effect */
 td:hover {
 	background-color: rgba(255, 239, 204, 0.5);
-	cursor: pointer;
 }
 
 /* Specific cell types with Excel-like formatting */
@@ -140,33 +139,24 @@ table.large {
 	border: none;
 	background: transparent;
 
-
     th, td {
         border: none;
         background: transparent;
     }
 
     th {
-        padding: 0 1em 0 0;
-	    background: transparent;
+        padding: 3px 5px;
 	    text-transform: none;
 	    font-size: 14px;
 	    font-weight: bold;
 	    letter-spacing: normal;
 	    text-align: left;
+        background-color: #e0e0e0;
     }
 
     td {
         width: auto;
         text-align: left;
-    }
-
-    tr:hover td {
-        background: transparent;
-    }
-
-    td:hover {
-        cursor: default;
-        background: transparent;
+        background-color: #f0f0f0;
     }
 }
