@@ -60,13 +60,12 @@
    BASE STYLES
    ========================================================================== */
 body {
-    font-family: 'Inter V', sans-serif;
+    font-family: 'Inter V', 'American Typewriter', serif;
     font-size: 14px;
     margin: 0;
     padding: 0;
     background-color: var(--color-background-primary);
     color: var(--color-text);
-    /*background-color: var(--color-background-box);*/
 
 }
 
@@ -75,7 +74,6 @@ main {
 
 
 main {
-    font-family: "SF Pro", "Helvetica", sans-serif;
     grid-area: content;
     margin: 0;
     padding: 0;
@@ -150,7 +148,6 @@ aside {
    TREE STRUCTURE
    ========================================================================== */
 ul.tree {
-    font-family: "Inter V";
 
     &, ul {
         list-style-type: none;
@@ -187,6 +184,7 @@ ul.tree {
         left: 10px;
         top: 0;
         border-left: 1px solid var(--color-border-muted);
+        z-index: 1;
     }
 
     /* Horizontal lines */
@@ -213,14 +211,64 @@ ul.tree {
         border-left: none;
     }
 
-    li:has(a.active)::after {
+    a.active::before {
         color: red;
         content: "->";
+        font-weight: bold;
         text-decoration: none;
         width: 20px;
-        top: 0;
         border: none;
+        position: absolute;
+        top: 0;
+        left: 9px;
+        z-index: 1;
     }
+
+
+
+    ul:has(li a.active)::before {
+        color: red;
+        content: "->";
+        font-weight: bold;
+        text-decoration: none;
+        width: 20px;
+        border: none;
+        position: absolute;
+        top: 0;
+        left: 9px;
+        z-index: 1;
+    }
+
+
+    /*
+    I spent so much time trying to implement a CSS-only version of a sidebar with full red lines and arrows before each
+    selected item. And once I got it working... I didn't like that.
+    Now, I know I should delete that, but... I am afraid I will forgot it, and find it again will be hard.
+    After all, if I'm proud of something, why not share it with the world?
+
+    a.active::after {
+        content: "";
+        position: absolute;
+        height: 9px;
+        left: 10px;
+        top: 0;
+        border-left: 1px solid red;
+        z-index: 1;
+    }
+
+    ul:has(li a.active)::after {
+        content: "";
+        position: absolute;
+        height: 9px;
+        left: 10px;
+        top: 0;
+        border-left: 1px solid red;
+        z-index: 1;
+    }
+    
+    li:has(~ li a.active)::before {
+        border-left: 1px solid red;
+    }*/
 }
 
 
@@ -245,7 +293,6 @@ button {
     font-size: 13px;
     cursor: pointer;
     margin: 4px 0;
-    font-family: 'SF Pro', monospace;
 }
 
 button:hover {
