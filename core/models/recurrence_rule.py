@@ -33,7 +33,7 @@ class RecurrenceRule(models.Model):
 		# deserve.
 		('day_of_the_year', 'Day of the year'),
 	]
-	type = models.CharField(max_length=26, choices=RECURRENCE_TYPES, default='active')
+	type = models.CharField(max_length=26, choices=RECURRENCE_TYPES, default='daily')
 
 	# The "day" is an integer number that should be interpreted according to the recurrence type:
 	# - daily                        -> not used

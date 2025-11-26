@@ -27,7 +27,7 @@ class Migration(migrations.Migration):
             name='RecurrenceRule',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('type', models.CharField(choices=[('daily', 'Daily'), ('day_of_the_week', 'Day of the week'), ('day_of_the_month', 'Day of the month'), ('first_day_of_week_in_month', 'First day of the week in the month'), ('day_of_the_year', 'Day of the year')], default='active', max_length=26)),
+                ('type', models.CharField(choices=[('daily', 'Daily'), ('day_of_the_week', 'Day of the week'), ('day_of_the_month', 'Day of the month'), ('first_day_of_week_in_month', 'First day of the week in the month'), ('day_of_the_year', 'Day of the year')], default='daily', max_length=26)),
                 ('day', models.IntegerField()),
                 ('suggestion', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='core.recurringsuggestion')),
             ],

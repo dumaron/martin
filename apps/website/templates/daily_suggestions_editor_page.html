@@ -24,7 +24,7 @@
                 <tr>
                     <td>{{ suggestion.content }}</td>
                     <td style="width: 10px;">
-                        <button type="button" onclick="addSuggestion('{{ suggestion.content }}')">Add</button>
+                        <button type="button" onclick="addSuggestion('{{ suggestion.content|escapejs }}')">Add</button>
                     </td>
                 </tr>
             {% endfor %}
