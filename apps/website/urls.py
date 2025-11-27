@@ -52,7 +52,7 @@ urlpatterns = [
 		name='snooze_bank_transaction',
 	),
 	path(
-		'flows/pair-transactions/link-duplicate-bank-transactions/',
+		'flows/pair-transactions/link-duplicate-bank-transactions',
 		views.pair_transactions_page.link_duplicate_bank_transaction,
 		name='link_duplicate_bank_transactions',
 	),
