@@ -37,14 +37,14 @@ urlpatterns = [
 	# PAIR TRANSACTIONS FLOW PAGE ---------------------------------------------------------------------------------------
 	#
 	path(
-		route='flows/pair-transactions/<str:kind>',
-		view=views.pair_transactions_page.pair_transactions_page,
-		name='pair_transactions_page',
-	),
-	path(
 		'flows/pair-transactions/pair-transactions',
 		views.pair_transactions_page.pair_transactions,
 		name='pair_transactions',
+	),
+	path(
+		route='flows/pair-transactions/<str:kind>',
+		view=views.pair_transactions_page.pair_transactions_page,
+		name='pair_transactions_page',
 	),
 	path(
 		'flows/pair-transactions/snooze-bank-transaction',
