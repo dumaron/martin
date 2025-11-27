@@ -9,12 +9,12 @@ LOCAL_FONT_DIR = Path.home() / 'Library' / 'Fonts'
 REMOTE_FONT_DIR = '/storage/fonts'
 
 
-def run(cmd, check=True, capture=False):
+def run(cmd):
 	"""Execute shell command with optional output capture."""
 	return subprocess.run(
 		cmd,
-		check=check,
-		capture_output=capture,
+		check=True,
+		capture_output=False,
 		text=True
 	)
 
