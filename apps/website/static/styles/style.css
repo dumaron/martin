@@ -243,7 +243,7 @@ ul.tree {
     I spent so much time trying to implement a CSS-only version of a sidebar with full red lines and arrows before each
     selected item. And once I got it working... I didn't like that.
 
-    Now, I know I should delete that, but... I am afraid I will forgot it, and find it again will be hard.
+    Now, I know I should delete that, but... I am afraid I will forget it, and find it again will be hard.
     After all, if I'm proud of something, why not share it with the world?
 
     a.active::after {
