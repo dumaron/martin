@@ -9,6 +9,8 @@ from core.models import (
 	Event,
 	Inbox,
 	Memory,
+	RecurrenceRule,
+	RecurringSuggestion,
 	YnabAccount,
 	YnabBudget,
 	YnabCategory,
@@ -37,6 +39,23 @@ class BankTransactionAdmin(admin.ModelAdmin):
 
 	def imported_on(self, obj):
 		return obj.import_bank_export_page.import_date
+
+
+class RecurrenceRuleInline(admin.TabularInline):
+	model = RecurrenceRule
+	extra = 1
+	fields = ['type', 'day']
+
+
+class RecurrenceRuleAdmin(admin.ModelAdmin):
+	list_display = ['type', 'day', 'suggestion']
+	list_filter = ['type', 'day', 'suggestion']
+
+
+class RecurringSuggestionAdmin(admin.ModelAdmin):
+	inlines = [RecurrenceRuleInline]
+	list_display = ['content', 'created_at']
+	search_fields = ['content']
 
 
 class YnabTransactionAdmin(admin.ModelAdmin):
@@ -80,3 +99,5 @@ admin.site.register(YnabBudget)
 admin.site.register(YnabAccount, YnabAccountAdmin)
 admin.site.register(BankAccount, BankAccountAdmin)
 admin.site.register(Memory, MemoryAdmin)
+admin.site.register(RecurringSuggestion, RecurringSuggestionAdmin)
+admin.site.register(RecurrenceRule, RecurrenceRuleAdmin)

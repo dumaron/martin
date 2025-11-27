@@ -61,7 +61,6 @@ tr:hover td {
 /* Focus/selection effect */
 td:hover {
 	background-color: rgba(255, 239, 204, 0.5);
-	cursor: pointer;
 }
 
 /* Specific cell types with Excel-like formatting */
@@ -139,34 +138,25 @@ table.large {
 	border-spacing: 0 1px;
 	border: none;
 	background: transparent;
-}
 
-table.large th,
-table.large td {
-	border: none;
-	background: transparent;
-}
+    th, td {
+        border: none;
+        background: transparent;
+    }
 
-table.large th {
-	padding: 0 1em 0 0;
-	background: transparent;
-	text-transform: none;
-	font-size: 14px;
-	font-weight: bold;
-	letter-spacing: normal;
-	text-align: left;
-}
+    th {
+        padding: 3px 5px;
+	    text-transform: none;
+	    font-size: 14px;
+	    font-weight: bold;
+	    letter-spacing: normal;
+	    text-align: left;
+        background-color: #e0e0e0;
+    }
 
-table.large tr:hover td {
-	background: transparent;
-}
-
-table.large td:hover {
-	background: transparent;
-	cursor: default;
-}
-
-table.large td {
-    width: auto;
-    text-align: left;
+    td {
+        width: auto;
+        text-align: left;
+        background-color: #f0f0f0;
+    }
 }

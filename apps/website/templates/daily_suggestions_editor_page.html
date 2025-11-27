@@ -6,7 +6,7 @@
         <form method="post" action="{% url 'save_daily_suggestion' date=daily_suggestion.date %}">
             {% csrf_token %}
             <div>
-                <textarea name="content" rows="10" cols="40">{{ daily_suggestion.content|default:'' }}</textarea>
+                <textarea name="content" rows="24" cols="80">{{ daily_suggestion.content|default:'' }}</textarea>
             </div>
             <button type="submit">Save</button>
         </form>
@@ -14,4 +14,48 @@
             <a href="{% url 'daily_suggestion_pdf' date=daily_suggestion.date %}">Download PDF</a>
         </div>
     </div>
+    <div id="suggestions">
+    {% if active_recurring_suggestions %}
+        <div>
+            <div class="title">Recurring suggestions</div>
+            <table class="large">
+            <tbody>
+            {% for suggestion in active_recurring_suggestions %}
+                <tr>
+                    <td>{{ suggestion.content }}</td>
+                    <td style="width: 10px;">
+                        <button type="button" onclick="addSuggestion('{{ suggestion.content|escapejs }}')">Add</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+        </div>
+    {% endif %}
+    </div>
+    <script type="text/javascript">
+        /*
+        Here we break with the hypermedia philosophy.
+        In hypermedia, I think that the canonical way to implement this feature would be to save the textarea form,
+        append the suggestion to its content, and refresh the page.
+
+        While I get it, and I think it is a fine way to do so, I also have some doubts. After all, why re-render
+        everything, making a dozen SQL queries again, for something that could be achieved with a little Javascript?
+
+        But I think my understanding of hypermedia here is just exaggerated. Like with many things, when you want to
+        correct something, you might end up over-correcting it. In the old days, before SPAs became a thing, having
+        small pieces of Javascript here and there to save resources and time were not considered a bad practice. On the
+        contrary, it was welcome!
+
+        With memory of the old technologies, we also lost the compromises that we made along the way to make better
+        software. It's so mentally rewarding to re-discover them, like remembering an important thing you already
+        learned more than 15 years ago.
+
+        Ok, back to code.
+        */
+        function addSuggestion(suggestion) {
+            const textarea = document.querySelector('textarea[name="content"]');
+            textarea.value += '\n[ ] ' + suggestion;
+        }
+    </script>
 {% endblock %}

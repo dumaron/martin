@@ -1,4 +1,3 @@
-import datetime
 from datetime import datetime
 
 from django.contrib.auth.decorators import login_required
@@ -7,14 +6,20 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 from fpdf import FPDF
 
-from core.models import DailySuggestion
+from core.models import DailySuggestion, RecurringSuggestion
+from settings import FONTS_DIR
 
 
 @login_required
 @require_GET
 def daily_suggestions_editor_page(request, date):
 	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
-	return render(request, 'daily_suggestions_editor_page.html', {'daily_suggestion': daily_suggestion})
+	date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+	active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
+	return render(request, 'daily_suggestions_editor_page.html', {
+		'daily_suggestion': daily_suggestion,
+		'active_recurring_suggestions': active_recurring_suggestions
+	})
 
 
 @login_required
@@ -36,19 +41,21 @@ def daily_suggestion_pdf(request, date):
 	pdf = FPDF()
 	pdf.add_page()
 
-	# berkeley_regular = '/Users/duma/Library/Fonts/BerkeleyMono-Regular.otf'
-	# berkeley_bold = '/Users/duma/Library/Fonts/BerkeleyMono-Bold.otf'
+	print('FONTS DIR -> ' + FONTS_DIR)
 
-	# pdf.add_font('BerkeleyMono', '', berkeley_regular)
-	# pdf.add_font('BerkeleyMono', 'B', berkeley_bold)
+	berkeley_regular = FONTS_DIR + 'BerkeleyMono-Regular.otf'
+	berkeley_bold = FONTS_DIR + 'BerkeleyMono-Bold.otf'
 
-	# Add date as headline
-	pdf.set_font('Times', 'B', 16)
+	pdf.add_font('BerkeleyMono', '', berkeley_regular)
+	pdf.add_font('BerkeleyMono', 'B', berkeley_bold)
+
+	# Add date as a headline
+	pdf.set_font('BerkeleyMono', 'B', 16)
 	pdf.cell(0, 20, str(date), ln=True, align='L')
 	pdf.ln(10)
 
 	# Add daily suggestion content
-	pdf.set_font('Times', '', 10)
+	pdf.set_font('BerkeleyMono', '', 10)
 
 	if daily_suggestion.content:
 		pdf.multi_cell(0, 5, daily_suggestion.content)

@@ -1,3 +1,33 @@
+form {
+    margin-bottom: 0;
+}
+
+form > div {
+    margin-bottom: .4rem;
+}
+
+button {
+    background-color: var(--color-btn-background);
+    color: var(--color-text);
+    border: 1px solid var(--color-border-muted);
+    border-radius: 4px;
+    padding: 4px 6px;
+    font-size: 13px;
+    cursor: pointer;
+    margin: 4px 0;
+}
+
+button:hover {
+    background-color: rgb(243, 243, 247);
+}
+
+pre {
+    text-transform: uppercase;
+    display: inline-block;
+    padding: 3px 6px;
+    background-color: gainsboro;
+}
+
 input[type="text"], input[type="email"], input[type="password"], input[type="url"], input[type="tel"], input[type="search"] {
     color: var(--color-text);
     border: 1px solid var(--color-border-muted);
@@ -27,9 +57,9 @@ textarea {
     border-radius: 4px;
     padding: 4px 6px;
     font-size: 13px;
-    font-family: 'SF Pro', monospace;
 
     input {
         width: 100px !important;
     }
 }
+
