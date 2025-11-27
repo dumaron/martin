@@ -17,10 +17,6 @@ class Migration(migrations.Migration):
         ),
         migrations.RemoveField(
             model_name='recurringsuggestion',
-            name='recurrences',
-        ),
-        migrations.RemoveField(
-            model_name='recurringsuggestion',
             name='start_date',
         ),
         migrations.CreateModel(
