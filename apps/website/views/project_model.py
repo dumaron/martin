@@ -33,9 +33,9 @@ class ProjectTable(tables.Table):
 @login_required
 @require_GET
 def project_list(request):
-	projects = Project.objects.all()
-	table = ProjectTable(projects)
-	return render(request, 'project_list.html', {'table': table})
+	# Get only root projects (projects without a parent)
+	root_projects = Project.objects.filter(parent__isnull=True)
+	return render(request, 'project_list.html', {'root_projects': root_projects})
 
 
 @login_required

@@ -1,14 +1,31 @@
 {% extends "base.html" %}
-{% load django_tables2 %}
 
 {% block title %}Projects{% endblock %}
 
 {% block content %}
 <div class="fixed-content">
     <h1>Projects</h1>
-    
-    {% render_table table %}
-    
+
+    {% if root_projects %}
+        <table class="project-tree-table">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Tasks</th>
+                    <th>Created</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for project in root_projects %}
+                {% include "partials/project_tree_item.html" with project=project depth=0 %}
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No projects yet.</p>
+    {% endif %}
+
     <h2>Create New Project</h2>
     <form action="{% url 'project_create' %}" method="get">
         <button type="submit">+ New Project</button>

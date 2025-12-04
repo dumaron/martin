@@ -1,0 +1,15 @@
+<tr class="project-row" data-depth="{{ depth }}">
+    <td style="padding-left: {{ depth }}em;">
+        <a href="{% url 'project_detail' project.id %}">{{ project.title }}</a>
+    </td>
+    <td>{{ project.get_status_display }}</td>
+    <td>{{ project.tasks.count }}</td>
+    <td>{{ project.created_at|date:'Y-m-d H:i' }}</td>
+</tr>
+{% with children=project.get_children %}
+    {% if children %}
+        {% for child in children %}
+            {% include "partials/project_tree_item.html" with project=child depth=depth|add:2 %}
+        {% endfor %}
+    {% endif %}
+{% endwith %}
