@@ -42,11 +42,6 @@ urlpatterns = [
 		name='pair_transactions',
 	),
 	path(
-		route='flows/pair-transactions/<str:kind>',
-		view=views.pair_transactions_page.pair_transactions_page,
-		name='pair_transactions_page',
-	),
-	path(
 		'flows/pair-transactions/snooze-bank-transaction',
 		views.pair_transactions_page.snooze_bank_transaction,
 		name='snooze_bank_transaction',
@@ -61,12 +56,17 @@ urlpatterns = [
 		views.pair_transactions_page.create_ynab_transaction,
 		name='create_ynab_transaction',
 	),
+	path(
+		route='flows/pair-transactions/<str:kind>',
+		view=views.pair_transactions_page.pair_transactions_page,
+		name='pair_transactions_page',
+	),
 	#
 	#
 	# PROCESS INBOXES FLOW PAGE -----------------------------------------------------------------------------------------
 	#
 	path(
-		route='flows/process-inboxes/',
+		route='flows/process-inboxes',
 		view=views.process_inboxes_page.process_inboxes_page,
 		name='process_inboxes_page',
 	),
@@ -75,7 +75,7 @@ urlpatterns = [
 	#
 	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
 	#
-	path('pages/simple-tasks/', views.simple_tasks_page.simple_tasks_page, name='simple_tasks_page'),
+	path('pages/simple-tasks', views.simple_tasks_page.simple_tasks_page, name='simple_tasks_page'),
 	path('pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'),
 	path(
 		'pages/simple-tasks/mark-as-completed',

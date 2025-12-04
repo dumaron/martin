@@ -36,7 +36,7 @@ table th:nth-child(3) {
     <h1>Simple tasks</h1>
     
     <h2>Create New Task</h2>
-    <form method="post">
+    <form method="post" action="{% url 'create_task' %}">
         {% csrf_token %}
         <div class="form-group">
             {{ form.description.label_tag }}

@@ -17,17 +17,14 @@ def simple_tasks_page(request):
 
 @login_required
 @require_POST
-def task_create(request, project_id):
-	project = get_object_or_404(Project, pk=project_id)
+def task_create(request):
 	form = TaskForm(request.POST)
 
 	if form.is_valid():
 		task = form.save(commit=False)
-		task.project = project
 		task.save()
-		return redirect('project_detail', project_id=project.id)
 
-	return render(request, 'task_create.html', {'project': project, 'form': form})
+	return redirect('simple_tasks_page')
 
 
 @login_required
