@@ -1,4 +1,3 @@
-// JavaScript minimo
 document.addEventListener('DOMContentLoaded', function() {
   const tabLinks = document.querySelectorAll('.tab-link')
 

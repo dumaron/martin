@@ -2,26 +2,88 @@
 
 {% block title %}Projects{% endblock %}
 
+{% block stylesheets %}
+<style>
+    .project-info {
+        font-weight: bold;
+
+        a {
+            font-weight: normal;
+        }
+    }
+
+    ul.project-tree > li {
+        margin: 16px 0;
+    }
+
+    /* Tree structure styling */
+    ul.project-tree,
+    ul.task-list,
+    ul.project-children {
+        list-style-type: none;
+        padding-left: 0;
+        margin: 0;
+    }
+
+    ul.task-list,
+    ul.project-children {
+        padding-left: 20px;
+        position: relative;
+    }
+
+    /* Tree lines */
+    ul.task-list > li,
+    ul.project-children > li {
+        position: relative;
+        padding-left: 20px;
+    }
+
+    ul.task-list > li::before,
+    ul.project-children > li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 12px;
+        height: .7em;
+        border-left: 1px solid #999;
+        border-bottom: 1px solid #999;
+    }
+
+    ul.task-list > li::after,
+    ul.project-children > li::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 1px;
+        background: #999;
+    }
+
+    ul.task-list > li:last-child::after,
+    ul.project-children > li:last-child::after {
+        display: none;
+    }
+
+    /* Tree icons */
+    .project-item::marker,
+    .task-item::marker {
+        content: '';
+    }
+</style>
+{% endblock %}
+
 {% block content %}
 <div class="fixed-content">
     <h1>Projects</h1>
 
     {% if root_projects %}
-        <table class="project-tree-table">
-            <thead>
-                <tr>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Tasks</th>
-                    <th>Created</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for project in root_projects %}
-                {% include "partials/project_tree_item.html" with project=project depth=0 %}
-            {% endfor %}
-            </tbody>
-        </table>
+        <ul class="project-tree">
+        {% for project in root_projects %}
+            {% include "partials/project_tree_item.html" with project=project %}
+        {% endfor %}
+        </ul>
     {% else %}
         <p>No projects yet.</p>
     {% endif %}

@@ -33,8 +33,8 @@ class ProjectTable(tables.Table):
 @login_required
 @require_GET
 def project_list(request):
-	# Get only root projects (projects without a parent)
-	root_projects = Project.objects.filter(parent__isnull=True)
+	# Get only root projects that are active (projects without a parent)
+	root_projects = Project.objects.filter(parent__isnull=True, status='active')
 	return render(request, 'project_list.html', {'root_projects': root_projects})
 
 
@@ -90,3 +90,43 @@ def mark_task_as_completed(request, project_id):
 		task.save()
 
 	return redirect('project_detail', project_id=project_id)
+
+
+@login_required
+@require_GET
+def get_add_task_form(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	return render(request, 'partials/add_task_form.html', {'project': project})
+
+
+@login_required
+@require_POST
+def create_task(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	description = request.POST.get('description', '').strip()
+
+	if description:
+		task = Task.objects.create(project=project, description=description, status='pending')
+		return render(request, 'partials/task_item.html', {'task': task})
+
+	return render(request, 'partials/add_task_form.html', {'project': project})
+
+
+@login_required
+@require_GET
+def get_add_subproject_form(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	return render(request, 'partials/add_subproject_form.html', {'project': project})
+
+
+@login_required
+@require_POST
+def create_subproject(request, project_id):
+	parent_project = get_object_or_404(Project, pk=project_id)
+	title = request.POST.get('title', '').strip()
+
+	if title:
+		subproject = Project.objects.create(title=title, parent=parent_project, status='active')
+		return render(request, 'partials/subproject_item.html', {'subproject': subproject})
+
+	return render(request, 'partials/add_subproject_form.html', {'project': parent_project})

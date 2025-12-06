@@ -1,15 +1,37 @@
-<tr class="project-row" data-depth="{{ depth }}">
-    <td style="padding-left: {{ depth }}em;">
-        <a href="{% url 'project_detail' project.id %}">{{ project.title }}</a>
-    </td>
-    <td>{{ project.get_status_display }}</td>
-    <td>{{ project.tasks.count }}</td>
-    <td>{{ project.created_at|date:'Y-m-d H:i' }}</td>
-</tr>
-{% with children=project.get_children %}
-    {% if children %}
+<li class="project-item">
+    <div class="project-info">
+        {{ project.title }}
+        <a href="{% url 'project_detail' project.id %}">↗</a>
+    </div>
+
+    <div class="add-subproject-link">
+        <a href="{% url 'get_add_subproject_form' project.id %}"
+           hx-get="{% url 'get_add_subproject_form' project.id %}"
+           hx-target="#project-children-{{ project.id }}"
+           hx-swap="beforeend">+ add subproject</a>
+    </div>
+
+    <ul class="task-list" id="task-list-{{ project.id }}">
+    {% for task in project.tasks.all %}
+        <li class="task-item">
+            <input type="checkbox" /> {{ task.description }}
+        </li>
+    {% endfor %}
+        <li class="add-task-link" id="add-task-link-{{ project.id }}">
+            <a href="{% url 'get_add_task_form' project.id %}"
+               hx-get="{% url 'get_add_task_form' project.id %}"
+               hx-target="#add-task-link-{{ project.id }}"
+               hx-swap="beforebegin">+</a>
+        </li>
+    </ul>
+
+
+    {% with children=project.get_children %}
+        <ul class="project-children" id="project-children-{{ project.id }}">
         {% for child in children %}
-            {% include "partials/project_tree_item.html" with project=child depth=depth|add:2 %}
+            {% include "partials/project_tree_item.html" with project=child %}
         {% endfor %}
-    {% endif %}
-{% endwith %}
+        </ul>
+    {% endwith %}
+
+</li>

@@ -1,0 +1,7 @@
+<li class="project-item">
+    <form hx-post="{% url 'create_subproject_htmx' project.id %}"
+          hx-swap="outerHTML">
+        <input type="text" name="title" placeholder="Project title" required>
+        <button type="submit">Add</button>
+    </form>
+</li>

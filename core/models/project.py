@@ -21,7 +21,7 @@ class Project(models.Model):
 		return f'{self.title} ({self.get_status_display()})'
 
 	def get_children(self):
-		return Project.objects.filter(parent=self)
+		return Project.objects.filter(parent=self, status='active')
 
 	class Meta:
 		ordering = ['-created_at']
