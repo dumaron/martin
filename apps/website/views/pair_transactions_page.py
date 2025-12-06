@@ -158,7 +158,7 @@ def link_duplicate_bank_transaction(request):
 
 @login_required
 @require_POST
-def create_ynab_transaction(request, kind):
+def create_ynab_transaction(request):
 	"""
 	Creates a new YNAB transaction based on a bank transaction and form data.
 
