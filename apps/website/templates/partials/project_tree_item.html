@@ -2,13 +2,14 @@
     <div class="project-info">
         {{ project.title }}
         <a href="{% url 'project_detail' project.id %}">↗</a>
-    </div>
-
-    <div class="add-subproject-link">
         <a href="{% url 'get_add_subproject_form' project.id %}"
            hx-get="{% url 'get_add_subproject_form' project.id %}"
            hx-target="#project-children-{{ project.id }}"
-           hx-swap="beforeend">+ add subproject</a>
+           hx-swap="beforeend">↵</a>
+    </div>
+
+    <div class="add-subproject-link">
+
     </div>
 
     <ul class="task-list" id="task-list-{{ project.id }}">

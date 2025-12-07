@@ -78,6 +78,12 @@
 <div class="fixed-content">
     <h1>Projects</h1>
 
+
+    <form action="{% url 'project_create' %}" method="get">
+        <button type="submit">Add root project</button>
+    </form>
+
+
     {% if root_projects %}
         <ul class="project-tree">
         {% for project in root_projects %}
@@ -87,10 +93,5 @@
     {% else %}
         <p>No projects yet.</p>
     {% endif %}
-
-    <h2>Create New Project</h2>
-    <form action="{% url 'project_create' %}" method="get">
-        <button type="submit">+ New Project</button>
-    </form>
 </div>
 {% endblock %}
