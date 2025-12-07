@@ -221,6 +221,11 @@ urlpatterns = [
 		view=views.project_model.create_subproject,
 		name='create_subproject_htmx',
 	),
+	path(
+		route='models/project/mark-tasks-complete',
+		view=views.project_model.mark_tasks_complete,
+		name='mark_tasks_complete',
+	),
 	#
 	#
 	#

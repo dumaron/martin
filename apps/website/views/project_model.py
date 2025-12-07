@@ -1,8 +1,7 @@
-from datetime import timezone
-
 import django_tables2 as tables
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
 from apps.website.forms import ProjectForm, ProjectStatusForm
@@ -130,3 +129,14 @@ def create_subproject(request, project_id):
 		return render(request, 'partials/subproject_item.html', {'subproject': subproject})
 
 	return render(request, 'partials/add_subproject_form.html', {'project': parent_project})
+
+
+@login_required
+@require_POST
+def mark_tasks_complete(request):
+	task_ids = request.POST.getlist('task_ids')
+
+	if task_ids:
+		Task.objects.filter(id__in=task_ids).update(status='completed', completed_at=timezone.now())
+
+	return redirect('project_list')

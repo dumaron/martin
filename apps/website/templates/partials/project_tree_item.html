@@ -14,9 +14,11 @@
 
     <ul class="task-list" id="task-list-{{ project.id }}">
     {% for task in project.tasks.all %}
+        {% if task.status != 'completed' %}
         <li class="task-item">
-            <input type="checkbox" /> {{ task.description }}
+            <input type="checkbox" name="task_ids" value="{{ task.id }}" /> {{ task.description }}
         </li>
+        {% endif %}
     {% endfor %}
         <li class="add-task-link" id="add-task-link-{{ project.id }}">
             <a href="{% url 'get_add_task_form' project.id %}"

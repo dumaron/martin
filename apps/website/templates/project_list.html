@@ -85,11 +85,15 @@
 
 
     {% if root_projects %}
-        <ul class="project-tree">
-        {% for project in root_projects %}
-            {% include "partials/project_tree_item.html" with project=project %}
-        {% endfor %}
-        </ul>
+        <form action="{% url 'mark_tasks_complete' %}" method="post">
+            {% csrf_token %}
+            <ul class="project-tree">
+            {% for project in root_projects %}
+                {% include "partials/project_tree_item.html" with project=project %}
+            {% endfor %}
+            </ul>
+            <button type="submit">Mark selected as done</button>
+        </form>
     {% else %}
         <p>No projects yet.</p>
     {% endif %}
