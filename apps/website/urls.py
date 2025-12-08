@@ -201,6 +201,31 @@ urlpatterns = [
 		view=views.project_model.mark_task_as_completed,
 		name='project_mark_task_complete_action',
 	),
+	path(
+		route='models/project/<int:project_id>/add-task-form',
+		view=views.project_model.get_add_task_form,
+		name='get_add_task_form',
+	),
+	path(
+		route='models/project/<int:project_id>/create-task',
+		view=views.project_model.create_task,
+		name='create_task_htmx',
+	),
+	path(
+		route='models/project/<int:project_id>/add-subproject-form',
+		view=views.project_model.get_add_subproject_form,
+		name='get_add_subproject_form',
+	),
+	path(
+		route='models/project/<int:project_id>/create-subproject',
+		view=views.project_model.create_subproject,
+		name='create_subproject_htmx',
+	),
+	path(
+		route='models/project/mark-tasks-complete',
+		view=views.project_model.mark_tasks_complete,
+		name='mark_tasks_complete',
+	),
 	#
 	#
 	#
