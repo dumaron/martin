@@ -8,12 +8,8 @@
            hx-swap="beforeend">↵</a>
     </div>
 
-    <div class="add-subproject-link">
-
-    </div>
-
     <ul class="task-list" id="task-list-{{ project.id }}">
-    {% for task in project.tasks.all %}
+    {% for task in project.tasks.all %} {# Claude can you filter these at query level, instead of getting all? #}
         {% if task.status != 'completed' %}
         <li class="task-item">
             <input type="checkbox" name="task_ids" value="{{ task.id }}" /> {{ task.description }}
