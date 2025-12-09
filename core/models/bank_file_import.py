@@ -6,7 +6,6 @@ from django.db import models
 from core.models.bank_transaction import BankTransaction
 
 UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
-FINECO_XLSX_HEADER_ROWS_TO_SKIP = 9
 
 
 class BankFileImport(models.Model):
@@ -30,12 +29,39 @@ class BankFileImport(models.Model):
 	def __str__(self):
 		return f'{self.import_date} - {self.file_type}'
 
+	def _find_fineco_header_row(self):
+		"""
+		Dynamically find the row number where 'Data_Operazione' appears in the Fineco XLSX file.
+		Returns the number of rows to skip before the header row.
+		"""
+		# Load the entire file without skipping any lines
+		# Note: tablib automatically uses the first physical row as header (not shown in iteration)
+		dataset = tablib.Dataset().load(self.bank_file, format='xlsx')
+
+		# Check if Data_Operazione is already in the headers (first physical row)
+		if dataset.headers and 'Data_Operazione' in dataset.headers:
+			return 0  # No rows to skip, it's already the header
+
+		# Search for the row containing 'Data_Operazione'
+		# The index represents rows after the automatically-used header,
+		# so we need to add 1 to get the correct skip_lines value
+		for index, row in enumerate(dataset):
+			if row and 'Data_Operazione' in row:
+				return index + 1
+
+		# If not found, return 0 (no rows to skip)
+		return 0
+
 	def get_file_rows(self):
 		if self.file_type == BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT:
-			# Fineco exports an XLSX file, so it needs a different loader than the CSV one
-			return (
-				tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=FINECO_XLSX_HEADER_ROWS_TO_SKIP).dict
-			)
+			# Fineco exports an XLSX file with a variable number of header rows
+			# Dynamically find how many rows to skip by locating 'Data_Operazione'
+			rows_to_skip = self._find_fineco_header_row()
+			all_rows = tablib.Dataset().load(self.bank_file, format='xlsx', skip_lines=rows_to_skip).dict
+
+			# Filter out rows where Data_Operazione is not a valid date
+			# (Fineco uses "-" for authorized but not yet processed transactions)
+			return [row for row in all_rows if row.get('Data_Operazione') != '-']
 		else:
 			with open(self.bank_file.path, 'r') as text_mode_file:
 				if self.file_type == BankFileImport.FileType.CREDEM_CSV_EXPORT:
