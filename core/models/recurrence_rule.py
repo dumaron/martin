@@ -45,7 +45,7 @@ class RecurrenceRule(models.Model):
 	# Lap years are not supported by design, we will consider as if 29th of February doesn't exist (rude).
 	day = models.IntegerField()
 
-	suggestion = models.ForeignKey('RecurringSuggestion', on_delete=models.PROTECT)
+	suggestion = models.ForeignKey('RecurringSuggestion', on_delete=models.CASCADE)
 
 	@classmethod
 	def get_active_in_date(cls, date):
