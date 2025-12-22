@@ -12,7 +12,14 @@ class BankTransactionTable(tables.Table):
 	name = tables.Column(verbose_name='Description')
 	date = tables.DateColumn(verbose_name='Date')
 	amount = tables.Column(verbose_name='Amount')
-	duplicate_of = tables.LinkColumn(verbose_name='Duplicate Of', accessor='duplicate_of', default='')
+	duplicate_of = tables.LinkColumn(
+		verbose_name='Duplicate',
+		accessor='duplicate_of',
+		default='',
+		viewname='bank_transaction_detail',
+		args=[tables.A('duplicate_of.pk')],
+		text=lambda record: f'BT-{record.duplicate_of.pk}' if record.duplicate_of else '',
+	)
 
 	class Meta:
 		model = BankTransaction
