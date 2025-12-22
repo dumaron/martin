@@ -71,7 +71,7 @@ class YnabImportAdmin(admin.ModelAdmin):
 
 
 class BankFileImportAdmin(admin.ModelAdmin):
-	list_display = ['id', 'file_name', 'file_type', 'import_date']
+	list_display = ['id', 'file_type', 'import_date']
 
 
 class YnabAccountAdmin(admin.ModelAdmin):

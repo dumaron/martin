@@ -12,17 +12,17 @@ class BankTransactionTable(tables.Table):
 	name = tables.Column(verbose_name='Description')
 	date = tables.DateColumn(verbose_name='Date')
 	amount = tables.Column(verbose_name='Amount')
-	bank_account = tables.Column(verbose_name='Bank Account')
+	duplicate_of = tables.LinkColumn(verbose_name='Duplicate Of', accessor='duplicate_of', default='')
 
 	class Meta:
 		model = BankTransaction
 		template_name = 'django_tables2/table.html'
-		fields = ('id', 'name', 'date', 'amount', 'bank_account')
+		fields = ('id', 'name', 'date', 'amount', 'duplicate_of')
 
 
 class BankFileImportTable(tables.Table):
 	id = tables.LinkColumn('bank_file_import_detail', args=[tables.A('pk')], verbose_name='ID')
-	bank_name = tables.Column(empty_values=(), verbose_name='Bank')
+	bank_name = tables.Column(empty_values=(), verbose_name='Bank', accessor='bank')
 	import_date = tables.DateTimeColumn(verbose_name='Import Date')
 	transaction_count = tables.Column(empty_values=(), verbose_name='Transactions Created')
 
@@ -30,15 +30,6 @@ class BankFileImportTable(tables.Table):
 		model = BankFileImport
 		template_name = 'django_tables2/table.html'
 		fields = ('id', 'bank_name', 'import_date', 'transaction_count')
-
-	def render_bank_name(self, record):
-		file_type_to_bank = {
-			'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT': 'Unicredit',
-			'UNICREDIT_DEBIT_CARD_CSV_EXPORT': 'Unicredit',
-			'FINECO_BANK_ACCOUNT_XLSX_EXPORT': 'Fineco',
-			'CREDEM_CSV_EXPORT': 'Credem',
-		}
-		return file_type_to_bank.get(record.file_type, record.file_type)
 
 
 @login_required
