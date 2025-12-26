@@ -117,3 +117,8 @@ YNAB_SHARED_BUDGET_ID = os.getenv('YNAB_SHARED_BUDGET_ID')
 
 # Environment, used to tell if we are in production or development and by doing so prevent some mutation on external integrations
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
+
+# Add "highlightable" css class to django-tables tables so that we can add the special hover effect
+DJANGO_TABLES2_TABLE_ATTRS = {
+    'class': 'highlightable',
+}

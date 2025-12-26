@@ -1,11 +1,11 @@
 {% load django_tables2 %}
 
-<table {{ table.attrs }}>
+<table {{ table.attrs.as_html }}>
     {% if table.show_header %}
         <thead>
             <tr>
             {% for column in table.columns %}
-                <th {{ column.attrs.th }}>
+                <th {{ column.attrs.th.as_html }}>
                     {% if column.orderable %}
                         <a href="{% querystring table.prefixed_order_by_field=column.order_by_alias.next %}">{{ column.header }}</a>
                     {% else %}
@@ -18,9 +18,9 @@
     {% endif %}
     <tbody>
         {% for row in table.paginated_rows %}
-            <tr {{ row.attrs }}>
+            <tr {{ row.attrs.as_html }}>
                 {% for column, cell in row.items %}
-                    <td {{ column.attrs.td }}>{{ cell }}</td>
+                    <td {{ column.attrs.td.as_html }}>{{ cell }}</td>
                 {% endfor %}
             </tr>
         {% empty %}
