@@ -2,17 +2,14 @@
    VARIABLES
    ========================================================================== */
 :root {
-    /* Layout variables */
     --main-navbar-height: 30px;
 
-    /* Color variables - Light theme (default) */
     --color-text: #1a1a1a;
     --color-text-secondary: #333333;
     --color-text-muted: #666666;
     --color-text-link: white;
     --color-text-inverted: #ffffff;
 
-    /*--color-background-primary: rgb(237, 237, 239);*/
     --color-background-primary: white;
     --color-background-box: white;
     --color-background-secondary: gainsboro;
@@ -20,7 +17,6 @@
     --color-background-highlight: papayawhip;
 
 
-    /*--color-border-primary: red;*/
     --color-border-secondary: #b3b3b6;
     --color-border-muted: #999999;
     --color-border-light: #aaaaaa;
@@ -31,33 +27,6 @@
     --color-btn-background: rgb(233, 233, 237);
 }
 
-/* Dark theme */
-[data-theme="dark"] {
-    --color-text: #aaa;
-    --color-text-secondary: #dddddd;
-    --color-text-muted: #aaaaaa;
-    --color-text-link: #8ab4f8;
-    --color-text-inverted: #000000;
-
-    --color-background-primary: #121212;
-    --color-background-box: #161616;
-    --color-background-secondary: #333333;
-    --color-background-hover: #667766;
-    --color-background-highlight: #364836;
-    --color-background-sidebar: #121212;
-    --color-background-sidebar-hover: #444444;
-
-    --color-border-primary: #bbb;
-    --color-border-secondary: #888;
-    --color-border-muted: #777777;
-    --color-border-light: #555555;
-
-    --color-btn-background: rgb(43, 43, 48);
-}
-
-/* ==========================================================================
-   BASE STYLES
-   ========================================================================== */
 body {
     font-family: 'Inter V', 'American Typewriter', serif;
     font-size: 14px;
@@ -68,9 +37,9 @@ body {
 
 }
 
-main {
+a {
+    color: blue;
 }
-
 
 main {
     grid-area: content;
@@ -88,9 +57,6 @@ h1 {
     padding-bottom: 4px;
 }
 
-/* ==========================================================================
-   LAYOUT
-   ========================================================================== */
 .grid-content {
     display: grid;
     grid-template-columns: minmax(200px, 300px) 1fr;

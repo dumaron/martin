@@ -57,7 +57,6 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Mock the file processing to avoid actual file operations during save
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			file_import = BankFileImport.objects.create(
-				file_name='test_fineco_no_intro.xlsx',
 				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
 				bank_file=mock_file,
 			)
@@ -84,7 +83,6 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Mock the file processing to avoid actual file operations during save
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			file_import = BankFileImport.objects.create(
-				file_name='test_fineco_one_intro.xlsx',
 				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
 				bank_file=mock_file,
 			)
@@ -110,7 +108,6 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Mock the file processing to avoid actual file operations during save
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			file_import = BankFileImport.objects.create(
-				file_name='test_fineco_nine_intro.xlsx',
 				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
 				bank_file=mock_file,
 			)
@@ -136,7 +133,6 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Patch save to prevent BankTransaction creation, but allow the model to be created
 		with patch.object(BankFileImport, 'save', return_value=None) as mock_save:
 			file_import = BankFileImport(
-				file_name='test_fineco_integration.xlsx',
 				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
 				bank_file=mock_file,
 			)
