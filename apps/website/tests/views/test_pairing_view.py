@@ -30,7 +30,6 @@ class PairingViewTest(TestCase):
 		# Mock the file processing to avoid actual file operations during testing
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			self.file_import = BankFileImport.objects.create(
-				file_name='test_import.csv',
 				file_type=BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT,
 				bank_file=mock_file,
 			)
