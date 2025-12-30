@@ -21,6 +21,7 @@ th {
 	border: none;
 	background-color: #e0e0e0;
 	border-left: 1px solid #fff;
+	white-space: nowrap;
 }
 
 th a {
@@ -45,9 +46,8 @@ table.highlightable {
 }
 }
 
-th.horizontal {
+table.horizontal th {
 	width: 1%;
-	white-space: nowrap;
 	padding-right: 2em;
 }
 

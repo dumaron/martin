@@ -13,7 +13,7 @@ class BankTransactionTable(tables.Table):
 	date = tables.DateColumn(verbose_name='Date')
 	amount = tables.Column(verbose_name='Amount')
 	duplicate_of = tables.LinkColumn(
-		verbose_name='Duplicate',
+		verbose_name='Duplicate of?',
 		accessor='duplicate_of',
 		default='',
 		viewname='bank_transaction_detail',
@@ -44,12 +44,25 @@ class BankFileImportTable(tables.Table):
 def bank_file_import_detail(request, bank_file_import_id):
 	bank_file_import = get_object_or_404(BankFileImport, pk=bank_file_import_id)
 	bank_transactions = BankTransaction.objects.filter(file_import=bank_file_import).order_by('-date')
+
+	time_window_days = 0
+	first_transaction = bank_transactions.first()
+	last_transaction = bank_transactions.last()
+	if first_transaction and last_transaction:
+		time_window_days = (first_transaction.date - last_transaction.date).days
+
 	bank_transactions_table = BankTransactionTable(bank_transactions)
 	tables.RequestConfig(request, paginate=False).configure(bank_transactions_table)
 	return render(
 		request,
 		'bank_file_import_detail.html',
-		{'bank_file_import': bank_file_import, 'bank_transactions_table': bank_transactions_table},
+		{
+			'bank_file_import': bank_file_import,
+			'bank_transactions_table': bank_transactions_table,
+			'first_transaction': first_transaction,
+			'last_transaction': last_transaction,
+			'time_window_days': time_window_days,
+		},
 	)
 
 

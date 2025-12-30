@@ -5,16 +5,24 @@
 <div class="fixed-content">
     <h1>Bank file import #{{ bank_file_import.id }}</h1>
 
-    <table>
+    <table class="horizontal">
         <tbody>
             <tr>
-                <th class="horizontal">Bank account</th>
+                <th>Bank account</th>
                 <td>{{ bank_file_import.bank }}</td>
             </tr>
             <tr>
-                <th class="horizontal">Imported on</th>
-                <td>{{ bank_file_import.import_date }}</td>
+                <th>Imported on</th>
+                <td>{{ bank_file_import.import_date | date:"d/m/Y" }}</td>
             </tr>
+            {% if time_window_days %}
+            <tr>
+                <th>Time window</th>
+                <td>
+                    {{ first_transaction.date | date:"d/m/Y" }} -> {{ last_transaction.date | date:"d/m/Y" }} ({{ time_window_days }} days)
+                </td>
+            </tr>
+            {% endif %}
         </tbody>
     </table>
 
