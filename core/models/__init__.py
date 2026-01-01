@@ -14,6 +14,8 @@ from core.models.ynab_category import YnabCategory
 from core.models.ynab_import import YnabImport
 from core.models.ynab_transaction import YnabTransaction
 from core.models.recurrence_rule import RecurrenceRule
+from core.models.file import File
+from core.models.document import Document
 
 __all__ = [
 	'BankTransaction',
@@ -32,4 +34,6 @@ __all__ = [
 	'Memory',
 	'RecurringSuggestion',
 	'RecurrenceRule',
+	'Document',
+	'File',
 ]

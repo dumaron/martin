@@ -17,6 +17,9 @@ from core.models import (
 	YnabCategory,
 	YnabImport,
 	YnabTransaction,
+	Document,
+	File,
+	DailySuggestion
 )
 
 
@@ -107,3 +110,6 @@ class ProjectAdmin(admin.ModelAdmin):
 	list_filter = ('status', 'parent')
 	search_fields = ('title',)
 admin.site.register(Project, ProjectAdmin)
+admin.site.register(Document)
+admin.site.register(File)
+admin.site.register(DailySuggestion)

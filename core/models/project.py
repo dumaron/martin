@@ -24,4 +24,5 @@ class Project(models.Model):
 		return Project.objects.filter(parent=self, status='active')
 
 	class Meta:
+		db_table = 'projects'
 		ordering = ['-created_at']
