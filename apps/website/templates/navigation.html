@@ -88,7 +88,12 @@
             Memory
             <ul>
                 <li>Events</li>
-                <li>Documents</li>
+                <li>
+                    <a href="{% url 'document_list' %}"
+                       class="{% active request 'document_list' %}">
+                        Documents
+                    </a>
+                </li>
                 <li>Physical objects location</li>
             </ul>
         </li>

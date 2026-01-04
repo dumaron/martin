@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>{{ document.name }}</h1>
+
+	<table class="horizontal">
+		<tbody>
+			<tr>
+				<th>Description</th>
+				<td>{{ document.description|default:"No description" }}</td>
+			</tr>
+			<tr>
+				<th>Location</th>
+				<td>{{ document.location|default:"No location" }}</td>
+			</tr>
+			<tr>
+				<th>Created at</th>
+				<td>{{ document.created_at | date:"d/m/Y H:i" }}</td>
+			</tr>
+			<tr>
+				<th>Files</th>
+				<td>{{ files.count }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<h2>Files</h2>
+	{% if files %}
+		<div style="display: grid; gap: 20px;">
+			{% for file in files %}
+				{% if file.file.url %}
+					{% with file.file.url|lower as file_url %}
+						{% if '.pdf' in file_url %}
+							<a href="{{ file.file.url }}" download style="text-decoration: none; color: inherit; display: inline-block;">
+								<embed src="{{ file.file.url }}" type="application/pdf" width="100%" height="600px" style="pointer-events: none;" />
+							</a>
+						{% elif '.jpg' in file_url or '.jpeg' in file_url or '.png' in file_url or '.gif' in file_url or '.webp' in file_url %}
+							<a href="{{ file.file.url }}" download style="display: inline-block;">
+								<img src="{{ file.file.url }}" alt="Image" style="max-width: 100%; height: auto; border: 1px solid #ddd; cursor: pointer;" />
+							</a>
+						{% elif '.mp4' in file_url or '.webm' in file_url or '.ogg' in file_url %}
+							<div>
+								<video controls style="max-width: 100%; height: auto;">
+									<source src="{{ file.file.url }}" type="video/{{ file_url|slice:'-3:' }}">
+									Your browser does not support the video tag.
+								</video>
+								<div style="margin-top: 5px;">
+									<a href="{{ file.file.url }}" download>Download video</a>
+								</div>
+							</div>
+						{% elif '.mp3' in file_url or '.wav' in file_url or '.ogg' in file_url %}
+							<div>
+								<audio controls style="width: 100%;">
+									<source src="{{ file.file.url }}" type="audio/{{ file_url|slice:'-3:' }}">
+									Your browser does not support the audio tag.
+								</audio>
+								<div style="margin-top: 5px;">
+									<a href="{{ file.file.url }}" download>Download audio</a>
+								</div>
+							</div>
+						{% elif '.txt' in file_url or '.md' in file_url or '.csv' in file_url %}
+							<div>
+								<iframe src="{{ file.file.url }}" style="width: 100%; height: 400px; border: 1px solid #ddd;"></iframe>
+								<div style="margin-top: 5px;">
+									<a href="{{ file.file.url }}" download>Download file</a>
+								</div>
+							</div>
+						{% else %}
+							<div style="padding: 20px; border: 1px solid #ddd; border-radius: 5px; text-align: center;">
+								<p>File uploaded: {{ file.uploaded_at | date:"d/m/Y H:i" }}</p>
+								<a href="{{ file.file.url }}" download>Download file</a>
+							</div>
+						{% endif %}
+					{% endwith %}
+				{% endif %}
+			{% endfor %}
+		</div>
+	{% else %}
+		<p>No files attached to this document.</p>
+	{% endif %}
+
+</div>
+{% endblock %}

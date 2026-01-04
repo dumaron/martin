@@ -186,6 +186,20 @@ urlpatterns = [
 	),
 	#
 	#
+	# DOCUMENT MODEL ----------------------------------------------------------------------------------------------------
+	#
+	path(
+		route='models/document',
+		view=views.document_model.document_list,
+		name='document_list',
+	),
+	path(
+		route='models/document/<int:document_id>',
+		view=views.document_model.document_detail,
+		name='document_detail',
+	),
+	#
+	#
 	# PROJECT MODEL -----------------------------------------------------------------------------------------------------
 	#
 	path('models/project', views.project_model.project_list, name='project_list'),
