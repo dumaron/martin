@@ -4,43 +4,32 @@
     <div id="title">Martin</div>
 
     <ul class="tree">
-        <li><a href="{% url 'welcome_page' %}" class="{% active request 'welcome_page' 'active' False %}">Welcome back</a></li>
         <li>
-            Flows
-            <ul>
-
-                <li>
-                    <a href="{% url 'process_inboxes_page' %}"
-                       class="{% active request 'process_inboxes_page' %}">
-                        Process inbox
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'pair_transactions_page' kind="personal" %}"
-                       class="{% active request 'pair_transactions_page' kind='personal' %}">
-                        Pair personal YNAB expenses
-                    </a>
-                </li>
-                <li>
-                    <a href="{% url 'pair_transactions_page' kind="shared" %}"
-                       class="{% active request 'pair_transactions_page' kind='shared' %}">
-                        Pair shared YNAB expenses
-                    </a>
-                </li>
-            </ul>
+            <a href="{% url 'welcome_page' %}"
+               class="{% active request 'welcome_page' 'active' False %}">
+                Welcome back
+            </a>
         </li>
-        <li>Pages
+
+        <li>
+            Efficiency
             <ul>
-                <li>
-                    <a href="{% url 'simple_tasks_page' %}"
-                       class="{% active request 'simple_tasks_page' %}">
-                        Simple tasks
-                    </a>
-                </li>
                 <li>
                     <a href="{% url 'capture_inbox_page' %}"
                        class="{% active request 'capture_inbox_page' %}">
-                        Add inbox item
+                        Collect inbox item
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'process_inboxes_page' %}"
+                       class="{% active request 'process_inboxes_page' %}">
+                        Empty inbox
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'simple_tasks_page' %}"
+                       class="{% active request 'simple_tasks_page' %}">
+                        Simple todo list
                     </a>
                 </li>
                 <li>
@@ -49,27 +38,63 @@
                         Daily suggestions
                     </a>
                 </li>
-            </ul>
-        </li>
-        <li>Dashboards
-            <ul>
-                <li>TODO</li>
-            </ul>
-        </li>
-        <li>
-            Data ingestion
-            <ul>
-                <li><a href="{% url 'import_bank_export_page' %}" class="{% active request 'import_bank_export_page' %}">Upload bank export</a>
+                <li>
+                    <a href="{% url 'project_list' %}"
+                       class="{% active request 'project_list' %}">
+                        Projects
+                    </a>
                 </li>
-                <li><a href="{% url 'ynab_integration_page' %}"
-                       class="{% active request 'ynab_integration_page' %}">Synchronize with YNAB</a></li>
+                <li>Calendar integration</li>
+            </ul>
+        </li>
+
+        <li>
+            Finances
+            <ul>
+                <li>Mortgage dashboard</li>
+                <li>
+                    Transactions pairing
+                    <ul>
+                        <li>
+                            <a href="{% url 'pair_transactions_page' kind="personal" %}"
+                               class="{% active request 'pair_transactions_page' kind='personal' %}">
+                                Personal account
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'pair_transactions_page' kind="shared" %}"
+                               class="{% active request 'pair_transactions_page' kind='shared' %}">
+                                Shared account
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>Expense analysis</li>
+                <li>
+                    <a href="{% url 'import_bank_export_page' %}"
+                       class="{% active request 'import_bank_export_page' %}">
+                        Bank accounts integration
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'ynab_integration_page' %}"
+                       class="{% active request 'ynab_integration_page' %}">
+                        YNAB integration
+                    </a>
+                </li>
             </ul>
         </li>
         <li>
-            Low-level entities
+            Memory
             <ul>
-                <li><a href="{% url 'project_list' %}"
-                       class="{% active request 'project_list' %}">Projects</a></li>
+                <li>Events</li>
+                <li>Documents</li>
+                <li>Physical objects location</li>
+            </ul>
+        </li>
+        <li>
+            Low-level entities - To Be Removed
+            <ul>
                 <li><a href="{% url 'bank_transaction_list' %}"
                        class="{% active request 'bank_transaction_list' %}">Bank transactions</a></li>
                 <li><a href="{% url 'bank_file_import_list' %}"
