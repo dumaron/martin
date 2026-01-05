@@ -23,13 +23,17 @@ class DocumentTable(tables.Table):
 	name = tables.Column(verbose_name='Name')
 	description = tables.Column(verbose_name='Description')
 	location = tables.Column(verbose_name='Location')
+	tags = tables.Column(empty_values=(), verbose_name='Tags', orderable=False)
 	created_at = tables.DateTimeColumn(verbose_name='Created At')
 	file_count = tables.Column(empty_values=(), verbose_name='Files')
+
+	def render_tags(self, record):
+		return ', '.join([tag.name for tag in record.tags.all()])
 
 	class Meta:
 		model = Document
 		template_name = 'django_tables2/table.html'
-		fields = ('id', 'name', 'description', 'location', 'created_at', 'file_count')
+		fields = ('id', 'name', 'description', 'location', 'tags', 'created_at', 'file_count')
 
 
 @login_required

@@ -16,6 +16,18 @@
 				<td>{{ document.location|default:"No location" }}</td>
 			</tr>
 			<tr>
+				<th>Tags</th>
+				<td>
+					{% if document.tags.all %}
+						{% for tag in document.tags.all %}
+							{{ tag.name }}
+						{% endfor %}
+					{% else %}
+						No tags
+					{% endif %}
+				</td>
+			</tr>
+			<tr>
 				<th>Created at</th>
 				<td>{{ document.created_at | date:"d/m/Y H:i" }}</td>
 			</tr>
