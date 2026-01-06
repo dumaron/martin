@@ -2,5 +2,11 @@
 {% load django_tables2 %}
 
 {% block content %}
+<div class="fixed-content">
+    <h1>Documents</h1>
+
+    <a href="{% url 'document_create_page' %}">Create New Document</a>
+
     {% render_table table %}
+</div>
 {% endblock %}

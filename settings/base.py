@@ -123,3 +123,6 @@ ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 DJANGO_TABLES2_TABLE_ATTRS = {
     'class': 'highlightable',
 }
+
+# Allow embedding content from same origin (needed for PDF preview in document detail page)
+X_FRAME_OPTIONS = 'SAMEORIGIN'

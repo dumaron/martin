@@ -194,6 +194,16 @@ urlpatterns = [
 		name='document_list',
 	),
 	path(
+		route='models/document/create',
+		view=views.document_model.document_create_page,
+		name='document_create_page',
+	),
+	path(
+		route='models/document/create-action',
+		view=views.document_model.document_create,
+		name='document_create',
+	),
+	path(
 		route='models/document/<int:document_id>',
 		view=views.document_model.document_detail,
 		name='document_detail',

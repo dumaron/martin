@@ -9,11 +9,11 @@
 		<tbody>
 			<tr>
 				<th>Description</th>
-				<td>{{ document.description|default:"No description" }}</td>
+				<td>{{ document.description|default:"-" }}</td>
 			</tr>
 			<tr>
 				<th>Location</th>
-				<td>{{ document.location|default:"No location" }}</td>
+				<td>{{ document.location|default:"-" }}</td>
 			</tr>
 			<tr>
 				<th>Tags</th>
@@ -29,7 +29,7 @@
 			</tr>
 			<tr>
 				<th>Created at</th>
-				<td>{{ document.created_at | date:"d/m/Y H:i" }}</td>
+				<td>{{ document.created_at | date:"Y-m-d H:i" }}</td>
 			</tr>
 			<tr>
 				<th>Files</th>
