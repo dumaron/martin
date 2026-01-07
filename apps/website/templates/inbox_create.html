@@ -4,16 +4,14 @@
 <div class="fixed-content">
     <h1>Capture New Inbox Item</h1>
 
-    <h2>Quick Capture</h2>
-    <p>Capture whatever is on your mind - you'll process it later</p>
-
     {% if creation_success %}
         <pre>CREATION SUCCEEDED</pre>
     {% endif %}
-    
+
+{# TODO split this action #}
     <form method="post">
         {% csrf_token %}
-        <table class="large">
+        <table class="form">
             <tbody>
                 <tr>
                     <th>{{ form.content.label_tag }}</th>

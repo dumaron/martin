@@ -37,7 +37,13 @@ td {
 	border-left: 1px solid #fff;
 }
 
+/* tables for forms */
 
+table.form {
+	td, th {
+		background-color: transparent;
+	}
+}
 
 /* highlightable rows */
 table.highlightable {

@@ -3,9 +3,9 @@
 {% block content %}
     <div class="fixed-content">
         <h1>Processing inbox</h1>
+
         {%  if inbox %}
-        
-        <table class="large">
+        <table class="horizontal">
             <tbody>
                 <tr>
                     <th>ID</th>
@@ -34,9 +34,9 @@
                 <button type="submit">Mark as Processed</button>
             </form>
         </div>
-    {% else %}
-        <pre>No inbox to process.</pre>
-    {% endif %}
+        {% else %}
+            <pre>No inbox to process.</pre>
+        {% endif %}
 
     </div>
 {% endblock %}

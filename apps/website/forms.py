@@ -24,9 +24,6 @@ class YnabTransactionCreationForm(forms.Form):
 		self.fields['ynab_category'].queryset = filtered_queryset
 
 
-# GTD Forms
-
-
 class ProjectForm(forms.ModelForm):
 	class Meta:
 		model = Project

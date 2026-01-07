@@ -6,10 +6,10 @@
 
 	<form method="post" action="{% url 'document_create' %}" enctype="multipart/form-data">
 		{% csrf_token %}
-		<table class="large">
+		<table class="form">
 			<tbody>
 				<tr>
-					<th class="creation-form-label">{{ form.name.label_tag }}</th>
+					<th>{{ form.name.label_tag }}</th>
 					<td>
 						{{ form.name }}
 						{% if form.name.errors %}
@@ -18,7 +18,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th class="creation-form-label">{{ form.description.label_tag }}</th>
+					<th>{{ form.description.label_tag }}</th>
 					<td>
 						{{ form.description }}
 						{% if form.description.errors %}
@@ -27,7 +27,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th class="creation-form-label">{{ form.location.label_tag }}</th>
+					<th>{{ form.location.label_tag }}</th>
 					<td>
 						{{ form.location }}
 						{% if form.location.errors %}
@@ -36,7 +36,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th class="creation-form-label">{{ form.tags.label_tag }}</th>
+					<th>{{ form.tags.label_tag }}</th>
 					<td>
 						{{ form.tags }}
 						{% if form.tags.errors %}
@@ -48,7 +48,7 @@
 					</td>
 				</tr>
 				<tr>
-					<th class="creation-form-label">{{ form.files.label_tag }}</th>
+					<th>{{ form.files.label_tag }}</th>
 					<td>
 						{{ form.files }}
 						{% if form.files.errors %}

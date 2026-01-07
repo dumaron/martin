@@ -95,7 +95,7 @@
     <div class="fixed-content">
         <h1>Project #{{ project.id }}: {{ project.title }}</h1>
         
-        <table class="large">
+        <table class="horizontal">
             <tbody>
                 <tr>
                     <th>ID</th>
@@ -147,7 +147,7 @@
         <h2>Change Project Status</h2>
         <form method="post" action="{% url 'update_project_status' project.id %}">
             {% csrf_token %}
-            <table class="large">
+            <table class="form">
                 <tbody>
                     <tr>
                         <th>{{ status_form.status.label_tag }}</th>
