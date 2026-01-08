@@ -1,7 +1,14 @@
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from apps.website.forms import BankFileImportForm
+from core.models import BankFileImport
+
+
+class BankFileImportForm(forms.ModelForm):
+	class Meta:
+		model = BankFileImport
+		fields = ['bank_file', 'file_type']
 
 
 @login_required

@@ -1,10 +1,25 @@
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from apps.website.forms import TaskForm
 from core.models import Project, Task
+
+
+class TaskForm(forms.ModelForm):
+	class Meta:
+		model = Task
+		fields = ['description', 'project']
+		widgets = {
+			'description': forms.TextInput(attrs={'placeholder': 'Enter task description'}),
+			'project': forms.Select(attrs={'class': 'tom-select'}),
+		}
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['project'].empty_label = 'No project (standalone task)'
+		self.fields['project'].required = False
 
 
 @login_required
