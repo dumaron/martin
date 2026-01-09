@@ -3,7 +3,7 @@ from django import forms
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_GET, require_http_methods
+from django.views.decorators.http import require_GET, require_POST, require_http_methods
 
 from core.models import Document, File
 
@@ -40,6 +40,10 @@ class DocumentForm(forms.ModelForm):
 			'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional description'}),
 			'location': forms.TextInput(attrs={'placeholder': 'Optional physical location'}),
 		}
+
+	def __init__(self, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.fields['tags'].required = False
 
 
 class FileTable(tables.Table):
@@ -108,7 +112,7 @@ def document_create_page(request):
 
 
 @login_required
-@require_http_methods(['POST'])
+@require_POST
 def document_create(request):
 	form = DocumentForm(request.POST, request.FILES)
 	if form.is_valid():
