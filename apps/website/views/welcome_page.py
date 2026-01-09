@@ -7,7 +7,7 @@ from core.models import Memory
 
 @login_required
 @require_GET
-def martin_home_page(request):
+def main_render(request):
 	"""
 	TODO write a description
 	"""

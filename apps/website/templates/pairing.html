@@ -39,10 +39,10 @@
         <h2>Same amount</h2>
         {% if same_amount_suggestions %}
             <div id="same-amount-suggestions">
-                <form action="{% url 'pair_transactions' %}" method="post">
+                <form action="{% url 'pair_transactions_page.actions.pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
-                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
+                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page.main_render' kind=kind %}"/>
                     <table class="highlightable">
                         <thead>
                             <tr>
@@ -76,11 +76,11 @@
         <h2>Similar date</h2>
         {% if similar_date_suggestions %}
             <div id="similar-date-suggestions">
-                <form action="{% url 'pair_transactions' %}" method="post">
+                <form action="{% url 'pair_transactions_page.main_render' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>
-                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
+                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page.main_render' kind=kind %}"/>
                     <table class="highlightable">
                         <thead>
                             <tr>
@@ -111,10 +111,10 @@
 
 
         <h2>Create YNAB transaction</h2>
-        <form action="{% url 'create_ynab_transaction' %}" method="post" class="pairing-form">
+        <form action="{% url 'pair_transactions_page.actions.create_ynab_transaction' %}" method="post" class="pairing-form">
             {% csrf_token %}
             <input type="hidden" name="kind" value="{{ kind }}" />
-            <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
+            <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page.main_render' kind=kind %}"/>
             {{ transaction_creation_form.bank_transaction_id }}
             <table class="form">
                 <tbody>
@@ -131,10 +131,10 @@
             <button type="submit">Create transaction</button>
         </form>
         <h2>Snooze the bank transaction</h2>
-        <form action="{% url 'snooze_bank_transaction' %}" method="post">
+        <form action="{% url 'pair_transactions_page.actions.snooze_bank_transaction' %}" method="post">
             {% csrf_token %}
             <input type="hidden" name="bank_transaction_id" value="{{ bank_transaction.id }}"/>
-            <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page' kind=kind %}"/>
+            <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page.main_render' kind=kind %}"/>
             <button type="submit">Snooze</button>
         </form>
     </div>

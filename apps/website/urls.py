@@ -31,95 +31,110 @@ urlpatterns = [
 	#
 	# HOME PAGE ---------------------------------------------------------------------------------------------------------
 	#
-	path('', views.welcome_page.martin_home_page, name='welcome_page'),
+	path(route='', view=views.welcome_page.main_render, name='welcome_page.main_render'),
 	#
 	#
-	# PAIR TRANSACTIONS FLOW PAGE ---------------------------------------------------------------------------------------
+	# PAIR TRANSACTIONS PAGE --------------------------------------------------------------------------------------------
 	#
 	path(
-		'flows/pair-transactions/pair-transactions',
-		views.pair_transactions_page.pair_transactions,
-		name='pair_transactions',
+		route='flows/pair-transactions/pair-transactions',
+		view=views.pair_transactions_page.pair_transactions,
+		name='pair_transactions_page.actions.pair_transactions',
 	),
 	path(
-		'flows/pair-transactions/snooze-bank-transaction',
-		views.pair_transactions_page.snooze_bank_transaction,
-		name='snooze_bank_transaction',
+		route='flows/pair-transactions/snooze-bank-transaction',
+		view=views.pair_transactions_page.snooze_bank_transaction,
+		name='pair_transactions_page.actions.snooze_bank_transaction',
 	),
 	path(
-		'flows/pair-transactions/link-duplicate-bank-transactions',
-		views.pair_transactions_page.link_duplicate_bank_transaction,
-		name='link_duplicate_bank_transactions',
+		route='flows/pair-transactions/link-duplicate-bank-transactions',
+		view=views.pair_transactions_page.link_duplicate_bank_transaction,
+		name='pair_transactions_page.actions.link_duplicate_bank_transactions',
 	),
 	path(
-		'flows/pair-transactions/create-ynab-transaction',
-		views.pair_transactions_page.create_ynab_transaction,
-		name='create_ynab_transaction',
+		route='flows/pair-transactions/create-ynab-transaction',
+		view=views.pair_transactions_page.create_ynab_transaction,
+		name='pair_transactions_page.actions.create_ynab_transaction',
 	),
 	path(
 		route='flows/pair-transactions/<str:kind>',
 		view=views.pair_transactions_page.pair_transactions_page,
-		name='pair_transactions_page',
+		name='pair_transactions_page.main_render',
 	),
 	#
 	#
-	# PROCESS INBOXES FLOW PAGE -----------------------------------------------------------------------------------------
+	# PROCESS INBOXES PAGE ----------------------------------------------------------------------------------------------
 	#
 	path(
 		route='flows/process-inboxes',
 		view=views.process_inboxes_page.process_inboxes_page,
-		name='process_inboxes_page',
+		name='process_inboxes_page.main_render',
 	),
-	path('flows/process-inboxes/process-inbox', views.process_inboxes_page.process_inbox, name='process_inbox'),
+	path(
+		route='flows/process-inboxes/process-inbox',
+		view=views.process_inboxes_page.process_inbox,
+		name='process_inboxes_page.actions.process_inbox',
+	),
 	#
 	#
 	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
 	#
-	path('pages/simple-tasks', views.simple_tasks_page.simple_tasks_page, name='simple_tasks_page'),
-	path('pages/simple-tasks/create-task', views.simple_tasks_page.task_create, name='create_task'),
 	path(
-		'pages/simple-tasks/mark-as-completed',
-		views.simple_tasks_page.mark_task_as_completed,
-		name='mark_task_as_completed',
+		route='pages/simple-tasks',
+		view=views.simple_tasks_page.simple_tasks_page,
+		name='simple_tasks_page.main_render',
 	),
-	path('pages/simple-tasks/abort-task', views.simple_tasks_page.abort_task, name='abort_task'),
+	path(
+		route='pages/simple-tasks/create-task',
+		view=views.simple_tasks_page.task_create,
+		name='simple_tasks_page.actions.create_task',
+	),
+	path(
+		route='pages/simple-tasks/mark-as-completed',
+		view=views.simple_tasks_page.mark_task_as_completed,
+		name='simple_tasks_page.actions.mark_task_as_completed',
+	),
+	path(route='pages/simple-tasks/abort-task', view=views.simple_tasks_page.abort_task, name='simple_tasks_page.actions.abort_task'),
 	#
 	#
 	# ADD INBOX PAGE ----------------------------------------------------------------------------------------------------
 	#
-	path('pages/create-inbox-item', views.capture_inbox_item_page.capture_inbox, name='capture_inbox_page'),
+	path(route='pages/create-inbox-item', view=views.capture_inbox_item_page.capture_inbox, name='capture_inbox_page.main_render'),
 	path(
-		'pages/create-inbox-item/create', views.capture_inbox_item_page.capture_inbox, name='capture_inbox_item'
+		route='pages/create-inbox-item/create', view=views.capture_inbox_item_page.capture_inbox, name='capture_inbox_page.actions.capture_inbox_item'
 	),
 	#
 	#
 	# DAILY SUGGESTIONS INTRO PAGE --------------------------------------------------------------------------------------
 	#
 	path(
-		'pages/daily-suggestions',
-		views.daily_suggestions_intro_page.daily_suggestions_intro_page,
-		name='daily_suggestions_intro_page',
+		route='pages/daily-suggestions',
+		view=views.daily_suggestions_intro_page.daily_suggestions_intro_page,
+		name='daily_suggestions_intro_page.main_render',
 	),
 	#
 	#
 	# DAILY SUGGESTIONS EDITOR PAGE -------------------------------------------------------------------------------------
 	#
 	path(
-		'pages/daily-suggestions/<str:date>',
-		views.daily_suggestion_editor_page.daily_suggestions_editor_page,
-		name='daily_suggestions_editor_page',
+		route='pages/daily-suggestions/<str:date>',
+		view=views.daily_suggestion_editor_page.daily_suggestions_editor_page,
+		name='daily_suggestions_editor_page.main_render',
 	),
 	path(
-		'pages/daily-suggestions/<str:date>/save',
-		views.daily_suggestion_editor_page.save_daily_suggestion,
-		name='save_daily_suggestion',
+		route='pages/daily-suggestions/<str:date>/save',
+		view=views.daily_suggestion_editor_page.save_daily_suggestion,
+		name='daily_suggestions_editor_page.actions.save_daily_suggestion',
 	),
 	path(
-		'pages/daily-suggestions/<str:date>/pdf',
-		views.daily_suggestion_editor_page.daily_suggestion_pdf,
-		name='daily_suggestion_pdf',
+		route='pages/daily-suggestions/<str:date>/pdf',
+		view=views.daily_suggestion_editor_page.daily_suggestion_pdf,
+		name='daily_suggestions_editor_page.actions.daily_suggestion_pdf',
 	),
 	#
+	# -- CONTINUE FROM HERE --
+	# This porting is takin too much time, I need to move forward with more important features
+	# --
 	#
 	# IMPORT FILE PAGE --------------------------------------------------------------------------------------------------
 	#
@@ -188,25 +203,15 @@ urlpatterns = [
 	#
 	# DOCUMENT MODEL ----------------------------------------------------------------------------------------------------
 	#
+	path(route='models/document', view=views.document_model.document_list, name='document_list'),
 	path(
-		route='models/document',
-		view=views.document_model.document_list,
-		name='document_list',
+		route='models/document/create', view=views.document_model.document_create_page, name='document_create_page'
 	),
 	path(
-		route='models/document/create',
-		view=views.document_model.document_create_page,
-		name='document_create_page',
+		route='models/document/create-action', view=views.document_model.document_create, name='document_create'
 	),
 	path(
-		route='models/document/create-action',
-		view=views.document_model.document_create,
-		name='document_create',
-	),
-	path(
-		route='models/document/<int:document_id>',
-		view=views.document_model.document_detail,
-		name='document_detail',
+		route='models/document/<int:document_id>', view=views.document_model.document_detail, name='document_detail'
 	),
 	#
 	#

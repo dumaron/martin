@@ -5,8 +5,8 @@
 
     <ul class="tree">
         <li>
-            <a href="{% url 'welcome_page' %}"
-               class="{% active request 'welcome_page' 'active' False %}">
+            <a href="{% url 'welcome_page.main_render' %}"
+               class="{% active request 'welcome_page.main_render' 'active' False %}">
                 Welcome back
             </a>
         </li>
@@ -15,26 +15,26 @@
             Efficiency
             <ul>
                 <li>
-                    <a href="{% url 'capture_inbox_page' %}"
-                       class="{% active request 'capture_inbox_page' %}">
+                    <a href="{% url 'capture_inbox_page.main_render' %}"
+                       class="{% active request 'capture_inbox_page.main_render' %}">
                         Collect inbox item
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'process_inboxes_page' %}"
-                       class="{% active request 'process_inboxes_page' %}">
+                    <a href="{% url 'process_inboxes_page.main_render' %}"
+                       class="{% active request 'process_inboxes_page.main_render' %}">
                         Empty inbox
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'simple_tasks_page' %}"
-                       class="{% active request 'simple_tasks_page' %}">
+                    <a href="{% url 'simple_tasks_page.main_render' %}"
+                       class="{% active request 'simple_tasks_page.main_render' %}">
                         Simple todo list
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'daily_suggestions_intro_page' %}"
-                       class="{% active request 'daily_suggestions_intro_page' %}">
+                    <a href="{% url 'daily_suggestions_intro_page.main_render' %}"
+                       class="{% active request 'daily_suggestions_intro_page.main_render' %}">
                         Daily suggestions
                     </a>
                 </li>
@@ -56,14 +56,14 @@
                     Transactions pairing
                     <ul>
                         <li>
-                            <a href="{% url 'pair_transactions_page' kind="personal" %}"
-                               class="{% active request 'pair_transactions_page' kind='personal' %}">
+                            <a href="{% url 'pair_transactions_page.main_render' kind="personal" %}"
+                               class="{% active request 'pair_transactions_page.main_render' kind='personal' %}">
                                 Personal account
                             </a>
                         </li>
                         <li>
-                            <a href="{% url 'pair_transactions_page' kind="shared" %}"
-                               class="{% active request 'pair_transactions_page' kind='shared' %}">
+                            <a href="{% url 'pair_transactions_page.main_render' kind="shared" %}"
+                               class="{% active request 'pair_transactions_page.main_render' kind='shared' %}">
                                 Shared account
                             </a>
                         </li>

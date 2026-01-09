@@ -3,7 +3,7 @@
 {% block content %}
     <div class="fixed-content">
     <h1>Daily suggestions</h1>
-        <a href="{% url 'daily_suggestions_editor_page' date=today %}">Today</a>
-        <a href="{% url 'daily_suggestions_editor_page' date=tomorrow %}">Tomorrow</a>
+        <a href="{% url 'daily_suggestions_editor_page.main_render' date=today %}">Today</a>
+        <a href="{% url 'daily_suggestions_editor_page.main_render' date=tomorrow %}">Tomorrow</a>
     </div>
 {% endblock %}

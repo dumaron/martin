@@ -39,7 +39,7 @@ def task_create(request):
 		task = form.save(commit=False)
 		task.save()
 
-	return redirect('simple_tasks_page')
+	return redirect('simple_tasks_page.main_render')
 
 
 @login_required
@@ -53,7 +53,7 @@ def mark_task_as_completed(request):
 		task.completed_at = timezone.now()
 		task.save()
 
-	return redirect('simple_tasks_page')
+	return redirect('simple_tasks_page.main_render')
 
 
 @login_required
@@ -67,4 +67,4 @@ def abort_task(request):
 		task.completed_at = None
 		task.save()
 
-	return redirect('simple_tasks_page')
+	return redirect('simple_tasks_page.main_render')
