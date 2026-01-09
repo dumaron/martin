@@ -36,14 +36,13 @@
 
     /* WARNING VARIATION */
     .warning {
-        .title {
-            background-color: rgb(255, 240, 95);
-            border: 1px solid black;
-            padding: 2px 5px;
+        .title:before {
+            content: "⬤";
+            color: red;
+            padding-left: 2em;
         }
     }
 
-    /* WIP */
     .title {
         text-transform: uppercase;
         font-family: "Berkeley Mono", monospace;
