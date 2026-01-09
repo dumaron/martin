@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block stylesheets %}
+<link rel="stylesheet" href="{% static '/styles/home.css' %}" />
+{% endblock %}
+
+{% block content %}
+    <div>
+    <h1>Welcome back, Stefano</h1>
+        <div class="memory-display">
+            <div class="memory-image">
+                <img src="{{ memory.photo.url }}" alt="Memory {{ memory.id }}" />
+            </div>
+            <div class="memory-details">
+                <table class="horizontal">
+                    <tbody>
+                    <tr>
+                        <th>
+                            Description
+                        </th>
+                        <td>
+                            {{ memory.description }}
+                        </td>
+                    </tr>
+                        {% if memory.date %}
+                        <tr>
+                            <th>
+                                Date
+                            </th>
+                            <td>
+                                {{ memory.date | date:"Y-m-d" }}
+                            </td>
+                        </tr>
+                        {% endif %}
+                        {% if memory.location %}
+                        <tr>
+                            <th>
+                                Location
+                            </th>
+                            <td>
+                                {{ memory.location }}
+                            </td>
+                        </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -17,4 +17,4 @@ def main_render(request):
 	except (IndexError, Exception):
 		selected_memory = None
 
-	return render(request, 'home.html', {'memory': selected_memory})
+	return render(request, 'welcome.html', {'memory': selected_memory})
