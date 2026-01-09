@@ -76,7 +76,7 @@
         <h2>Similar date</h2>
         {% if similar_date_suggestions %}
             <div id="similar-date-suggestions">
-                <form action="{% url 'pair_transactions_page.main_render' %}" method="post">
+                <form action="{% url 'pair_transactions_page.actions.pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
                     <input type="hidden" name="override-amount" value="true"/>

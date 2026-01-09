@@ -68,14 +68,10 @@ th.hidden {
 td.selection {
 	width: 2em;
 	text-align: center;
-	background-color: #ffffff;
 }
 
 td.amount {
 	width: 6em;
 	text-align: right;
 	font-family: 'Berkeley Mono', monospace;
-	font-size: 12px;
-	font-weight: 500;
-	background-color: #fff8dc;
 }
