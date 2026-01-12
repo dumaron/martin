@@ -49,7 +49,7 @@ class DocumentForm(forms.ModelForm):
 class FileTable(tables.Table):
 	id = tables.Column(verbose_name='ID')
 	file = tables.Column(verbose_name='File Path')
-	uploaded_at = tables.DateTimeColumn(verbose_name='Uploaded At')
+	uploaded_at = tables.DateTimeColumn(verbose_name='Uploaded At', format='Y-m-d H:i')
 
 	class Meta:
 		model = File
@@ -63,7 +63,7 @@ class DocumentTable(tables.Table):
 	description = tables.Column(verbose_name='Description')
 	location = tables.Column(verbose_name='Location')
 	tags = tables.Column(empty_values=(), verbose_name='Tags', orderable=False)
-	created_at = tables.DateTimeColumn(verbose_name='Created At')
+	created_at = tables.DateTimeColumn(verbose_name='Created At', format='Y-m-d H:i')
 	file_count = tables.Column(empty_values=(), verbose_name='Files')
 
 	def render_tags(self, record):

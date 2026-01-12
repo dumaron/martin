@@ -10,7 +10,7 @@ from core.models import BankFileImport, BankTransaction
 class BankTransactionTable(tables.Table):
 	id = tables.LinkColumn('bank_transaction_detail', args=[tables.A('pk')], verbose_name='ID')
 	name = tables.Column(verbose_name='Description')
-	date = tables.DateColumn(verbose_name='Date')
+	date = tables.DateColumn(verbose_name='Date', format='Y-m-d')
 	amount = tables.Column(verbose_name='Amount')
 	duplicate_of = tables.LinkColumn(
 		verbose_name='Duplicate of?',
@@ -30,7 +30,7 @@ class BankTransactionTable(tables.Table):
 class BankFileImportTable(tables.Table):
 	id = tables.LinkColumn('bank_file_import_detail', args=[tables.A('pk')], verbose_name='ID')
 	bank_name = tables.Column(empty_values=(), verbose_name='Bank', accessor='bank')
-	import_date = tables.DateTimeColumn(verbose_name='Import Date')
+	import_date = tables.DateTimeColumn(verbose_name='Import Date', format='Y-m-d H:i')
 	transaction_count = tables.Column(empty_values=(), verbose_name='Transactions Created')
 
 	class Meta:

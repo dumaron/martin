@@ -46,12 +46,14 @@ textarea {
 }
 
 
-/* Tom Select customization */
 .ts-wrapper,
-.pairing-form input[type="text"] {
-    width: 300px;
+.pairing-form input[type="text"],
+table.form input,
+table.form textarea {
+    width: 340px;
 }
 
+/* Tom Select customization */
 .ts-control {
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;

@@ -13,13 +13,13 @@
             </tr>
             <tr>
                 <th>Imported on</th>
-                <td>{{ bank_file_import.import_date | date:"d/m/Y" }}</td>
+                <td>{{ bank_file_import.import_date | date:"Y-m-d" }}</td>
             </tr>
             {% if time_window_days %}
             <tr>
                 <th>Time window</th>
                 <td>
-                    {{ first_transaction.date | date:"d/m/Y" }} -> {{ last_transaction.date | date:"d/m/Y" }} ({{ time_window_days }} days)
+                    {{ first_transaction.date | date:"Y-m-d" }} -> {{ last_transaction.date | date:"Y-m-d" }} ({{ time_window_days }} days)
                 </td>
             </tr>
             {% endif %}

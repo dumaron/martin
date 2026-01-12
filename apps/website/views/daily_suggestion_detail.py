@@ -12,13 +12,22 @@ from settings import FONTS_DIR
 
 @login_required
 @require_GET
-def daily_suggestions_editor_page(request, date):
-	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
+def main_render(request, date):
 	date_obj = datetime.strptime(date, '%Y-%m-%d').date()
-	active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
-	return render(request, 'daily_suggestions_editor_page.html', {
+	today = datetime.now().date()
+	is_in_the_past = date_obj < today
+
+	if is_in_the_past:
+		daily_suggestion = DailySuggestion.objects.get(date=date)
+		active_recurring_suggestions = []
+	else:
+		daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
+		active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
+
+	return render(request, 'daily_suggestion_detail.html', {
 		'daily_suggestion': daily_suggestion,
-		'active_recurring_suggestions': active_recurring_suggestions
+		'active_recurring_suggestions': active_recurring_suggestions,
+		'is_in_the_past': is_in_the_past,
 	})
 
 

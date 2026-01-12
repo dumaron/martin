@@ -3,6 +3,15 @@
 {% block content %}
     <div class="fixed-content">
         <h1>{{ daily_suggestion }}</h1>
+
+        {% if is_in_the_past %}
+            {% if daily_suggestion %}
+                <textarea name="content" rows="24" cols="80" disabled>{{ daily_suggestion.content|default:"" }}
+                </textarea>
+            {% else %}
+                No daily suggestion was created on {{ date }}
+            {% endif %}
+        {% else %}
         <form method="post" action="{% url 'daily_suggestions_editor_page.actions.save_daily_suggestion' date=daily_suggestion.date %}">
             {% csrf_token %}
             <div>
@@ -13,6 +22,7 @@
         <div>
             <a href="{% url 'daily_suggestions_editor_page.actions.daily_suggestion_pdf' date=daily_suggestion.date %}">Download PDF</a>
         </div>
+        {% endif %}
     </div>
     <div id="suggestions">
     {% if active_recurring_suggestions %}

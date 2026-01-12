@@ -114,21 +114,21 @@ urlpatterns = [
 	),
 	#
 	#
-	# DAILY SUGGESTIONS EDITOR PAGE -------------------------------------------------------------------------------------
+	# DAILY SUGGESTION DETAIL -------------------------------------------------------------------------------------------
 	#
 	path(
 		route='pages/daily-suggestions/<str:date>',
-		view=views.daily_suggestion_editor_page.daily_suggestions_editor_page,
+		view=views.daily_suggestion_detail.main_render,
 		name='daily_suggestions_editor_page.main_render',
 	),
 	path(
 		route='pages/daily-suggestions/<str:date>/save',
-		view=views.daily_suggestion_editor_page.save_daily_suggestion,
+		view=views.daily_suggestion_detail.save_daily_suggestion,
 		name='daily_suggestions_editor_page.actions.save_daily_suggestion',
 	),
 	path(
 		route='pages/daily-suggestions/<str:date>/pdf',
-		view=views.daily_suggestion_editor_page.daily_suggestion_pdf,
+		view=views.daily_suggestion_detail.daily_suggestion_pdf,
 		name='daily_suggestions_editor_page.actions.daily_suggestion_pdf',
 	),
 	#

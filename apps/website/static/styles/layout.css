@@ -10,3 +10,8 @@
     max-width: 700px;
     min-height: 100dvh;
 }
+
+.full-content {
+    flex: 1;
+    width: 100%;
+}

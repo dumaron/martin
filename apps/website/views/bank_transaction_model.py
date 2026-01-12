@@ -9,7 +9,7 @@ from core.models import BankTransaction
 class BankTransactionTable(tables.Table):
 	id = tables.LinkColumn('bank_transaction_detail', args=[tables.A('pk')], verbose_name='ID')
 	name = tables.Column(verbose_name='Description')
-	date = tables.DateColumn(verbose_name='Date')
+	date = tables.DateColumn(verbose_name='Date', format='Y-m-d')
 	amount = tables.Column(verbose_name='Amount')
 	bank_account = tables.Column(verbose_name='Bank Account')
 

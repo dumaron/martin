@@ -15,7 +15,7 @@
             </tr>
             <tr>
                 <th>Date</th>
-                <td>{{ bank_transaction.date | date:"d.m.Y" }}</td>
+                <td>{{ bank_transaction.date | date:"Y-m-d" }}</td>
             </tr>
             <tr>
                 <th>Amount</th>
@@ -60,7 +60,7 @@
                                                              value="{{ suggestion.transaction.id }}"/></td>
                                 <td class="amount">{{ suggestion.transaction.amount | floatformat:2 }}</td>
                                 <td>{{ suggestion.transaction.memo }}</td>
-                                <td class="date">{{ suggestion.transaction.date | date:"d.m.Y" }}</td>
+                                <td class="date">{{ suggestion.transaction.date | date:"Y-m-d" }}</td>
                                 <td class="date-diff">{{ suggestion.date_diff }} day{{ suggestion.date_diff|pluralize }}</td>
                             </tr>
                         {% endfor %}
@@ -97,7 +97,7 @@
                                                              value="{{ transaction.id }}"/></td>
                                 <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
                                 <td>{{ transaction.memo }}</td>
-                                <td class="date">{{ transaction.date | date:"d.m.Y" }}</td>
+                                <td class="date">{{ transaction.date | date:"Y-m-d" }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
