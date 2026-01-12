@@ -8,7 +8,7 @@ from settings import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 @login_required
 @require_GET
-def ynab_integration_page(request):
+def main_render(request):
 	"""
 	Shows a list of possible operations to sync local database with YNAB APIs
 	"""
@@ -17,18 +17,18 @@ def ynab_integration_page(request):
 
 @login_required
 @require_POST
-def synchronize_ynab_categories(request):
+def synchronize_categories(request):
 	"""
 	Synchronize YNAB categories with local database
 	"""
 	sync_ynab_categories(YNAB_PERSONAL_BUDGET_ID)
 	sync_ynab_categories(YNAB_SHARED_BUDGET_ID)
-	return redirect('ynab_integration_page')
+	return redirect('ynab_integration_page.main_render')
 
 
 @login_required
 @require_POST
-def ynab_sync(request):
+def sync(request):
 	"""
 	Synchronizes local transactions with the ones in YNAB, taking the latter as a source of truth. Can work both in
 	partial mode or "full" mode.
@@ -39,4 +39,4 @@ def ynab_sync(request):
 	sync_ynab_transactions(YNAB_SHARED_BUDGET_ID, partial_mode)
 	sync_ynab_transactions(YNAB_PERSONAL_BUDGET_ID, partial_mode)
 
-	return redirect('ynab_integration_page')
+	return redirect('ynab_integration_page.main_render')

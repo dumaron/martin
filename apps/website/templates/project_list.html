@@ -78,13 +78,13 @@
 <div class="fixed-content">
     <h1>Projects</h1>
 
-    <form action="{% url 'project_create' %}" method="get">
+    <form action="{% url 'project_create_page.main_render' %}" method="get">
         <button type="submit">Add root project</button>
     </form>
 
 
     {% if root_projects %}
-        <form action="{% url 'mark_tasks_complete' %}" method="post">
+        <form action="{% url 'project_detail_page.actions.mark_tasks_complete' %}" method="post">
             {% csrf_token %}
             <ul class="project-tree">
             {% for project in root_projects %}

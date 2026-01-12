@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
+from django.views.decorators.http import require_GET, require_POST
 
 from core.models import BankFileImport
 
@@ -12,22 +13,25 @@ class BankFileImportForm(forms.ModelForm):
 
 
 @login_required
-def import_bank_export_page(request):
-	# TODO split this into GET and POST
+@require_GET
+def main_render(request):
 	"""
-	GET: Page to allow importing bank exports from banks (Unicredit, Fineco, Credem)
-	POST: Form action to import personal bank export
+	Page to allow importing bank exports from banks (Unicredit, Fineco, Credem)
 	"""
+	form = BankFileImportForm()
+	return render(request, 'file_import.html', {'form': form})
 
-	if request.method == 'POST':
-		form = BankFileImportForm(request.POST, request.FILES)
 
-		if form.is_valid():
-			bank_file_import = form.save()
+@login_required
+@require_POST
+def import_bank_export(request):
+	"""
+	Form action to import personal bank export
+	"""
+	form = BankFileImportForm(request.POST, request.FILES)
 
-			return redirect('bank_file_import_detail', bank_file_import_id=bank_file_import.id)
-		else:
-			return render(request, 'file_import.html', {'form': form})
+	if form.is_valid():
+		bank_file_import = form.save()
+		return redirect('bank_file_import_detail_page.main_render', bank_file_import_id=bank_file_import.id)
 	else:
-		form = BankFileImportForm()
 		return render(request, 'file_import.html', {'form': form})

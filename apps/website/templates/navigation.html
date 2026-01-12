@@ -39,8 +39,8 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'project_list' %}"
-                       class="{% active request 'project_list' %}">
+                    <a href="{% url 'project_list_page.main_render' %}"
+                       class="{% active request 'project_list_page.main_render' %}">
                         Projects
                     </a>
                 </li>
@@ -71,14 +71,14 @@
                 </li>
                 <li>Expense analysis</li>
                 <li>
-                    <a href="{% url 'import_bank_export_page' %}"
-                       class="{% active request 'import_bank_export_page' %}">
+                    <a href="{% url 'import_bank_export_page.main_render' %}"
+                       class="{% active request 'import_bank_export_page.main_render' %}">
                         Bank accounts integration
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'ynab_integration_page' %}"
-                       class="{% active request 'ynab_integration_page' %}">
+                    <a href="{% url 'ynab_integration_page.main_render' %}"
+                       class="{% active request 'ynab_integration_page.main_render' %}">
                         YNAB integration
                     </a>
                 </li>
@@ -89,8 +89,8 @@
             <ul>
                 <li>Events</li>
                 <li>
-                    <a href="{% url 'document_list' %}"
-                       class="{% active request 'document_list' %}">
+                    <a href="{% url 'document_list_page.main_render' %}"
+                       class="{% active request 'document_list_page.main_render' %}">
                         Documents
                     </a>
                 </li>
@@ -100,10 +100,10 @@
         <li>
             Low-level entities - To Be Removed
             <ul>
-                <li><a href="{% url 'bank_transaction_list' %}"
-                       class="{% active request 'bank_transaction_list' %}">Bank transactions</a></li>
-                <li><a href="{% url 'bank_file_import_list' %}"
-                       class="{% active request 'bank_file_import_list' %}">Bank imports</a></li>
+                <li><a href="{% url 'bank_transaction_list_page.main_render' %}"
+                       class="{% active request 'bank_transaction_list_page.main_render' %}">Bank transactions</a></li>
+                <li><a href="{% url 'bank_file_import_list_page.main_render' %}"
+                       class="{% active request 'bank_file_import_list_page.main_render' %}">Bank imports</a></li>
             </ul>
         </li>
     </ul>

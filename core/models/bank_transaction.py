@@ -6,6 +6,7 @@ from django.db import models
 def fix_italian_floating_point(string):
 	return string.replace('.', '').replace(',', '.')
 
+
 def clean_description(name):
 	return ' '.join(name.split())
 

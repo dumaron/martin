@@ -25,7 +25,7 @@
             <tr>
                 <th>Imported in</th>
                 <td>
-                    <a href="{% url 'bank_file_import_detail' bank_file_import_id=bank_transaction.file_import.id %}">
+                    <a href="{% url 'bank_file_import_detail_page.main_render' bank_file_import_id=bank_transaction.file_import.id %}">
                         {{ bank_transaction.file_import }}
                     </a>
                 </td>
@@ -34,7 +34,7 @@
                 <th>Paired with</th>
                 <td>
                 {% if bank_transaction.matched_ynab_transaction %}
-                    <a href="{% url 'ynab_transaction_detail' ynab_transaction_id=bank_transaction.matched_ynab_transaction.id %}">
+                    <a href="{% url 'ynab_transaction_detail_page.main_render' ynab_transaction_id=bank_transaction.matched_ynab_transaction.id %}">
                         {{ bank_transaction.matched_ynab_transaction }}
                     </a>
                 {% else %}

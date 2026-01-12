@@ -16,16 +16,12 @@ class BankFileImport(models.Model):
 		CREDEM_CSV_EXPORT = 'CREDEM_CSV_EXPORT'
 
 	id = models.AutoField(primary_key=True)
-	file_type = models.CharField(
-		max_length=255, choices=FileType
-	)
+	file_type = models.CharField(max_length=255, choices=FileType)
 	bank_file = models.FileField(upload_to='uploads/')
 	import_date = models.DateTimeField(auto_now_add=True)
 
-
 	class Meta:
 		db_table = 'bank_file_imports'
-
 
 	# Could the need for this "bank" property be a DB modeling smell? Maybe it makes more sense to link the import
 	# to a bank account?
@@ -33,12 +29,12 @@ class BankFileImport(models.Model):
 	def bank(self):
 		if self.file_type == BankFileImport.FileType.CREDEM_CSV_EXPORT:
 			return 'Credem'
-		elif self.file_type == BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT \
-			or self.file_type == BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT:
+		elif (
+			self.file_type == BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT
+			or self.file_type == BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT
+		):
 			return 'Unicredit'
 		return 'Fineco'
-
-
 
 	def __str__(self):
 		return f'{self.import_date} - {self.file_type}'

@@ -16,7 +16,6 @@ from core.mutations import (
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 
-
 class YnabTransactionCreationForm(forms.Form):
 	memo = forms.CharField()
 	bank_transaction_id = forms.IntegerField(widget=forms.HiddenInput)
@@ -166,7 +165,7 @@ def link_duplicate_bank_transaction(request):
 
 	# Redirect back to the original transaction detail page or wherever specified
 	default_redirect = reverse(
-		'bank_transaction_detail', kwargs={'bank_transaction_id': target_bank_transaction_id}
+		'bank_transaction_detail_page.main_render', kwargs={'bank_transaction_id': target_bank_transaction_id}
 	)
 	redirect_to = request.POST.get('redirect-to', default_redirect)
 	return redirect(redirect_to)

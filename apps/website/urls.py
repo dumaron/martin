@@ -10,7 +10,7 @@ After some back and forth on what URLs should represent, I decided to go with an
 pages and actions (intended as form submit). So they are more representation-oriented than model-oriented. They take
 inspiration more from the old PHP world than the REST approach which appeared a couple years after the first.
 
-Everything is coupled in a reasonable way IMHO: 
+Everything is coupled in a reasonable way IMHO:
 	>>> code is shaped after how the user (me) will use the application. <<<
 
 Enjoy the benefit of not having to make everything generic: too much decoupling can be harmful in context where it's not
@@ -25,8 +25,8 @@ with things being messy and not perfect.
 """
 
 urlpatterns = [
-	path('admin/', admin.site.urls),
-	path('accounts/', include('django.contrib.auth.urls')),
+	path(route='admin/', view=admin.site.urls),
+	path(route='accounts/', view=include('django.contrib.auth.urls')),
 	#
 	#
 	# HOME PAGE ---------------------------------------------------------------------------------------------------------
@@ -94,14 +94,24 @@ urlpatterns = [
 		view=views.simple_tasks_page.mark_task_as_completed,
 		name='simple_tasks_page.actions.mark_task_as_completed',
 	),
-	path(route='pages/simple-tasks/abort-task', view=views.simple_tasks_page.abort_task, name='simple_tasks_page.actions.abort_task'),
-	#
-	#
-	# ADD INBOX PAGE ----------------------------------------------------------------------------------------------------
-	#
-	path(route='pages/create-inbox-item', view=views.capture_inbox_item_page.capture_inbox, name='capture_inbox_page.main_render'),
 	path(
-		route='pages/create-inbox-item/create', view=views.capture_inbox_item_page.capture_inbox, name='capture_inbox_page.actions.capture_inbox_item'
+		route='pages/simple-tasks/abort-task',
+		view=views.simple_tasks_page.abort_task,
+		name='simple_tasks_page.actions.abort_task',
+	),
+	#
+	#
+	# CAPTURE INBOX PAGE ------------------------------------------------------------------------------------------------
+	#
+	path(
+		route='pages/create-inbox-item',
+		view=views.capture_inbox_page.main_render,
+		name='capture_inbox_page.main_render',
+	),
+	path(
+		route='pages/create-inbox-item/create',
+		view=views.capture_inbox_page.capture_inbox_item,
+		name='capture_inbox_page.actions.capture_inbox_item',
 	),
 	#
 	#
@@ -132,21 +142,18 @@ urlpatterns = [
 		name='daily_suggestions_editor_page.actions.daily_suggestion_pdf',
 	),
 	#
-	# -- CONTINUE FROM HERE --
-	# This porting is takin too much time, I need to move forward with more important features
-	# --
 	#
-	# IMPORT FILE PAGE --------------------------------------------------------------------------------------------------
+	# BANK EXPORT IMPORT PAGE -------------------------------------------------------------------------------------------
 	#
 	path(
-		'pages/import-bank-export',
-		views.bank_export_import_page.import_bank_export_page,
-		name='import_bank_export_page',
+		route='pages/import-bank-export',
+		view=views.bank_export_import_page.main_render,
+		name='import_bank_export_page.main_render',
 	),
 	path(
-		'pages/import-bank-export/import',
-		views.bank_export_import_page.import_bank_export_page,
-		name='import_bank_export',
+		route='pages/import-bank-export/import',
+		view=views.bank_export_import_page.import_bank_export,
+		name='import_bank_export_page.actions.import_bank_export',
 	),
 	#
 	#
@@ -154,106 +161,156 @@ urlpatterns = [
 	#
 	path(
 		route='integrations/ynab',
-		view=views.ynab_integration_page.ynab_integration_page,
-		name='ynab_integration_page',
+		view=views.ynab_integration_page.main_render,
+		name='ynab_integration_page.main_render',
 	),
 	path(
 		route='integrations/ynab/synchronize-categories',
-		view=views.ynab_integration_page.synchronize_ynab_categories,
-		name='synchronize_ynab_categories',
+		view=views.ynab_integration_page.synchronize_categories,
+		name='ynab_integration_page.actions.synchronize_categories',
 	),
-	path('integrations/ynab/sync', views.ynab_integration_page.ynab_sync, name='ynab_sync'),
+	path(
+		route='integrations/ynab/sync',
+		view=views.ynab_integration_page.sync,
+		name='ynab_integration_page.actions.sync',
+	),
 	#
 	#
-	# BANK FILE IMPORT MODEL --------------------------------------------------------------------------------------------
-	# I need to find a good way to centralize some of this view logic. Maybe with class-based views? Mah.
+	# BANK FILE IMPORT LIST PAGE ----------------------------------------------------------------------------------------
 	#
 	path(
 		route='models/bank-file-import',
-		view=views.bank_file_import_model.bank_file_import_list,
-		name='bank_file_import_list',
+		view=views.bank_file_import_list_page.main_render,
+		name='bank_file_import_list_page.main_render',
 	),
+	#
+	#
+	# BANK FILE IMPORT DETAIL PAGE --------------------------------------------------------------------------------------
+	#
 	path(
 		route='models/bank-file-import/<int:bank_file_import_id>',
-		view=views.bank_file_import_model.bank_file_import_detail,
-		name='bank_file_import_detail',
+		view=views.bank_file_import_detail_page.main_render,
+		name='bank_file_import_detail_page.main_render',
 	),
 	#
 	#
-	# BANK TRANSACTION MODEL --------------------------------------------------------------------------------------------
+	# BANK TRANSACTION LIST PAGE ----------------------------------------------------------------------------------------
 	#
 	path(
-		'models/bank-transaction', views.bank_transaction_model.bank_transaction_list, name='bank_transaction_list'
-	),
-	path(
-		'models/bank-transaction/<int:bank_transaction_id>',
-		views.bank_transaction_model.bank_transaction_detail,
-		name='bank_transaction_detail',
+		route='models/bank-transaction',
+		view=views.bank_transaction_list_page.main_render,
+		name='bank_transaction_list_page.main_render',
 	),
 	#
 	#
-	# YNAB TRANSACTION MODEL --------------------------------------------------------------------------------------------
+	# BANK TRANSACTION DETAIL PAGE --------------------------------------------------------------------------------------
 	#
 	path(
-		'models/ynab-transaction/<str:ynab_transaction_id>',
-		views.ynab_transaction_model.ynab_transaction_detail,
-		name='ynab_transaction_detail',
+		route='models/bank-transaction/<int:bank_transaction_id>',
+		view=views.bank_transaction_detail_page.main_render,
+		name='bank_transaction_detail_page.main_render',
 	),
 	#
 	#
-	# DOCUMENT MODEL ----------------------------------------------------------------------------------------------------
+	# YNAB TRANSACTION DETAIL PAGE --------------------------------------------------------------------------------------
 	#
-	path(route='models/document', view=views.document_model.document_list, name='document_list'),
 	path(
-		route='models/document/create', view=views.document_model.document_create_page, name='document_create_page'
-	),
-	path(
-		route='models/document/create-action', view=views.document_model.document_create, name='document_create'
-	),
-	path(
-		route='models/document/<int:document_id>', view=views.document_model.document_detail, name='document_detail'
+		route='models/ynab-transaction/<str:ynab_transaction_id>',
+		view=views.ynab_transaction_detail_page.main_render,
+		name='ynab_transaction_detail_page.main_render',
 	),
 	#
 	#
-	# PROJECT MODEL -----------------------------------------------------------------------------------------------------
+	# DOCUMENT LIST PAGE ------------------------------------------------------------------------------------------------
 	#
-	path('models/project', views.project_model.project_list, name='project_list'),
-	path('models/project/create', views.project_model.project_create, name='project_create'),
-	path('models/project/<int:project_id>', views.project_model.project_detail, name='project_detail'),
 	path(
-		'models/project/<int:project_id>/update-status',
-		views.project_model.project_update_status,
-		name='update_project_status',
+		route='models/document', view=views.document_list_page.main_render, name='document_list_page.main_render'
+	),
+	#
+	#
+	# DOCUMENT CREATE PAGE ----------------------------------------------------------------------------------------------
+	#
+	path(
+		route='models/document/create',
+		view=views.document_create_page.main_render,
+		name='document_create_page.main_render',
+	),
+	path(
+		route='models/document/create-action',
+		view=views.document_create_page.create_document,
+		name='document_create_page.actions.create_document',
+	),
+	#
+	#
+	# DOCUMENT DETAIL PAGE ----------------------------------------------------------------------------------------------
+	#
+	path(
+		route='models/document/<int:document_id>',
+		view=views.document_detail_page.main_render,
+		name='document_detail_page.main_render',
+	),
+	#
+	#
+	# PROJECT LIST PAGE -------------------------------------------------------------------------------------------------
+	#
+	path(route='models/project', view=views.project_list_page.main_render, name='project_list_page.main_render'),
+	#
+	#
+	# PROJECT CREATE PAGE -----------------------------------------------------------------------------------------------
+	#
+	path(
+		route='models/project/create',
+		view=views.project_create_page.main_render,
+		name='project_create_page.main_render',
+	),
+	path(
+		route='models/project/create-action',
+		view=views.project_create_page.create_project,
+		name='project_create_page.actions.create_project',
+	),
+	#
+	#
+	# PROJECT DETAIL PAGE -----------------------------------------------------------------------------------------------
+	#
+	path(
+		route='models/project/<int:project_id>',
+		view=views.project_detail_page.main_render,
+		name='project_detail_page.main_render',
+	),
+	path(
+		route='models/project/<int:project_id>/update-status',
+		view=views.project_detail_page.update_status,
+		name='project_detail_page.actions.update_status',
 	),
 	path(
 		route='models/project/<int:project_id>/mark_task_complete',
-		view=views.project_model.mark_task_as_completed,
-		name='project_mark_task_complete_action',
+		view=views.project_detail_page.mark_task_complete,
+		name='project_detail_page.actions.mark_task_complete',
 	),
 	path(
 		route='models/project/<int:project_id>/add-task-form',
-		view=views.project_model.get_add_task_form,
-		name='get_add_task_form',
+		view=views.project_detail_page.add_task_form,
+		name='project_detail_page.partials.add_task_form',
 	),
 	path(
 		route='models/project/<int:project_id>/create-task',
-		view=views.project_model.create_task,
-		name='create_task_htmx',
+		view=views.project_detail_page.create_task,
+		name='project_detail_page.actions.create_task',
 	),
 	path(
 		route='models/project/<int:project_id>/add-subproject-form',
-		view=views.project_model.get_add_subproject_form,
-		name='get_add_subproject_form',
+		view=views.project_detail_page.add_subproject_form,
+		name='project_detail_page.partials.add_subproject_form',
 	),
 	path(
 		route='models/project/<int:project_id>/create-subproject',
-		view=views.project_model.create_subproject,
-		name='create_subproject_htmx',
+		view=views.project_detail_page.create_subproject,
+		name='project_detail_page.actions.create_subproject',
 	),
 	path(
 		route='models/project/mark-tasks-complete',
-		view=views.project_model.mark_tasks_complete,
-		name='mark_tasks_complete',
+		view=views.project_detail_page.mark_tasks_complete,
+		name='project_detail_page.actions.mark_tasks_complete',
 	),
 	#
 	#

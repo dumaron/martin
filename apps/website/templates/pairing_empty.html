@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<form action="{% url 'ynab_sync' %}" method="post">
+<form action="{% url 'ynab_integration_page.actions.sync' %}" method="post">
     <fieldset>
         <legend>Actions</legend>
         <button type="submit" name="ynab-sync" value="partial-sync">Sync from YNAB</button>

@@ -120,9 +120,7 @@ YNAB_SHARED_BUDGET_ID = os.getenv('YNAB_SHARED_BUDGET_ID')
 ENVIRONMENT = os.getenv('ENVIRONMENT', 'development')
 
 # Add "highlightable" css class to django-tables tables so that we can add the special hover effect
-DJANGO_TABLES2_TABLE_ATTRS = {
-    'class': 'highlightable',
-}
+DJANGO_TABLES2_TABLE_ATTRS = {'class': 'highlightable'}
 
 # Allow embedding content from same origin (needed for PDF preview in document detail page)
 X_FRAME_OPTIONS = 'SAMEORIGIN'

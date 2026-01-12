@@ -14,7 +14,6 @@ class RecurringSuggestion(models.Model):
 	class Meta:
 		db_table = 'recurring_suggestions'
 
-
 	@classmethod
 	def get_actives_in_date(cls, date):
 		active_rules = RecurrenceRule.get_active_in_date(date)

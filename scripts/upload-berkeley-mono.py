@@ -11,12 +11,7 @@ REMOTE_FONT_DIR = '/storage/fonts'
 
 def run(cmd):
 	"""Execute shell command with optional output capture."""
-	return subprocess.run(
-		cmd,
-		check=True,
-		capture_output=False,
-		text=True
-	)
+	return subprocess.run(cmd, check=True, capture_output=False, text=True)
 
 
 def find_fonts(font_dir):

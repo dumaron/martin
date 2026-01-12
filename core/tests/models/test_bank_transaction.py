@@ -25,8 +25,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 		# Mock the file processing to avoid actual file operations during testing
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			self.file_import = BankFileImport.objects.create(
-				file_type=BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT,
-				bank_file=mock_file,
+				file_type=BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT, bank_file=mock_file
 			)
 
 	def test_get_potential_duplicate_returns_none_when_no_duplicates(self):
@@ -198,8 +197,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		# Mock the file processing to avoid actual file operations during testing
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			self.file_import = BankFileImport.objects.create(
-				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
-				bank_file=mock_file,
+				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT, bank_file=mock_file
 			)
 
 	def test_from_fineco_bank_account_xslx_row_with_income_only(self):

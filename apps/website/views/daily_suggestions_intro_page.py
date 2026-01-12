@@ -18,8 +18,8 @@ def daily_suggestions_intro_page(request):
 	for month, suggestions in groupby(previous_entries, key=lambda ds: ds.date.strftime('%Y-%m')):
 		grouped_by_month[month] = list(suggestions)
 
-	return render(request, 'daily_suggestions_intro_page.html', {
-		'today': today,
-		'tomorrow': tomorrow,
-		'grouped_by_month': grouped_by_month
-	})
+	return render(
+		request,
+		'daily_suggestions_intro_page.html',
+		{'today': today, 'tomorrow': tomorrow, 'grouped_by_month': grouped_by_month},
+	)

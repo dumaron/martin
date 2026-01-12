@@ -1,5 +1,5 @@
 <li class="project-item">
-    <form hx-post="{% url 'create_subproject_htmx' project.id %}"
+    <form hx-post="{% url 'project_detail_page.actions.create_subproject' project.id %}"
           hx-swap="closest li">
         <input type="text" name="title" placeholder="Project title" required>
         <button type="submit">Add</button>

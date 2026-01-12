@@ -4,7 +4,7 @@
 <div class="fixed-content">
 	<h1>Create New Document</h1>
 
-	<form method="post" action="{% url 'document_create' %}" enctype="multipart/form-data">
+	<form method="post" action="{% url 'document_create_page.actions.create_document' %}" enctype="multipart/form-data">
 		{% csrf_token %}
 		<table class="form">
 			<tbody>
@@ -62,7 +62,7 @@
 			</tbody>
 		</table>
 		<button type="submit">Create Document</button>
-		<a href="{% url 'document_list' %}" class="spaced-left">Back to list</a>
+		<a href="{% url 'document_list_page.main_render' %}" class="spaced-left">Back to list</a>
 	</form>
 </div>
 {% endblock %}

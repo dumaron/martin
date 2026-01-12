@@ -28,7 +28,7 @@
             <tr>
                 <th>Imported in</th>
                 <td>
-                    <a href="{% url 'bank_file_import_detail' bank_file_import_id=bank_transaction.file_import.id %}">
+                    <a href="{% url 'bank_file_import_detail_page.main_render' bank_file_import_id=bank_transaction.file_import.id %}">
                         {{ bank_transaction.file_import }}
                     </a>
                 </td>

@@ -133,7 +133,9 @@ class RecurrenceRuleGetActiveInDateTest(TestCase):
 		# March 15 in a non-leap year is day 74
 		# In a leap year (2024), March 15 would normally be day 75,
 		# but the implementation subtracts 1 for dates after Feb, so it queries for day 74
-		leap_march_15th_rule = RecurrenceRule.objects.create(type='day_of_the_year', day=74, suggestion=self.suggestion)
+		leap_march_15th_rule = RecurrenceRule.objects.create(
+			type='day_of_the_year', day=74, suggestion=self.suggestion
+		)
 
 		# Test with March 15, 2024 (leap year)
 		march_15_2024 = date(2024, 3, 15)

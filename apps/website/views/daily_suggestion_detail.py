@@ -24,11 +24,15 @@ def main_render(request, date):
 		daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
 		active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
 
-	return render(request, 'daily_suggestion_detail.html', {
-		'daily_suggestion': daily_suggestion,
-		'active_recurring_suggestions': active_recurring_suggestions,
-		'is_in_the_past': is_in_the_past,
-	})
+	return render(
+		request,
+		'daily_suggestion_detail.html',
+		{
+			'daily_suggestion': daily_suggestion,
+			'active_recurring_suggestions': active_recurring_suggestions,
+			'is_in_the_past': is_in_the_past,
+		},
+	)
 
 
 @login_required

@@ -57,8 +57,7 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Mock the file processing to avoid actual file operations during save
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			file_import = BankFileImport.objects.create(
-				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
-				bank_file=mock_file,
+				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT, bank_file=mock_file
 			)
 
 		# Test the _find_fineco_header_row method
@@ -83,8 +82,7 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Mock the file processing to avoid actual file operations during save
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			file_import = BankFileImport.objects.create(
-				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
-				bank_file=mock_file,
+				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT, bank_file=mock_file
 			)
 
 		# Test the _find_fineco_header_row method
@@ -108,8 +106,7 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Mock the file processing to avoid actual file operations during save
 		with patch.object(BankFileImport, 'get_file_rows', return_value=[]):
 			file_import = BankFileImport.objects.create(
-				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
-				bank_file=mock_file,
+				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT, bank_file=mock_file
 			)
 
 		# Test the _find_fineco_header_row method
@@ -133,8 +130,7 @@ class BankFileImportFinecoHeaderDetectionTest(TestCase):
 		# Patch save to prevent BankTransaction creation, but allow the model to be created
 		with patch.object(BankFileImport, 'save', return_value=None) as mock_save:
 			file_import = BankFileImport(
-				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT,
-				bank_file=mock_file,
+				file_type=BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT, bank_file=mock_file
 			)
 			# Manually assign the file since we're not really saving
 			file_import.bank_file = mock_file

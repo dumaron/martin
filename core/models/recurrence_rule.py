@@ -13,12 +13,12 @@ from django.db.models import Q
 # So I came up with this simple implementation of recurring events. This is probably too naive, but... who cares, I'm
 # here to learn too.
 
-class RecurrenceRule(models.Model):
 
+class RecurrenceRule(models.Model):
 	class Meta:
 		db_table = 'recurrence_rules'
 
-	RECURRENCE_TYPES =  [
+	RECURRENCE_TYPES = [
 		# For daily tasks, like "clean the cat's litter box"
 		('daily', 'Daily'),
 		# For weekly tasks, like "call mom every Friday afternoon"

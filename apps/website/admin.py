@@ -19,7 +19,7 @@ from core.models import (
 	YnabTransaction,
 	Document,
 	File,
-	DailySuggestion
+	DailySuggestion,
 )
 
 
@@ -105,10 +105,14 @@ admin.site.register(BankAccount, BankAccountAdmin)
 admin.site.register(Memory, MemoryAdmin)
 admin.site.register(RecurringSuggestion, RecurringSuggestionAdmin)
 admin.site.register(RecurrenceRule, RecurrenceRuleAdmin)
+
+
 class ProjectAdmin(admin.ModelAdmin):
 	list_display = ('title', 'parent', 'status', 'created_at')
 	list_filter = ('status', 'parent')
 	search_fields = ('title',)
+
+
 admin.site.register(Project, ProjectAdmin)
 admin.site.register(Document)
 admin.site.register(File)

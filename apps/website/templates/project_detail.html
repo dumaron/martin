@@ -52,7 +52,7 @@
         </table>
 
         <h2>Change Project Status</h2>
-        <form method="post" action="{% url 'update_project_status' project.id %}">
+        <form method="post" action="{% url 'project_detail_page.actions.update_status' project.id %}">
             {% csrf_token %}
             <table class="form">
                 <tbody>
