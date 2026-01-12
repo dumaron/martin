@@ -37,7 +37,13 @@ td {
 	border-left: 1px solid #fff;
 }
 
+/* tables for forms */
 
+table.form {
+	td, th {
+		background-color: transparent;
+	}
+}
 
 /* highlightable rows */
 table.highlightable {
@@ -62,14 +68,10 @@ th.hidden {
 td.selection {
 	width: 2em;
 	text-align: center;
-	background-color: #ffffff;
 }
 
 td.amount {
 	width: 6em;
 	text-align: right;
 	font-family: 'Berkeley Mono', monospace;
-	font-size: 12px;
-	font-weight: 500;
-	background-color: #fff8dc;
 }

@@ -21,4 +21,4 @@ class Task(models.Model):
 		return f'{status} {self.description}'
 
 	class Meta:
-		ordering = ['-created_at']
+		ordering = ['created_at']

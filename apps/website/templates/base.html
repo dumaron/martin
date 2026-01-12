@@ -38,7 +38,10 @@
 
             // Initialize Tom Select on all available selects
             window.addEventListener('load', function () {
-                new TomSelect('.tom-select', {});
+                const inputs = document.querySelectorAll('.tom-select');
+                if (inputs.length > 0) {
+                    new TomSelect('.tom-select', {});
+                }
             });
         </script>
     </body>

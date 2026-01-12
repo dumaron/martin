@@ -1,11 +1,28 @@
 import django_tables2 as tables
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from apps.website.forms import ProjectForm, ProjectStatusForm
 from core.models import Project, Task
+
+
+class ProjectForm(forms.ModelForm):
+	class Meta:
+		model = Project
+		fields = ['title', 'description']
+		widgets = {
+			'title': forms.TextInput(attrs={'placeholder': 'Enter project title'}),
+			'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional project description'}),
+		}
+
+
+class ProjectStatusForm(forms.Form):
+	status = forms.ChoiceField(
+		choices=[('', 'Choose status...')] + Project.STATUS_CHOICES,
+		widget=forms.Select(attrs={'class': 'tom-select'}),
+	)
 
 
 class ProjectTable(tables.Table):

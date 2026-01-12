@@ -29,7 +29,7 @@ def save_daily_suggestion(request, date):
 	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
 	daily_suggestion.content = content
 	daily_suggestion.save()
-	return redirect('daily_suggestions_editor_page', date=date)
+	return redirect('daily_suggestions_editor_page.main_render', date=date)
 
 
 @login_required

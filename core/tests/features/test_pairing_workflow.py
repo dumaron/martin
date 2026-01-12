@@ -58,7 +58,7 @@ class PairingViewIntegrationTest(TestCase):
 		)
 
 		# Get the pairing view
-		response = self.client.get(reverse('pair_transactions_page', kwargs={'kind': 'personal'}))
+		response = self.client.get(reverse('pair_transactions_page.main_render', kwargs={'kind': 'personal'}))
 
 		# Check that the response is successful
 		self.assertEqual(response.status_code, 200)
@@ -89,7 +89,7 @@ class PairingViewIntegrationTest(TestCase):
 		)
 
 		# Get the pairing view
-		response = self.client.get(reverse('pair_transactions_page', kwargs={'kind': 'personal'}))
+		response = self.client.get(reverse('pair_transactions_page.main_render', kwargs={'kind': 'personal'}))
 
 		# Check that the response is successful
 		self.assertEqual(response.status_code, 200)

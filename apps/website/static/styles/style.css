@@ -28,7 +28,7 @@
 }
 
 body {
-    font-family: 'Inter V', 'American Typewriter', serif;
+    font-family: 'Public Sans', 'American Typewriter', serif;
     font-size: 14px;
     margin: 0;
     padding: 0;
@@ -176,23 +176,10 @@ ul.tree {
         border-left: none;
     }
 
-    a.active::before {
-        color: red;
-        content: "->";
-        font-weight: bold;
-        text-decoration: none;
-        width: 20px;
-        border: none;
-        position: absolute;
-        top: 0;
-        left: 9px;
-        z-index: 1;
-    }
-
-
-
+    a.active::before,
     ul:has(li a.active)::before {
         color: red;
+        font-family: "Inter V";
         content: "->";
         font-weight: bold;
         text-decoration: none;

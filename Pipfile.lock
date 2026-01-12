@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "062d7f01cc473bf14328c2b298dfa3384decab54bb8a01dff68469c0a1c03bd3"
+            "sha256": "535c4b80b3e82dc61fa7fbd8cfef150110676195ca014fc9d2a9947ba6dd94ba"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -203,11 +203,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:23254866a5bb9a2cfa6004e8b809ec6246eba4b58a7589bc2772f1bcc8456c7f",
-                "sha256:37e687f7bd73ddf043e2b6b97cfe02fcbb11f2dbb3adccc6a2b18c6daa054d7f"
+                "sha256:1cc2c7344303bbfb7ba5070487c17f7fc0b7174bbb0a38cebf03c675f5f19b6d",
+                "sha256:7b0c1f50c0759bbe6331c6a39c89ae022a84672674aeda908784617ef47d8e26"
             ],
-            "markers": "python_version >= '3.10'",
-            "version": "==5.2.8"
+            "markers": "python_version >= '3.12'",
+            "version": "==6.0"
         },
         "django-htmx": {
             "hashes": [
@@ -226,6 +226,15 @@
             "index": "pypi",
             "markers": "python_version >= '3.9'",
             "version": "==2.8.0"
+        },
+        "django-taggit": {
+            "hashes": [
+                "sha256:ab776264bbc76cb3d7e49e1bf9054962457831bd21c3a42db9138b41956e4cf0",
+                "sha256:c4d1199e6df34125dd36db5eb0efe545b254dec3980ce5dd80e6bab3e78757c3"
+            ],
+            "index": "pypi",
+            "markers": "python_version >= '3.8'",
+            "version": "==6.1.0"
         },
         "django-treenode": {
             "hashes": [
@@ -826,11 +835,11 @@
         },
         "sqlparse": {
             "hashes": [
-                "sha256:09f67787f56a0b16ecdbde1bfc7f5d9c3371ca683cfeaa8e6ff60b4807ec9272",
-                "sha256:cf2196ed3418f3ba5de6af7e82c694a9fbdbfecccdfc72e281548517081f16ca"
+                "sha256:12a08b3bf3eec877c519589833aed092e2444e68240a3577e8e26148acc7b1ba",
+                "sha256:e20d4a9b0b8585fdf63b10d30066c7c94c5d7a7ec47c889a2d83a3caa93ff28e"
             ],
             "markers": "python_version >= '3.8'",
-            "version": "==0.5.3"
+            "version": "==0.5.5"
         },
         "tablib": {
             "extras": [

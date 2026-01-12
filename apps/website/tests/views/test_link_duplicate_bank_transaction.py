@@ -55,7 +55,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 
 	def test_requires_login(self):
 		"""Test that the view requires authentication."""
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url,
 			{
@@ -72,7 +72,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		"""Test that the view only accepts POST requests."""
 		self.client.force_login(self.user)
 
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.get(url)
 
 		# Should return 405 Method Not Allowed
@@ -82,7 +82,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		"""Test that the view handles invalid duplicate transaction ID."""
 		self.client.force_login(self.user)
 
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url, {'bank_transaction_id': 99999, 'target_bank_transaction_id': self.duplicate_transaction.id}
 		)
@@ -94,7 +94,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		"""Test that the view handles invalid target transaction ID."""
 		self.client.force_login(self.user)
 
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url, {'bank_transaction_id': self.original_transaction.id, 'target_bank_transaction_id': 99999}
 		)
@@ -109,7 +109,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		# Verify initial state
 		self.assertIsNone(self.duplicate_transaction.duplicate_of)
 
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url,
 			{
@@ -132,7 +132,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		self.client.force_login(self.user)
 
 		custom_redirect = '/custom/redirect/path/'
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url,
 			{
@@ -150,7 +150,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		"""Test linking a transaction to itself should return 400 Bad Request."""
 		self.client.force_login(self.user)
 
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url,
 			{
@@ -185,7 +185,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		self.duplicate_transaction.save()
 
 		# Now try to link duplicate to third transaction (should fail)
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url,
 			{'bank_transaction_id': third_transaction.id, 'target_bank_transaction_id': self.duplicate_transaction.id},
@@ -205,7 +205,7 @@ class LinkDuplicateBankTransactionViewTest(TestCase):
 		"""Test that the transaction is properly saved after linking."""
 		self.client.force_login(self.user)
 
-		url = reverse('link_duplicate_bank_transactions')
+		url = reverse('pair_transactions_page.actions.link_duplicate_bank_transactions')
 		response = self.client.post(
 			url,
 			{

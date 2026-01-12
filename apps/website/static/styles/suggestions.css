@@ -36,20 +36,24 @@
 
     /* WARNING VARIATION */
     .warning {
-        .title {
-            background-color: rgb(255, 240, 95);
-            border: 1px solid black;
-            padding: 2px 5px;
+        .title:before {
+            content: "● ";
+            color: red;
+            animation: blinker 1s step-start infinite;
         }
     }
 
-    /* WIP */
     .title {
         text-transform: uppercase;
         font-family: "Berkeley Mono", monospace;
         font-weight: 700;
         font-size: 16px;
-        margin-bottom: 3px;
+        margin: 4px;
     }
 }
 
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

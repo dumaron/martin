@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Create New Document</h1>
+
+	<form method="post" action="{% url 'document_create' %}" enctype="multipart/form-data">
+		{% csrf_token %}
+		<table class="form">
+			<tbody>
+				<tr>
+					<th>{{ form.name.label_tag }}</th>
+					<td>
+						{{ form.name }}
+						{% if form.name.errors %}
+							<div style="color: red;">{{ form.name.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.description.label_tag }}</th>
+					<td>
+						{{ form.description }}
+						{% if form.description.errors %}
+							<div style="color: red;">{{ form.description.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.location.label_tag }}</th>
+					<td>
+						{{ form.location }}
+						{% if form.location.errors %}
+							<div style="color: red;">{{ form.location.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.tags.label_tag }}</th>
+					<td>
+						{{ form.tags }}
+						{% if form.tags.errors %}
+							<div style="color: red;">{{ form.tags.errors }}</div>
+						{% endif %}
+						<small style="display: block; margin-top: 5px; color: #666;">
+							Enter tags separated by commas
+						</small>
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.files.label_tag }}</th>
+					<td>
+						{{ form.files }}
+						{% if form.files.errors %}
+							<div style="color: red;">{{ form.files.errors }}</div>
+						{% endif %}
+						<small style="display: block; margin-top: 5px; color: #666;">
+							{{ form.files.help_text }}
+						</small>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<button type="submit">Create Document</button>
+		<a href="{% url 'document_list' %}" style="margin-left: 10px;">Cancel</a>
+	</form>
+</div>
+{% endblock %}

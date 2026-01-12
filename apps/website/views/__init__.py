@@ -5,6 +5,7 @@ from . import (
 	capture_inbox_item_page,
 	daily_suggestion_editor_page,
 	daily_suggestions_intro_page,
+	document_model,
 	pair_transactions_page,
 	process_inboxes_page,
 	project_model,
@@ -27,5 +28,6 @@ __all__ = [
 	'bank_file_import_model',
 	'bank_transaction_model',
 	'ynab_transaction_model',
+	'document_model',
 	'project_model',
 ]

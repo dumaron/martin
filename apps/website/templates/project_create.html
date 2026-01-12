@@ -4,18 +4,19 @@
 <div class="fixed-content">
     <h1>Create New Project</h1>
 
+{# TODO split this action   #}
     <form method="post">
         {% csrf_token %}
-        <table class="large">
+        <table class="form">
             <tbody>
                 <tr>
-                    <th class="creation-form-label">{{ form.title.label_tag }}</th>
+                    <th>{{ form.title.label_tag }}</th>
                     <td>
                         {{ form.title }}
                     </td>
                 </tr>
                 <tr>
-                    <th class="creation-form-label">{{ form.description.label_tag }}</th>
+                    <th>{{ form.description.label_tag }}</th>
                     <td>
                         {{ form.description }}
                     </td>

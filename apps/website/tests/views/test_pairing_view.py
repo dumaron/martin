@@ -60,7 +60,7 @@ class PairingViewTest(TestCase):
 		self.client.force_login(self.user)
 
 		# Get the pairing view for personal transactions
-		url = reverse('pair_transactions_page', kwargs={'kind': 'personal'})
+		url = reverse('pair_transactions_page.main_render', kwargs={'kind': 'personal'})
 		response = self.client.get(url)
 
 		# Should return 200 OK
@@ -80,7 +80,7 @@ class PairingViewTest(TestCase):
 		self.original_transaction.save()
 
 		# Get the pairing view for personal transactions
-		url = reverse('pair_transactions_page', kwargs={'kind': 'personal'})
+		url = reverse('pair_transactions_page.main_render', kwargs={'kind': 'personal'})
 		response = self.client.get(url)
 
 		# Should return 200 OK but show empty template
@@ -114,7 +114,7 @@ class PairingViewTest(TestCase):
 		self.client.force_login(self.user)
 
 		# Get the pairing view for personal transactions
-		url = reverse('pair_transactions_page', kwargs={'kind': 'personal'})
+		url = reverse('pair_transactions_page.main_render', kwargs={'kind': 'personal'})
 		response = self.client.get(url)
 
 		# Should return 200 OK

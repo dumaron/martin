@@ -85,7 +85,8 @@
   outline: none !important;
 }
 .has-items .ts-control > input {
-  margin: 0 4px !important;
+  /*margin: 0 4px !important; TEST STEFANO*/
+  margin-left: 2px !important;
 }
 .ts-control.rtl {
   text-align: right;

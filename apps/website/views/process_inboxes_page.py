@@ -27,4 +27,4 @@ def process_inbox(request):
 	inbox.processed_at = timezone.now()
 	inbox.save()
 
-	return redirect('process_inboxes_page')
+	return redirect('process_inboxes_page.main_render')

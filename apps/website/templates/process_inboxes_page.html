@@ -3,9 +3,9 @@
 {% block content %}
     <div class="fixed-content">
         <h1>Processing inbox</h1>
+
         {%  if inbox %}
-        
-        <table class="large">
+        <table class="horizontal">
             <tbody>
                 <tr>
                     <th>ID</th>
@@ -28,15 +28,15 @@
 
         <div class="processing-section">
             <h2>Mark as Processed</h2>
-            <form action="{% url 'process_inbox' %}" method="post">
+            <form action="{% url 'process_inboxes_page.actions.process_inbox' %}" method="post">
                 {% csrf_token %}
                 <input type="hidden" name="inbox_id" value="{{ inbox.id }}">
                 <button type="submit">Mark as Processed</button>
             </form>
         </div>
-    {% else %}
-        <pre>No inbox to process.</pre>
-    {% endif %}
+        {% else %}
+            <pre>No inbox to process.</pre>
+        {% endif %}
 
     </div>
 {% endblock %}

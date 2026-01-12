@@ -36,7 +36,7 @@ table th:nth-child(3) {
     <h1>Simple tasks</h1>
     
     <h2>Create New Task</h2>
-    <form method="post" action="{% url 'create_task' %}">
+    <form method="post" action="{% url 'simple_tasks_page.actions.create_task' %}">
         {% csrf_token %}
         <div class="form-group">
             {{ form.description.label_tag }}
@@ -65,14 +65,14 @@ table th:nth-child(3) {
                         <td>{{ task.id }}</td>
                         <td>{{ task.description|default:"Untitled task" }}</td>
                         <td>
-                            <form method="post" action="{% url 'mark_task_as_completed' %}" style="display: inline; margin-right: 5px;">
+                            <form method="post" action="{% url 'simple_tasks_page.actions.mark_task_as_completed' %}" style="display: inline; margin-right: 5px;">
                                 {% csrf_token %}
                                 <input type="hidden" name="task_id" value="{{ task.id }}">
                                 <button type="submit">
                                     {% if task.status == 'completed' %}Reopen{% else %}Mark Done{% endif %}
                                 </button>
                             </form>
-                            <form method="post" action="{% url 'abort_task' %}" style="display: inline;">
+                            <form method="post" action="{% url 'simple_tasks_page.actions.abort_task' %}" style="display: inline;">
                                 {% csrf_token %}
                                 <input type="hidden" name="task_id" value="{{ task.id }}">
                                 <button type="submit">

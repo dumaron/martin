@@ -1,19 +1,35 @@
 from datetime import datetime, timedelta
 
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.decorators.http import require_GET, require_POST
 
-from apps.website.forms import YnabTransactionCreationForm
 from apps.website.utils import highlight_text_differences
-from core.models import BankTransaction, YnabTransaction
+from core.models import BankTransaction, YnabCategory, YnabTransaction
 from core.mutations import (
 	create_ynab_transaction_from_bank_transaction,
 	pair_bank_transaction_with_ynab_transaction,
 )
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
+
+
+
+class YnabTransactionCreationForm(forms.Form):
+	memo = forms.CharField()
+	bank_transaction_id = forms.IntegerField(widget=forms.HiddenInput)
+	ynab_category = forms.ModelChoiceField(
+		queryset=YnabCategory.objects.none(), widget=forms.Select(attrs={'class': 'tom-select'})
+	)
+
+	def __init__(self, *args, budget_id, **kwargs):
+		super().__init__(*args, **kwargs)
+
+		# update the category field now that we have the budget_id available
+		filtered_queryset = YnabCategory.objects.filter(budget_id=budget_id, hidden=False)
+		self.fields['ynab_category'].queryset = filtered_queryset
 
 
 # TODO update description

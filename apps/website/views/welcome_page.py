@@ -7,7 +7,7 @@ from core.models import Memory
 
 @login_required
 @require_GET
-def martin_home_page(request):
+def main_render(request):
 	"""
 	TODO write a description
 	"""
@@ -17,4 +17,4 @@ def martin_home_page(request):
 	except (IndexError, Exception):
 		selected_memory = None
 
-	return render(request, 'home.html', {'memory': selected_memory})
+	return render(request, 'welcome.html', {'memory': selected_memory})

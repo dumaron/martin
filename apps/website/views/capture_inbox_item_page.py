@@ -1,7 +1,16 @@
+from django import forms
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 
-from apps.website.forms import InboxForm
+from core.models import Inbox
+
+
+class InboxForm(forms.ModelForm):
+	class Meta:
+		model = Inbox
+		fields = ['content']
+		widgets = {'content': forms.Textarea(attrs={'rows': 4, 'placeholder': ''})}
+
 
 
 @login_required

@@ -3,7 +3,7 @@
 {% block content %}
     <div class="fixed-content">
         <h1>{{ daily_suggestion }}</h1>
-        <form method="post" action="{% url 'save_daily_suggestion' date=daily_suggestion.date %}">
+        <form method="post" action="{% url 'daily_suggestions_editor_page.actions.save_daily_suggestion' date=daily_suggestion.date %}">
             {% csrf_token %}
             <div>
                 <textarea name="content" rows="24" cols="80">{{ daily_suggestion.content|default:'' }}</textarea>
@@ -11,14 +11,14 @@
             <button type="submit">Save</button>
         </form>
         <div>
-            <a href="{% url 'daily_suggestion_pdf' date=daily_suggestion.date %}">Download PDF</a>
+            <a href="{% url 'daily_suggestions_editor_page.actions.daily_suggestion_pdf' date=daily_suggestion.date %}">Download PDF</a>
         </div>
     </div>
     <div id="suggestions">
     {% if active_recurring_suggestions %}
         <div>
             <div class="title">Recurring suggestions</div>
-            <table class="large">
+            <table>
             <tbody>
             {% for suggestion in active_recurring_suggestions %}
                 <tr>
