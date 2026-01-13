@@ -20,22 +20,20 @@ class FileCleanupTestCase(TestCase):
 	def setUpClass(cls):
 		"""Set up test class - create test media directory."""
 		super().setUpClass()
-		cls.test_media_root = Path(settings.MEDIA_ROOT) / 'test_files'
+		cls.test_media_root = Path(settings.MEDIA_ROOT)
 		cls.test_media_root.mkdir(parents=True, exist_ok=True)
 
 	def tearDown(self):
 		"""Clean up uploaded files after each test."""
 		super().tearDown()
 		# Remove all files created during the test
-		test_media_root = Path(settings.MEDIA_ROOT) / 'test_files'
-		if test_media_root.exists():
-			shutil.rmtree(test_media_root)
-			test_media_root.mkdir(parents=True, exist_ok=True)
+		if self.test_media_root.exists():
+			shutil.rmtree(self.test_media_root)
+			self.test_media_root.mkdir(parents=True, exist_ok=True)
 
 	@classmethod
 	def tearDownClass(cls):
 		"""Clean up test media directory after all tests in the class complete."""
 		super().tearDownClass()
-		test_media_root = Path(settings.MEDIA_ROOT) / 'test_files'
-		if test_media_root.exists():
-			shutil.rmtree(test_media_root)
+		if cls.test_media_root.exists():
+			shutil.rmtree(cls.test_media_root)
