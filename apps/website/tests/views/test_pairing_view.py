@@ -4,13 +4,14 @@ from unittest.mock import patch
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase
+from django.test import Client
 from django.urls import reverse
 
 from core.models import BankAccount, BankFileImport, BankTransaction
+from core.tests.base import FileCleanupTestCase
 
 
-class PairingViewTest(TestCase):
+class PairingViewTest(FileCleanupTestCase):
 	"""Test the pairing view."""
 
 	def setUp(self):
