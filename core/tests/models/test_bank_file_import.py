@@ -2,13 +2,13 @@ from io import BytesIO
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
 from openpyxl import Workbook
 
 from core.models import BankFileImport
+from core.tests.base import FileCleanupTestCase
 
 
-class BankFileImportFinecoHeaderDetectionTest(TestCase):
+class BankFileImportFinecoHeaderDetectionTest(FileCleanupTestCase):
 	"""Test the _find_fineco_header_row method of BankFileImport model."""
 
 	def _create_test_xlsx_file(self, header_rows_before_data):

@@ -2,12 +2,12 @@ from datetime import date, datetime
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import TestCase
 
 from core.models import Memory
+from core.tests.base import FileCleanupTestCase
 
 
-class MemorySelectMemoryForTodayTest(TestCase):
+class MemorySelectMemoryForTodayTest(FileCleanupTestCase):
 	"""Test the select_memory_for_today static method of Memory model."""
 
 	def setUp(self):
