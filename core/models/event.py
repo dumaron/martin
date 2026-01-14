@@ -7,7 +7,7 @@ class Event(models.Model):
 	id = models.AutoField(primary_key=True)
 	description = models.TextField()
 	date = models.DateField(default=date.today)
-	time = models.TimeField(null=True, blank=True, default=datetime.now)
+	time = models.TimeField(null=True, blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
 	documents = models.ManyToManyField('Document', blank=True)
 

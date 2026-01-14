@@ -20,6 +20,7 @@ class EventForm(forms.ModelForm):
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
 		self.fields['time'].required = False
+		self.fields['time'].widget.attrs['required'] = False
 		self.fields['documents'].required = False
 
 
