@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Create New Event</h1>
+
+	<form method="post" action="{% url 'event_create_page.actions.create_event' %}">
+		{% csrf_token %}
+		<table class="form">
+			<tbody>
+				<tr>
+					<th>{{ form.description.label_tag }}</th>
+					<td>
+						{{ form.description }}
+						{% if form.description.errors %}
+							<div style="color: red;">{{ form.description.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.date.label_tag }}</th>
+					<td>
+						{{ form.date }}
+						{% if form.date.errors %}
+							<div style="color: red;">{{ form.date.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.time.label_tag }}</th>
+					<td>
+						{{ form.time }}
+						{% if form.time.errors %}
+							<div style="color: red;">{{ form.time.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.documents.label_tag }}</th>
+					<td>
+						{{ form.documents }}
+						{% if form.documents.errors %}
+							<div style="color: red;">{{ form.documents.errors }}</div>
+						{% endif %}
+						<small style="display: block; margin-top: 5px; color: #666;">
+							Optional: Link documents to this event
+						</small>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<button type="submit">Create Event</button>
+		<a href="{% url 'event_list_page.main_render' %}" class="spaced-left">Back to list</a>
+	</form>
+</div>
+{% endblock %}

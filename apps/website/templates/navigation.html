@@ -87,7 +87,12 @@
         <li>
             Memory
             <ul>
-                <li>Events</li>
+                <li>
+                    <a href="{% url 'event_list_page.main_render' %}"
+                       class="{% active request 'event_list_page.main_render' %}">
+                        Events
+                    </a>
+                </li>
                 <li>
                     <a href="{% url 'document_list_page.main_render' %}"
                        class="{% active request 'document_list_page.main_render' %}">

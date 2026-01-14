@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Events</h1>
+
+	<div class="spaced-bottom">
+		<a href="{% url 'event_create_page.main_render' %}">Create New Event</a>
+	</div>
+
+	{% render_table table %}
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Event EV-{{ event.id }}</h1>
+
+	<table class="horizontal">
+		<tbody>
+            <tr>
+				<th>Description</th>
+				<td>{{ event.description }}</td>
+			</tr>
+			<tr>
+				<th>Date</th>
+				<td>{{ event.date | date:"Y-m-d" }}</td>
+			</tr>
+			<tr>
+				<th>Time</th>
+				<td>{{ event.time | date:"H:i" | default:"-" }}</td>
+			</tr>
+			<tr>
+				<th>Documents</th>
+				<td>
+					{% if documents %}
+                        <ul>
+						{% for document in documents %}
+							<li>
+                                <a href="{% url 'document_detail_page.main_render' document_id=document.id %}">
+                                    {{ document.name }}
+                                </a>
+                            </li>
+						{% endfor %}
+                        </ul>
+					{% else %}
+						No documents
+					{% endif %}
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+{% endblock %}
