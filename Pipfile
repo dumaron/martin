@@ -4,22 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-django-htmx = "*"
-tablib = {extras = ["xlsx"], version = "*"}
-gunicorn = "*"
-python-dotenv = "*"
-requests = "*"
-whitenoise = "*"
-boto3 = "*"
-django-treenode = "*"
-ruff = "*"
-openai = "*"
-python-telegram-bot = "*"
-pydantic = "*"
-django-tables2 = "*"
-pydub = "*"
+django = "==6.0"
+django-htmx = "==1.26.0"
+tablib = {extras = ["xlsx"], version = "==3.9.0"}
+gunicorn = "==23.0.0"
+python-dotenv = "==1.2.1"
+requests = "==2.32.5"
+whitenoise = "==6.11.0"
+boto3 = "==1.41.5"
+django-treenode = "==0.23.2"
+ruff = "==0.14.6"
+openai = "==2.8.1"
+python-telegram-bot = "==22.5"
+pydantic = "==2.12.5"
+django-tables2 = "==2.8.0"
+pydub = "==0.25.1"
 fpdf2 = "==2.8.4"
-django-taggit = "*"
+django-taggit = "==6.1.0"
 
 [dev-packages]
 
