@@ -221,6 +221,32 @@ urlpatterns = [
 	),
 	#
 	#
+	# EVENT LIST PAGE ---------------------------------------------------------------------------------------------------
+	#
+	path(route='models/event', view=views.event_list_page.main_render, name='event_list_page.main_render'),
+	#
+	#
+	# EVENT CREATE PAGE -------------------------------------------------------------------------------------------------
+	#
+	path(
+		route='models/event/create', view=views.event_create_page.main_render, name='event_create_page.main_render'
+	),
+	path(
+		route='models/event/create-action',
+		view=views.event_create_page.create_event,
+		name='event_create_page.actions.create_event',
+	),
+	#
+	#
+	# EVENT DETAIL PAGE -------------------------------------------------------------------------------------------------
+	#
+	path(
+		route='models/event/<int:event_id>',
+		view=views.event_detail_page.main_render,
+		name='event_detail_page.main_render',
+	),
+	#
+	#
 	# DOCUMENT LIST PAGE ------------------------------------------------------------------------------------------------
 	#
 	path(
