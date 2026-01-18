@@ -5,3 +5,5 @@ fly.toml
 *.md
 uploads/
 media/
+staticfiles/
+.github/

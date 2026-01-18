@@ -4,8 +4,7 @@
 <div class="fixed-content">
     <h1>Create New Project</h1>
 
-{# TODO split this action   #}
-    <form method="post">
+    <form method="post" action="{% url 'project_create_page.actions.create_project' %}">
         {% csrf_token %}
         <table class="form">
             <tbody>
