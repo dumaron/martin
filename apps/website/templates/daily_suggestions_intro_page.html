@@ -7,19 +7,26 @@
         table-layout: fixed;
         max-width: 100%;
 
-        a {
-            font-family: "Inter V", sans-serif;
+        td {
+            padding: 0;
+            text-align: center;
+        }
 
+        th.day {
+            padding-left: 1px;
+            padding-right: 1px;
+            text-align: center;
+        }
+
+        th.month {
+            width: 4em;
+        }
+
+        td.invalid {
+            background-color: white;
         }
     }
-    th.day {
-        padding-left: 1px;
-        padding-right: 1px;
-        text-align: center;
-    }
-    th.month {
-        width: 4em;
-    }
+
     </style>
 {% endblock %}
 
@@ -31,7 +38,7 @@
         <a href="{% url 'daily_suggestions_editor_page.main_render' date=tomorrow %}">Tomorrow</a>
 
         <h2>Previous entries</h2>
-        <table id="previous-entries">
+        <table id="previous-entries" class="highlightable">
         <thead>
             <tr>
                 <th class="hidden month"></th>
@@ -40,19 +47,22 @@
                 {% endfor %}
             </tr>
         </thead>
-        {% for month, suggestions in grouped_by_month.items %}
+        {% for row in previous_entries_matrix %}
             <tr>
-                <th class="month">{{ month }}</th>
-                {% for day in days_in_month %}
-                    <td class="day">
-                        {% for ds in suggestions %}
-                            {% if ds.date.day == day %}
-                                <a href="{% url 'daily_suggestions_editor_page.main_render' date=ds.date %}">
-                                    &gt;
-                                </a>
-                            {% endif %}
-                        {% endfor %}
-                    </td>
+                <th class="month">{{ row.month }}</th>
+                {% for day in row.entries %}
+                    {% if day == 'INVALID' %}
+                        <td class="day invalid"></td>
+                    {% else %}
+                        <td class="day">
+                        {% if day %}
+                            <a href="{% url 'daily_suggestions_editor_page.main_render' date=day.date %}">
+                            {{ day.date.day }}
+{#                                ✓#}
+                            </a>
+                        {% endif %}
+                        </td>
+                    {% endif %}
                 {% endfor %}
             </tr>
         {% endfor %}

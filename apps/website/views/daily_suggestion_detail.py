@@ -21,13 +21,18 @@ def main_render(request, date):
 		daily_suggestion = DailySuggestion.objects.get(date=date)
 		active_recurring_suggestions = []
 	else:
-		daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
+		try:
+			daily_suggestion = DailySuggestion.objects.get(date=date)
+		except DailySuggestion.DoesNotExist:
+			daily_suggestion = None
+
 		active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
 
 	return render(
 		request,
 		'daily_suggestion_detail.html',
 		{
+			'date': date,
 			'daily_suggestion': daily_suggestion,
 			'active_recurring_suggestions': active_recurring_suggestions,
 			'is_in_the_past': is_in_the_past,
