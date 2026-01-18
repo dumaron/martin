@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from core.models import Project, Task
+from core.models import Task
 
 
 class TaskForm(forms.ModelForm):
@@ -47,11 +47,8 @@ def task_create(request):
 def mark_task_as_completed(request):
 	task_id = int(request.POST.get('task_id'))
 	task = get_object_or_404(Task, pk=task_id)
-	# TODO make this mutation a single method on the model
-	if task.status != 'completed':
-		task.status = 'completed'
-		task.completed_at = timezone.now()
-		task.save()
+
+	task.mark_as_completed()
 
 	return redirect('simple_tasks_page.main_render')
 
@@ -62,9 +59,6 @@ def abort_task(request):
 	task_id = int(request.POST.get('task_id'))
 	task = get_object_or_404(Task, pk=task_id)
 
-	if task.status != 'aborted':
-		task.status = 'aborted'
-		task.completed_at = None
-		task.save()
+	task.abort()
 
 	return redirect('simple_tasks_page.main_render')

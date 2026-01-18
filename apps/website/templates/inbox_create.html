@@ -8,7 +8,6 @@
         <pre>CREATION SUCCEEDED</pre>
     {% endif %}
 
-{# TODO split this action #}
     <form method="post" action="{% url 'capture_inbox_page.actions.capture_inbox_item' %}">
         {% csrf_token %}
         <table class="form">

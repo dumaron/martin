@@ -46,11 +46,7 @@ def mark_task_complete(request, project_id):
 	task_id = int(request.POST.get('task_id'))
 	task = get_object_or_404(Task, pk=task_id)
 
-	# TODO make this mutation a single method on the model
-	if task.status != 'completed':
-		task.status = 'completed'
-		task.completed_at = timezone.now()
-		task.save()
+	task.mark_as_completed()
 
 	return redirect('project_detail_page.main_render', project_id=project_id)
 

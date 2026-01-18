@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Task(models.Model):
@@ -19,6 +20,20 @@ class Task(models.Model):
 	def __str__(self):
 		status = '✓' if self.status == 'completed' else '◯'
 		return f'{status} {self.description}'
+
+	def mark_as_completed(self):
+		"""Mark the task as completed with current timestamp."""
+		if self.status != 'completed':
+			self.status = 'completed'
+			self.completed_at = timezone.now()
+			self.save()
+
+	def abort(self):
+		"""Abort the task and clear completion timestamp."""
+		if self.status != 'aborted':
+			self.status = 'aborted'
+			self.completed_at = None
+			self.save()
 
 	class Meta:
 		ordering = ['created_at']
