@@ -1,5 +1,28 @@
 {% extends 'base.html' %}
 
+
+{% block stylesheets %}
+    <style>
+    #previous-entries {
+        table-layout: fixed;
+        max-width: 100%;
+
+        a {
+            font-family: "Inter V", sans-serif;
+
+        }
+    }
+    th.day {
+        padding-left: 1px;
+        padding-right: 1px;
+        text-align: center;
+    }
+    th.month {
+        width: 4em;
+    }
+    </style>
+{% endblock %}
+
 {% block content %}
     <div class="fixed-content">
         <h1>Daily suggestions</h1>
@@ -8,16 +31,31 @@
         <a href="{% url 'daily_suggestions_editor_page.main_render' date=tomorrow %}">Tomorrow</a>
 
         <h2>Previous entries</h2>
+        <table id="previous-entries">
+        <thead>
+            <tr>
+                <th class="hidden month"></th>
+                {% for day in days_in_month %}
+                <th class="day">{{ day }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
         {% for month, suggestions in grouped_by_month.items %}
-            <h3>{{ month }}</h3>
-            {% for ds in suggestions %}
-                <a href="{% url 'daily_suggestions_editor_page.main_render' date=ds.date %}">
-                    {{ ds.date|date:"l d" }}
-                </a>
-                {% if not forloop.last %}
-                    -
-                {% endif %}
-            {% endfor %}
+            <tr>
+                <th class="month">{{ month }}</th>
+                {% for day in days_in_month %}
+                    <td class="day">
+                        {% for ds in suggestions %}
+                            {% if ds.date.day == day %}
+                                <a href="{% url 'daily_suggestions_editor_page.main_render' date=ds.date %}">
+                                    &gt;
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                {% endfor %}
+            </tr>
         {% endfor %}
+        </table>
     </div>
 {% endblock %}

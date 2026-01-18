@@ -36,4 +36,5 @@ class Task(models.Model):
 			self.save()
 
 	class Meta:
+		db_table = 'tasks'
 		ordering = ['created_at']
