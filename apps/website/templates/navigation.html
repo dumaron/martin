@@ -51,7 +51,12 @@
         <li>
             Finances
             <ul>
-                <li>Mortgage dashboard</li>
+                <li>
+                    <a href="{% url 'mortgage_dashboard_page.main_render' %}"
+                       class="{% active request 'mortgage_dashboard_page.main_render' %}">
+                        Mortgage dashboard
+                    </a>
+                </li>
                 <li>
                     Transactions pairing
                     <ul>

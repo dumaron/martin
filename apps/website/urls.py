@@ -340,5 +340,14 @@ urlpatterns = [
 	),
 	#
 	#
+	# MORTGAGE DASHBOARD PAGE -------------------------------------------------------------------------------------------
+	#
+	path(
+		route='pages/mortgage-dashboard',
+		view=views.mortgage_dashboard_page.main_render,
+		name='mortgage_dashboard_page.main_render',
+	),
+	#
+	#
 	#
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

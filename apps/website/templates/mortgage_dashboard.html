@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+
+{% block content %}
+    <div class="full-content">
+        <h1>Mortgage Dashboard</h1>
+
+        <div style="background: #f5f5f5; padding: 20px; margin-bottom: 20px; border-radius: 8px;">
+            <h2>Loan Information</h2>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div>
+                    <strong>Loan Amount:</strong> €{{ loan_info.loan_amount|floatformat:2 }}
+                </div>
+                <div>
+                    <strong>Annual Rate:</strong> {{ loan_info.annual_rate|floatformat:2 }}%
+                </div>
+                <div>
+                    <strong>Loan Term:</strong> {{ loan_info.loan_term }} years
+                </div>
+                <div>
+                    <strong>Start Date:</strong> {{ loan_info.start_date }}
+                </div>
+                <div>
+                    <strong>End Date:</strong> {{ loan_info.end_date }}
+                </div>
+                <div>
+                    <strong>Monthly Fee:</strong> €{{ loan_info.monthly_fee|floatformat:2 }}
+                </div>
+                <div>
+                    <strong>Yearly Fee:</strong> €{{ loan_info.yearly_fee|floatformat:2 }}
+                </div>
+            </div>
+        </div>
+
+        <div style="margin-bottom: 30px;">
+            {{ chart_html|safe }}
+        </div>
+
+        <h2>Amortization Schedule</h2>
+        {% render_table table %}
+    </div>
+{% endblock %}
