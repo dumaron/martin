@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}Project Focus Selection{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1>Project Focus Selection</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <h2>Active Projects ({{ active_projects|length }}/{{ max_active }})</h2>
+    {% if active_projects %}
+        <form method="post" action="{% url 'project_focus_selection_page.actions.suspend_projects' %}" class="checkbox-form">
+            {% csrf_token %}
+            <table class="highlightable">
+                <thead>
+                    <tr>
+                        <th class="hidden selection"></th>
+                        <th>Title</th>
+                        <th>Goal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in active_projects %}
+                    <tr>
+                        <td class="selection">
+                            <input type="checkbox" name="project_ids" value="{{ project.id }}">
+                        </td>
+                        <td>
+                            <a href="{% url 'project_detail_page.main_render' project.id %}">
+                                {{ project.title }}
+                            </a>
+                        </td>
+                        <td>{{ project.goal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" disabled>Suspend selected</button>
+        </form>
+    {% else %}
+        <p>No active projects.</p>
+    {% endif %}
+
+    <h2>Inactive Projects</h2>
+    {% if inactive_projects %}
+        <form method="post" action="{% url 'project_focus_selection_page.actions.promote_projects' %}" class="checkbox-form">
+            {% csrf_token %}
+            <button type="submit" disabled>Activate selected</button>
+            <table class="highlightable">
+                <thead>
+                    <tr>
+                        <th class="hidden selection"></th>
+                        <th>Title</th>
+                        <th>Status</th>
+                        <th>Goal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in inactive_projects %}
+                    <tr>
+                        <td class="selection">
+                            <input type="checkbox" name="project_ids" value="{{ project.id }}">
+                        </td>
+                        <td>
+                            <a href="{% url 'project_detail_page.main_render' project.id %}">
+                                {{ project.title }}
+                            </a>
+                        </td>
+                        <td>{{ project.get_status_display }}</td>
+                        <td>{{ project.goal }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <button type="submit" disabled>Activate selected</button>
+        </form>
+    {% else %}
+        <p>No inactive projects.</p>
+    {% endif %}
+</div>
+
+<script>
+document.querySelectorAll('.checkbox-form').forEach(form => {
+    const checkboxes = form.querySelectorAll('input[type="checkbox"]');
+    const buttons = form.querySelectorAll('button[type="submit"]');
+
+    function updateButtons() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        buttons.forEach(btn => btn.disabled = !anyChecked);
+    }
+
+    checkboxes.forEach(cb => cb.addEventListener('change', updateButtons));
+});
+</script>
+{% endblock %}
