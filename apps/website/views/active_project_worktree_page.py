@@ -10,4 +10,4 @@ from core.models import Project
 def main_render(request):
 	# Get only root projects that are active (projects without a parent)
 	root_projects = Project.objects.filter(parent__isnull=True, status='active')
-	return render(request, 'project_list.html', {'root_projects': root_projects})
+	return render(request, 'active_project_worktree.html', {'root_projects': root_projects})

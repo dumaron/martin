@@ -1,0 +1,9 @@
+- [ ] Aggiungere ai progetti la possibilita' di essere "scelti" fra 10 importanti / magari grazie allo stato
+- [ ] Cambiare la struttura dei progetti avendo un "goal" e non una descrizione
+- [ ] Cambiare stato dei progetti da "done" a "completed"
+- [ ] Aggiungere un metodo che, in caso si faccia diventare un progetto "scelto", restituisca un errore se ne esistono gia' 10 scelti
+- [ ] Renderizzare un link di "back" nella pagina di dettaglio progetto
+- [ ] Renderizzare con un qualche elemento speciale i progetti "scelti" nella lista
+- [ ] Renderizzare i task dei progetti scelti - e dei sotto-progetti - a lato della pagina per compilare le daily suggestions
+- [ ] Ricordare i goal dei 10 progetti scelti quando si compila una daily suggestion
+- [ ] Scrivere un piccolo pezzo per il blog

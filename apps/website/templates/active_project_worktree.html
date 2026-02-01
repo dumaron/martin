@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Projects{% endblock %}
+{% block title %}Active Project Worktree{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -65,23 +65,16 @@
     ul.project-children > li:last-child::after {
         display: none;
     }
-
-    /* Tree icons */
-    .project-item::marker,
-    .task-item::marker {
-        content: '';
-    }
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="fixed-content">
-    <h1>Projects</h1>
+    <h1>Active Project Worktree</h1>
 
     <form action="{% url 'project_create_page.main_render' %}" method="get">
         <button type="submit">Add root project</button>
     </form>
-
 
     {% if root_projects %}
         <form action="{% url 'project_detail_page.actions.mark_tasks_complete' %}" method="post">

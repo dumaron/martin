@@ -19,5 +19,4 @@
 - Apply migrations: `pipenv run python manage.py migrate`
 
 ## Code Style
-The project uses `ruff` to ensure code formatting, so ti should be executed
-every time some file is changed.
+The project uses `ruff` to ensure code formatting, so it should be executed every time some file is changed.

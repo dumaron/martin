@@ -21,6 +21,15 @@ button:hover {
     background-color: rgb(243, 243, 247);
 }
 
+button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+button:disabled:hover {
+    background-color: var(--color-btn-background);
+}
+
 pre {
     text-transform: uppercase;
     display: inline-block;

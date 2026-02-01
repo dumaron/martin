@@ -38,7 +38,7 @@
 
         <h2>Same amount</h2>
         {% if same_amount_suggestions %}
-            <div id="same-amount-suggestions">
+            <div>
                 <form action="{% url 'pair_transactions_page.actions.pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>

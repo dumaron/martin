@@ -77,30 +77,6 @@ urlpatterns = [
 	),
 	#
 	#
-	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
-	#
-	path(
-		route='pages/simple-tasks',
-		view=views.simple_tasks_page.simple_tasks_page,
-		name='simple_tasks_page.main_render',
-	),
-	path(
-		route='pages/simple-tasks/create-task',
-		view=views.simple_tasks_page.task_create,
-		name='simple_tasks_page.actions.create_task',
-	),
-	path(
-		route='pages/simple-tasks/mark-as-completed',
-		view=views.simple_tasks_page.mark_task_as_completed,
-		name='simple_tasks_page.actions.mark_task_as_completed',
-	),
-	path(
-		route='pages/simple-tasks/abort-task',
-		view=views.simple_tasks_page.abort_task,
-		name='simple_tasks_page.actions.abort_task',
-	),
-	#
-	#
 	# CAPTURE INBOX PAGE ------------------------------------------------------------------------------------------------
 	#
 	path(
@@ -277,9 +253,32 @@ urlpatterns = [
 	),
 	#
 	#
-	# PROJECT LIST PAGE -------------------------------------------------------------------------------------------------
+	# ACTIVE PROJECT WORKTREE PAGE --------------------------------------------------------------------------------------
 	#
-	path(route='models/project', view=views.project_list_page.main_render, name='project_list_page.main_render'),
+	path(
+		route='pages/active-project-worktree',
+		view=views.active_project_worktree_page.main_render,
+		name='active_project_worktree_page.main_render',
+	),
+	#
+	#
+	# PROJECT FOCUS SELECTION PAGE --------------------------------------------------------------------------------------
+	#
+	path(
+		route='pages/project-focus-selection',
+		view=views.project_focus_selection_page.main_render,
+		name='project_focus_selection_page.main_render',
+	),
+	path(
+		route='pages/project-focus-selection/promote',
+		view=views.project_focus_selection_page.promote_projects,
+		name='project_focus_selection_page.actions.promote_projects',
+	),
+	path(
+		route='pages/project-focus-selection/suspend',
+		view=views.project_focus_selection_page.suspend_projects,
+		name='project_focus_selection_page.actions.suspend_projects',
+	),
 	#
 	#
 	# PROJECT CREATE PAGE -----------------------------------------------------------------------------------------------

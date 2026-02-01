@@ -45,7 +45,7 @@ def daily_suggestions_intro_page(request):
 				else:
 					row.append(None)
 
-		previous_entries_matrix.append({ 'month': month, 'entries': row})
+		previous_entries_matrix.append({'month': month, 'entries': row})
 
 		sorted_entries = reversed(sorted(previous_entries_matrix, key=lambda x: x['month']))
 

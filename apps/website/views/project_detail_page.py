@@ -99,4 +99,4 @@ def mark_tasks_complete(request):
 	if task_ids:
 		Task.objects.filter(id__in=task_ids).update(status='completed', completed_at=timezone.now())
 
-	return redirect('project_list_page.main_render')
+	return redirect('active_project_worktree_page.main_render')
