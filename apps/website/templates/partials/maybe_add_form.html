@@ -1,0 +1,19 @@
+<form hx-post="{% url 'maybe_list_page.actions.create' %}"
+      hx-target="#maybe-list"
+      hx-swap="beforeend"
+      hx-on::after-request="if(event.detail.successful) this.remove()">
+    <table class="form">
+        <tbody>
+        <tr>
+            <th><label for="id_title">Title</label></th>
+            <td><input type="text" name="title" id="id_title" required autofocus></td>
+        </tr>
+        <tr>
+            <th><label for="id_notes">Notes</label></th>
+            <td><input type="text" name="notes" id="id_notes"></td>
+        </tr>
+        </tbody>
+    </table>
+    <button type="submit">Add</button>
+    <a href="#" onclick="this.closest('form').remove(); return false;">×</a>
+</form>

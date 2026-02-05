@@ -26,20 +26,53 @@
     </div>
     <div id="suggestions">
     {% if active_recurring_suggestions %}
-        <div>
+        <div id="recurring-section">
             <div class="title">Recurring suggestions</div>
-            <table>
+            <table class="highlightable">
+            <thead>
+                <tr>
+                    <th class="hidden selection"></th>
+                    <th>Suggestion</th>
+                </tr>
+            </thead>
             <tbody>
             {% for suggestion in active_recurring_suggestions %}
                 <tr>
-                    <td>{{ suggestion.content }}</td>
-                    <td style="width: 10px;">
-                        <button type="button" onclick="addSuggestion('{{ suggestion.content|escapejs }}')">Add</button>
+                    <td class="selection">
+                        <input type="checkbox" data-suggestion="{{ suggestion.content|escapejs }}">
                     </td>
+                    <td>{{ suggestion.content }}</td>
                 </tr>
             {% endfor %}
             </tbody>
             </table>
+            <button type="button" id="add-suggestions-btn" disabled onclick="addSelectedSuggestions()">Add selected</button>
+        </div>
+    {% endif %}
+    {% if pending_tasks %}
+        <div id="tasks-section">
+            <div class="title">Active project tasks</div>
+            <table class="highlightable">
+            <thead>
+                <tr>
+                    <th class="hidden selection"></th>
+                    <th>Task</th>
+                    <th>Project</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in pending_tasks %}
+                <tr>
+                    <td class="selection">
+                        <input type="checkbox" data-task-id="{{ task.id }}" data-task-description="{{ task.description|escapejs }}">
+                    </td>
+                    <td>{{ task.description }}</td>
+                    <td class="muted">{{ task.project.title }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+            <button type="button" id="add-tasks-btn" disabled onclick="addSelectedTasks()">Add selected</button>
         </div>
     {% endif %}
     </div>
@@ -66,6 +99,40 @@
         function addSuggestion(suggestion) {
             const textarea = document.querySelector('textarea[name="content"]');
             textarea.value += '\n[ ] ' + suggestion;
+        }
+
+        function addSelectedSuggestions() {
+            const checkboxes = document.querySelectorAll('#recurring-section input[type="checkbox"]:checked');
+            checkboxes.forEach(cb => {
+                addSuggestion(cb.dataset.suggestion);
+                cb.checked = false;
+            });
+            document.getElementById('add-suggestions-btn').disabled = true;
+        }
+
+        function addSelectedTasks() {
+            const checkboxes = document.querySelectorAll('#tasks-section input[type="checkbox"]:checked');
+            checkboxes.forEach(cb => {
+                addSuggestion('(ID: ' + cb.dataset.taskId + ') ' + cb.dataset.taskDescription);
+                cb.checked = false;
+            });
+            document.getElementById('add-tasks-btn').disabled = true;
+        }
+
+        const recurringSection = document.getElementById('recurring-section');
+        if (recurringSection) {
+            recurringSection.addEventListener('change', function() {
+                const anyChecked = recurringSection.querySelector('input[type="checkbox"]:checked');
+                document.getElementById('add-suggestions-btn').disabled = !anyChecked;
+            });
+        }
+
+        const tasksSection = document.getElementById('tasks-section');
+        if (tasksSection) {
+            tasksSection.addEventListener('change', function() {
+                const anyChecked = tasksSection.querySelector('input[type="checkbox"]:checked');
+                document.getElementById('add-tasks-btn').disabled = !anyChecked;
+            });
         }
     </script>
 {% endblock %}

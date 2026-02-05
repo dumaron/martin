@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}Active Project Worktree{% endblock %}
+{% block title %}Projects{% endblock %}
 
 {% block stylesheets %}
 <style>
@@ -70,7 +70,7 @@
 
 {% block content %}
 <div class="fixed-content">
-    <h1>Active Project Worktree</h1>
+    <h1>Projects</h1>
 
     <form action="{% url 'project_create_page.main_render' %}" method="get">
         <button type="submit">Add root project</button>

@@ -1,8 +1,7 @@
 # Martin - Django Project Guidelines
 
 ## Project Info
-- Django version: 6.0
-- Python version: 3.12
+- Refer to pipenv for versions
 
 ## Claude interaction
 - Never not extend CLAUDE.md if not explicitly required.
@@ -19,4 +18,8 @@
 - Apply migrations: `pipenv run python manage.py migrate`
 
 ## Code Style
-The project uses `ruff` to ensure code formatting, so it should be executed every time some file is changed.
+- The project uses `ruff` to ensure code formatting, so it should be executed every time some file is changed
+- Try to use some functional programming patterns when they make sense
+
+## General
+- Remember to add generated files to the current git commit

@@ -253,31 +253,22 @@ urlpatterns = [
 	),
 	#
 	#
-	# ACTIVE PROJECT WORKTREE PAGE --------------------------------------------------------------------------------------
+	# PROJECTS PAGE -----------------------------------------------------------------------------------------------------
 	#
+	path(route='pages/projects', view=views.projects_page.main_render, name='projects_page.main_render'),
+	#
+	#
+	# MAYBE LIST PAGE ---------------------------------------------------------------------------------------------------
+	#
+	path(route='models/maybe', view=views.maybe_list_page.main_render, name='maybe_list_page.main_render'),
 	path(
-		route='pages/active-project-worktree',
-		view=views.active_project_worktree_page.main_render,
-		name='active_project_worktree_page.main_render',
+		route='models/maybe/add-form', view=views.maybe_list_page.add_form, name='maybe_list_page.partials.add_form'
 	),
-	#
-	#
-	# PROJECT FOCUS SELECTION PAGE --------------------------------------------------------------------------------------
-	#
+	path(route='models/maybe/create', view=views.maybe_list_page.create, name='maybe_list_page.actions.create'),
 	path(
-		route='pages/project-focus-selection',
-		view=views.project_focus_selection_page.main_render,
-		name='project_focus_selection_page.main_render',
-	),
-	path(
-		route='pages/project-focus-selection/promote',
-		view=views.project_focus_selection_page.promote_projects,
-		name='project_focus_selection_page.actions.promote_projects',
-	),
-	path(
-		route='pages/project-focus-selection/suspend',
-		view=views.project_focus_selection_page.suspend_projects,
-		name='project_focus_selection_page.actions.suspend_projects',
+		route='models/maybe/promote',
+		view=views.maybe_list_page.promote_to_project,
+		name='maybe_list_page.actions.promote_to_project',
 	),
 	#
 	#
