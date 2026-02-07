@@ -27,21 +27,21 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'simple_tasks_page.main_render' %}"
-                       class="{% active request 'simple_tasks_page.main_render' %}">
-                        Simple todo list
-                    </a>
-                </li>
-                <li>
                     <a href="{% url 'daily_suggestions_intro_page.main_render' %}"
                        class="{% active request 'daily_suggestions_intro_page.main_render' %}">
                         Daily suggestions
                     </a>
                 </li>
                 <li>
-                    <a href="{% url 'project_list_page.main_render' %}"
-                       class="{% active request 'project_list_page.main_render' %}">
+                    <a href="{% url 'projects_page.main_render' %}"
+                       class="{% active request 'projects_page.main_render' %}">
                         Projects
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'maybe_list_page.main_render' %}"
+                       class="{% active request 'maybe_list_page.main_render' %}">
+                        Someday / Maybe
                     </a>
                 </li>
                 <li>Calendar integration</li>

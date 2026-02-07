@@ -16,6 +16,7 @@ from core.models.ynab_transaction import YnabTransaction
 from core.models.recurrence_rule import RecurrenceRule
 from core.models.file import File
 from core.models.document import Document
+from core.models.maybe import Maybe
 
 __all__ = [
 	'BankTransaction',
@@ -36,4 +37,5 @@ __all__ = [
 	'RecurrenceRule',
 	'Document',
 	'File',
+	'Maybe',
 ]

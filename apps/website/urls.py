@@ -77,30 +77,6 @@ urlpatterns = [
 	),
 	#
 	#
-	# SIMPLE TASKS PAGE -------------------------------------------------------------------------------------------------
-	#
-	path(
-		route='pages/simple-tasks',
-		view=views.simple_tasks_page.simple_tasks_page,
-		name='simple_tasks_page.main_render',
-	),
-	path(
-		route='pages/simple-tasks/create-task',
-		view=views.simple_tasks_page.task_create,
-		name='simple_tasks_page.actions.create_task',
-	),
-	path(
-		route='pages/simple-tasks/mark-as-completed',
-		view=views.simple_tasks_page.mark_task_as_completed,
-		name='simple_tasks_page.actions.mark_task_as_completed',
-	),
-	path(
-		route='pages/simple-tasks/abort-task',
-		view=views.simple_tasks_page.abort_task,
-		name='simple_tasks_page.actions.abort_task',
-	),
-	#
-	#
 	# CAPTURE INBOX PAGE ------------------------------------------------------------------------------------------------
 	#
 	path(
@@ -277,9 +253,28 @@ urlpatterns = [
 	),
 	#
 	#
-	# PROJECT LIST PAGE -------------------------------------------------------------------------------------------------
+	# PROJECTS PAGE -----------------------------------------------------------------------------------------------------
 	#
-	path(route='models/project', view=views.project_list_page.main_render, name='project_list_page.main_render'),
+	path(route='pages/projects', view=views.projects_page.main_render, name='projects_page.main_render'),
+	#
+	#
+	# MAYBE LIST PAGE ---------------------------------------------------------------------------------------------------
+	#
+	path(route='models/maybe', view=views.maybe_list_page.main_render, name='maybe_list_page.main_render'),
+	path(
+		route='models/maybe/add-form', view=views.maybe_list_page.add_form, name='maybe_list_page.partials.add_form'
+	),
+	path(route='models/maybe/create', view=views.maybe_list_page.create, name='maybe_list_page.actions.create'),
+	path(
+		route='models/maybe/promote',
+		view=views.maybe_list_page.promote_to_project,
+		name='maybe_list_page.actions.promote_to_project',
+	),
+	path(
+		route='models/maybe/dismiss',
+		view=views.maybe_list_page.dismiss,
+		name='maybe_list_page.actions.dismiss',
+	),
 	#
 	#
 	# PROJECT CREATE PAGE -----------------------------------------------------------------------------------------------

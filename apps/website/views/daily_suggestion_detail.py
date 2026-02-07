@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_GET, require_POST
 from fpdf import FPDF
 
-from core.models import DailySuggestion, RecurringSuggestion
+from core.models import DailySuggestion, RecurringSuggestion, Task
 from settings import FONTS_DIR
 
 
@@ -28,6 +28,10 @@ def main_render(request, date):
 
 		active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
 
+	pending_tasks = Task.objects.filter(
+		project__status='active', status__in=['pending', 'active']
+	).select_related('project')
+
 	return render(
 		request,
 		'daily_suggestion_detail.html',
@@ -36,6 +40,7 @@ def main_render(request, date):
 			'daily_suggestion': daily_suggestion,
 			'active_recurring_suggestions': active_recurring_suggestions,
 			'is_in_the_past': is_in_the_past,
+			'pending_tasks': pending_tasks,
 		},
 	)
 

@@ -12,6 +12,5 @@ class Document(models.Model):
 	class Meta:
 		db_table = 'documents'
 
-
 	def __str__(self):
 		return self.name

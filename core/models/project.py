@@ -4,14 +4,16 @@ from django.db import models
 class Project(models.Model):
 	STATUS_CHOICES = [
 		('active', 'Active'),
+		('pending', 'Pending'),
 		('suspended', 'Suspended'),
 		('archived', 'Archived'),
-		('done', 'Done'),
+		('completed', 'Completed'),
+		('aborted', 'Aborted'),
 	]
 
 	id = models.AutoField(primary_key=True)
 	title = models.CharField(max_length=255)
-	description = models.TextField(blank=True)
+	goal = models.TextField(blank=True)
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
 	created_at = models.DateTimeField(auto_now_add=True)
 	updated_at = models.DateTimeField(auto_now=True)
@@ -22,6 +24,11 @@ class Project(models.Model):
 
 	def get_children(self):
 		return Project.objects.filter(parent=self, status='active')
+
+	def promote_to_active(self):
+		self.status = 'active'
+		self.save()
+		return self
 
 	class Meta:
 		db_table = 'projects'

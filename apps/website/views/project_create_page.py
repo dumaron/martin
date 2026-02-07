@@ -9,10 +9,10 @@ from core.models import Project
 class ProjectForm(forms.ModelForm):
 	class Meta:
 		model = Project
-		fields = ['title', 'description']
+		fields = ['title', 'goal']
 		widgets = {
 			'title': forms.TextInput(attrs={'placeholder': 'Enter project title'}),
-			'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional project description'}),
+			'goal': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional project goal'}),
 		}
 
 

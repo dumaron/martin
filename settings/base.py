@@ -104,12 +104,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Storage configuration (Django 5.2+)
 STORAGES = {
-	'default': {
-		'BACKEND': 'django.core.files.storage.FileSystemStorage',
-	},
-	'staticfiles': {
-		'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage',
-	},
+	'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+	'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedStaticFilesStorage'},
 }
 
 
