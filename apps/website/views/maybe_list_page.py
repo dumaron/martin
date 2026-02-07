@@ -22,6 +22,15 @@ def promote_to_project(request):
 
 
 @login_required
+@require_POST
+def dismiss(request):
+	maybe_id = request.POST.get('maybe_id')
+	maybe = get_object_or_404(Maybe, pk=maybe_id)
+	maybe.dismiss()
+	return redirect('maybe_list_page.main_render')
+
+
+@login_required
 @require_GET
 def add_form(request):
 	return render(request, 'partials/maybe_add_form.html')

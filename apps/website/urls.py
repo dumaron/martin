@@ -270,6 +270,11 @@ urlpatterns = [
 		view=views.maybe_list_page.promote_to_project,
 		name='maybe_list_page.actions.promote_to_project',
 	),
+	path(
+		route='models/maybe/dismiss',
+		view=views.maybe_list_page.dismiss,
+		name='maybe_list_page.actions.dismiss',
+	),
 	#
 	#
 	# PROJECT CREATE PAGE -----------------------------------------------------------------------------------------------

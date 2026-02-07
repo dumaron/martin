@@ -22,6 +22,10 @@ class Maybe(models.Model):
 		self.save()
 		return project
 
+	def dismiss(self):
+		self.status = 'dismissed'
+		self.save()
+
 	class Meta:
 		db_table = 'maybes'
 		ordering = ['-created_at']

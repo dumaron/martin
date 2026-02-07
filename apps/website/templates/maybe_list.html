@@ -28,13 +28,16 @@
             </tbody>
         </table>
         <button type="submit" disabled>Promote to project</button>
+        <button type="submit" formaction="{% url 'maybe_list_page.actions.dismiss' %}" disabled>Dismiss</button>
     </form>
 </div>
 
 <script>
 document.querySelector('#promote-form').addEventListener('change', function() {
     const selected = this.querySelector('input[name="maybe_id"]:checked');
-    this.querySelector('button[type="submit"]').disabled = !selected;
+    this.querySelectorAll('button[type="submit"]').forEach(button => {
+        button.disabled = !selected;
+    });
 });
 </script>
 {% endblock %}
