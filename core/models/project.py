@@ -4,8 +4,6 @@ from utils.failures import Failure
 
 
 class Project(models.Model):
-	max_global_active_number = 10
-
 	STATUS_CHOICES = [
 		('active', 'Active'),
 		('pending', 'Pending'),
@@ -30,9 +28,6 @@ class Project(models.Model):
 		return Project.objects.filter(parent=self, status='active')
 
 	def promote_to_active(self):
-		currently_active_number = Project.objects.filter(status='active').count()
-		if currently_active_number > Project.max_global_active_number:
-			return Failure(f'Cannot create more than {Project.max_global_active_number} active projects')
 		self.status = 'active'
 		self.save()
 		return self
