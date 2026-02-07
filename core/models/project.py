@@ -1,7 +1,5 @@
 from django.db import models
 
-from utils.failures import Failure
-
 
 class Project(models.Model):
 	STATUS_CHOICES = [
