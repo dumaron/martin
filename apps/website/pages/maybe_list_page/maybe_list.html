@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1>Someday / Maybe</h1>
+
+    <div id="add-maybe-area" class="spaced-bottom">
+        <a href="{% url 'maybe_list_page.partials.add_form' %}"
+           hx-get="{% url 'maybe_list_page.partials.add_form' %}"
+           hx-target="#add-maybe-area"
+           hx-swap="beforeend">+ Add</a>
+    </div>
+
+    <form method="post" action="{% url 'maybe_list_page.actions.promote_to_project' %}" id="promote-form">
+        {% csrf_token %}
+        <table class="highlightable">
+            <thead>
+                <tr>
+                    <th class="hidden selection"></th>
+                    <th>Title</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody id="maybe-list">
+                {% for maybe in open_maybes %}
+                    {% include "maybe_list_page/maybe_row.html" with maybe=maybe %}
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit" disabled>Promote to project</button>
+        <button type="submit" formaction="{% url 'maybe_list_page.actions.dismiss' %}" disabled>Dismiss</button>
+    </form>
+</div>
+
+<script>
+document.querySelector('#promote-form').addEventListener('change', function() {
+    const selected = this.querySelector('input[name="maybe_id"]:checked');
+    this.querySelectorAll('button[type="submit"]').forEach(button => {
+        button.disabled = !selected;
+    });
+});
+</script>
+{% endblock %}
