@@ -1,17 +1,17 @@
 from datetime import datetime
 
-from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.decorators.http import require_GET, require_POST
 from fpdf import FPDF
 
+from apps.website.pages.page import Page
 from core.models import DailySuggestion, RecurringSuggestion, Task
 from settings import FONTS_DIR
 
+page = Page(name='daily_suggestions_editor_page', base_route='pages/daily-suggestions/<str:date>')
 
-@login_required
-@require_GET
+
+@page.main
 def main_render(request, date):
 	date_obj = datetime.strptime(date, '%Y-%m-%d').date()
 	today = datetime.now().date()
@@ -45,8 +45,7 @@ def main_render(request, date):
 	)
 
 
-@login_required
-@require_POST
+@page.action('save')
 def save_daily_suggestion(request, date):
 	content = request.POST.get('content')
 	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
@@ -55,8 +54,7 @@ def save_daily_suggestion(request, date):
 	return redirect('daily_suggestions_editor_page.main_render', date=date)
 
 
-@login_required
-@require_GET
+@page.action('pdf', method='GET')
 def daily_suggestion_pdf(request, date):
 	daily_suggestion = get_object_or_404(DailySuggestion, date=date)
 

@@ -85,7 +85,7 @@ class PairingViewTest(FileCleanupTestCase):
 
 		# Should return 200 OK but show empty template
 		self.assertEqual(response.status_code, 200)
-		self.assertTemplateUsed(response, 'pair_transactions_page/pairing_empty.html')
+		self.assertTemplateUsed(response, 'pair_transactions/pairing_empty.html')
 
 	def test_pairing_view_shows_difflib_for_potential_duplicates(self):
 		"""Test that the pairing view shows difflib output for potential duplicates."""

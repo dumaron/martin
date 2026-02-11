@@ -17,7 +17,7 @@ class Page:
 
 		@page.main
 		def main_render(request):
-			return render(request, 'maybe_list_page/maybe_list.html', {...})
+			return render(request, 'maybe_list/maybe_list.html', {...})
 
 		@page.action('create')
 		def create(request):
@@ -25,7 +25,7 @@ class Page:
 
 		@page.partial('add-form')
 		def add_form(request):
-			return render(request, 'maybe_list_page/maybe_add_form.html')
+			return render(request, 'maybe_list/maybe_add_form.html')
 
 	In urls.py:
 
@@ -106,16 +106,8 @@ class Page:
 	def get_urls(self):
 		urls = []
 
-		if self._main:
-			sub_route, fn = self._main
-			urls.append(
-				path(
-					route=self._build_route(sub_route, None),
-					view=login_required(require_GET(fn)),
-					name=f'{self.name}.main_render',
-				)
-			)
-
+		# Actions and partials before main render, so that specific routes
+		# are matched before a potentially catch-all main route (e.g. <str:kind>)
 		for sub_route, route_override, method, fn in self._actions:
 			http_decorator = require_GET if method == 'GET' else require_POST
 			urls.append(
@@ -132,6 +124,16 @@ class Page:
 					route=self._build_route(sub_route, route_override),
 					view=login_required(require_GET(fn)),
 					name=f'{self.name}.partials.{fn.__name__}',
+				)
+			)
+
+		if self._main:
+			sub_route, fn = self._main
+			urls.append(
+				path(
+					route=self._build_route(sub_route, None),
+					view=login_required(require_GET(fn)),
+					name=f'{self.name}.main_render',
 				)
 			)
 
