@@ -1,0 +1,8 @@
+<li class="task-item">
+    <form hx-post="{% url 'projects_page.actions.create_project_task' project.id %}"
+          hx-swap="closest li">
+        <input type="text" name="description" placeholder="Task description" required autofocus>
+        <button type="submit">Add</button>
+        <a href="#" onclick="this.closest('li').remove(); return false;">×</a>
+    </form>
+</li>
