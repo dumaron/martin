@@ -20,6 +20,7 @@ from core.models import (
 	Document,
 	File,
 	DailySuggestion,
+	Task
 )
 
 
@@ -117,3 +118,4 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(Document)
 admin.site.register(File)
 admin.site.register(DailySuggestion)
+admin.site.register(Task)

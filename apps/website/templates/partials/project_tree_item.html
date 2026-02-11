@@ -2,8 +2,8 @@
     <div class="project-info">
         {{ project.title }}
         <a href="{% url 'project_detail_page.main_render' project.id %}">↗</a>
-        <a href="{% url 'project_detail_page.partials.add_subproject_form' project.id %}"
-           hx-get="{% url 'project_detail_page.partials.add_subproject_form' project.id %}"
+        <a href="{% url 'projects_page.partials.add_subproject_form' project.id %}"
+           hx-get="{% url 'projects_page.partials.add_subproject_form' project.id %}"
            hx-target="#project-children-{{ project.id }}"
            hx-swap="beforeend">↵</a>
     </div>
@@ -17,8 +17,8 @@
         {% endif %}
     {% endfor %}
         <li class="add-task-link" id="add-task-link-{{ project.id }}">
-            <a href="{% url 'project_detail_page.partials.add_task_form' project.id %}"
-               hx-get="{% url 'project_detail_page.partials.add_task_form' project.id %}"
+            <a href="{% url 'projects_page.partials.add_project_task_form' project.id %}"
+               hx-get="{% url 'projects_page.partials.add_project_task_form' project.id %}"
                hx-target="#add-task-link-{{ project.id }}"
                hx-swap="beforebegin">+</a>
         </li>

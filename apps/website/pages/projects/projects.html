@@ -76,18 +76,32 @@
         <button type="submit">Add root project</button>
     </form>
 
-    {% if root_projects %}
-        <form action="{% url 'project_detail_page.actions.mark_tasks_complete' %}" method="post">
-            {% csrf_token %}
-            <ul class="project-tree">
+    <form action="{% url 'projects_page.actions.mark_tasks_complete' %}" method="post">
+        {% csrf_token %}
+
+        <ul class="project-tree">
+            <li class="project-item">
+                <div class="project-info">Unassigned</div>
+                <ul class="task-list" id="orphan-task-list">
+                {% for task in orphan_tasks %}
+                    <li class="task-item">
+                        <input type="checkbox" name="task_ids" value="{{ task.id }}" /> {{ task.description }}
+                    </li>
+                {% endfor %}
+                    <li class="add-task-link" id="add-orphan-task-link">
+                        <a href="{% url 'projects_page.partials.add_orphan_task_form' %}"
+                           hx-get="{% url 'projects_page.partials.add_orphan_task_form' %}"
+                           hx-target="#add-orphan-task-link"
+                           hx-swap="beforebegin">+</a>
+                    </li>
+                </ul>
+            </li>
+
             {% for project in root_projects %}
                 {% include "partials/project_tree_item.html" with project=project %}
             {% endfor %}
-            </ul>
-            <button type="submit">Mark selected as done</button>
-        </form>
-    {% else %}
-        <p>No projects yet.</p>
-    {% endif %}
+        </ul>
+        <button type="submit">Mark selected as done</button>
+    </form>
 </div>
 {% endblock %}
