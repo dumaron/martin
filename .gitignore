@@ -8,4 +8,4 @@ media/
 **/*.pyc
 *.pyc
 */__pycache__/
-staticfiles/
+staticfiles/.junie/
