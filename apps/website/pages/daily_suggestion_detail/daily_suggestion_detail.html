@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="fixed-content">
+        <h1>Daily suggestions for {{ date }}</h1>
+
+        {% if is_in_the_past %}
+            {% if daily_suggestion %}
+                <textarea name="content" rows="24" cols="80" disabled>{{ daily_suggestion.content|default:"" }}
+                </textarea>
+            {% else %}
+                No daily suggestion was created on {{ date }}
+            {% endif %}
+        {% else %}
+        <form method="post" action="{% url 'daily_suggestions_editor_page.actions.save_daily_suggestion' date=date %}">
+            {% csrf_token %}
+            <div>
+                <textarea name="content" rows="24" cols="80">{{ daily_suggestion.content|default:'' }}</textarea>
+            </div>
+            <button type="submit">Save</button>
+        </form>
+        <div>
+            <a href="{% url 'daily_suggestions_editor_page.actions.daily_suggestion_pdf' date=date %}">Download PDF</a>
+        </div>
+        {% endif %}
+    </div>
+    <div id="suggestions">
+    {% if active_recurring_suggestions %}
+        <div id="recurring-section">
+            <div class="title">Recurring suggestions</div>
+            <table class="highlightable">
+            <thead>
+                <tr>
+                    <th class="hidden selection"></th>
+                    <th>Suggestion</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for suggestion in active_recurring_suggestions %}
+                <tr>
+                    <td class="selection">
+                        <input type="checkbox" data-suggestion="{{ suggestion.content }}">
+                    </td>
+                    <td>{{ suggestion.content }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+            <button type="button" id="add-suggestions-btn" disabled onclick="addSelectedSuggestions()">Add selected</button>
+        </div>
+    {% endif %}
+    {% if pending_tasks %}
+        <div id="tasks-section">
+            <div class="title">Active project tasks</div>
+            <table class="highlightable">
+            <thead>
+                <tr>
+                    <th class="hidden selection"></th>
+                    <th>Task</th>
+                    <th>Project</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for task in pending_tasks %}
+                <tr>
+                    <td class="selection">
+                        <input type="checkbox" data-task-id="{{ task.id }}" data-task-description="{{ task.description }}">
+                    </td>
+                    <td>{{ task.description }}</td>
+                    <td class="muted">{{ task.project.title }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+            </table>
+            <button type="button" id="add-tasks-btn" disabled onclick="addSelectedTasks()">Add selected</button>
+        </div>
+    {% endif %}
+    </div>
+    <script type="text/javascript">
+        /*
+        Here we break with the hypermedia philosophy.
+        In hypermedia, I think that the canonical way to implement this feature would be to save the textarea form,
+        append the suggestion to its content, and refresh the page.
+
+        While I get it, and I think it is a fine way to do so, I also have some doubts. After all, why re-render
+        everything, making a dozen SQL queries again, for something that could be achieved with a little Javascript?
+
+        But I think my understanding of hypermedia here is just exaggerated. Like with many things, when you want to
+        correct something, you might end up over-correcting it. In the old days, before SPAs became a thing, having
+        small pieces of Javascript here and there to save resources and time were not considered a bad practice. On the
+        contrary, it was welcome!
+
+        With memory of the old technologies, we also lost the compromises that we made along the way to make better
+        software. It's so mentally rewarding to re-discover them, like remembering an important thing you already
+        learned more than 15 years ago.
+
+        Ok, back to code.
+        */
+        function decodeHtml(html) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            return doc.documentElement.textContent;
+        }
+
+        function addSuggestion(suggestion) {
+            const textarea = document.querySelector('textarea[name="content"]');
+            textarea.value += '\n[ ] ' + decodeHtml(suggestion);
+        }
+
+        function addSelectedSuggestions() {
+            const checkboxes = document.querySelectorAll('#recurring-section input[type="checkbox"]:checked');
+            checkboxes.forEach(cb => {
+                addSuggestion(cb.dataset.suggestion);
+                cb.checked = false;
+            });
+            document.getElementById('add-suggestions-btn').disabled = true;
+        }
+
+        function addSelectedTasks() {
+            const checkboxes = document.querySelectorAll('#tasks-section input[type="checkbox"]:checked');
+            checkboxes.forEach(cb => {
+                addSuggestion('(ID: ' + cb.dataset.taskId + ') ' + cb.dataset.taskDescription);
+                cb.checked = false;
+            });
+            document.getElementById('add-tasks-btn').disabled = true;
+        }
+
+        const recurringSection = document.getElementById('recurring-section');
+        if (recurringSection) {
+            recurringSection.addEventListener('change', function() {
+                const anyChecked = recurringSection.querySelector('input[type="checkbox"]:checked');
+                document.getElementById('add-suggestions-btn').disabled = !anyChecked;
+            });
+        }
+
+        const tasksSection = document.getElementById('tasks-section');
+        if (tasksSection) {
+            tasksSection.addEventListener('change', function() {
+                const anyChecked = tasksSection.querySelector('input[type="checkbox"]:checked');
+                document.getElementById('add-tasks-btn').disabled = !anyChecked;
+            });
+        }
+    </script>
+{% endblock %}
