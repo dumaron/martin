@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from fpdf import FPDF
@@ -29,7 +30,7 @@ def main_render(request, date):
 		active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
 
 	pending_tasks = Task.objects.filter(
-		project__status='active', status__in=['pending', 'active']
+		Q(project__status='active') | Q(project__isnull=True), status__in=['pending', 'active']
 	).select_related('project')
 
 	return render(

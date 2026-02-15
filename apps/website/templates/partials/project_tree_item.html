@@ -12,7 +12,10 @@
     {% for task in project.tasks.all %} {# Claude can you filter these at query level, instead of getting all? #}
         {% if task.status != 'completed' %}
         <li class="task-item">
-            <input type="checkbox" name="task_ids" value="{{ task.id }}" /> {{ task.description }}
+            <input type="checkbox" name="task_ids" value="{{ task.id }}" />
+            <a hx-get="{% url 'projects_page.partials.task_detail' task.id %}"
+               hx-target=".secondary-content"
+               hx-swap="innerHTML">{{ task.description }}</a>
         </li>
         {% endif %}
     {% endfor %}
