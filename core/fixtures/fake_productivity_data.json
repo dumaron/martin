@@ -1,0 +1,934 @@
+[
+	{
+		"model": "auth.user",
+		"pk": 1,
+		"fields": {
+			"password": "pbkdf2_sha256$1200000$xrVvgNL08lpYpAjL1vreB8$Y9zGQAu6DNfedCzykxXNxTvgCekdGbSkVtx/eVOfvWs=",
+			"is_superuser": true,
+			"username": "demo",
+			"first_name": "Demo",
+			"last_name": "User",
+			"email": "demo@example.com",
+			"is_staff": true,
+			"is_active": true,
+			"date_joined": "2025-12-01T10:00:00Z"
+		}
+	},
+
+	{
+		"model": "core.project",
+		"pk": 1,
+		"fields": {
+			"title": "Redesign personal website",
+			"goal": "Create a clean, modern portfolio site to showcase recent work and attract freelance clients",
+			"status": "active",
+			"created_at": "2026-01-10T09:00:00Z",
+			"updated_at": "2026-02-18T14:30:00Z",
+			"parent": null
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 2,
+		"fields": {
+			"title": "Plan summer trip to Japan",
+			"goal": "Organize a 2-week trip through Tokyo, Kyoto, and Osaka for August",
+			"status": "active",
+			"created_at": "2026-01-15T11:00:00Z",
+			"updated_at": "2026-02-20T10:00:00Z",
+			"parent": null
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 3,
+		"fields": {
+			"title": "Book flights and accommodation",
+			"goal": "",
+			"status": "active",
+			"created_at": "2026-01-16T09:30:00Z",
+			"updated_at": "2026-02-19T16:00:00Z",
+			"parent": 2
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 4,
+		"fields": {
+			"title": "Plan day-by-day itinerary",
+			"goal": "",
+			"status": "active",
+			"created_at": "2026-01-16T09:45:00Z",
+			"updated_at": "2026-02-17T11:00:00Z",
+			"parent": 2
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 5,
+		"fields": {
+			"title": "Home office ergonomic overhaul",
+			"goal": "Set up a comfortable, healthy workspace to reduce back pain during long work sessions",
+			"status": "active",
+			"created_at": "2026-01-20T08:15:00Z",
+			"updated_at": "2026-02-22T09:00:00Z",
+			"parent": null
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 6,
+		"fields": {
+			"title": "Learn Mediterranean cooking",
+			"goal": "Build a repertoire of 10 healthy Mediterranean dishes I can cook confidently",
+			"status": "active",
+			"created_at": "2026-01-25T18:00:00Z",
+			"updated_at": "2026-02-23T12:00:00Z",
+			"parent": null
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 7,
+		"fields": {
+			"title": "Build emergency fund",
+			"goal": "Save 6 months of living expenses in a high-yield savings account",
+			"status": "active",
+			"created_at": "2026-01-05T10:00:00Z",
+			"updated_at": "2026-02-15T08:00:00Z",
+			"parent": null
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 8,
+		"fields": {
+			"title": "Organize digital photo archive",
+			"goal": "Sort 10 years of photos into folders by year/event and back up to external drive",
+			"status": "completed",
+			"created_at": "2025-12-01T14:00:00Z",
+			"updated_at": "2026-01-28T17:30:00Z",
+			"parent": null
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 9,
+		"fields": {
+			"title": "Read 'Thinking, Fast and Slow'",
+			"goal": "",
+			"status": "pending",
+			"created_at": "2026-02-10T20:00:00Z",
+			"updated_at": "2026-02-10T20:00:00Z",
+			"parent": null
+		}
+	},
+	{
+		"model": "core.project",
+		"pk": 10,
+		"fields": {
+			"title": "Prepare workshop on personal productivity",
+			"goal": "Design a 90-minute interactive workshop on GTD basics for the team at work",
+			"status": "active",
+			"created_at": "2026-02-05T09:00:00Z",
+			"updated_at": "2026-02-24T11:00:00Z",
+			"parent": null
+		}
+	},
+
+	{"model": "core.task", "pk": 1, "fields": {
+		"description": "Buy domain name on Namecheap",
+		"project": 1, "status": "completed",
+		"created_at": "2026-01-10T09:10:00Z", "completed_at": "2026-01-12T15:00:00Z"
+	}},
+	{"model": "core.task", "pk": 2, "fields": {
+		"description": "Research static site generators (Hugo, Astro, 11ty)",
+		"project": 1, "status": "completed",
+		"created_at": "2026-01-10T09:15:00Z", "completed_at": "2026-01-18T20:00:00Z"
+	}},
+	{"model": "core.task", "pk": 3, "fields": {
+		"description": "Wireframe homepage and project gallery layout",
+		"project": 1, "status": "active",
+		"created_at": "2026-01-10T09:20:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 4, "fields": {
+		"description": "Write copy for the About page",
+		"project": 1, "status": "pending",
+		"created_at": "2026-01-10T09:25:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 5, "fields": {
+		"description": "Set up Plausible analytics",
+		"project": 1, "status": "pending",
+		"created_at": "2026-01-10T09:30:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 6, "fields": {
+		"description": "Ask two friends to review the draft before launch",
+		"project": 1, "status": "pending",
+		"created_at": "2026-01-10T09:35:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 7, "fields": {
+		"description": "Renew passport at the post office",
+		"project": 2, "status": "completed",
+		"created_at": "2026-01-15T11:10:00Z", "completed_at": "2026-01-22T12:00:00Z"
+	}},
+	{"model": "core.task", "pk": 8, "fields": {
+		"description": "Apply for travel insurance",
+		"project": 2, "status": "pending",
+		"created_at": "2026-01-15T11:15:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 9, "fields": {
+		"description": "Exchange currency at the bank",
+		"project": 2, "status": "pending",
+		"created_at": "2026-01-15T11:20:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 10, "fields": {
+		"description": "Compare round-trip flight prices on Google Flights",
+		"project": 3, "status": "completed",
+		"created_at": "2026-01-16T09:35:00Z", "completed_at": "2026-01-20T18:00:00Z"
+	}},
+	{"model": "core.task", "pk": 11, "fields": {
+		"description": "Book Airbnb in Shinjuku for the first week",
+		"project": 3, "status": "active",
+		"created_at": "2026-01-16T09:40:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 12, "fields": {
+		"description": "Reserve a ryokan in Kyoto for three nights",
+		"project": 3, "status": "pending",
+		"created_at": "2026-01-16T09:45:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 13, "fields": {
+		"description": "Look into Osaka hostel options near Dotonbori",
+		"project": 3, "status": "pending",
+		"created_at": "2026-01-16T09:50:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 14, "fields": {
+		"description": "Research day trips from Tokyo (Kamakura, Nikko)",
+		"project": 4, "status": "active",
+		"created_at": "2026-01-16T10:00:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 15, "fields": {
+		"description": "List must-visit temples in Kyoto",
+		"project": 4, "status": "pending",
+		"created_at": "2026-01-16T10:05:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 16, "fields": {
+		"description": "Find a sushi-making class in Osaka",
+		"project": 4, "status": "pending",
+		"created_at": "2026-01-16T10:10:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 17, "fields": {
+		"description": "Map out JR Pass coverage for inter-city travel",
+		"project": 4, "status": "pending",
+		"created_at": "2026-01-16T10:15:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 18, "fields": {
+		"description": "Buy a desk lamp with warm light",
+		"project": 5, "status": "completed",
+		"created_at": "2026-01-20T08:20:00Z", "completed_at": "2026-01-25T19:00:00Z"
+	}},
+	{"model": "core.task", "pk": 19, "fields": {
+		"description": "Order sit-stand desk from FlexiSpot",
+		"project": 5, "status": "active",
+		"created_at": "2026-01-20T08:25:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 20, "fields": {
+		"description": "Pick a monitor arm that fits a 27\" display",
+		"project": 5, "status": "pending",
+		"created_at": "2026-01-20T08:30:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 21, "fields": {
+		"description": "Install under-desk cable management tray",
+		"project": 5, "status": "pending",
+		"created_at": "2026-01-20T08:35:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 22, "fields": {
+		"description": "Try out a split keyboard (Kinesis or ZSA)",
+		"project": 5, "status": "pending",
+		"created_at": "2026-01-20T08:40:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 23, "fields": {
+		"description": "Stock up on olive oil, tahini, and spice basics",
+		"project": 6, "status": "completed",
+		"created_at": "2026-01-25T18:10:00Z", "completed_at": "2026-01-27T11:00:00Z"
+	}},
+	{"model": "core.task", "pk": 24, "fields": {
+		"description": "Try the shakshuka recipe from Ottolenghi",
+		"project": 6, "status": "completed",
+		"created_at": "2026-01-25T18:15:00Z", "completed_at": "2026-02-02T13:00:00Z"
+	}},
+	{"model": "core.task", "pk": 25, "fields": {
+		"description": "Practice making fresh pasta from scratch",
+		"project": 6, "status": "active",
+		"created_at": "2026-01-25T18:20:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 26, "fields": {
+		"description": "Find a good farmers market for weekend shopping",
+		"project": 6, "status": "pending",
+		"created_at": "2026-01-25T18:25:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 27, "fields": {
+		"description": "Cook a full mezze spread for Saturday dinner",
+		"project": 6, "status": "pending",
+		"created_at": "2026-01-25T18:30:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 28, "fields": {
+		"description": "Review and cancel unused subscriptions",
+		"project": 7, "status": "completed",
+		"created_at": "2026-01-05T10:10:00Z", "completed_at": "2026-01-08T20:00:00Z"
+	}},
+	{"model": "core.task", "pk": 29, "fields": {
+		"description": "Open a high-yield savings account",
+		"project": 7, "status": "completed",
+		"created_at": "2026-01-05T10:15:00Z", "completed_at": "2026-01-14T10:00:00Z"
+	}},
+	{"model": "core.task", "pk": 30, "fields": {
+		"description": "Set up automatic monthly transfer of 500 EUR",
+		"project": 7, "status": "active",
+		"created_at": "2026-01-05T10:20:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 31, "fields": {
+		"description": "Revisit budget spreadsheet at end of month",
+		"project": 7, "status": "pending",
+		"created_at": "2026-01-05T10:25:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 32, "fields": {
+		"description": "Download all photos from Google Photos",
+		"project": 8, "status": "completed",
+		"created_at": "2025-12-01T14:10:00Z", "completed_at": "2025-12-05T22:00:00Z"
+	}},
+	{"model": "core.task", "pk": 33, "fields": {
+		"description": "Sort into year/event folder structure",
+		"project": 8, "status": "completed",
+		"created_at": "2025-12-01T14:15:00Z", "completed_at": "2025-12-15T18:00:00Z"
+	}},
+	{"model": "core.task", "pk": 34, "fields": {
+		"description": "Delete duplicates with dupeGuru",
+		"project": 8, "status": "completed",
+		"created_at": "2025-12-01T14:20:00Z", "completed_at": "2026-01-10T16:00:00Z"
+	}},
+	{"model": "core.task", "pk": 35, "fields": {
+		"description": "Copy final archive to external SSD",
+		"project": 8, "status": "completed",
+		"created_at": "2025-12-01T14:25:00Z", "completed_at": "2026-01-28T17:00:00Z"
+	}},
+
+	{"model": "core.task", "pk": 36, "fields": {
+		"description": "Borrow from the library or buy Kindle version",
+		"project": 9, "status": "pending",
+		"created_at": "2026-02-10T20:05:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 37, "fields": {
+		"description": "Outline the three main sections of the talk",
+		"project": 10, "status": "completed",
+		"created_at": "2026-02-05T09:10:00Z", "completed_at": "2026-02-08T14:00:00Z"
+	}},
+	{"model": "core.task", "pk": 38, "fields": {
+		"description": "Create slide deck with key concepts and examples",
+		"project": 10, "status": "active",
+		"created_at": "2026-02-05T09:15:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 39, "fields": {
+		"description": "Prepare a hands-on exercise for the capture step",
+		"project": 10, "status": "pending",
+		"created_at": "2026-02-05T09:20:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 40, "fields": {
+		"description": "Book the meeting room for March 15th",
+		"project": 10, "status": "pending",
+		"created_at": "2026-02-05T09:25:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 41, "fields": {
+		"description": "Send calendar invite to all participants",
+		"project": 10, "status": "pending",
+		"created_at": "2026-02-05T09:30:00Z", "completed_at": null
+	}},
+
+	{"model": "core.task", "pk": 42, "fields": {
+		"description": "Call dentist to schedule annual checkup",
+		"project": null, "status": "pending",
+		"created_at": "2026-02-20T08:00:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 43, "fields": {
+		"description": "Buy a birthday gift for Sarah's party on Saturday",
+		"project": null, "status": "active",
+		"created_at": "2026-02-22T12:00:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 44, "fields": {
+		"description": "Fix the leaking kitchen faucet",
+		"project": null, "status": "pending",
+		"created_at": "2026-02-18T19:00:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 45, "fields": {
+		"description": "Drop off winter clothes at the donation bin",
+		"project": null, "status": "pending",
+		"created_at": "2026-02-15T10:00:00Z", "completed_at": null
+	}},
+	{"model": "core.task", "pk": 46, "fields": {
+		"description": "Reply to the email from the landlord about the lease renewal",
+		"project": null, "status": "active",
+		"created_at": "2026-02-23T09:00:00Z", "completed_at": null
+	}},
+
+	{
+		"model": "core.maybe",
+		"pk": 1,
+		"fields": {
+			"title": "Start a small vegetable garden on the balcony",
+			"notes": "Tomatoes, herbs, maybe some chili peppers. Check if the balcony gets enough sunlight.",
+			"status": "open",
+			"created_at": "2026-01-20T21:00:00Z",
+			"updated_at": "2026-01-20T21:00:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 2,
+		"fields": {
+			"title": "Learn basic woodworking",
+			"notes": "There is a makerspace downtown that offers weekend intro courses. Could start with a simple shelf.",
+			"status": "open",
+			"created_at": "2026-01-22T19:30:00Z",
+			"updated_at": "2026-01-22T19:30:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 3,
+		"fields": {
+			"title": "Take an online photography course",
+			"notes": "Interested in street photography. Check courses on Domestika or Skillshare.",
+			"status": "open",
+			"created_at": "2026-01-28T20:00:00Z",
+			"updated_at": "2026-01-28T20:00:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 4,
+		"fields": {
+			"title": "Volunteer at the local animal shelter",
+			"notes": "They need help on Saturday mornings. Would be a nice way to spend time outdoors.",
+			"status": "open",
+			"created_at": "2026-02-01T18:00:00Z",
+			"updated_at": "2026-02-01T18:00:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 5,
+		"fields": {
+			"title": "Write a short story",
+			"notes": "Have had an idea about a time traveler stuck in a library. Just need to sit down and draft it.",
+			"status": "open",
+			"created_at": "2026-02-05T22:00:00Z",
+			"updated_at": "2026-02-05T22:00:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 6,
+		"fields": {
+			"title": "Build a home automation system with Raspberry Pi",
+			"notes": "Start with smart lighting and a temperature sensor. Home Assistant looks like the right platform.",
+			"status": "open",
+			"created_at": "2026-02-08T15:00:00Z",
+			"updated_at": "2026-02-08T15:00:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 7,
+		"fields": {
+			"title": "Learn to play the ukulele",
+			"notes": "Seems easier to pick up than guitar. There's a second-hand one for sale on the neighborhood board.",
+			"status": "open",
+			"created_at": "2026-02-12T20:30:00Z",
+			"updated_at": "2026-02-12T20:30:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 8,
+		"fields": {
+			"title": "Start a book club with friends",
+			"notes": "Monthly meetups, rotating who picks the book. Ask Marco and Elisa if they are interested.",
+			"status": "open",
+			"created_at": "2026-02-14T19:00:00Z",
+			"updated_at": "2026-02-14T19:00:00Z"
+		}
+	},
+	{
+		"model": "core.maybe",
+		"pk": 9,
+		"fields": {
+			"title": "Train for a half marathon",
+			"notes": "Knee has been bothering me lately. Probably better to focus on swimming first.",
+			"status": "dismissed",
+			"created_at": "2026-01-10T17:00:00Z",
+			"updated_at": "2026-02-03T10:00:00Z"
+		}
+	},
+	{"model": "core.maybe", "pk": 10, "fields": {
+		"title": "Try bouldering at the local climbing gym",
+		"notes": "Good full-body workout. The gym near the station has day passes for 12 EUR.",
+		"status": "open", "created_at": "2025-11-05T19:00:00Z", "updated_at": "2025-11-05T19:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 11, "fields": {
+		"title": "Learn to bake sourdough bread",
+		"notes": "Need to get a starter going first. Ask Laura if she can share some of hers.",
+		"status": "open", "created_at": "2025-11-08T20:30:00Z", "updated_at": "2025-11-08T20:30:00Z"
+	}},
+	{"model": "core.maybe", "pk": 12, "fields": {
+		"title": "Set up a personal wiki or digital garden",
+		"notes": "Obsidian, Notion, or maybe just a static site with wiki links. Would help organize notes.",
+		"status": "open", "created_at": "2025-11-12T14:00:00Z", "updated_at": "2025-11-12T14:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 13, "fields": {
+		"title": "Take a weekend trip to the Dolomites",
+		"notes": "Autumn colors would be amazing. Check rifugio availability for a one-night hike.",
+		"status": "open", "created_at": "2025-11-15T18:00:00Z", "updated_at": "2025-11-15T18:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 14, "fields": {
+		"title": "Learn to develop black-and-white film at home",
+		"notes": "Starter kit with chemicals and a developing tank costs around 50 EUR. Would be fun with the old Pentax.",
+		"status": "open", "created_at": "2025-11-18T21:00:00Z", "updated_at": "2025-11-18T21:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 15, "fields": {
+		"title": "Read the complete works of Italo Calvino",
+		"notes": "Already read If on a winter's night a traveler. Start with Invisible Cities next.",
+		"status": "open", "created_at": "2025-11-22T20:00:00Z", "updated_at": "2025-11-22T20:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 16, "fields": {
+		"title": "Build a custom mechanical keyboard",
+		"notes": "Cherry MX Brown switches, 65% layout. Check r/MechanicalKeyboards for build guides.",
+		"status": "open", "created_at": "2025-11-25T15:00:00Z", "updated_at": "2025-11-25T15:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 17, "fields": {
+		"title": "Organize a neighborhood cleanup day",
+		"notes": "Could post on the building WhatsApp group. Spring would be the best time.",
+		"status": "open", "created_at": "2025-11-28T17:30:00Z", "updated_at": "2025-11-28T17:30:00Z"
+	}},
+	{"model": "core.maybe", "pk": 18, "fields": {
+		"title": "Try pottery or ceramics classes",
+		"notes": "There is a studio on Via Roma that offers evening beginner courses.",
+		"status": "open", "created_at": "2025-12-01T19:00:00Z", "updated_at": "2025-12-01T19:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 19, "fields": {
+		"title": "Learn basic car maintenance",
+		"notes": "At least how to change oil, replace wiper blades, and check tire pressure properly.",
+		"status": "open", "created_at": "2025-12-03T10:00:00Z", "updated_at": "2025-12-03T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 20, "fields": {
+		"title": "Set up a proper backup system for all devices",
+		"notes": "NAS with RAID? Or just a cloud solution like Backblaze. Need to protect photos and documents.",
+		"status": "open", "created_at": "2025-12-05T16:00:00Z", "updated_at": "2025-12-05T16:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 21, "fields": {
+		"title": "Watch all of Kubrick's films in chronological order",
+		"notes": "Start with Fear and Desire (1953). Could do one per week.",
+		"status": "open", "created_at": "2025-12-08T21:00:00Z", "updated_at": "2025-12-08T21:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 22, "fields": {
+		"title": "Learn to swim butterfly stroke",
+		"notes": "Already comfortable with freestyle and backstroke. The pool offers adult technique sessions on Tuesdays.",
+		"status": "open", "created_at": "2025-12-10T08:00:00Z", "updated_at": "2025-12-10T08:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 23, "fields": {
+		"title": "Build a small lending library box for the building entrance",
+		"notes": "Wooden box, weatherproof, mounted on the wall. Fill with books I've already read.",
+		"status": "open", "created_at": "2025-12-12T14:30:00Z", "updated_at": "2025-12-12T14:30:00Z"
+	}},
+	{"model": "core.maybe", "pk": 24, "fields": {
+		"title": "Start a daily journaling habit",
+		"notes": "Morning pages or evening reflection. Just 10 minutes. Try it for 30 days first.",
+		"status": "open", "created_at": "2025-12-14T07:00:00Z", "updated_at": "2025-12-14T07:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 25, "fields": {
+		"title": "Visit the thermal baths in Saturnia",
+		"notes": "Free natural hot springs in southern Tuscany. Best to go on a weekday to avoid crowds.",
+		"status": "open", "created_at": "2025-12-16T20:00:00Z", "updated_at": "2025-12-16T20:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 26, "fields": {
+		"title": "Learn to use a sewing machine",
+		"notes": "Mom has an old Singer she never uses. Would be great for basic repairs and alterations.",
+		"status": "open", "created_at": "2025-12-18T11:00:00Z", "updated_at": "2025-12-18T11:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 27, "fields": {
+		"title": "Try intermittent fasting for a month",
+		"notes": "16:8 window. Skip breakfast, eat between noon and 8 PM. Read more about the science first.",
+		"status": "open", "created_at": "2025-12-20T09:00:00Z", "updated_at": "2025-12-20T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 28, "fields": {
+		"title": "Contribute to an open source project",
+		"notes": "Look for good-first-issue tags on GitHub. Something in Python or JavaScript would be ideal.",
+		"status": "open", "created_at": "2025-12-22T16:00:00Z", "updated_at": "2025-12-22T16:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 29, "fields": {
+		"title": "Declutter the apartment room by room",
+		"notes": "Follow the KonMari method. Start with clothes, then books, then miscellaneous.",
+		"status": "open", "created_at": "2025-12-24T10:00:00Z", "updated_at": "2025-12-24T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 30, "fields": {
+		"title": "Take a first aid course",
+		"notes": "Red Cross offers weekend courses. Good skill to have, and the certificate lasts 3 years.",
+		"status": "open", "created_at": "2025-12-26T15:00:00Z", "updated_at": "2025-12-26T15:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 31, "fields": {
+		"title": "Build a standing desk from IKEA parts",
+		"notes": "Saw a hack using IVAR shelving and a LINNMON top. Much cheaper than a motorized one.",
+		"status": "dismissed", "created_at": "2025-12-28T13:00:00Z", "updated_at": "2026-01-20T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 32, "fields": {
+		"title": "Learn to solve a Rubik's cube",
+		"notes": "Start with the beginner method, then move to CFOP. There are great YouTube tutorials.",
+		"status": "open", "created_at": "2025-12-30T18:00:00Z", "updated_at": "2025-12-30T18:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 33, "fields": {
+		"title": "Explore the abandoned railway line trail on bike",
+		"notes": "The old Ferrovia della Val di Fiemme has been converted to a bike path. About 50 km round trip.",
+		"status": "open", "created_at": "2026-01-02T11:00:00Z", "updated_at": "2026-01-02T11:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 34, "fields": {
+		"title": "Make homemade limoncello",
+		"notes": "Need organic lemons, grain alcohol, sugar, and patience. Makes a great gift.",
+		"status": "open", "created_at": "2026-01-03T20:00:00Z", "updated_at": "2026-01-03T20:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 35, "fields": {
+		"title": "Learn chess openings properly",
+		"notes": "Know the basics but always get crushed in the middlegame. Try the Lichess studies.",
+		"status": "open", "created_at": "2026-01-04T22:00:00Z", "updated_at": "2026-01-04T22:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 36, "fields": {
+		"title": "Go stargazing somewhere with no light pollution",
+		"notes": "Check the dark sky map. Maybe the hills south of town. Need to borrow binoculars at least.",
+		"status": "open", "created_at": "2026-01-06T21:00:00Z", "updated_at": "2026-01-06T21:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 37, "fields": {
+		"title": "Set up a fish tank with live plants",
+		"notes": "Low-tech planted tank. Neon tetras, shrimp, and some java fern. 60-liter would be enough.",
+		"status": "open", "created_at": "2026-01-07T17:00:00Z", "updated_at": "2026-01-07T17:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 38, "fields": {
+		"title": "Try a digital detox weekend",
+		"notes": "No phone, no laptop from Friday evening to Sunday morning. Just books and walks.",
+		"status": "open", "created_at": "2026-01-08T08:00:00Z", "updated_at": "2026-01-08T08:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 39, "fields": {
+		"title": "Paint the bedroom walls a warmer color",
+		"notes": "Something like a warm gray or soft terracotta. Need to move furniture first.",
+		"status": "open", "created_at": "2026-01-09T14:00:00Z", "updated_at": "2026-01-09T14:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 40, "fields": {
+		"title": "Try a coworking space for a week",
+		"notes": "Talent Garden has day passes. Might help with focus and meet interesting people.",
+		"status": "open", "created_at": "2026-01-11T10:00:00Z", "updated_at": "2026-01-11T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 41, "fields": {
+		"title": "Learn to make cocktails at home",
+		"notes": "Start with the classics: Negroni, Old Fashioned, Spritz. Need a proper jigger and shaker.",
+		"status": "open", "created_at": "2026-01-12T19:00:00Z", "updated_at": "2026-01-12T19:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 42, "fields": {
+		"title": "Take a calligraphy workshop",
+		"notes": "Italic hand or brush lettering. Could be nice for handwritten cards and notes.",
+		"status": "open", "created_at": "2026-01-13T16:00:00Z", "updated_at": "2026-01-13T16:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 43, "fields": {
+		"title": "Visit the Uffizi Gallery in Florence",
+		"notes": "Haven't been since school. Book tickets online to skip the queue. Combine with a day trip.",
+		"status": "open", "created_at": "2026-01-14T12:00:00Z", "updated_at": "2026-01-14T12:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 44, "fields": {
+		"title": "Try meal prepping on Sundays",
+		"notes": "Cook 3-4 dishes in bulk for the week. Would save time and money on weekday lunches.",
+		"status": "open", "created_at": "2026-01-15T09:00:00Z", "updated_at": "2026-01-15T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 45, "fields": {
+		"title": "Learn to identify local birds by song",
+		"notes": "Download the Merlin Bird ID app. Start with common garden birds: robin, blackbird, tit.",
+		"status": "open", "created_at": "2026-01-16T07:30:00Z", "updated_at": "2026-01-16T07:30:00Z"
+	}},
+	{"model": "core.maybe", "pk": 46, "fields": {
+		"title": "Build a small bookshelf from reclaimed wood",
+		"notes": "The pallet wood behind the supermarket would work. Just need sandpaper and varnish.",
+		"status": "open", "created_at": "2026-01-17T15:00:00Z", "updated_at": "2026-01-17T15:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 47, "fields": {
+		"title": "Sign up for a wine tasting course",
+		"notes": "The enoteca on Corso Italia does monthly tastings. Start with local wines from Trentino.",
+		"status": "open", "created_at": "2026-01-18T18:00:00Z", "updated_at": "2026-01-18T18:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 48, "fields": {
+		"title": "Digitize old family photo albums",
+		"notes": "Borrow a flatbed scanner or use the Google PhotoScan app. Start with grandma's albums.",
+		"status": "open", "created_at": "2026-01-19T11:00:00Z", "updated_at": "2026-01-19T11:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 49, "fields": {
+		"title": "Try a meditation retreat",
+		"notes": "Even a one-day silent retreat could be interesting. Check Plum Village or local Zen centers.",
+		"status": "open", "created_at": "2026-01-21T20:00:00Z", "updated_at": "2026-01-21T20:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 50, "fields": {
+		"title": "Learn to sharpen kitchen knives properly",
+		"notes": "Get a whetstone (1000/3000 grit combo). There are good technique videos on YouTube.",
+		"status": "open", "created_at": "2026-01-23T13:00:00Z", "updated_at": "2026-01-23T13:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 51, "fields": {
+		"title": "Run a tabletop RPG campaign for friends",
+		"notes": "D&D 5e or something lighter like Blades in the Dark. Would need to prep a short adventure first.",
+		"status": "open", "created_at": "2026-01-24T21:00:00Z", "updated_at": "2026-01-24T21:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 52, "fields": {
+		"title": "Adopt a cat from the shelter",
+		"notes": "Would need to cat-proof the balcony and get the landlord's written permission first.",
+		"status": "open", "created_at": "2026-01-25T10:00:00Z", "updated_at": "2026-01-25T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 53, "fields": {
+		"title": "Learn basic electronics with Arduino",
+		"notes": "Starter kit with breadboard and LEDs. Could eventually build a weather station.",
+		"status": "open", "created_at": "2026-01-26T16:00:00Z", "updated_at": "2026-01-26T16:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 54, "fields": {
+		"title": "Do a bike tour along the Adige river",
+		"notes": "The cycle path from Bolzano to Verona is about 150 km. Could do it in two days with an overnight stop.",
+		"status": "open", "created_at": "2026-01-27T09:00:00Z", "updated_at": "2026-01-27T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 55, "fields": {
+		"title": "Learn to fold origami beyond paper cranes",
+		"notes": "Modular origami looks incredible. Start with a Sonobe cube.",
+		"status": "open", "created_at": "2026-01-29T19:00:00Z", "updated_at": "2026-01-29T19:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 56, "fields": {
+		"title": "Subscribe to a CSA farm box",
+		"notes": "Community-supported agriculture. Weekly box of seasonal vegetables delivered to the door.",
+		"status": "open", "created_at": "2026-01-30T12:00:00Z", "updated_at": "2026-01-30T12:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 57, "fields": {
+		"title": "Try ice skating at the winter rink",
+		"notes": "The outdoor rink in Piazza Fiera is open until March. Skate rental is only 5 EUR.",
+		"status": "open", "created_at": "2026-01-31T17:00:00Z", "updated_at": "2026-01-31T17:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 58, "fields": {
+		"title": "Research getting solar panels for the apartment",
+		"notes": "Balcony solar panels are a thing now. 600W plug-in systems don't need permits in most cases.",
+		"status": "open", "created_at": "2026-02-02T10:00:00Z", "updated_at": "2026-02-02T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 59, "fields": {
+		"title": "Learn to play a song on the piano",
+		"notes": "There's a digital piano at the community center. Even just one piece — Clair de Lune would be the dream.",
+		"status": "open", "created_at": "2026-02-03T20:00:00Z", "updated_at": "2026-02-03T20:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 60, "fields": {
+		"title": "Build a spice rack for the kitchen",
+		"notes": "Wall-mounted, so it doesn't take counter space. Could use small IKEA shelves or build from scratch.",
+		"status": "open", "created_at": "2026-02-04T14:00:00Z", "updated_at": "2026-02-04T14:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 61, "fields": {
+		"title": "Visit a planetarium show",
+		"notes": "The science museum has a new show about deep space. Friday evening sessions.",
+		"status": "open", "created_at": "2026-02-06T18:00:00Z", "updated_at": "2026-02-06T18:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 62, "fields": {
+		"title": "Try stand-up paddleboarding on the lake",
+		"notes": "Rentals available at Lago di Caldonazzo in summer. Looks very peaceful.",
+		"status": "open", "created_at": "2026-02-07T09:00:00Z", "updated_at": "2026-02-07T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 63, "fields": {
+		"title": "Make a timelapse video of the sunset from the balcony",
+		"notes": "Use the phone with a small tripod. One photo every 10 seconds for an hour should work.",
+		"status": "open", "created_at": "2026-02-09T17:00:00Z", "updated_at": "2026-02-09T17:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 64, "fields": {
+		"title": "Learn to make fresh mozzarella",
+		"notes": "Just need milk, citric acid, and rennet. There are 30-minute recipes online.",
+		"status": "open", "created_at": "2026-02-10T11:00:00Z", "updated_at": "2026-02-10T11:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 65, "fields": {
+		"title": "Explore the local flea market on the first Sunday",
+		"notes": "Piazza del Mercato, first Sunday of each month. Might find interesting vintage stuff.",
+		"status": "open", "created_at": "2026-02-11T08:00:00Z", "updated_at": "2026-02-11T08:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 66, "fields": {
+		"title": "Create a photo wall in the hallway",
+		"notes": "Print 10-15 favorite photos in black and white. Use matching frames from IKEA.",
+		"status": "open", "created_at": "2026-02-13T15:00:00Z", "updated_at": "2026-02-13T15:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 67, "fields": {
+		"title": "Try cross-country skiing this winter",
+		"notes": "Rentals and groomed trails at Lavazè pass. Much cheaper than downhill skiing.",
+		"status": "open", "created_at": "2026-02-15T10:00:00Z", "updated_at": "2026-02-15T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 68, "fields": {
+		"title": "Read Gödel, Escher, Bach cover to cover",
+		"notes": "Tried once and got stuck in chapter 4. Maybe with a reading group it would be more manageable.",
+		"status": "open", "created_at": "2026-02-16T21:00:00Z", "updated_at": "2026-02-16T21:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 69, "fields": {
+		"title": "Ferment homemade kimchi",
+		"notes": "Napa cabbage, gochugaru, fish sauce. Needs a fermentation jar. Ready in about a week.",
+		"status": "open", "created_at": "2026-02-17T12:00:00Z", "updated_at": "2026-02-17T12:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 70, "fields": {
+		"title": "Take the train to Vienna for a long weekend",
+		"notes": "Direct Eurocity from Bolzano, about 4.5 hours. Visit museums, coffee houses, and the Naschmarkt.",
+		"status": "open", "created_at": "2026-02-18T16:00:00Z", "updated_at": "2026-02-18T16:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 71, "fields": {
+		"title": "Set up a proper password manager",
+		"notes": "Bitwarden is free and open source. Need to migrate from the browser's saved passwords.",
+		"status": "open", "created_at": "2026-02-19T09:00:00Z", "updated_at": "2026-02-19T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 72, "fields": {
+		"title": "Learn to draw faces and portraits",
+		"notes": "Drawabox and Proko have free structured lessons. Just need a sketchbook and pencils.",
+		"status": "open", "created_at": "2026-02-20T14:00:00Z", "updated_at": "2026-02-20T14:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 73, "fields": {
+		"title": "Try a silent reading party",
+		"notes": "People gather at a bar, read in silence for an hour, then chat. Saw one advertised at Bookique.",
+		"status": "open", "created_at": "2026-02-21T19:00:00Z", "updated_at": "2026-02-21T19:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 74, "fields": {
+		"title": "Improve touch typing speed",
+		"notes": "Currently around 60 WPM. Keybr.com and monkeytype are good free tools. Aim for 80+.",
+		"status": "open", "created_at": "2026-02-22T10:00:00Z", "updated_at": "2026-02-22T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 75, "fields": {
+		"title": "Cook a full Thanksgiving dinner for friends",
+		"notes": "Not traditional here, but could be fun. Turkey, stuffing, cranberry sauce, pumpkin pie.",
+		"status": "dismissed", "created_at": "2025-11-20T18:00:00Z", "updated_at": "2025-12-10T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 76, "fields": {
+		"title": "Research switching to a cooperative bank",
+		"notes": "Banca Etica or a local credit union. Check fees, services, and how easy the migration is.",
+		"status": "open", "created_at": "2026-02-23T11:00:00Z", "updated_at": "2026-02-23T11:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 77, "fields": {
+		"title": "Try geocaching on a weekend walk",
+		"notes": "Download the app and see what's hidden nearby. Could make regular walks more interesting.",
+		"status": "open", "created_at": "2026-02-24T08:00:00Z", "updated_at": "2026-02-24T08:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 78, "fields": {
+		"title": "Build a rain garden or small pond in the courtyard",
+		"notes": "Would need the condo association's approval. A half-barrel water feature might be easier.",
+		"status": "open", "created_at": "2025-11-02T10:00:00Z", "updated_at": "2025-11-02T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 79, "fields": {
+		"title": "Learn to tie useful knots",
+		"notes": "Bowline, clove hitch, trucker's hitch, sheet bend. Useful for camping and everyday life.",
+		"status": "open", "created_at": "2025-11-03T15:00:00Z", "updated_at": "2025-11-03T15:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 80, "fields": {
+		"title": "Watch all the films that won the Palme d'Or",
+		"notes": "Could do one per week. Start from recent winners and go back in time.",
+		"status": "open", "created_at": "2025-11-06T20:00:00Z", "updated_at": "2025-11-06T20:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 81, "fields": {
+		"title": "Try cold water swimming in the lake",
+		"notes": "Supposed to be great for circulation and mood. Start in autumn when it's still not too cold.",
+		"status": "open", "created_at": "2025-11-09T07:00:00Z", "updated_at": "2025-11-09T07:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 82, "fields": {
+		"title": "Make homemade pasta shapes beyond spaghetti",
+		"notes": "Orecchiette, cavatelli, trofie. Just flour and water, shaped by hand. Very meditative.",
+		"status": "open", "created_at": "2025-11-11T18:00:00Z", "updated_at": "2025-11-11T18:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 83, "fields": {
+		"title": "Attend a local council meeting",
+		"notes": "They're open to the public. Good to know what's being decided about the neighborhood.",
+		"status": "open", "created_at": "2025-11-14T14:00:00Z", "updated_at": "2025-11-14T14:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 84, "fields": {
+		"title": "Learn enough German to have basic conversations",
+		"notes": "Living near the border, it would be practical. Duolingo to start, then maybe a VHS course.",
+		"status": "open", "created_at": "2025-11-17T09:00:00Z", "updated_at": "2025-11-17T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 85, "fields": {
+		"title": "Try foraging for wild herbs and mushrooms",
+		"notes": "Need a proper guidebook first. Never eat anything without 100% identification. Join a guided walk.",
+		"status": "open", "created_at": "2025-11-19T16:00:00Z", "updated_at": "2025-11-19T16:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 86, "fields": {
+		"title": "Set up a compost bin on the balcony",
+		"notes": "Bokashi system might work for a small space. No smell, and produces fertilizer for the plants.",
+		"status": "open", "created_at": "2025-11-21T11:00:00Z", "updated_at": "2025-11-21T11:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 87, "fields": {
+		"title": "Restore the old wooden chair from the attic",
+		"notes": "Sand it down, fix the wobbly leg, and apply a new finish. Could be a nice weekend project.",
+		"status": "open", "created_at": "2025-11-24T13:00:00Z", "updated_at": "2025-11-24T13:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 88, "fields": {
+		"title": "Map all the public drinking fountains in town",
+		"notes": "Take photos and GPS coordinates, then add them to OpenStreetMap. Useful for runners too.",
+		"status": "open", "created_at": "2025-11-26T10:00:00Z", "updated_at": "2025-11-26T10:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 89, "fields": {
+		"title": "Try speed cubing competitions",
+		"notes": "First learn to solve consistently under 2 minutes, then optimize. Local meetups exist.",
+		"status": "dismissed", "created_at": "2025-12-15T20:00:00Z", "updated_at": "2026-01-05T12:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 90, "fields": {
+		"title": "Plant a tree somewhere",
+		"notes": "Some organizations let you sponsor and plant one locally. Or ask the comune about public spaces.",
+		"status": "open", "created_at": "2025-11-29T09:00:00Z", "updated_at": "2025-11-29T09:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 91, "fields": {
+		"title": "Learn to do a handstand",
+		"notes": "Start against the wall. There are 30-day progressions online. Good for core strength too.",
+		"status": "open", "created_at": "2025-12-02T07:00:00Z", "updated_at": "2025-12-02T07:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 92, "fields": {
+		"title": "Visit every museum in town at least once",
+		"notes": "There are at least 8 I haven't been to. Many have free entry on the first Sunday of the month.",
+		"status": "open", "created_at": "2025-12-04T14:00:00Z", "updated_at": "2025-12-04T14:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 93, "fields": {
+		"title": "Record a field recording of city sounds",
+		"notes": "Markets, trains, church bells, rain on cobblestones. Could use the Zoom H1n recorder.",
+		"status": "open", "created_at": "2025-12-06T16:00:00Z", "updated_at": "2025-12-06T16:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 94, "fields": {
+		"title": "Learn to juggle three balls",
+		"notes": "Apparently takes about 20 minutes of practice per day for a week. Good desk break activity.",
+		"status": "open", "created_at": "2025-12-09T12:00:00Z", "updated_at": "2025-12-09T12:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 95, "fields": {
+		"title": "Host a dinner party with a theme",
+		"notes": "Maybe a 1920s theme, or a cuisine from a country I've never cooked. Dress code optional.",
+		"status": "open", "created_at": "2025-12-11T19:00:00Z", "updated_at": "2025-12-11T19:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 96, "fields": {
+		"title": "Write a letter to my future self",
+		"notes": "Seal it and open in one year. FutureMe.org does digital versions, but handwritten feels better.",
+		"status": "open", "created_at": "2025-12-13T21:00:00Z", "updated_at": "2025-12-13T21:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 97, "fields": {
+		"title": "Try a parkrun on Saturday morning",
+		"notes": "Free 5K timed run in the park. Every Saturday at 9 AM. Just need to register online.",
+		"status": "open", "created_at": "2025-12-17T08:00:00Z", "updated_at": "2025-12-17T08:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 98, "fields": {
+		"title": "Build a terrarium in a glass jar",
+		"notes": "Closed ecosystem with moss, small ferns, and pebbles. Barely needs any maintenance.",
+		"status": "open", "created_at": "2025-12-19T15:00:00Z", "updated_at": "2025-12-19T15:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 99, "fields": {
+		"title": "Explore the local second-hand bookshops properly",
+		"notes": "There are at least three I always walk past. Set aside an afternoon to browse each one.",
+		"status": "open", "created_at": "2025-12-21T11:00:00Z", "updated_at": "2025-12-21T11:00:00Z"
+	}},
+	{"model": "core.maybe", "pk": 100, "fields": {
+		"title": "Learn to make proper espresso at home",
+		"notes": "Moka pot is fine, but maybe invest in a manual lever machine. Fresh beans from the local roaster.",
+		"status": "open", "created_at": "2025-12-23T09:00:00Z", "updated_at": "2025-12-23T09:00:00Z"
+	}}
+]
