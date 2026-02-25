@@ -1,3 +1,6 @@
 <li class="task-item">
-    <input type="checkbox" name="task_ids" value="{{ task.id }}" /> {{ task.description }}
+    <input type="checkbox" name="task_ids" value="{{ task.id }}" />
+    <a hx-get="{% url 'projects_page.partials.task_detail' task.id %}"
+       hx-target=".secondary-content"
+       hx-swap="innerHTML">{{ task.description }}</a>
 </li>

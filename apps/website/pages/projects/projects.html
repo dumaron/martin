@@ -85,7 +85,10 @@
                 <ul class="task-list" id="orphan-task-list">
                 {% for task in orphan_tasks %}
                     <li class="task-item">
-                        <input type="checkbox" name="task_ids" value="{{ task.id }}" /> {{ task.description }}
+                        <input type="checkbox" name="task_ids" value="{{ task.id }}" />
+                        <a hx-get="{% url 'projects_page.partials.task_detail' task.id %}"
+                           hx-target=".secondary-content"
+                           hx-swap="innerHTML">{{ task.description }}</a>
                     </li>
                 {% endfor %}
                     <li class="add-task-link" id="add-orphan-task-link">
@@ -104,4 +107,5 @@
         <button type="submit">Mark selected as done</button>
     </form>
 </div>
+<div class="secondary-content"></div>
 {% endblock %}
