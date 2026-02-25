@@ -15,3 +15,10 @@
     flex: 1;
     width: 100%;
 }
+
+.secondary-content {
+    flex: 1;
+    max-width: 400px;
+    position: sticky;
+    top: 1rem;
+}

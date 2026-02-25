@@ -1,0 +1,30 @@
+<h3>{{ task.description }}</h3>
+
+<table class="horizontal">
+    <tbody>
+        <tr>
+            <th>Project</th>
+            <td>{{ task.project.title|default:"Unassigned" }}</td>
+        </tr>
+        <tr>
+            <th>Created</th>
+            <td>{{ task.created_at|date:"N j, Y" }}</td>
+        </tr>
+        <tr>
+            <th>Status</th>
+            <td>{{ task.get_status_display }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'projects_page.actions.update_task_status' task.id %}" method="post">
+    {% csrf_token %}
+    <label for="status-select">Change status:</label>
+    <select name="status" id="status-select">
+        <option value="pending" {% if task.status == 'pending' %}selected{% endif %}>Pending</option>
+        <option value="active" {% if task.status == 'active' %}selected{% endif %}>Active</option>
+        <option value="completed" {% if task.status == 'completed' %}selected{% endif %}>Completed</option>
+        <option value="aborted" {% if task.status == 'aborted' %}selected{% endif %}>Aborted</option>
+    </select>
+    <button type="submit">Update</button>
+</form>
