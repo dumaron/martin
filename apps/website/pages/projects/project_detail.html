@@ -1,0 +1,49 @@
+<h3>{{ project.title }}</h3>
+
+<table class="horizontal">
+    <tbody>
+        {% if project.goal %}
+        <tr>
+            <th>Goal</th>
+            <td>{{ project.goal }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+            <th>Status</th>
+            <td>{{ project.get_status_display }}</td>
+        </tr>
+        <tr>
+            <th>Created</th>
+            <td>{{ project.created_at|date:"N j, Y" }}</td>
+        </tr>
+        <tr>
+            <th>Last Updated</th>
+            <td>{{ project.updated_at|date:"N j, Y" }}</td>
+        </tr>
+        <tr>
+            <th>Tasks</th>
+            <td>
+                {{ tasks|length }} total
+                {% if tasks %}
+                    {% regroup tasks by is_done as task_groups %}
+                    {% for group in task_groups %}
+                        {% if group.grouper %}
+                            ({{ group.list|length }} completed)
+                        {% endif %}
+                    {% endfor %}
+                {% endif %}
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<form action="{% url 'projects_page.actions.update_project_status' project.id %}" method="post">
+    {% csrf_token %}
+    <label for="project-status-select">Change status:</label>
+    <select name="status" id="project-status-select">
+        {% for value, label in status_choices %}
+        <option value="{{ value }}" {% if project.status == value %}selected{% endif %}>{{ label }}</option>
+        {% endfor %}
+    </select>
+    <button type="submit">Update</button>
+</form>

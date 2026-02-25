@@ -69,6 +69,53 @@ def create_subproject(request, project_id):
 	return render(request, 'projects/add_subproject_form.html', {'project': parent_project})
 
 
+@page.partial('project/<int:project_id>/detail')
+def project_detail(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	tasks = project.tasks.all()
+	return render(
+		request,
+		'projects/project_detail.html',
+		{'project': project, 'tasks': tasks, 'status_choices': Project.STATUS_CHOICES},
+	)
+
+
+@page.action('project/<int:project_id>/update-status')
+def update_project_status(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	new_status = request.POST.get('status', '').strip()
+
+	valid_statuses = {choice[0] for choice in Project.STATUS_CHOICES}
+	if new_status in valid_statuses:
+		project.status = new_status
+		project.save()
+
+	return redirect('projects_page.main_render')
+
+
+@page.partial('task/<int:task_id>/detail')
+def task_detail(request, task_id):
+	task = get_object_or_404(Task, pk=task_id)
+	return render(request, 'projects/task_detail.html', {'task': task})
+
+
+@page.action('task/<int:task_id>/update-status')
+def update_task_status(request, task_id):
+	task = get_object_or_404(Task, pk=task_id)
+	new_status = request.POST.get('status', '').strip()
+
+	status_handlers = {'completed': lambda t: t.mark_as_completed(), 'aborted': lambda t: t.abort()}
+
+	handler = status_handlers.get(new_status)
+	if handler:
+		handler(task)
+	elif new_status in ('pending', 'active'):
+		task.status = new_status
+		task.save()
+
+	return redirect('projects_page.main_render')
+
+
 @page.action('mark-tasks-complete')
 def mark_tasks_complete(request):
 	task_ids = request.POST.getlist('task_ids')

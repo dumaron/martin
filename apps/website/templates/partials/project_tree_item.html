@@ -1,7 +1,8 @@
 <li class="project-item">
     <div class="project-info">
-        {{ project.title }}
-        <a href="{% url 'project_detail_page.main_render' project.id %}">↗</a>
+        <a hx-get="{% url 'projects_page.partials.project_detail' project.id %}"
+           hx-target=".secondary-content"
+           hx-swap="innerHTML">{{ project.title }}</a>
         <a href="{% url 'projects_page.partials.add_subproject_form' project.id %}"
            hx-get="{% url 'projects_page.partials.add_subproject_form' project.id %}"
            hx-target="#project-children-{{ project.id }}"
