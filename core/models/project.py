@@ -22,6 +22,12 @@ class Project(models.Model):
 	def __str__(self):
 		return f'{self.title} ({self.get_status_display()})'
 
+	# I don't like this. I had to define this method to retrieve the list of "active" tasks in a page. I would have
+	# ideally relied on doing that in the template, where these tasks are retrieved, but I cannot do that because of
+	# how functions or methods can be called in Django's template. I miss JSX.
+	def active_tasks(self):
+		return self.tasks.filter(status__in=['active', 'pending'])
+
 	def get_children(self):
 		return Project.objects.filter(parent=self, status='active')
 

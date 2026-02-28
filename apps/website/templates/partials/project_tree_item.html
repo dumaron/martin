@@ -10,15 +10,13 @@
     </div>
 
     <ul class="task-list" id="task-list-{{ project.id }}">
-        {% for task in project.tasks.filter(status__in=['active', 'pending']) %}
-            {% if task.status != 'completed' %}
+        {% for task in project.active_tasks %}
         <li class="task-item">
             <input type="checkbox" name="task_ids" value="{{ task.id }}" />
             <a hx-get="{% url 'projects_page.partials.task_detail' task.id %}"
                hx-target=".secondary-content"
                hx-swap="innerHTML">{{ task.description }}</a>
         </li>
-        {% endif %}
     {% endfor %}
         <li class="add-task-link" id="add-task-link-{{ project.id }}">
             <a href="{% url 'projects_page.partials.add_project_task_form' project.id %}"
