@@ -10,8 +10,8 @@
     </div>
 
     <ul class="task-list" id="task-list-{{ project.id }}">
-    {% for task in project.tasks.all %} {# Claude can you filter these at query level, instead of getting all? #}
-        {% if task.status != 'completed' %}
+        {% for task in project.tasks.filter(status__in=['active', 'pending']) %}
+            {% if task.status != 'completed' %}
         <li class="task-item">
             <input type="checkbox" name="task_ids" value="{{ task.id }}" />
             <a hx-get="{% url 'projects_page.partials.task_detail' task.id %}"
