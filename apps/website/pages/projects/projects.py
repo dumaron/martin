@@ -9,8 +9,8 @@ page = Page(name='projects_page', base_route='pages/projects')
 
 @page.main
 def main_render(request):
-	root_projects = Project.objects.filter(parent__isnull=True, status='active')
-	orphan_tasks = Task.objects.filter(project__isnull=True, status='pending')
+	root_projects = Project.objects.filter(parent__isnull=True, status=['pending', 'active'])
+	orphan_tasks = Task.objects.filter(project__isnull=True, status=['pending', 'active'])
 
 	return render(
 		request, 'projects/projects.html', {'root_projects': root_projects, 'orphan_tasks': orphan_tasks}
