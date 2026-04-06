@@ -30,20 +30,13 @@ def snooze(modeladmin, request, queryset):
 
 
 class BankTransactionAdmin(admin.ModelAdmin):
-	list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on', 'file_type']
+	list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on']
 	search_fields = ['name', 'amount']
 	list_filter = [
-		'file_import__file_type',
 		('snoozed_on', admin.EmptyFieldListFilter),
 		('paired_on', admin.EmptyFieldListFilter),
 	]
 	actions = [snooze]
-
-	def file_type(self, obj):
-		return obj.import_bank_export_page.file_type
-
-	def imported_on(self, obj):
-		return obj.import_bank_export_page.import_date
 
 
 class RecurrenceRuleInline(admin.TabularInline):
