@@ -26,4 +26,3 @@ django-taggit = "==6.1.0"
 
 [requires]
 python_version = "3.12"
-python_full_version = "3.12.2"
