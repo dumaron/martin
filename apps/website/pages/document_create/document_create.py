@@ -33,7 +33,7 @@ class DocumentForm(forms.ModelForm):
 			'name': forms.TextInput(attrs={'placeholder': 'Document name'}),
 			'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional description'}),
 			'location': forms.TextInput(attrs={'placeholder': 'Optional physical location'}),
-			'representative_date': forms.DateInput(attrs={'type': 'date'}),
+			'representative_date': forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'),
 		}
 
 	def __init__(self, *args, **kwargs):
