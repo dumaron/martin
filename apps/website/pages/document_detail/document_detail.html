@@ -32,6 +32,10 @@
 				<td>{{ document.created_at | date:"Y-m-d H:i" }}</td>
 			</tr>
 			<tr>
+				<th>Representative date</th>
+				<td>{{ document.representative_date | date:"Y-m-d"| default:"-" }}</td>
+			</tr>
+			<tr>
 				<th>Files</th>
 				<td>{{ files.count }}</td>
 			</tr>

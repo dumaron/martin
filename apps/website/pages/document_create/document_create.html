@@ -59,6 +59,18 @@
 						</small>
 					</td>
 				</tr>
+				<tr>
+					<th>{{ form.representative_date.label_tag }}</th>
+					<td>
+						{{ form.representative_date }}
+						{% if form.representative_date.errors %}
+							<div style="color: red;">{{ form.representative_date.errors }}</div>
+						{% endif %}
+						<small style="display: block; margin-top: 5px; color: #666;">
+							{{ form.representative_date.help_text }}
+						</small>
+					</td>
+				</tr>
 			</tbody>
 		</table>
 		<button type="submit">Create Document</button>
