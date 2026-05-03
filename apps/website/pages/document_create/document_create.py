@@ -28,11 +28,12 @@ class DocumentForm(forms.ModelForm):
 
 	class Meta:
 		model = Document
-		fields = ['name', 'description', 'location', 'tags']
+		fields = ['name', 'description', 'location', 'tags', 'representative_date']
 		widgets = {
 			'name': forms.TextInput(attrs={'placeholder': 'Document name'}),
 			'description': forms.Textarea(attrs={'rows': 3, 'placeholder': 'Optional description'}),
 			'location': forms.TextInput(attrs={'placeholder': 'Optional physical location'}),
+			'representative_date': forms.DateInput(attrs={'type': 'date'}),
 		}
 
 	def __init__(self, *args, **kwargs):
