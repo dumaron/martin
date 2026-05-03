@@ -21,7 +21,11 @@ class Document(models.Model):
 	# `representative_date` is probably a catch-all for many concepts that could be related to a document
 	# (created_on, received_on, valid_since, etc.) but it should be enough while I try to create a prototype for HKM.
 
-	representative_date = models.DateField(blank=True, null=True)
+	representative_date = models.DateField(
+		blank=True,
+		null=True,
+		help_text="Optional date that anchors this document in time when it isn't tied to an event.",
+	)
 	tags = TaggableManager()
 
 	class Meta:
