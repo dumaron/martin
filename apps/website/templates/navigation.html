@@ -69,6 +69,12 @@
                         </li>
                     </ul>
                 </li>
+                <li>
+                    <a href="{% url 'monthly_report_page.main_render' %}"
+                       class="{% active request 'monthly_report_page.main_render' %}">
+                        Monthly report (shared)
+                    </a>
+                </li>
                 <li>Expense analysis</li>
                 <li>
                     <a href="{% url 'import_bank_export_page.main_render' %}"

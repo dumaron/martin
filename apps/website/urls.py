@@ -49,6 +49,7 @@ urlpatterns = [
 	*pages.document_detail.page.get_urls(),
 	*pages.projects.page.get_urls(),
 	*pages.maybe_list.page.get_urls(),
+	*pages.monthly_report.page.get_urls(),
 	*pages.project_create.page.get_urls(),
 	*pages.project_detail.page.get_urls(),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

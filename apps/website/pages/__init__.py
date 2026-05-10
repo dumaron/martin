@@ -14,6 +14,7 @@ from . import (
 	event_detail,
 	event_list,
 	maybe_list,
+	monthly_report,
 	pair_transactions,
 	process_inboxes,
 	project_create,
@@ -46,6 +47,7 @@ __all__ = [
 	'event_detail',
 	'projects',
 	'maybe_list',
+	'monthly_report',
 	'project_create',
 	'project_detail',
 ]
