@@ -1,15 +1,3 @@
-"""
-Render a `MonthlyReport` into a PDF using the Typst typesetting engine.
-
-The Typst document is built as a string in Python and compiled in-process via
-the official `typst` Python package (which embeds the Rust compiler — no system
-binary, no external network calls, no Typst package fetches).
-
-Charts are rendered to PNG with matplotlib (see `charts.py`) and embedded
-as images via Typst's `#image(...)` so the PDF gets a real chart toolkit's
-output instead of hand-drawn boxes.
-"""
-
 import calendar
 import tempfile
 from pathlib import Path
@@ -17,43 +5,12 @@ from pathlib import Path
 import typst
 
 from apps.website.pages.monthly_report import charts
-
-MONTH_NAMES = [
-	'',
-	'January',
-	'February',
-	'March',
-	'April',
-	'May',
-	'June',
-	'July',
-	'August',
-	'September',
-	'October',
-	'November',
-	'December',
-]
-
-FOOD_CHART_WIDTH_IN = 6.6
-FOOD_CHART_TYPST_WIDTH = '17cm'
-
-
-class _AssetWriter:
-	"""Writes auxiliary chart files into the typst compile directory and returns their filenames."""
-
-	def __init__(self, directory: Path):
-		self._directory = directory
-		self._counter = 0
-
-	def write_svg(self, svg_bytes: bytes) -> str:
-		self._counter += 1
-		filename = f'chart-{self._counter}.svg'
-		(self._directory / filename).write_bytes(svg_bytes)
-		return filename
+from core.constants import FOOD_YNAB_GROUP_CATEGORY_NAME
+from core.models import BankTransaction
 
 
 def _month_label(year, month, short=False):
-	name = calendar.month_abbr[month] if short else MONTH_NAMES[month]
+	name = calendar.month_abbr[month] if short else calendar.month_name[month]
 	return f'{name} {year}'
 
 
@@ -79,88 +36,109 @@ def _money_mono(value):
 	return f'#text(font: ("Berkeley Mono", "DejaVu Sans Mono"))[{_money(value)}]'
 
 
-def total_section(report):
-
+def total_section(year, month, transactions):
+	target_month_txns = filter(lambda t: t.date.year == year and t.date.month == month, transactions)
+	total = sum(map(lambda t: t.amount, target_month_txns))
 	return f"""\
-== Total monthly expense: {_money_mono(report.month_total)}
+== Total monthly expense: {total}
 """
 
 
-def _render_food_scatter_section(report, writer):
-	"""Scatter chart of groceries / eat-out / delivery transactions over the preceding 12 months."""
-	month_label = _month_label(report.year, report.month)
-	svg = charts.food_scatter_svg(
-		report.food_transactions, report.year, report.month, width_in=FOOD_CHART_WIDTH_IN
-	)
-	filename = writer.write_svg(svg)
+def food_scatter_section(year, month, all_transactions, tmp_path) -> str:
+	food_transactions = list(filter(
+		lambda t: t.matched_ynab_transaction.category
+		and t.matched_ynab_transaction.category.category_group_name == FOOD_YNAB_GROUP_CATEGORY_NAME,
+		all_transactions,
+	))
+	svg = charts.food_scatter_svg(food_transactions, year, month)
+	svg_filename = 'food_scatter.svg'
+	(tmp_path / svg_filename).write_bytes(svg)
 	return f"""\
 == Food spending trends
-#image({_typst_string(filename)}, width: {FOOD_CHART_TYPST_WIDTH})
+#image("{svg_filename}", width: 17cm)
 """
 
 
-def _render_transactions_table(report):
-	if not report.transactions:
-		return '== All expenses\n\nNo transactions recorded for this month.\n'
+# def _render_transactions_table(report):
+# 	if not report.transactions:
+# 		return '== All expenses\n\nNo transactions recorded for this month.\n'
+#
+# 	body_rows = '\n'.join(
+# 		f'  {_typst_string(t.date.isoformat())}, {_typst_string(t.description)}, '
+# 		f'{_typst_string(t.category_name)}, [{_money_mono(t.amount)}],'
+# 		for t in report.transactions
+# 	)
+#
+# 	# Header row in `#e0e0e0`, body rows in `#f0f0f0`, with white 1pt strokes between cells —
+# 	# mirrors the website table aesthetic (`tables.css`).
+# 	return f"""\
+# == All expenses
+#
+# #table(
+#   columns: (auto, 1fr, auto, auto),
+#   align: (left, left, left, right),
+#   stroke: 1pt + white,
+#   inset: (x: 6pt, y: 4pt),
+#   fill: (_, row) => if row == 0 {{ rgb("#e0e0e0") }} else {{ rgb("#f0f0f0") }},
+#   [*Date*], [*Description*], [*Category*], [*Amount*],
+# {body_rows}
+# )
+# """
 
-	body_rows = '\n'.join(
-		f'  {_typst_string(t.date.isoformat())}, {_typst_string(t.description)}, '
-		f'{_typst_string(t.category_name)}, [{_money_mono(t.amount)}],'
-		for t in report.transactions
+
+def report_header(month_label: str) -> str:
+	return f"""
+	#set page(paper: "a4", margin: 1.6cm)
+	#set text(font: ("Public Sans", "American Typewriter", "Linux Libertine"), size: 10pt, fill: rgb("#1a1a1a"))
+	#set par(justify: false)
+	#show heading.where(level: 1): it => block(below: 0.8em)[
+	  #set text(size: 20pt, weight: "bold")
+	  #it.body
+	  #v(-0.3em)
+	  #line(length: 100%, stroke: 0.8pt + rgb("#1a1a1a"))
+	]
+	#show heading.where(level: 2): set text(size: 14pt, weight: "bold")
+	#show heading.where(level: 3): set text(size: 11pt, weight: "bold")
+	#show link: set text(fill: blue)
+
+	= Monthly expense report — {month_label}
+
+	_Shared bank account_
+	"""
+
+
+def typst_monthly_report(year, month, tmp_path):
+	_m = month - 6
+	start = f'{year - 1}-{_m + 12:02d}-01' if _m <= 0 else f'{year}-{_m:02d}-01'
+	_nm = month + 1
+	end = f'{year + 1}-01-01' if _nm > 12 else f'{year}-{_nm:02d}-01'
+
+	month_label = _month_label(year, month)
+	all_transactions_in_time_window = list(
+		BankTransaction.objects.filter(
+			bank_account__personal=False,
+			matched_ynab_transaction__isnull=False,
+			matched_ynab_transaction__transfer_account_id__isnull=True,
+			amount__lt=0,
+			date__gte=start,
+			date__lt=end,
+			# The deepest path implies the shallower one: this single JOIN populates both
+			# `t.matched_ynab_transaction` and `t.matched_ynab_transaction.category`.
+		).select_related('matched_ynab_transaction__category')
 	)
 
-	# Header row in `#e0e0e0`, body rows in `#f0f0f0`, with white 1pt strokes between cells —
-	# mirrors the website table aesthetic (`tables.css`).
-	return f"""\
-== All expenses
-
-#table(
-  columns: (auto, 1fr, auto, auto),
-  align: (left, left, left, right),
-  stroke: 1pt + white,
-  inset: (x: 6pt, y: 4pt),
-  fill: (_, row) => if row == 0 {{ rgb("#e0e0e0") }} else {{ rgb("#f0f0f0") }},
-  [*Date*], [*Description*], [*Category*], [*Amount*],
-{body_rows}
-)
+	return f"""
+{report_header(month_label)}
+{total_section(year, month, all_transactions_in_time_window)}
+{food_scatter_section(year, month, all_transactions_in_time_window, tmp_path)}
 """
 
 
-def _build_typst_source(report, writer):
-	"""Build the Typst source document, writing chart PNG assets via `writer` as a side effect."""
-
-	month_label = _month_label(report.year, report.month)
-
-	return f"""\
-#set page(paper: "a4", margin: 1.6cm)
-#set text(font: ("Public Sans", "American Typewriter", "Linux Libertine"), size: 10pt, fill: rgb("#1a1a1a"))
-#set par(justify: false)
-#show heading.where(level: 1): it => block(below: 0.8em)[
-  #set text(size: 20pt, weight: "bold")
-  #it.body
-  #v(-0.3em)
-  #line(length: 100%, stroke: 0.8pt + rgb("#1a1a1a"))
-]
-#show heading.where(level: 2): set text(size: 14pt, weight: "bold")
-#show heading.where(level: 3): set text(size: 11pt, weight: "bold")
-#show link: set text(fill: blue)
-
-= Monthly expense report — {month_label}
-
-_Shared bank account_
-
-{total_section(report)}
-{_render_food_scatter_section(report, writer)}
-{_render_transactions_table(report)}
-"""
-
-
-def render_report_pdf(report) -> bytes:
+def render_report_pdf(year, month) -> bytes | list[bytes] | None:
 	"""Compile the report to PDF bytes."""
 	with tempfile.TemporaryDirectory() as tmp:
 		tmp_path = Path(tmp)
-		writer = _AssetWriter(tmp_path)
-		source = _build_typst_source(report, writer)
+		source = typst_monthly_report(year, month, tmp_path)
 		typ_path = tmp_path / 'report.typ'
 		typ_path.write_text(source, encoding='utf-8')
 		return typst.compile(str(typ_path))

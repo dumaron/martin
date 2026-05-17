@@ -71,7 +71,7 @@ class BankFileImport(models.Model):
 
 			# Filter out rows where Data_Operazione is not a valid date
 			# (Fineco uses "-" for authorized but not yet processed transactions)
-			return [row for row in all_rows if row.get('Data_Operazione') != '-']
+			return list(filter(lambda row: row.get('Data_Operazione') != '-', all_rows))
 		else:
 			with open(self.bank_file.path, 'r') as text_mode_file:
 				if self.file_type == BankFileImport.FileType.CREDEM_CSV_EXPORT:
@@ -79,7 +79,7 @@ class BankFileImport(models.Model):
 					for _ in range(11):
 						next(text_mode_file)
 				f = csv.DictReader(text_mode_file, delimiter=';')
-				return [i for i in f]
+				return list(f)
 
 	def save(self, *args, **kwargs):
 		imported = super().save(*args, **kwargs)
@@ -95,7 +95,7 @@ class BankFileImport(models.Model):
 
 		# When saving, we want it to create many single transactions entries as per file (if a strategy is defined)
 		rows = self.get_file_rows()
-		bank_transactions = [file_parsing_strategy(row, self) for row in rows]
+		bank_transactions = list(map(lambda row: file_parsing_strategy(row, self), rows))
 
 		# Given that we have a unique constraint based on SQL based on name, date and amount, the already-imported
 		# transactions will trigger an error. However, by using `ignore_conflicts`, we can just simulate a behavior where
