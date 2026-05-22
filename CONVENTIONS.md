@@ -71,3 +71,12 @@ This codebase favours functional-style sequence transformations. Do not use list
 Drop the outer `list(...)` when the consumer already accepts any iterable — e.g. `str.join`, `sum`, `any`, `all`, `set`, `tuple`, `bulk_create`. In those cases `', '.join(map(f, xs))` is preferred over `', '.join(list(map(f, xs)))`.
 
 This convention applies to **list** comprehensions only. Dict comprehensions (`{k: v for ...}`) and set comprehensions (`{x for ...}`) remain idiomatic and are unchanged.
+
+## PDF reports
+PDF reports are generated via typst. The example report is `apps/website/pages/monthly_report/report_renderer.py`.
+
+A few notes on them:
+- There is a header, and then every report is composed of "sections", which are implemented by python functions returning
+    a typst string
+- Every report starts by fetching all the data it needs from the database; it is up to every section to filter / manipulate
+    the big set of data as needed

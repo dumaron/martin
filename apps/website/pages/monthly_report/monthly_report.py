@@ -2,7 +2,7 @@ from django.db.models.functions import TruncMonth
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from apps.website.pages.monthly_report.typst_renderer import render_report_pdf
+from apps.website.pages.monthly_report.report_renderer import render_report_pdf
 from apps.website.pages.page import Page
 from core.models import BankTransaction
 
