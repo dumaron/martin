@@ -25,7 +25,7 @@ def _is_extraordinary(t) -> bool:
 # transaction; the dict key is what appears in the chart legend.
 FOOD_MARKER_STYLES = {
 	'Groceries': {'match': 'Grocery', 'marker': 'o', 'color': '#1a1a1a', 'edgecolors': '#1a1a1a'},
-	'Eat Out': {'match': 'Eat out', 'marker': '^', 'color': '#777777', 'edgecolors': '#777777'},
+	'Eat Out': {'match': 'Eat out', 'marker': '^', 'color': 'white', 'edgecolors': '#1a1a1a'},
 	'Delivery': {'match': 'Delivery', 'marker': 's', 'color': 'white', 'edgecolors': '#1a1a1a'},
 }
 
@@ -59,7 +59,7 @@ EXPENSES_TOTAL_LINE_STYLES = {
 		'color': '#1a1a1a',
 		'marker': 'o',
 	},
-	'Extraordinary': {'predicate': _is_extraordinary, 'linestyle': '-', 'color': '#777777', 'marker': '^'},
+	'Extraordinary': {'predicate': _is_extraordinary, 'linestyle': '-', 'color': '#999999', 'marker': '^'},
 }
 
 # Categories with a monthly total below this threshold (in €) are lumped into the "Other" bar
@@ -179,7 +179,7 @@ def food_totals_svg(transactions, target_year, target_month) -> bytes:
 	with mpl.rc_context(
 		{'font.family': 'sans-serif', 'font.sans-serif': SANS_FONT_STACK, 'svg.fonttype': 'path'}
 	):
-		fig = Figure(figsize=(7.6, 3.5))
+		fig = Figure(figsize=(7.6, 3))
 		ax = fig.subplots()
 
 		# X axis: 6 months before the target month through the end of the target month.
@@ -313,17 +313,17 @@ def category_totals_svg(transactions, target_year, target_month) -> bytes:
 	ordered = other_items + kept_asc
 	labels = list(map(lambda kv: kv[0], ordered))
 	values = list(map(lambda kv: kv[1], ordered))
-	bar_colors = list(map(lambda label: '#777777' if label == 'Other' else '#1a1a1a', labels))
+	bar_colors = list(map(lambda label: '#aaaaaa' if label == 'Other' else '#333333', labels))
 
 	with mpl.rc_context(
 		{'font.family': 'sans-serif', 'font.sans-serif': SANS_FONT_STACK, 'svg.fonttype': 'path'}
 	):
 		# Scale height with the number of bars so labels don't collide.
-		fig_height = max(2.5, 0.32 * len(labels) + 0.8)
+		fig_height = max(2.5, 0.15 * len(labels) + 0.8)
 		fig = Figure(figsize=(7.6, fig_height))
 		ax = fig.subplots()
 
-		ax.barh(labels, values, color=bar_colors, height=0.6, zorder=3)
+		ax.barh(labels, values, color=bar_colors, height=0.35, zorder=3)
 
 		# Value label at the end of each bar.
 		for i, v in enumerate(values):
@@ -365,7 +365,7 @@ def expenses_totals_svg(transactions, target_year, target_month) -> bytes:
 	with mpl.rc_context(
 		{'font.family': 'sans-serif', 'font.sans-serif': SANS_FONT_STACK, 'svg.fonttype': 'path'}
 	):
-		fig = Figure(figsize=(7.6, 3.5))
+		fig = Figure(figsize=(7.6, 3))
 		ax = fig.subplots()
 
 		# X axis: 6 months before the target month through the end of the target month.

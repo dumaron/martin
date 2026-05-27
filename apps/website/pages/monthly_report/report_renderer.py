@@ -173,8 +173,8 @@ def shared_expenses_account_monthly_report(year, month, tmp_path):
 {total_section(year, month, all_transactions_in_time_window)}
 {expenses_totals_section(year, month, all_transactions_in_time_window, tmp_path)}
 {category_totals_section(year, month, all_transactions_in_time_window, tmp_path)}
-{food_scatter_section(year, month, all_transactions_in_time_window, tmp_path)}
 {food_totals_section(year, month, all_transactions_in_time_window, tmp_path)}
+{food_scatter_section(year, month, all_transactions_in_time_window, tmp_path)}
 {all_expenses_section(all_transactions_in_time_window, month)}
 """
 
