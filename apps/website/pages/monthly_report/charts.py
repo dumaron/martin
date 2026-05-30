@@ -10,6 +10,8 @@ from matplotlib.ticker import FuncFormatter
 from apps.website.utils.charts import GRID_COLOR, MUTED_TEXT_COLOR, SANS_FONT_STACK, SPINE_COLOR
 from core.constants import EXTRAORDINARY_YNAB_GROUP_CATEGORY_NAME
 
+from .utils import category_label
+
 
 def _is_extraordinary(t) -> bool:
 	cat = t.matched_ynab_transaction.category
@@ -290,16 +292,15 @@ def category_totals_svg(transactions, target_year, target_month) -> bytes:
 	month_txns = list(
 		filter(lambda t: t.date.year == target_year and t.date.month == target_month, transactions)
 	)
-
-	def category_label(t):
-		cat = t.matched_ynab_transaction.category
-		return cat.name if cat else 'Uncategorized'
+	
+	def cat_key(bank_transaction):
+		return category_label(bank_transaction.matched_ynab_transaction.category)
 
 	# Aggregate |amount| per category. `groupby` requires the input to be sorted by the same key.
-	sorted_txns = sorted(month_txns, key=category_label)
+	sorted_txns = sorted(month_txns, key=cat_key)
 	totals = {
 		label: sum(map(lambda t: float(abs(t.amount)), group))
-		for label, group in groupby(sorted_txns, key=category_label)
+		for label, group in groupby(sorted_txns, key=cat_key)
 	}
 
 	# Split: categories at/above the threshold stay individual; the rest collapse into "Other"
