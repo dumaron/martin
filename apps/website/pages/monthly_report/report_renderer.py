@@ -9,9 +9,9 @@ from .utils import category_label, money, mono, month_label, typst_string
 
 def total_section(year, month, transactions):
 	target_month_txns = filter(lambda t: t.date.year == year and t.date.month == month, transactions)
-	total = sum(map(lambda t: t.amount, target_month_txns))
+	total = sum(map(lambda t: abs(t.amount), target_month_txns))
 	return f"""\
-== Total monthly expense: {total}
+== Total monthly expense: {money(total)}
 """
 
 
