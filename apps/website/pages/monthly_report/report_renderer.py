@@ -59,8 +59,8 @@ def category_totals_section(year, month, all_transactions) -> str:
 	return chart_container('Expenses by category', svg)
 
 
-def all_expenses_section(all_transactions, month):
-	last_month_transactions = filter(lambda t: t.date.month == month, all_transactions)
+def all_expenses_section(all_transactions, year, month):
+	last_month_transactions = filter(lambda t: t.date.year == year and t.date.month == month, all_transactions)
 	sorted_by_amount = sorted(last_month_transactions, key=lambda t: abs(t.amount), reverse=True)
 
 	# God I miss the pipe operator
