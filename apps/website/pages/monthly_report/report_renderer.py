@@ -139,7 +139,7 @@ def shared_expenses_account_monthly_report(year, month):
 		category_totals_section(year, month, transactions),
 		food_totals_section(year, month, transactions),
 		food_scatter_section(year, month, transactions),
-		all_expenses_section(transactions, month),
+		all_expenses_section(transactions, year, month),
 	]
 	return '\n'.join(sections)
 
