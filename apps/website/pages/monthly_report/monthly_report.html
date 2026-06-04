@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1>Monthly expense report — Shared account</h1>
+
+    <p>
+        Each link generates a fresh PDF report on the fly, summarising paired bank-transaction
+        expenses on the <strong>shared</strong> bank account for the month: total compared with
+        the previous 5 months and same month last year, per-category breakdown, and the full
+        list of transactions.
+    </p>
+
+    {% if months %}
+        <ul>
+            {% for m in months %}
+                <li>
+                    <a href="{% url 'monthly_report_page.actions.download_pdf' year=m.year month=m.month %}"
+                       target="_blank">
+                        {{ m.label }}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No paired bank transactions yet — pair some on the transactions pairing pages first.</p>
+    {% endif %}
+</div>
+{% endblock %}

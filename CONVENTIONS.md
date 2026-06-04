@@ -54,3 +54,29 @@ Key conventions:
 5. Actions can override the HTTP method with `@page.action('pdf', method='GET')`
 6. Routes can be fully overridden with the `route=` kwarg: `@page.action(route='models/project/do-thing')`
 7. There are no views that accept both POST and GET
+
+## Python style
+
+### Prefer `list(map(...))` / `list(filter(...))` over list comprehensions
+
+This codebase favours functional-style sequence transformations. Do not use list comprehensions of the form `[expr for x in xs]` or `[x for x in xs if pred]`.
+
+| Avoid                                              | Prefer                                              |
+|----------------------------------------------------|-----------------------------------------------------|
+| `[f(x) for x in xs]`                               | `list(map(f, xs))`                                  |
+| `[x for x in xs if pred(x)]`                       | `list(filter(pred, xs))`                            |
+| `[f(x) for x in xs if pred(x)]`                    | `list(map(f, filter(pred, xs)))`                    |
+| `[x for x in iterable]` (pure materialisation)     | `list(iterable)`                                    |
+
+Drop the outer `list(...)` when the consumer already accepts any iterable — e.g. `str.join`, `sum`, `any`, `all`, `set`, `tuple`, `bulk_create`. In those cases `', '.join(map(f, xs))` is preferred over `', '.join(list(map(f, xs)))`.
+
+This convention applies to **list** comprehensions only. Dict comprehensions (`{k: v for ...}`) and set comprehensions (`{x for ...}`) remain idiomatic and are unchanged.
+
+## PDF reports
+PDF reports are generated via typst. The example report is `apps/website/pages/monthly_report/report_renderer.py`.
+
+A few notes on them:
+- There is a header, and then every report is composed of "sections", which are implemented by python functions returning
+    a typst string
+- Every report starts by fetching all the data it needs from the database; it is up to every section to filter / manipulate
+    the big set of data as needed

@@ -16,7 +16,7 @@ class DocumentTable(tables.Table):
 	file_count = tables.Column(empty_values=(), verbose_name='Files')
 
 	def render_tags(self, record):
-		return ', '.join([tag.name for tag in record.tags.all()])
+		return ', '.join(map(lambda tag: tag.name, record.tags.all()))
 
 	class Meta:
 		model = Document

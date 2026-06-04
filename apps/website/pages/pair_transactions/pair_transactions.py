@@ -71,11 +71,11 @@ def pair_transactions_page(request, kind):
 
 	similar_date_suggestions = YnabTransaction.objects.filter(
 		deleted=False,
-		date__lte=first_unpaired_bank_transaction.date + timedelta(days=3),
-		date__gte=first_unpaired_bank_transaction.date - timedelta(days=3),
+		date__lte=first_unpaired_bank_transaction.date + timedelta(days=6),
+		date__gte=first_unpaired_bank_transaction.date - timedelta(days=6),
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
 		budget_id=budget_id,
-	).exclude(id__in=[suggestion['transaction'].id for suggestion in same_amount_suggestions])
+	).exclude(id__in=list(map(lambda suggestion: suggestion['transaction'].id, same_amount_suggestions)))
 
 	potential_duplicate = first_unpaired_bank_transaction.get_potential_duplicate()
 	potential_duplicate_highlighted = None

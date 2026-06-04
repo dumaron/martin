@@ -2,6 +2,7 @@ from django.db import models
 
 from core.models.ynab_account import YnabAccount
 from core.models.ynab_budget import YnabBudget
+from core.models.ynab_category import YnabCategory
 from core.models.ynab_import import YnabImport
 
 
@@ -39,7 +40,9 @@ class YnabTransaction(models.Model):
 	flag_name = models.CharField(null=True, blank=True, max_length=64)
 	account = models.ForeignKey(YnabAccount, on_delete=models.CASCADE, null=True, blank=True)
 	payee_id = models.UUIDField(null=True, blank=True)
-	category_id = models.UUIDField(null=True, blank=True)
+	category = models.ForeignKey(
+		YnabCategory, on_delete=models.SET_NULL, db_column='category_id', db_constraint=False, null=True, blank=True
+	)
 	transfer_account_id = models.UUIDField(null=True, blank=True)
 	transfer_transaction_id = models.CharField(null=True, blank=True, max_length=64)
 	matched_transaction_id = models.CharField(null=True, blank=True, max_length=64)
