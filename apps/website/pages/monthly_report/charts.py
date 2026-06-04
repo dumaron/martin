@@ -1,6 +1,5 @@
 from datetime import date
 from io import BytesIO
-from itertools import groupby
 
 import matplotlib as mpl
 import matplotlib.dates as mdates
@@ -9,17 +8,15 @@ from matplotlib.ticker import FuncFormatter
 
 from apps.website.utils.charts import GRID_COLOR, MUTED_TEXT_COLOR, SANS_FONT_STACK, SPINE_COLOR
 from core.constants import EXTRAORDINARY_YNAB_GROUP_CATEGORY_NAME
+from core.utils.fp import eq, key, lfilter, lmap, separate, ternary, value
 
-from .utils import category_label
+from .utils import category_label, report_month_starts, report_window
 
 
 def _is_extraordinary(t) -> bool:
 	cat = t.matched_ynab_transaction.category
 	return cat is not None and cat.category_group_name == EXTRAORDINARY_YNAB_GROUP_CATEGORY_NAME
 
-
-# Font families requested for chart labels. Matplotlib resolves through this list and falls back
-# to its bundled DejaVu Sans if none are installed (e.g. on minimal server images).
 
 # Per-category scatter marker styles. B&W printable: filled black circle / gray triangle /
 # hollow square are distinguishable by both shape and tone after greyscale conversion.
@@ -86,12 +83,12 @@ def food_scatter_svg(transactions, target_year, target_month) -> bytes:
 		ax = fig.subplots()
 
 		for display_label, style in FOOD_MARKER_STYLES.items():
-			cat_txns = list(filter(lambda t: t.matched_ynab_transaction.category.name == style['match'], transactions))
+			cat_txns = lfilter(lambda t: t.matched_ynab_transaction.category.name == style['match'], transactions)
 			if not cat_txns:
 				continue
 			ax.scatter(
-				list(map(lambda t: t.date, cat_txns)),
-				list(map(lambda t: abs(t.amount), cat_txns)),
+				lmap(lambda t: t.date, cat_txns),
+				lmap(lambda t: abs(t.amount), cat_txns),
 				marker=style['marker'],
 				color=style['color'],
 				edgecolors=style['edgecolors'],
@@ -104,20 +101,12 @@ def food_scatter_svg(transactions, target_year, target_month) -> bytes:
 			)
 
 		# X axis: 6 months before the target month through the end of the target month.
-		_m = target_month - 6
-		window_start = date(target_year - 1, _m + 12, 1) if _m <= 0 else date(target_year, _m, 1)
-		_nm = target_month + 1
-		window_end = date(target_year + 1, 1, 1) if _nm > 12 else date(target_year, _nm, 1)
+		window_start, window_end = report_window(target_year, target_month)
 		ax.set_xlim(window_start, window_end)
 
-		# Enumerate the first of each month from window_start up to (and including) window_end.
-		# The last entry is the right boundary used to compute the final section's midpoint.
-		month_starts = []
-		y, m = window_start.year, window_start.month
-		while date(y, m, 1) < window_end:
-			month_starts.append(date(y, m, 1))
-			y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-		month_starts.append(window_end)
+		# First of each month in the window, plus window_end as the trailing right boundary
+		# (used to compute the final section's midpoint).
+		month_starts = report_month_starts(target_year, target_month)
 
 		# Highlight the target month with a slightly darker background band. zorder=0 keeps
 		# the band below the y-axis grid (set_axisbelow puts the grid around zorder 0.5), so
@@ -185,19 +174,11 @@ def food_totals_svg(transactions, target_year, target_month) -> bytes:
 		ax = fig.subplots()
 
 		# X axis: 6 months before the target month through the end of the target month.
-		_m = target_month - 6
-		window_start = date(target_year - 1, _m + 12, 1) if _m <= 0 else date(target_year, _m, 1)
-		_nm = target_month + 1
-		window_end = date(target_year + 1, 1, 1) if _nm > 12 else date(target_year, _nm, 1)
+		window_start, window_end = report_window(target_year, target_month)
 		ax.set_xlim(window_start, window_end)
 
-		# Enumerate the first of each month in the window (plus window_end as the right boundary).
-		month_starts = []
-		y, m = window_start.year, window_start.month
-		while date(y, m, 1) < window_end:
-			month_starts.append(date(y, m, 1))
-			y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-		month_starts.append(window_end)
+		# First of each month in the window, plus window_end as the trailing right boundary.
+		month_starts = report_month_starts(target_year, target_month)
 
 		month_pairs = list(zip(month_starts[:-1], month_starts[1:]))
 
@@ -208,8 +189,8 @@ def food_totals_svg(transactions, target_year, target_month) -> bytes:
 				in_window = filter(lambda t: t.matched_ynab_transaction.category.name == category_name, in_window)
 			return sum(map(lambda t: abs(t.amount), in_window))
 
-		x_midpoints = list(
-			map(lambda p: mdates.date2num(p[0]) + (mdates.date2num(p[1]) - mdates.date2num(p[0])) / 2, month_pairs)
+		x_midpoints = lmap(
+			lambda p: mdates.date2num(p[0]) + (mdates.date2num(p[1]) - mdates.date2num(p[0])) / 2, month_pairs
 		)
 
 		# Highlight band (target month) — zorder=0 so the y-grid stays visible on top.
@@ -235,7 +216,7 @@ def food_totals_svg(transactions, target_year, target_month) -> bytes:
 
 		# One line per series.
 		for display_label, style in FOOD_TOTAL_LINE_STYLES.items():
-			series = list(map(lambda p: sum_for_month(p[0], p[1], style['match']), month_pairs))
+			series = lmap(lambda p: sum_for_month(p[0], p[1], style['match']), month_pairs)
 			ax.plot(
 				x_midpoints,
 				series,
@@ -289,32 +270,29 @@ def category_totals_svg(transactions, target_year, target_month) -> bytes:
 	Returns SVG bytes.
 	"""
 
-	month_txns = list(
-		filter(lambda t: t.date.year == target_year and t.date.month == target_month, transactions)
-	)
-	
-	def cat_key(bank_transaction):
-		return category_label(bank_transaction.matched_ynab_transaction.category)
+	month_txns = lfilter(lambda t: t.date.year == target_year and t.date.month == target_month, transactions)
 
-	# Aggregate |amount| per category. `groupby` requires the input to be sorted by the same key.
-	sorted_txns = sorted(month_txns, key=cat_key)
-	totals = {
-		label: sum(map(lambda t: float(abs(t.amount)), group))
-		for label, group in groupby(sorted_txns, key=cat_key)
-	}
+	# I was writing a function version for the code below, but somehow the imperative one seems more intuitibe/readable.
+	# That is exactly the opposite of what happens in other places with python (at least for me).
+	# Maybe mixing the two styles here is actually useful? Maybe we can even use OOP when it improves readability?
+	category_totals = {}
+	for transaction in month_txns:
+		label = category_label(transaction.matched_ynab_transaction.category)
+		if label not in category_totals:
+			category_totals[label] = 0
+		category_totals[label] += abs(transaction.amount)
 
 	# Split: categories at/above the threshold stay individual; the rest collapse into "Other"
 	# pinned to the bottom of the chart.
-	kept = list(filter(lambda kv: kv[1] >= CATEGORY_TOTALS_OTHER_THRESHOLD, totals.items()))
-	rest = list(filter(lambda kv: kv[1] < CATEGORY_TOTALS_OTHER_THRESHOLD, totals.items()))
+	kept, other = separate(lambda kv: value(kv) >= CATEGORY_TOTALS_OTHER_THRESHOLD, category_totals.items())
 
 	# barh draws bottom-up, so order is: [Other (if any), smallest kept, ..., largest kept].
-	kept_asc = sorted(kept, key=lambda kv: kv[1])
-	other_items = [('Other', sum(map(lambda kv: kv[1], rest)))] if rest else []
-	ordered = other_items + kept_asc
-	labels = list(map(lambda kv: kv[0], ordered))
-	values = list(map(lambda kv: kv[1], ordered))
-	bar_colors = list(map(lambda label: '#aaaaaa' if label == 'Other' else '#333333', labels))
+	other_items = [('Other', sum(map(value, other)))]
+	ordered = other_items + kept
+
+	labels = lmap(key, ordered)
+	values = lmap(lambda item: float(value(item)), ordered)
+	bar_colors = lmap(ternary(eq('Other'), '#aaaaaa', '#333333'), labels)
 
 	with mpl.rc_context(
 		{'font.family': 'sans-serif', 'font.sans-serif': SANS_FONT_STACK, 'svg.fonttype': 'path'}
@@ -370,19 +348,11 @@ def expenses_totals_svg(transactions, target_year, target_month) -> bytes:
 		ax = fig.subplots()
 
 		# X axis: 6 months before the target month through the end of the target month.
-		_m = target_month - 6
-		window_start = date(target_year - 1, _m + 12, 1) if _m <= 0 else date(target_year, _m, 1)
-		_nm = target_month + 1
-		window_end = date(target_year + 1, 1, 1) if _nm > 12 else date(target_year, _nm, 1)
+		window_start, window_end = report_window(target_year, target_month)
 		ax.set_xlim(window_start, window_end)
 
-		# Enumerate the first of each month in the window (plus window_end as right boundary).
-		month_starts = []
-		y, m = window_start.year, window_start.month
-		while date(y, m, 1) < window_end:
-			month_starts.append(date(y, m, 1))
-			y, m = (y + 1, 1) if m == 12 else (y, m + 1)
-		month_starts.append(window_end)
+		# First of each month in the window, plus window_end as the trailing right boundary.
+		month_starts = report_month_starts(target_year, target_month)
 
 		month_pairs = list(zip(month_starts[:-1], month_starts[1:]))
 
@@ -393,8 +363,8 @@ def expenses_totals_svg(transactions, target_year, target_month) -> bytes:
 				in_window = filter(predicate, in_window)
 			return sum(map(lambda t: abs(t.amount), in_window))
 
-		x_midpoints = list(
-			map(lambda p: mdates.date2num(p[0]) + (mdates.date2num(p[1]) - mdates.date2num(p[0])) / 2, month_pairs)
+		x_midpoints = lmap(
+			lambda p: mdates.date2num(p[0]) + (mdates.date2num(p[1]) - mdates.date2num(p[0])) / 2, month_pairs
 		)
 
 		# Highlight band (target month) — zorder=0 so the y-grid stays visible on top.
@@ -420,7 +390,7 @@ def expenses_totals_svg(transactions, target_year, target_month) -> bytes:
 
 		# One line per series.
 		for display_label, style in EXPENSES_TOTAL_LINE_STYLES.items():
-			series = list(map(lambda p: sum_for_month(p[0], p[1], style['predicate']), month_pairs))
+			series = lmap(lambda p: sum_for_month(p[0], p[1], style['predicate']), month_pairs)
 			ax.plot(
 				x_midpoints,
 				series,

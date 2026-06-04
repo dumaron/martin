@@ -4,7 +4,7 @@ from apps.website.pages.monthly_report import charts
 from core.constants import FOOD_YNAB_GROUP_CATEGORY_NAME
 from core.models import BankTransaction
 
-from .utils import category_label, money, mono, month_label, typst_string
+from .utils import category_label, money, mono, month_label, report_window, typst_string
 
 
 def total_section(year, month, transactions):
@@ -113,11 +113,7 @@ _Shared bank account_
 
 
 def shared_expenses_account_monthly_report(year, month):
-	# And what the hell is that? Oh, why python, why
-	_m = month - 6
-	start = f'{year - 1}-{_m + 12:02d}-01' if _m <= 0 else f'{year}-{_m:02d}-01'
-	_nm = month + 1
-	end = f'{year + 1}-01-01' if _nm > 12 else f'{year}-{_nm:02d}-01'
+	start, end = report_window(year, month)
 
 	transactions = list(
 		BankTransaction.objects.filter(

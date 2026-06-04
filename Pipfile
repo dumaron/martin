@@ -23,6 +23,7 @@ fpdf2 = "==2.8.4"
 django-taggit = "==6.1.0"
 typst = "==0.14.8"
 matplotlib = "==3.10.9"
+toolz = "==1.1.0"
 
 [dev-packages]
 
