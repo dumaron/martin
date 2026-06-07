@@ -286,9 +286,11 @@ def category_totals_svg(transactions, target_year, target_month) -> bytes:
 	# pinned to the bottom of the chart.
 	kept, other = separate(lambda kv: value(kv) >= CATEGORY_TOTALS_OTHER_THRESHOLD, category_totals.items())
 
+
 	# barh draws bottom-up, so order is: [Other (if any), smallest kept, ..., largest kept].
+	sorted_kept = sorted(kept, key=value)
 	other_items = [('Other', sum(map(value, other)))]
-	ordered = other_items + kept
+	ordered = other_items + sorted_kept
 
 	labels = lmap(key, ordered)
 	values = lmap(lambda item: float(value(item)), ordered)
