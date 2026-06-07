@@ -1,16 +1,24 @@
 from datetime import date
 from io import BytesIO
+from pathlib import Path
 
 import matplotlib as mpl
 import matplotlib.dates as mdates
+from matplotlib import font_manager
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter
 
 from apps.website.utils.charts import GRID_COLOR, MUTED_TEXT_COLOR, SANS_FONT_STACK, SPINE_COLOR
 from core.constants import EXTRAORDINARY_YNAB_GROUP_CATEGORY_NAME
 from core.utils.fp import eq, key, lfilter, lmap, separate, ternary, value
+from settings import FONTS_DIR
 
 from .utils import category_label, report_month_starts, report_window
+
+# Matplotlib doesn't auto-discover FONTS_DIR, so the chart font stack ("Public Sans") would
+# silently fall back to DejaVu. Register the font files explicitly to match the typst body text.
+for _font in Path(FONTS_DIR).glob('PublicSans*.ttf'):
+	font_manager.fontManager.addfont(str(_font))
 
 
 def _is_extraordinary(t) -> bool:
@@ -285,7 +293,6 @@ def category_totals_svg(transactions, target_year, target_month) -> bytes:
 	# Split: categories at/above the threshold stay individual; the rest collapse into "Other"
 	# pinned to the bottom of the chart.
 	kept, other = separate(lambda kv: value(kv) >= CATEGORY_TOTALS_OTHER_THRESHOLD, category_totals.items())
-
 
 	# barh draws bottom-up, so order is: [Other (if any), smallest kept, ..., largest kept].
 	sorted_kept = sorted(kept, key=value)

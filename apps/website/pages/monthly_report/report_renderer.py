@@ -3,6 +3,7 @@ import typst
 from apps.website.pages.monthly_report import charts
 from core.constants import FOOD_YNAB_GROUP_CATEGORY_NAME
 from core.models import BankTransaction
+from settings import FONTS_DIR
 
 from .utils import category_label, money, mono, month_label, report_window, typst_string
 
@@ -142,4 +143,6 @@ def shared_expenses_account_monthly_report(year, month):
 
 def render_report_pdf(year, month) -> bytes | list[bytes] | None:
 	source = shared_expenses_account_monthly_report(year, month)
-	return typst.compile(source.encode('utf-8'))
+	# Typst only auto-discovers system fonts; on the server "Public Sans" lives in
+	# FONTS_DIR (/storage/fonts), so it must be passed explicitly as a font path.
+	return typst.compile(source.encode('utf-8'), font_paths=[FONTS_DIR])
