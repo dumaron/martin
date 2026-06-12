@@ -10,6 +10,7 @@ from . import (
 	document_create,
 	document_detail,
 	document_list,
+	entity_list,
 	event_create,
 	event_detail,
 	event_list,
@@ -50,4 +51,5 @@ __all__ = [
 	'monthly_report',
 	'project_create',
 	'project_detail',
+	'entity_list',
 ]

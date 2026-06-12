@@ -109,7 +109,12 @@
                 <li>
                     Knowledge
                     <ul>
-                        <li><a href="#">Entities</a></li>
+                        <li>
+                            <a href="{% url 'entity_list_page.main_render' %}"
+                               class="{% active request 'entity_list_page.main_render' %}">
+                                Entities
+                            </a>
+                        </li>
                         <li><a href="#">Add new</a></li>
                     </ul>
                 </li>
