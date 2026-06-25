@@ -7,7 +7,7 @@
     {% if entities %}
         <ul>
             {% for entity in entities %}
-                <li>{{ entity }}</li>
+                <li><a href="{% url 'entity_detail_page.main_render' entity=entity %}">{{ entity }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

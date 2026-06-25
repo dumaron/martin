@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<style>
+	tr.status-new td:last-child { color: #1a7f37; }
+	tr.status-duplicate td { color: #888; }
+	tr.status-conflict td:last-child { color: #b35900; }
+	td .existing-values { margin: 2px 0 0 16px; }
+	.review-actions { display: flex; gap: 8px; align-items: center; margin-top: 12px; }
+	.review-actions form { display: inline; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Review draft</h1>
+
+	{% if transaction.description %}
+		<p><em>{{ transaction.description }}</em></p>
+	{% endif %}
+
+	{% if transaction.applied_at %}
+		<p>This draft was already applied on {{ transaction.applied_at }}.</p>
+	{% else %}
+		<p>Nothing has been written to the knowledge base yet. Review the effect below, then apply.</p>
+	{% endif %}
+
+	<table>
+		<thead>
+			<tr>
+				<th>Subject</th>
+				<th>Predicate</th>
+				<th>Object</th>
+				<th>Effect on current knowledge</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for item in review %}
+				<tr class="status-{{ item.status }}">
+					<td>{{ item.fact.subject }}</td>
+					<td>{{ item.fact.predicate }}</td>
+					<td>{{ item.fact.object }}</td>
+					<td>
+						{% if item.status == 'new' %}
+							New fact
+						{% elif item.status == 'duplicate' %}
+							Already known — applying re-asserts it
+						{% elif item.status == 'conflict' %}
+							Adds to existing value{{ item.existing|pluralize }} for this subject &amp; predicate:
+							<ul class="existing-values">
+								{% for existing in item.existing %}
+									<li>{{ existing }}</li>
+								{% endfor %}
+							</ul>
+						{% endif %}
+					</td>
+				</tr>
+			{% empty %}
+				<tr><td colspan="4">This transaction has no facts.</td></tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	{% if transaction.applied_at %}
+		<a href="{% url 'entity_list_page.main_render' %}">Back to entities</a>
+	{% else %}
+		<div class="review-actions">
+			<form method="post" action="{% url 'fact_review_page.actions.apply_draft' transaction_id=transaction.id %}">
+				{% csrf_token %}
+				<button type="submit">Apply to knowledge base</button>
+			</form>
+			<form method="post" action="{% url 'fact_review_page.actions.discard_draft' transaction_id=transaction.id %}">
+				{% csrf_token %}
+				<button type="submit">Discard draft</button>
+			</form>
+			<a href="{% url 'fact_create_page.main_render' %}" class="spaced-left">Add more</a>
+		</div>
+	{% endif %}
+</div>
+{% endblock %}

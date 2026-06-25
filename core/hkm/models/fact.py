@@ -6,9 +6,13 @@ from core.hkm.models.transaction import Transaction
 class FactQuerySet(models.QuerySet):
 	def current(self):
 		# The `current_facts` view of the reference schema: current knowledge is facts that have not been
-		# retracted. On top of that, since we implement the draft lifecycle, facts only count once their
-		# transaction has been applied — an unapplied transaction is an uncommitted draft.
-		return self.filter(retraction__isnull=True, transaction__applied_at__isnull=False)
+		# retracted. The draft lifecycle applies to *both* sides: a fact counts only once its own transaction
+		# is applied (an unapplied transaction is an uncommitted draft), and it stops counting only once a
+		# retraction whose transaction is *also* applied removes it. A retraction staged inside a draft does
+		# not hide the fact until that draft is applied.
+		return self.filter(transaction__applied_at__isnull=False).exclude(
+			retraction__transaction__applied_at__isnull=False
+		)
 
 
 class Fact(models.Model):

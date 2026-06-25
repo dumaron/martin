@@ -2,7 +2,7 @@ from django.db import IntegrityError
 from django.test import TestCase
 from django.utils import timezone
 
-from core.hkm import queries
+from core import hkm
 from core.hkm.models import Fact, Retraction, Transaction
 
 
@@ -53,7 +53,7 @@ class EntitiesTest(TestCase):
 		Fact.objects.create(subject='michelangelo', predicate='born-in-year', object='1475', transaction=self.tx)
 		Fact.objects.create(subject='hannibal', predicate='crossed', object='alps', transaction=self.tx)
 
-		self.assertEqual(list(queries.entities()), ['hannibal', 'michelangelo'])
+		self.assertEqual(list(hkm.get_all_entities()), ['hannibal', 'michelangelo'])
 
 	def test_ignores_subjects_known_only_through_non_current_facts(self):
 		draft_tx = Transaction.objects.create()
@@ -63,4 +63,33 @@ class EntitiesTest(TestCase):
 		)
 		Retraction.objects.create(fact=retracted, transaction=self.tx)
 
-		self.assertEqual(list(queries.entities()), [])
+		self.assertEqual(list(hkm.get_all_entities()), [])
+
+
+class FactsTest(TestCase):
+	def setUp(self):
+		self.tx = Transaction.objects.create(applied_at=timezone.now())
+
+	def test_returns_current_facts_for_the_subject(self):
+		Fact.objects.create(subject='michelangelo', predicate='born-in', object='florence', transaction=self.tx)
+		Fact.objects.create(subject='michelangelo', predicate='born-in-year', object='1475', transaction=self.tx)
+
+		triples = [(f['subject'], f['predicate'], f['object']) for f in hkm.get_facts('michelangelo')]
+		self.assertCountEqual(
+			triples, [('michelangelo', 'born-in', 'florence'), ('michelangelo', 'born-in-year', '1475')]
+		)
+
+	def test_excludes_facts_about_other_subjects(self):
+		Fact.objects.create(subject='hannibal', predicate='crossed', object='alps', transaction=self.tx)
+
+		self.assertEqual(list(hkm.get_facts('michelangelo')), [])
+
+	def test_excludes_non_current_facts(self):
+		draft_tx = Transaction.objects.create()
+		Fact.objects.create(subject='rome', predicate='founded-in', object='-753', transaction=draft_tx)
+		retracted = Fact.objects.create(
+			subject='rome', predicate='is-capital-of', object='france', transaction=self.tx
+		)
+		Retraction.objects.create(fact=retracted, transaction=self.tx)
+
+		self.assertEqual(list(hkm.get_facts('rome')), [])

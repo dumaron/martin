@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<style>
+	.fact-row {
+		display: flex;
+		gap: 8px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+		margin-bottom: 6px;
+	}
+
+	.fact-row .ts-wrapper {
+		width: 240px;
+	}
+
+	.fact-row-errors {
+		color: red;
+		flex-basis: 100%;
+	}
+
+	#batch-note {
+		width: 100%;
+		max-width: 740px;
+		display: block;
+		margin-bottom: 12px;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Add knowledge</h1>
+	<p>Each row is a fact: <em>subject — predicate — object</em>. Pick an existing value or type a new one.</p>
+
+	<form method="post" action="{% url 'fact_create_page.actions.create_facts' %}">
+		{% csrf_token %}
+		{{ formset.management_form }}
+
+		<label for="batch-note">Note (optional)</label>
+		<textarea id="batch-note" name="description" rows="2"
+			placeholder="What is this batch about?">{{ description }}</textarea>
+
+		{% if formset.non_form_errors %}
+			<div class="fact-row-errors">{{ formset.non_form_errors }}</div>
+		{% endif %}
+
+		<div id="fact-forms">
+			{% for form in formset %}
+				{% include 'fact_create/_fact_row.html' with form=form %}
+			{% endfor %}
+		</div>
+
+		<template id="empty-fact-row">
+			{% include 'fact_create/_fact_row.html' with form=formset.empty_form %}
+		</template>
+
+		<div>
+			<button type="button" id="add-fact">+ Add another fact</button>
+		</div>
+		<div>
+			<button type="submit">Save draft &amp; review</button>
+			<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
+		</div>
+	</form>
+</div>
+
+<script>
+	// Tom Select for HKM fields. We deliberately use the `hkm-select` class (not the shared `tom-select`
+	// one) so the global initializer in base.html leaves these alone — it only handles the first match and
+	// never sees rows added dynamically. `create: true` is what turns "pick from a list" into "pick or type
+	// a new one".
+	function initHkmSelects(root) {
+		root.querySelectorAll('select.hkm-select').forEach(function (el) {
+			if (el.tomselect) return;
+			new TomSelect(el, {
+				create: true,
+				createOnBlur: true,
+				persist: false,
+				placeholder: el.dataset.placeholder || '',
+				maxOptions: null
+			});
+		});
+	}
+
+	window.addEventListener('load', function () {
+		initHkmSelects(document);
+
+		const addButton = document.getElementById('add-fact');
+		const container = document.getElementById('fact-forms');
+		const template = document.getElementById('empty-fact-row');
+		const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+
+		addButton.addEventListener('click', function () {
+			const index = parseInt(totalForms.value, 10);
+			const wrapper = document.createElement('div');
+			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index);
+			container.appendChild(wrapper);
+			totalForms.value = index + 1;
+			initHkmSelects(wrapper);
+		});
+	});
+</script>
+{% endblock %}

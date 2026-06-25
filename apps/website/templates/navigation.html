@@ -115,7 +115,12 @@
                                 Entities
                             </a>
                         </li>
-                        <li><a href="#">Add new</a></li>
+                        <li>
+                            <a href="{% url 'fact_create_page.main_render' %}"
+                               class="{% active request 'fact_create_page.main_render' %}">
+                                Add new
+                            </a>
+                        </li>
                     </ul>
                 </li>
             </ul>

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<style>
+	.entity-section { margin-bottom: 1.5rem; }
+	.entity-section h2 { font-size: 1rem; margin-bottom: .4rem; }
+	td.predicate { color: #555; }
+	.implied-badge {
+		font-size: 11px;
+		color: #6a1b9a;
+		background: #f3e5f5;
+		border-radius: 3px;
+		padding: 1px 4px;
+		margin-left: 6px;
+		vertical-align: middle;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>{{ entity }}</h1>
+
+	{% if not has_facts %}
+		<p>No facts mention this entity yet.</p>
+	{% endif %}
+
+	{% if outgoing %}
+		<div class="entity-section">
+			<h2>Facts</h2>
+			<table>
+				<thead>
+					<tr><th>Predicate</th><th>Object</th></tr>
+				</thead>
+				<tbody>
+					{% for fact in outgoing %}
+						<tr>
+							<td class="predicate">{{ fact.predicate }}</td>
+							<td>
+								{% if fact.object_is_entity %}
+									<a href="{% url 'entity_detail_page.main_render' entity=fact.object %}">{{ fact.object }}</a>
+								{% else %}
+									{{ fact.object }}
+								{% endif %}
+								{% if fact.origin == 'implied' %}<span class="implied-badge">implied</span>{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
+
+	{% if incoming %}
+		<div class="entity-section">
+			<h2>Referenced by</h2>
+			<table>
+				<thead>
+					<tr><th>Subject</th><th>Predicate</th></tr>
+				</thead>
+				<tbody>
+					{% for fact in incoming %}
+						<tr>
+							<td>
+								<a href="{% url 'entity_detail_page.main_render' entity=fact.subject %}">{{ fact.subject }}</a>
+							</td>
+							<td class="predicate">
+								{{ fact.predicate }}
+								{% if fact.origin == 'implied' %}<span class="implied-badge">implied</span>{% endif %}
+							</td>
+						</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% endif %}
+
+	<a href="{% url 'entity_list_page.main_render' %}">Back to entities</a>
+</div>
+{% endblock %}
