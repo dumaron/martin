@@ -47,12 +47,12 @@
 
 		<div id="fact-forms">
 			{% for form in formset %}
-				{% include 'fact_create/_fact_row.html' with form=form %}
+				{% include 'fact_create/partial_fact_row.html' with form=form %}
 			{% endfor %}
 		</div>
 
 		<template id="empty-fact-row">
-			{% include 'fact_create/_fact_row.html' with form=formset.empty_form %}
+			{% include 'fact_create/partial_fact_row.html' with form=formset.empty_form %}
 		</template>
 
 		<div>
