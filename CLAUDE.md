@@ -29,6 +29,7 @@ If you don't know something, just say so.
 ## Code Style
 - The project uses `ruff` to ensure code formatting, so it should be executed every time some file is changed
 - Try to use some functional programming patterns when they make sense
+- Prefer `lmap` (and the other helpers in `core.utils.fp`) over `[... for x in ...]` list comprehensions / `for` loops when mapping a sequence to a list
 
 ## General
 - Remember to add generated files to the current git commit
