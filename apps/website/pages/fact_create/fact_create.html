@@ -66,26 +66,10 @@
 </div>
 
 <script>
-	// Tom Select for HKM fields. We deliberately use the `hkm-select` class (not the shared `tom-select`
-	// one) so the global initializer in base.html leaves these alone — it only handles the first match and
-	// never sees rows added dynamically. `create: true` is what turns "pick from a list" into "pick or type
-	// a new one".
-	function initHkmSelects(root) {
-		root.querySelectorAll('select.hkm-select').forEach(function (el) {
-			if (el.tomselect) return;
-			new TomSelect(el, {
-				create: true,
-				createOnBlur: true,
-				persist: false,
-				placeholder: el.dataset.placeholder || '',
-				maxOptions: null
-			});
-		});
-	}
-
+	// The fields are Tom Select-initialized globally (see base.html: window.initTomSelects), opting into
+	// "pick or create" via data-create / data-create-on-blur on the widgets. The only page-specific work is
+	// (re)initializing rows added at runtime by the "add another fact" button.
 	window.addEventListener('load', function () {
-		initHkmSelects(document);
-
 		const addButton = document.getElementById('add-fact');
 		const container = document.getElementById('fact-forms');
 		const template = document.getElementById('empty-fact-row');
@@ -97,7 +81,7 @@
 			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index);
 			container.appendChild(wrapper);
 			totalForms.value = index + 1;
-			initHkmSelects(wrapper);
+			window.initTomSelects(wrapper);
 		});
 	});
 </script>

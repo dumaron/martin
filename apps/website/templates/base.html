@@ -35,13 +35,28 @@
             </main>
         </div>
         <script>
+            // Initialize Tom Select on EVERY .tom-select element. Per-element behaviour is opted into with
+            // data attributes, so any page gets "pick or create" declaratively without its own script:
+            //   data-create="true"          -> allow creating a new option by typing
+            //   data-create-on-blur="true"  -> commit the typed value when the field loses focus
+            //   data-placeholder="..."      -> placeholder text
+            // Exposed as window.initTomSelects(root) so pages can initialize content they add at runtime
+            // (e.g. formset rows).
+            window.initTomSelects = function (root) {
+                (root || document).querySelectorAll('.tom-select').forEach(function (el) {
+                    if (el.tomselect) return;
+                    new TomSelect(el, {
+                        create: el.dataset.create === 'true',
+                        createOnBlur: el.dataset.createOnBlur === 'true',
+                        persist: false,
+                        placeholder: el.dataset.placeholder || undefined,
+                        maxOptions: null
+                    });
+                });
+            };
 
-            // Initialize Tom Select on all available selects
             window.addEventListener('load', function () {
-                const inputs = document.querySelectorAll('.tom-select');
-                if (inputs.length > 0) {
-                    new TomSelect('.tom-select', {});
-                }
+                window.initTomSelects(document);
             });
         </script>
     </body>

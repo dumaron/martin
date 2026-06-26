@@ -11,14 +11,36 @@ class FactForm(forms.Form):
 	# while Tom Select still lets you type a brand-new one. A ChoiceField would reject anything outside its
 	# `choices`; a CharField accepts whatever string is submitted, which is exactly the "pick or create"
 	# behaviour we want.
+	# `tom-select` + data-create* opt into the global "pick or create" initializer (see base.html).
 	subject = forms.CharField(
-		widget=forms.Select(attrs={'class': 'hkm-select', 'data-placeholder': 'subject (entity)'})
+		widget=forms.Select(
+			attrs={
+				'class': 'tom-select',
+				'data-create': 'true',
+				'data-create-on-blur': 'true',
+				'data-placeholder': 'subject (entity)',
+			}
+		)
 	)
 	predicate = forms.CharField(
-		widget=forms.Select(attrs={'class': 'hkm-select', 'data-placeholder': 'predicate'})
+		widget=forms.Select(
+			attrs={
+				'class': 'tom-select',
+				'data-create': 'true',
+				'data-create-on-blur': 'true',
+				'data-placeholder': 'predicate',
+			}
+		)
 	)
 	object = forms.CharField(
-		widget=forms.Select(attrs={'class': 'hkm-select', 'data-placeholder': 'object (entity or value)'})
+		widget=forms.Select(
+			attrs={
+				'class': 'tom-select',
+				'data-create': 'true',
+				'data-create-on-blur': 'true',
+				'data-placeholder': 'object (entity or value)',
+			}
+		)
 	)
 
 	def __init__(self, *args, entities=(), predicates=(), **kwargs):
