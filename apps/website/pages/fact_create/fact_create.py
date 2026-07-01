@@ -1,5 +1,5 @@
 from django import forms
-from django.forms import BaseFormSet, formset_factory
+from django.forms import formset_factory
 from django.shortcuts import redirect, render
 
 from apps.website.pages.page import Page
@@ -38,15 +38,9 @@ class FactForm(forms.Form):
 		field.widget.choices = [('', '')] + [(value, value) for value in values]
 
 
-class BaseFactFormSet(BaseFormSet):
-	def clean(self):
-		if any(self.errors):
-			return
-		if not any(self.cleaned_data):
-			raise forms.ValidationError('Add at least one fact before saving.')
-
-
-FactFormSet = formset_factory(FactForm, formset=BaseFactFormSet, extra=1)
+# A batch is valid with any mix of asserted facts and retractions, so the formset no longer requires a fact
+# (the "at least one of either" check lives in the view). Per-form validation still rejects a half-filled row.
+FactFormSet = formset_factory(FactForm, extra=1)
 
 
 page = Page(name='fact_create_page', base_route='knowledge/add')
@@ -56,18 +50,33 @@ def _form_kwargs():
 	return {'entities': list(hkm.get_all_entities()), 'predicates': list(hkm.get_used_predicates())}
 
 
+def _context(formset, retractable, description='', form_error=None):
+	return {'formset': formset, 'retractable': retractable, 'description': description, 'form_error': form_error}
+
+
 @page.main
 def main_render(request):
 	formset = FactFormSet(form_kwargs=_form_kwargs())
-	return render(request, 'fact_create/fact_create.html', {'formset': formset})
+	return render(request, 'fact_create/fact_create.html', _context(formset, hkm.get_retractable_facts()))
 
 
 @page.action('save')
 def create_facts(request):
 	formset = FactFormSet(request.POST, form_kwargs=_form_kwargs())
 	description = request.POST.get('description', '').strip()
+	retractable = hkm.get_retractable_facts()
 	if formset.is_valid():
 		facts = [(d['subject'], d['predicate'], d['object']) for d in formset.cleaned_data if d]
-		draft = hkm.create_draft(facts, description=description)
-		return redirect('fact_review_page.main_render', transaction_id=draft.id)
-	return render(request, 'fact_create/fact_create.html', {'formset': formset, 'description': description})
+		# Keep only ids that are genuinely retractable right now (guards against stale/forged selections).
+		retractable_ids = {fact['id'] for fact in retractable}
+		retractions = [
+			int(value)
+			for value in request.POST.getlist('retractions')
+			if value.isdigit() and int(value) in retractable_ids
+		]
+		if facts or retractions:
+			draft = hkm.create_draft(facts, retractions=retractions, description=description)
+			return redirect('fact_review_page.main_render', transaction_id=draft.id)
+		error = 'Add at least one fact or retraction before saving.'
+		return render(request, 'fact_create/fact_create.html', _context(formset, retractable, description, error))
+	return render(request, 'fact_create/fact_create.html', _context(formset, retractable, description))

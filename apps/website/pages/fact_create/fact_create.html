@@ -25,6 +25,23 @@
 		display: block;
 		margin-bottom: 12px;
 	}
+
+	.section-title {
+		font-size: 1rem;
+		margin: 1.2rem 0 .3rem;
+	}
+
+	.hint {
+		color: #666;
+		font-size: 12px;
+		margin: 0 0 6px;
+	}
+
+	#retractions + .ts-wrapper,
+	.retract-multiselect {
+		width: 100%;
+		max-width: 740px;
+	}
 </style>
 {% endblock %}
 
@@ -41,10 +58,11 @@
 		<textarea id="batch-note" name="description" rows="2"
 			placeholder="What is this batch about?">{{ description }}</textarea>
 
-		{% if formset.non_form_errors %}
-			<div class="fact-row-errors">{{ formset.non_form_errors }}</div>
+		{% if form_error %}
+			<div class="fact-row-errors">{{ form_error }}</div>
 		{% endif %}
 
+		<h2 class="section-title">Facts to add</h2>
 		<div id="fact-forms">
 			{% for form in formset %}
 				{% include 'fact_create/_fact_row.html' with form=form %}
@@ -58,6 +76,20 @@
 		<div>
 			<button type="button" id="add-fact">+ Add another fact</button>
 		</div>
+
+		<h2 class="section-title">Facts to retract (optional)</h2>
+		{% if retractable %}
+			<p class="hint">Select existing facts to remove. They stop being current once you apply this batch.</p>
+			<select id="retractions" name="retractions" class="retract-multiselect" multiple
+				data-placeholder="search facts to retract…">
+				{% for fact in retractable %}
+					<option value="{{ fact.id }}">{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}</option>
+				{% endfor %}
+			</select>
+		{% else %}
+			<p class="hint">No current facts available to retract yet.</p>
+		{% endif %}
+
 		<div>
 			<button type="submit">Save draft &amp; review</button>
 			<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
@@ -83,8 +115,21 @@
 		});
 	}
 
+	// The retraction picker is a multi-select of existing facts — pick only, never create.
+	function initRetractionSelect() {
+		const el = document.getElementById('retractions');
+		if (el && !el.tomselect) {
+			new TomSelect(el, {
+				plugins: ['remove_button'],
+				maxOptions: null,
+				placeholder: el.dataset.placeholder || ''
+			});
+		}
+	}
+
 	window.addEventListener('load', function () {
 		initHkmSelects(document);
+		initRetractionSelect();
 
 		const addButton = document.getElementById('add-fact');
 		const container = document.getElementById('fact-forms');
