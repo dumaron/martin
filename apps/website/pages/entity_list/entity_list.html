@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fixed-content">
+    <h1>Entities</h1>
+
+    {% if entities %}
+        <ul>
+            {% for entity in entities %}
+                <li><a href="{% url 'entity_detail_page.main_render' entity=entity %}">{{ entity }}</a></li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No entities yet. An entity exists as soon as a fact mentions it.</p>
+    {% endif %}
+</div>
+{% endblock %}

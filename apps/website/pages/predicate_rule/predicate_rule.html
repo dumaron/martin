@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<style>
+	.rule-arrow { color: #6a1b9a; }
+	td.rule-example { color: #555; font-size: 12px; }
+	form.inline-delete { display: inline; margin: 0; }
+	.field-help { display: block; margin-top: 4px; color: #666; max-width: 420px; }
+	.field-errors { color: red; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Predicate rules</h1>
+	<p>
+		A rule derives new facts from the ones you assert. Derived facts appear across the knowledge base
+		tagged <span class="implied-badge">implied</span>; delete a rule and they disappear (nothing is stored).
+	</p>
+
+	<form method="post" action="{% url 'predicate_rule_page.actions.create_rule' %}">
+		{% csrf_token %}
+		{% if form.non_field_errors %}
+			<div class="field-errors">{{ form.non_field_errors }}</div>
+		{% endif %}
+		<table class="form">
+			<tbody>
+				<tr>
+					<th>{{ form.source_predicate.label_tag }}</th>
+					<td>
+						{{ form.source_predicate }}
+						{% if form.source_predicate.errors %}
+							<div class="field-errors">{{ form.source_predicate.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.implied_predicate.label_tag }}</th>
+					<td>
+						{{ form.implied_predicate }}
+						{% if form.implied_predicate.errors %}
+							<div class="field-errors">{{ form.implied_predicate.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.flip.label_tag }}</th>
+					<td>
+						{{ form.flip }}
+						<small class="field-help">{{ form.flip.help_text }}</small>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<button type="submit">Add rule</button>
+	</form>
+
+	<h2>Existing rules</h2>
+	{% if rules %}
+		<table>
+			<thead>
+				<tr><th>Rule</th><th>Means</th><th></th></tr>
+			</thead>
+			<tbody>
+				{% for rule in rules %}
+					<tr>
+						<td>
+							{{ rule.source_predicate }} <span class="rule-arrow">&rarr;</span> {{ rule.implied_predicate }}
+							{% if rule.flip %}<small>(reversed)</small>{% endif %}
+						</td>
+						<td class="rule-example">
+							{% if rule.flip %}
+								A {{ rule.source_predicate }} B &nbsp;&rArr;&nbsp; B {{ rule.implied_predicate }} A
+							{% else %}
+								A {{ rule.source_predicate }} B &nbsp;&rArr;&nbsp; A {{ rule.implied_predicate }} B
+							{% endif %}
+						</td>
+						<td>
+							<form method="post" class="inline-delete"
+								action="{% url 'predicate_rule_page.actions.delete_rule' rule_id=rule.id %}">
+								{% csrf_token %}
+								<button type="submit">Delete</button>
+							</form>
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>No rules yet. Add one above to start deriving facts.</p>
+	{% endif %}
+</div>
+
+<script>
+	// Tom Select for the two predicate pickers: pick an existing predicate or type a new one (committed on
+	// blur). Same behaviour as the fact form; kept inline here as this page has no dynamic rows.
+	window.addEventListener('load', function () {
+		document.querySelectorAll('select.hkm-select').forEach(function (el) {
+			if (el.tomselect) return;
+			new TomSelect(el, {
+				create: true,
+				createOnBlur: true,
+				persist: false,
+				placeholder: el.dataset.placeholder || '',
+				maxOptions: null
+			});
+		});
+	});
+</script>
+{% endblock %}

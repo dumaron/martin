@@ -1,0 +1,10 @@
+<div class="fact-row">
+	{{ form.subject }}
+	{{ form.predicate }}
+	{{ form.object }}
+	{% if form.subject.errors or form.predicate.errors or form.object.errors %}
+		<div class="fact-row-errors">
+			{{ form.subject.errors }}{{ form.predicate.errors }}{{ form.object.errors }}
+		</div>
+	{% endif %}
+</div>

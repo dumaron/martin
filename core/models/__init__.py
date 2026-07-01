@@ -1,3 +1,5 @@
+# HKM models live in their own package; imported here so Django's app registry and migrations see them.
+import core.hkm.models  # noqa: F401
 from core.models.bank_account import BankAccount
 from core.models.bank_file_import import BankFileImport
 from core.models.bank_transaction import BankTransaction

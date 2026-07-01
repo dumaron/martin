@@ -106,6 +106,29 @@
                     </a>
                 </li>
                 <li>Physical objects location</li>
+                <li>
+                    Knowledge
+                    <ul>
+                        <li>
+                            <a href="{% url 'entity_list_page.main_render' %}"
+                               class="{% active request 'entity_list_page.main_render' %}">
+                                Entities
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'fact_create_page.main_render' %}"
+                               class="{% active request 'fact_create_page.main_render' %}">
+                                Add new
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'predicate_rule_page.main_render' %}"
+                               class="{% active request 'predicate_rule_page.main_render' %}">
+                                Rules
+                            </a>
+                        </li>
+                    </ul>
+                </li>
             </ul>
         </li>
         <li>

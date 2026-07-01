@@ -27,7 +27,7 @@ def separate(pred, seq):
 
 	# I actually wanted to use toolz.partition here, but it seems it inherits the weird python's groupby implementation
 	# that will actually create a new entry for the final result when the predicate changes... so you need to sort the
-	# initial array. I wonder why they went down that path, it seems very unconfortable to use - and slow, since it
+	# initial array. I wonder why they went down that path, it seems very uncomfortable to use - and slow, since it
 	# requires sorting first. Mah.
 
 	is_true = []
