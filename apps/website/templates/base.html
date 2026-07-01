@@ -40,24 +40,28 @@
             //   data-create="true"          -> allow creating a new option by typing
             //   data-create-on-blur="true"  -> commit the typed value when the field loses focus
             //   data-placeholder="..."      -> placeholder text
-            // Exposed as window.initTomSelects(root) so pages can initialize content they add at runtime
-            // (e.g. formset rows).
-            window.initTomSelects = function (root) {
-                (root || document).querySelectorAll('.tom-select').forEach(function (el) {
-                    if (el.tomselect) return;
+            function initTomSelects (root) {
+                (root || document).querySelectorAll('.tom-select').forEach(el => {
+                    if (el.tomselect) return
                     new TomSelect(el, {
                         create: el.dataset.create === 'true',
                         createOnBlur: el.dataset.createOnBlur === 'true',
                         persist: false,
                         placeholder: el.dataset.placeholder || undefined,
                         maxOptions: null
-                    });
-                });
-            };
+                    })
+                })
+            }
 
             window.addEventListener('load', function () {
-                window.initTomSelects(document);
-            });
+                initTomSelects(document)
+            })
+
+            document.addEventListener('htmx:load', function (evt) {
+                initTomSelects(evt.detail.elt)
+            })
+
+            window.initTomSelects = initTomSelects
         </script>
     </body>
 </html>
