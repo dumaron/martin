@@ -20,6 +20,7 @@ from . import (
 	maybe_list,
 	monthly_report,
 	pair_transactions,
+	predicate_rule,
 	process_inboxes,
 	project_create,
 	project_detail,
@@ -58,4 +59,5 @@ __all__ = [
 	'entity_detail',
 	'fact_create',
 	'fact_review',
+	'predicate_rule',
 ]

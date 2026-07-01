@@ -56,4 +56,5 @@ urlpatterns = [
 	*pages.entity_detail.page.get_urls(),
 	*pages.fact_create.page.get_urls(),
 	*pages.fact_review.page.get_urls(),
+	*pages.predicate_rule.page.get_urls(),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

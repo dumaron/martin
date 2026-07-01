@@ -54,27 +54,50 @@ def get_incoming_facts(entity):
 	)
 
 
+def get_retractable_facts():
+	# Current facts that can be cleanly retracted: applied, not already removed, and with no retraction at all
+	# (not even a draft one — a fact's OneToOne retraction PK means it can be retracted at most once, so we
+	# must not offer a fact that already has a retraction staged). Returned as dicts with the fact id, which a
+	# new retraction references.
+	return _rows(
+		'SELECT id, subject, predicate, object '
+		'FROM hkm_current_facts cf '
+		'WHERE NOT EXISTS (SELECT 1 FROM hkm_retractions r WHERE r.fact_id = cf.id) '
+		'ORDER BY subject, predicate, object'
+	)
+
+
 def review_transaction(transaction_id):
-	# Preview the effect a still-draft transaction would have on current knowledge, one entry per staged
-	# fact. The draft's own facts are unapplied, so they are absent from hkm_current_facts; we read them
-	# straight from hkm_facts and compare against the asserted current view (deliberately not the inferred
-	# graph — a review is judged against what you have asserted, not against derived facts).
+	# Preview the effect a still-draft transaction would have on current knowledge: what it would add and what
+	# it would retract. The draft's own facts/retractions are unapplied, so they are absent from
+	# hkm_current_facts; we read them straight from the base tables and compare against the asserted current
+	# view (deliberately not the inferred graph — a review is judged against what you have asserted).
+	#
+	# Each addition is tagged:
 	#   'duplicate' - the exact triple is already current
 	#   'conflict'  - the same (subject, predicate) is current with a different object (see `existing`)
 	#   'new'       - that (subject, predicate) is absent from current knowledge
 	staged = _rows(
 		'SELECT subject, predicate, object FROM hkm_facts WHERE transaction_id = %s ORDER BY id', [transaction_id]
 	)
-	review = []
+	additions = []
 	for fact in staged:
 		existing = _column(
 			'SELECT DISTINCT object FROM hkm_current_facts WHERE subject = %s AND predicate = %s',
 			[fact['subject'], fact['predicate']],
 		)
 		if fact['object'] in existing:
-			review.append({'fact': fact, 'status': 'duplicate', 'existing': []})
+			additions.append({'fact': fact, 'status': 'duplicate', 'existing': []})
 		elif existing:
-			review.append({'fact': fact, 'status': 'conflict', 'existing': existing})
+			additions.append({'fact': fact, 'status': 'conflict', 'existing': existing})
 		else:
-			review.append({'fact': fact, 'status': 'new', 'existing': []})
-	return review
+			additions.append({'fact': fact, 'status': 'new', 'existing': []})
+
+	# Facts this draft would retract, resolved back to their (subject, predicate, object) for display.
+	retractions = _rows(
+		'SELECT f.subject, f.predicate, f.object '
+		'FROM hkm_retractions r JOIN hkm_facts f ON f.id = r.fact_id '
+		'WHERE r.transaction_id = %s ORDER BY f.subject, f.predicate, f.object',
+		[transaction_id],
+	)
+	return {'additions': additions, 'retractions': retractions}

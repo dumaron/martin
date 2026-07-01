@@ -5,6 +5,7 @@ from core.hkm.queries import (
 	get_all_entities,
 	get_facts,
 	get_incoming_facts,
+	get_retractable_facts,
 	get_used_predicates,
 	review_transaction,
 )
@@ -16,6 +17,7 @@ __all__ = [
 	'get_all_entities',
 	'get_facts',
 	'get_incoming_facts',
+	'get_retractable_facts',
 	'get_used_predicates',
 	'review_transaction',
 ]
