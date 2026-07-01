@@ -65,12 +65,12 @@
 		<h2 class="section-title">Facts to add</h2>
 		<div id="fact-forms">
 			{% for form in formset %}
-				{% include 'fact_create/_fact_row.html' with form=form %}
+				{% include 'fact_create/partial_fact_row.html' with form=form %}
 			{% endfor %}
 		</div>
 
 		<template id="empty-fact-row">
-			{% include 'fact_create/_fact_row.html' with form=formset.empty_form %}
+			{% include 'fact_create/partial_fact_row.html' with form=formset.empty_form %}
 		</template>
 
 		<div>
@@ -98,51 +98,38 @@
 </div>
 
 <script>
-	// Tom Select for HKM fields. We deliberately use the `hkm-select` class (not the shared `tom-select`
-	// one) so the global initializer in base.html leaves these alone — it only handles the first match and
-	// never sees rows added dynamically. `create: true` is what turns "pick from a list" into "pick or type
-	// a new one".
-	function initHkmSelects(root) {
-		root.querySelectorAll('select.hkm-select').forEach(function (el) {
-			if (el.tomselect) return;
-			new TomSelect(el, {
-				create: true,
-				createOnBlur: true,
-				persist: false,
-				placeholder: el.dataset.placeholder || '',
-				maxOptions: null
-			});
-		});
-	}
-
-	// The retraction picker is a multi-select of existing facts — pick only, never create.
+	// The retraction picker is a multi-select of existing facts — pick only, never create. It needs the
+	// remove_button plugin, so it gets its own initializer rather than the global .tom-select one (base.html).
 	function initRetractionSelect() {
-		const el = document.getElementById('retractions');
+		const el = document.getElementById('retractions')
 		if (el && !el.tomselect) {
 			new TomSelect(el, {
 				plugins: ['remove_button'],
 				maxOptions: null,
 				placeholder: el.dataset.placeholder || ''
-			});
+			})
 		}
 	}
 
-	window.addEventListener('load', function () {
-		initHkmSelects(document);
-		initRetractionSelect();
+	window.addEventListener('load', () => {
+		// The subject/predicate/object selects carry the `tom-select` class, so base.html's global
+		// initializer already handles them; here we only wire up the retraction picker and the add-row button.
+		initRetractionSelect()
 
-		const addButton = document.getElementById('add-fact');
-		const container = document.getElementById('fact-forms');
-		const template = document.getElementById('empty-fact-row');
-		const totalForms = document.getElementById('id_form-TOTAL_FORMS');
+		const addButton = document.getElementById('add-fact')
+		const container = document.getElementById('fact-forms')
+		const template = document.getElementById('empty-fact-row')
+		// Django's management formset hidden input to handle how many forms we are sending
+		const totalForms = document.getElementById('id_{{ formset.prefix }}-TOTAL_FORMS');
 
-		addButton.addEventListener('click', function () {
-			const index = parseInt(totalForms.value, 10);
-			const wrapper = document.createElement('div');
-			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index);
-			container.appendChild(wrapper);
-			totalForms.value = index + 1;
-			initHkmSelects(wrapper);
+		addButton.addEventListener('click', () => {
+			const index = parseInt(totalForms.value, 10)
+			const wrapper = document.createElement('div')
+			// Also part of Django's formset way to spawn new forms
+			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index)
+			container.appendChild(wrapper)
+			totalForms.value = index + 1
+			window.initTomSelects(wrapper)
 		});
 	});
 </script>

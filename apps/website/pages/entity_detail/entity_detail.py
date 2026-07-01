@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from apps.website.pages.page import Page
 from core import hkm
+from core.utils.fp import lmap
 
 page = Page(name='entity_detail_page', base_route='knowledge/entities/<path:entity>')
 
@@ -13,20 +14,20 @@ def main_render(request, entity):
 	known_entities = set(hkm.get_all_entities())
 
 	# get_facts / get_incoming_facts return rows of the inferred graph as dicts, already ordered in SQL.
-	outgoing = [
-		{
+	outgoing = lmap(
+		lambda fact: {
 			'predicate': fact['predicate'],
 			'object': fact['object'],
 			'object_is_entity': fact['object'] in known_entities,
 			'origin': fact['origin'],
-		}
-		for fact in hkm.get_facts(entity)
-	]
+		},
+		hkm.get_facts(entity),
+	)
 	# Subjects of incoming facts are entities by definition (they are subjects somewhere), so always linkable.
-	incoming = [
-		{'subject': fact['subject'], 'predicate': fact['predicate'], 'origin': fact['origin']}
-		for fact in hkm.get_incoming_facts(entity)
-	]
+	incoming = lmap(
+		lambda fact: {'subject': fact['subject'], 'predicate': fact['predicate'], 'origin': fact['origin']},
+		hkm.get_incoming_facts(entity),
+	)
 
 	context = {
 		'entity': entity,
