@@ -47,12 +47,12 @@
 
 		<div id="fact-forms">
 			{% for form in formset %}
-				{% include 'fact_create/_fact_row.html' with form=form %}
+				{% include 'fact_create/partial_fact_row.html' with form=form %}
 			{% endfor %}
 		</div>
 
 		<template id="empty-fact-row">
-			{% include 'fact_create/_fact_row.html' with form=formset.empty_form %}
+			{% include 'fact_create/partial_fact_row.html' with form=formset.empty_form %}
 		</template>
 
 		<div>
@@ -66,38 +66,21 @@
 </div>
 
 <script>
-	// Tom Select for HKM fields. We deliberately use the `hkm-select` class (not the shared `tom-select`
-	// one) so the global initializer in base.html leaves these alone — it only handles the first match and
-	// never sees rows added dynamically. `create: true` is what turns "pick from a list" into "pick or type
-	// a new one".
-	function initHkmSelects(root) {
-		root.querySelectorAll('select.hkm-select').forEach(function (el) {
-			if (el.tomselect) return;
-			new TomSelect(el, {
-				create: true,
-				createOnBlur: true,
-				persist: false,
-				placeholder: el.dataset.placeholder || '',
-				maxOptions: null
-			});
-		});
-	}
+	window.addEventListener('load', () => {
+		const addButton = document.getElementById('add-fact')
+		const container = document.getElementById('fact-forms')
+		const template = document.getElementById('empty-fact-row')
+		// Django's management formset hidden input to handle how many forms we are sending
+		const totalForms = document.getElementById('id_{{ formset.prefix }}-TOTAL_FORMS');
 
-	window.addEventListener('load', function () {
-		initHkmSelects(document);
-
-		const addButton = document.getElementById('add-fact');
-		const container = document.getElementById('fact-forms');
-		const template = document.getElementById('empty-fact-row');
-		const totalForms = document.getElementById('id_form-TOTAL_FORMS');
-
-		addButton.addEventListener('click', function () {
-			const index = parseInt(totalForms.value, 10);
-			const wrapper = document.createElement('div');
-			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index);
-			container.appendChild(wrapper);
-			totalForms.value = index + 1;
-			initHkmSelects(wrapper);
+		addButton.addEventListener('click', () => {
+			const index = parseInt(totalForms.value, 10)
+			const wrapper = document.createElement('div')
+            // Also part of Django's formset way to spawn new forms
+			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index)
+			container.appendChild(wrapper)
+			totalForms.value = index + 1
+			window.initTomSelects(wrapper)
 		});
 	});
 </script>
