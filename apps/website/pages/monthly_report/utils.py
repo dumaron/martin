@@ -61,4 +61,4 @@ def money(value):
 
 def mono(string: str) -> str:
 	"""Format a string as a monospace font."""
-	return f'#text(font: ("Berkeley Mono", "DejaVu Sans Mono"))[{typst_string(string)}]'
+	return f'#text(font: ("Berkeley Mono", "DejaVu Sans Mono"), {typst_string(string)})'
