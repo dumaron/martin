@@ -18,6 +18,31 @@ def create_draft(facts, retractions=(), description=''):
 	return draft
 
 
+def update_draft(transaction, facts, retractions=(), description=''):
+	"""
+	Replace the staged contents of a draft wholesale. Only draft transactions can be updated.
+	"""
+	# Applied transactions are immutable history and must not be updated
+	if transaction.applied_at is not None:
+		raise ValueError('Cannot update a transaction that has already been applied')
+
+	with db_transaction.atomic():
+		# Old retractions must go before the new ones are staged: the OneToOne on Retraction means a fact
+		# re-selected for retraction would otherwise collide with its own previous staging.
+		transaction.retractions.all().delete()
+		transaction.facts.all().delete()
+		Fact.objects.bulk_create(
+			Fact(subject=subject, predicate=predicate, object=value, transaction=transaction)
+			for subject, predicate, value in facts
+		)
+		Retraction.objects.bulk_create(
+			Retraction(fact_id=fact_id, transaction=transaction) for fact_id in retractions
+		)
+		transaction.description = description or None
+		transaction.save(update_fields=['description'])
+	return transaction
+
+
 def apply_transaction(transaction):
 	# Commit a draft by stamping `applied_at`; from then on its facts count as current. Re-applying is a no-op.
 	if transaction.applied_at is None:
@@ -27,10 +52,13 @@ def apply_transaction(transaction):
 
 
 def discard_draft(transaction):
-	# Throw away an unapplied draft and the facts it staged. Applied transactions are immutable history and
-	# must not be discarded — correct them by retracting individual facts instead.
+	"""
+	Mark a transaction as discarded. Only draft transactions can be discarded.
+	"""
+	# Applied transactions are immutable history and must not be discarded
 	if transaction.applied_at is not None:
-		raise ValueError('Cannot discard a transaction that has already been applied.')
+		raise ValueError('Cannot discard a transaction that has already been applied')
+
 	with db_transaction.atomic():
 		# Retractions first: a fact protected by a retraction can't be deleted, and the staged retractions
 		# point at facts we want to leave current.

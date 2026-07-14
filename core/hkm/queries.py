@@ -1,4 +1,7 @@
 from django.db import connection
+from django.db.models import Count
+
+from core.hkm.models import Transaction
 
 # HKM reads go through raw SQL over the hkm_current_facts / hkm_inferred_facts views rather than the ORM.
 # The knowledge base is a small, fixed set of graph queries, and inference (the UNION today, recursive
@@ -54,16 +57,36 @@ def get_incoming_facts(entity):
 	)
 
 
-def get_retractable_facts():
+def get_retractable_facts(ignore_transaction_id=None):
 	# Current facts that can be cleanly retracted: applied, not already removed, and with no retraction at all
 	# (not even a draft one — a fact's OneToOne retraction PK means it can be retracted at most once, so we
 	# must not offer a fact that already has a retraction staged). Returned as dicts with the fact id, which a
 	# new retraction references.
+	#
+	# When editing a draft, pass its id as `ignore_transaction_id`: retractions staged by that draft don't
+	# count as taken (they are about to be replaced), so the facts they point at stay offered — and selected.
+	not_retracted = 'NOT EXISTS (SELECT 1 FROM hkm_retractions r WHERE r.fact_id = cf.id{ignore})'
+	if ignore_transaction_id is None:
+		condition, params = not_retracted.format(ignore=''), []
+	else:
+		condition, params = not_retracted.format(ignore=' AND r.transaction_id <> %s'), [ignore_transaction_id]
 	return _rows(
 		'SELECT id, subject, predicate, object '
 		'FROM hkm_current_facts cf '
-		'WHERE NOT EXISTS (SELECT 1 FROM hkm_retractions r WHERE r.fact_id = cf.id) '
-		'ORDER BY subject, predicate, object'
+		f'WHERE {condition} '
+		'ORDER BY subject, predicate, object',
+		params,
+	)
+
+
+def get_draft_transactions():
+	# Unapplied drafts, oldest first — batches parked between "save" and "apply/discard", so they stay
+	# reachable from the create page. A bookkeeping read on a plain table rather than a graph query, hence
+	# the ORM instead of the raw-SQL views used above (and real datetimes for the template, not raw strings).
+	return (
+		Transaction.objects.filter(applied_at=None)
+		.annotate(fact_count=Count('facts', distinct=True), retraction_count=Count('retractions', distinct=True))
+		.order_by('created_at')
 	)
 
 

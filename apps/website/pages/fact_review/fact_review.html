@@ -100,7 +100,7 @@
 				{% csrf_token %}
 				<button type="submit">Discard draft</button>
 			</form>
-			<a href="{% url 'fact_create_page.main_render' %}" class="spaced-left">Add more</a>
+			<a href="{% url 'fact_create_page.actions.edit_draft' transaction_id=transaction.id %}" class="spaced-left">Edit draft</a>
 		</div>
 	{% endif %}
 </div>
