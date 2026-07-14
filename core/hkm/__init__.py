@@ -1,6 +1,6 @@
 # Public surface of HKM. Functions are authored in submodules (queries.py, mutations.py) and re-exported
 # here so callers reach them as `hkm.get_all_entities()` rather than `hkm.queries.get_all_entities()`.
-from core.hkm.mutations import apply_transaction, create_draft, discard_draft, update_draft
+from core.hkm.mutations import apply_transaction, create_draft_transaction, discard_draft, update_draft
 from core.hkm.queries import (
 	get_all_entities,
 	get_draft_transactions,
@@ -13,7 +13,7 @@ from core.hkm.queries import (
 
 __all__ = [
 	'apply_transaction',
-	'create_draft',
+	'create_draft_transaction',
 	'discard_draft',
 	'get_all_entities',
 	'get_draft_transactions',

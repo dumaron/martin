@@ -122,7 +122,7 @@ def _handle_save(request, draft=None):
 		facts = _submitted_facts(formset)
 		if facts or retractions:
 			if draft is None:
-				draft = hkm.create_draft(facts, retractions=retractions, description=description)
+				draft = hkm.create_draft_transaction(facts, retractions=retractions, description=description)
 			else:
 				hkm.update_draft(draft, facts, retractions=retractions, description=description)
 			return redirect('fact_review_page.main_render', transaction_id=draft.id)
