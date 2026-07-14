@@ -47,10 +47,34 @@
 
 {% block content %}
 <div class="fixed-content">
-	<h1>Add knowledge</h1>
-	<p>Each row is a fact: <em>subject — predicate — object</em>. Pick an existing value or type a new one.</p>
+	<h1>{% if draft %}Edit draft{% else %}Add knowledge{% endif %}</h1>
+	<p>
+		Each row is a fact: <em>subject — predicate — object</em>. Pick an existing value or type a new one.
+		{% if draft %}Clear a row completely to drop it from the draft.{% endif %}
+	</p>
 
-	<form method="post" action="{% url 'fact_create_page.actions.create_facts' %}">
+	{% if pending_drafts %}
+		<h2 class="section-title">Pending drafts</h2>
+		<p class="hint">Saved batches not applied yet — review one to apply, edit or discard it.</p>
+		<ul class="pending-drafts">
+			{% for pending in pending_drafts %}
+				<li>
+					<a href="{% url 'fact_review_page.main_render' transaction_id=pending.id %}">
+						{% if pending.description %}{{ pending.description }}{% else %}Draft #{{ pending.id }}{% endif %}
+					</a>
+					— {{ pending.fact_count }} fact{{ pending.fact_count|pluralize }},
+					{{ pending.retraction_count }} retraction{{ pending.retraction_count|pluralize }},
+					started {{ pending.created_at|date:'j M Y, H:i' }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+	{% if draft %}
+		<form method="post" action="{% url 'fact_create_page.actions.update_facts' transaction_id=draft.id %}">
+	{% else %}
+		<form method="post" action="{% url 'fact_create_page.actions.create_facts' %}">
+	{% endif %}
 		{% csrf_token %}
 		{{ formset.management_form }}
 
@@ -83,7 +107,7 @@
 			<select id="retractions" name="retractions" class="retract-multiselect" multiple
 				data-placeholder="search facts to retract…">
 				{% for fact in retractable %}
-					<option value="{{ fact.id }}">{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}</option>
+					<option value="{{ fact.id }}"{% if fact.id in selected_retractions %} selected{% endif %}>{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}</option>
 				{% endfor %}
 			</select>
 		{% else %}
@@ -92,7 +116,11 @@
 
 		<div>
 			<button type="submit">Save draft &amp; review</button>
-			<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
+			{% if draft %}
+				<a href="{% url 'fact_review_page.main_render' transaction_id=draft.id %}" class="spaced-left">Cancel</a>
+			{% else %}
+				<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
+			{% endif %}
 		</div>
 	</form>
 </div>
