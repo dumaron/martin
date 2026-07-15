@@ -9,8 +9,13 @@ from core.utils.fp import lmap
 
 
 def create_draft_transaction(
-	facts: Iterable[tuple[str, str, str]], retractions: Iterable[int] = (), description: str = ''
+	facts: Iterable[tuple[str, str, str]],
+	retractions: Iterable[int] = (),
+	description: str = '',
 ) -> Transaction:
+	"""
+	Saves the input facts and retractions as a draft transaction in the database
+	"""
 	with db_transaction.atomic():
 		draft = Transaction.objects.create(description=description or None)
 		Fact.objects.bulk_create(
@@ -27,7 +32,12 @@ def create_draft_transaction(
 	return draft
 
 
-def update_draft(transaction, facts, retractions=(), description=''):
+def update_draft(
+	transaction: Transaction,
+	facts: Iterable[tuple[str, str, str]],
+	retractions: Iterable[int] = (),
+	description: str = '',
+) -> Transaction:
 	"""
 	Replace the staged contents of a draft wholesale. Only draft transactions can be updated.
 	"""
@@ -49,6 +59,7 @@ def update_draft(transaction, facts, retractions=(), description=''):
 		)
 		transaction.description = description or None
 		transaction.save(update_fields=['description'])
+
 	return transaction
 
 
