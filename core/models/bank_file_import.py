@@ -5,8 +5,6 @@ from django.db import models
 
 from core.models.bank_transaction import BankTransaction
 
-UNICREDIT_BANK_ACCOUNT_CSV_EXPORT = 'UNICREDIT_BANK_ACCOUNT_CSV_EXPORT'
-
 
 class BankFileImport(models.Model):
 	class FileType(models.TextChoices):
@@ -85,8 +83,6 @@ class BankFileImport(models.Model):
 		imported = super().save(*args, **kwargs)
 
 		strategy_mapping = {
-			BankFileImport.FileType.UNICREDIT_BANK_ACCOUNT_CSV_EXPORT: BankTransaction.from_unicredit_bank_account_csv_row,
-			BankFileImport.FileType.UNICREDIT_DEBIT_CARD_CSV_EXPORT: BankTransaction.from_unicredit_debit_card_csv_row,
 			BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT: BankTransaction.from_fineco_bank_account_xslx_row,
 			BankFileImport.FileType.CREDEM_CSV_EXPORT: BankTransaction.from_credem_csv_row,
 		}
