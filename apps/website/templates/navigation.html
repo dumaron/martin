@@ -70,23 +70,32 @@
                     </ul>
                 </li>
                 <li>
-                    <a href="{% url 'monthly_report_page.main_render' %}"
-                       class="{% active request 'monthly_report_page.main_render' %}">
-                        Monthly report (shared)
-                    </a>
-                </li>
-                <li>Expense analysis</li>
-                <li>
-                    <a href="{% url 'import_bank_export_page.main_render' %}"
-                       class="{% active request 'import_bank_export_page.main_render' %}">
-                        Bank accounts integration
-                    </a>
+                    Analysis
+                    <ul>
+                        <li>
+                            <a href="{% url 'monthly_report_page.main_render' %}"
+                               class="{% active request 'monthly_report_page.main_render' %}">
+                                Monthly report (shared)
+                            </a>
+                        </li>
+                    </ul>
                 </li>
                 <li>
-                    <a href="{% url 'ynab_integration_page.main_render' %}"
-                       class="{% active request 'ynab_integration_page.main_render' %}">
-                        YNAB integration
-                    </a>
+                    External sources
+                    <ul>
+                    <li>
+                        <a href="{% url 'import_bank_export_page.main_render' %}"
+                           class="{% active request 'import_bank_export_page.main_render' %}">
+                            Bank accounts
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{% url 'ynab_integration_page.main_render' %}"
+                           class="{% active request 'ynab_integration_page.main_render' %}">
+                            YNAB API
+                        </a>
+                    </li>
+                    </ul>
                 </li>
             </ul>
         </li>
