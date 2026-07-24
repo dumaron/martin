@@ -64,6 +64,16 @@ class PendingDraftsSectionTest(FactCreatePageTestCase):
 
 		self.assertNotIn('Pending drafts', self.get_page().content.decode())
 
+	def test_uses_datalist_inputs_for_fact_fields(self):
+		content = self.get_page().content.decode()
+
+		self.assertIn('<datalist id="hkm-entity-options">', content)
+		self.assertIn('<datalist id="hkm-predicate-options">', content)
+		self.assertRegex(content, r'<input[^>]+name="form-0-subject"[^>]+list="hkm-entity-options"')
+		self.assertRegex(content, r'<input[^>]+name="form-0-predicate"[^>]+list="hkm-predicate-options"')
+		self.assertRegex(content, r'<input[^>]+name="form-0-object"[^>]+list="hkm-entity-options"')
+		self.assertNotIn('class="tom-select"', content)
+
 
 class CreateFactsTest(FactCreatePageTestCase):
 	def post_save(self, data):
@@ -116,18 +126,18 @@ class EditDraftPageTest(FactCreatePageTestCase):
 		)
 
 	def test_prefills_the_staged_facts_even_when_not_known_entities(self):
-		# 'jhon-doe' only exists in the draft, so it is absent from the known-entities options and must be
-		# injected as a selected option for the prefill to survive rendering.
+		# 'jhon-doe' only exists in the draft, so it is absent from the known-entities suggestions. A datalist
+		# backed text input must still preserve it as the current value.
 		content = self.get_page(self.draft).content.decode()
 
 		self.assertIn('Edit draft', content)
-		self.assertIn('<option value="jhon-doe" selected>jhon-doe</option>', content)
+		self.assertIn('value="jhon-doe"', content)
 		self.assertIn('people', content)
 
 	def test_marks_staged_retractions_as_selected(self):
 		content = self.get_page(self.draft).content.decode()
 
-		self.assertIn(f'<option value="{self.current.id}" selected>', content)
+		self.assertIn(f'name="retractions" value="{self.current.id}"', content)
 
 	def test_form_posts_to_the_update_action(self):
 		content = self.get_page(self.draft).content.decode()

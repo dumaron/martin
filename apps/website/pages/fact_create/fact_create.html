@@ -10,7 +10,7 @@
 		margin-bottom: 6px;
 	}
 
-	.fact-row .ts-wrapper {
+	.fact-row input[list] {
 		width: 240px;
 	}
 
@@ -37,10 +37,46 @@
 		margin: 0 0 6px;
 	}
 
-	#retractions + .ts-wrapper,
-	.retract-multiselect {
+	.retraction-picker {
 		width: 100%;
 		max-width: 740px;
+	}
+
+	.retraction-picker-row {
+		display: flex;
+		gap: 8px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	#retraction-search {
+		flex: 1 1 420px;
+		min-width: 260px;
+	}
+
+	.selected-retractions {
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+		margin-top: 6px;
+	}
+
+	.selected-retraction {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 8px;
+		border: 1px solid var(--color-border-muted);
+		border-radius: 4px;
+		padding: 4px 6px;
+	}
+
+	.selected-retraction span {
+		overflow-wrap: anywhere;
+	}
+
+	.selected-retraction button {
+		flex: 0 0 auto;
 	}
 </style>
 {% endblock %}
@@ -78,6 +114,17 @@
 		{% csrf_token %}
 		{{ formset.management_form }}
 
+		<datalist id="hkm-entity-options">
+			{% for value in entity_options %}
+				<option value="{{ value }}"></option>
+			{% endfor %}
+		</datalist>
+		<datalist id="hkm-predicate-options">
+			{% for value in predicate_options %}
+				<option value="{{ value }}"></option>
+			{% endfor %}
+		</datalist>
+
 		<label for="batch-note">Note (optional)</label>
 		<textarea id="batch-note" name="description" rows="2"
 			placeholder="What is this batch about?">{{ description }}</textarea>
@@ -104,12 +151,31 @@
 		<h2 class="section-title">Facts to retract (optional)</h2>
 		{% if retractable %}
 			<p class="hint">Select existing facts to remove. They stop being current once you apply this batch.</p>
-			<select id="retractions" name="retractions" class="retract-multiselect" multiple
-				data-placeholder="search facts to retract…">
-				{% for fact in retractable %}
-					<option value="{{ fact.id }}"{% if fact.id in selected_retractions %} selected{% endif %}>{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}</option>
-				{% endfor %}
-			</select>
+			<div id="retraction-picker" class="retraction-picker">
+				<div class="retraction-picker-row">
+					<input id="retraction-search" type="text" list="hkm-retraction-options"
+						placeholder="search facts to retract" autocomplete="off">
+					<button type="button" id="add-retraction">Add retraction</button>
+				</div>
+				<datalist id="hkm-retraction-options">
+					{% for fact in retractable %}
+						<option value="{{ fact.id }}: {{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}"
+							data-id="{{ fact.id }}"
+							data-label="{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}"></option>
+					{% endfor %}
+				</datalist>
+				<div id="selected-retractions" class="selected-retractions">
+					{% for fact in retractable %}
+						{% if fact.id in selected_retractions %}
+							<div class="selected-retraction" data-retraction-id="{{ fact.id }}">
+								<span>{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}</span>
+								<input type="hidden" name="retractions" value="{{ fact.id }}">
+								<button type="button" data-remove-retraction>Remove</button>
+							</div>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
 		{% else %}
 			<p class="hint">No current facts available to retract yet.</p>
 		{% endif %}
@@ -126,23 +192,74 @@
 </div>
 
 <script>
-	// The retraction picker is a multi-select of existing facts — pick only, never create. It needs the
-	// remove_button plugin, so it gets its own initializer rather than the global .tom-select one (base.html).
-	function initRetractionSelect() {
-		const el = document.getElementById('retractions')
-		if (el && !el.tomselect) {
-			new TomSelect(el, {
-				plugins: ['remove_button'],
-				maxOptions: null,
-				placeholder: el.dataset.placeholder || ''
-			})
+	function initRetractionPicker() {
+		const input = document.getElementById('retraction-search')
+		const options = document.getElementById('hkm-retraction-options')
+		const selected = document.getElementById('selected-retractions')
+		const addButton = document.getElementById('add-retraction')
+		if (!input || !options || !selected || !addButton || input.dataset.initialized === 'true') return
+		input.dataset.initialized = 'true'
+
+		function selectedIds() {
+			return new Set(
+				Array.from(selected.querySelectorAll('input[name="retractions"]')).map(hidden => hidden.value)
+			)
 		}
+
+		function matchingOption() {
+			const value = input.value.trim()
+			return Array.from(options.options).find(option => option.value === value)
+		}
+
+		function addOption(option) {
+			const id = option.dataset.id
+			if (!id || selectedIds().has(id)) return false
+
+			const item = document.createElement('div')
+			item.className = 'selected-retraction'
+			item.dataset.retractionId = id
+
+			const label = document.createElement('span')
+			label.textContent = option.dataset.label || option.value
+
+			const hidden = document.createElement('input')
+			hidden.type = 'hidden'
+			hidden.name = 'retractions'
+			hidden.value = id
+
+			const remove = document.createElement('button')
+			remove.type = 'button'
+			remove.dataset.removeRetraction = ''
+			remove.textContent = 'Remove'
+
+			item.append(label, hidden, remove)
+			selected.appendChild(item)
+			input.value = ''
+			return true
+		}
+
+		function addFromInput() {
+			const option = matchingOption()
+			return option ? addOption(option) : false
+		}
+
+		addButton.addEventListener('click', addFromInput)
+		input.addEventListener('change', addFromInput)
+		input.addEventListener('keydown', event => {
+			if (event.key === 'Enter') {
+				event.preventDefault()
+				addFromInput()
+			}
+		})
+		selected.addEventListener('click', event => {
+			if (!event.target.matches('[data-remove-retraction]')) return
+			event.target.closest('.selected-retraction').remove()
+		})
+		input.closest('form').addEventListener('submit', addFromInput)
 	}
 
 	window.addEventListener('load', () => {
-		// The subject/predicate/object selects carry the `tom-select` class, so base.html's global
-		// initializer already handles them; here we only wire up the retraction picker and the add-row button.
-		initRetractionSelect()
+		initRetractionPicker()
 
 		const addButton = document.getElementById('add-fact')
 		const container = document.getElementById('fact-forms')
@@ -157,7 +274,6 @@
 			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index)
 			container.appendChild(wrapper)
 			totalForms.value = index + 1
-			window.initTomSelects(wrapper)
 		});
 	});
 </script>

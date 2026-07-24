@@ -9,59 +9,32 @@ from core.utils.fp import lfilter, lmap
 
 
 class FactForm(forms.Form):
-	# Each field is a CharField rendered as a <select> (not a ChoiceField): the dropdown offers known values
-	# while Tom Select still lets you type a brand-new one. A ChoiceField would reject anything outside its
-	# `choices`; a CharField accepts whatever string is submitted, which is exactly the "pick or create"
-	# behaviour we want.
-	# `tom-select` + data-create* opt into the global "pick or create" initializer (see base.html).
+	# Each field is a CharField rendered as a plain text input backed by a datalist: the browser offers known
+	# values while still accepting a brand-new string. A ChoiceField would reject anything outside its choices.
 	subject = forms.CharField(
-		widget=forms.Select(
+		widget=forms.TextInput(
 			attrs={
-				'class': 'tom-select',
-				'data-create': 'true',
-				'data-create-on-blur': 'true',
-				'data-placeholder': 'subject (entity)',
+				'list': 'hkm-entity-options',
+				'placeholder': 'subject (entity)',
 			}
 		)
 	)
 	predicate = forms.CharField(
-		widget=forms.Select(
+		widget=forms.TextInput(
 			attrs={
-				'class': 'tom-select',
-				'data-create': 'true',
-				'data-create-on-blur': 'true',
-				'data-placeholder': 'predicate',
+				'list': 'hkm-predicate-options',
+				'placeholder': 'predicate',
 			}
 		)
 	)
 	object = forms.CharField(
-		widget=forms.Select(
+		widget=forms.TextInput(
 			attrs={
-				'class': 'tom-select',
-				'data-create': 'true',
-				'data-create-on-blur': 'true',
-				'data-placeholder': 'object (entity or value)',
+				'list': 'hkm-entity-options',
+				'placeholder': 'object (entity or value)',
 			}
 		)
 	)
-
-	def __init__(self, *args, entities=(), predicates=(), **kwargs):
-		super().__init__(*args, **kwargs)
-		self._populate('subject', entities)
-		self._populate('predicate', predicates)
-		self._populate('object', entities)
-
-	def _populate(self, name, options):
-		# Seed the <option>s with the known values, plus the field's current value: what was submitted (so a
-		# freshly typed value stays selected if the form is re-rendered after a validation error) or, for an
-		# unbound form, its initial value (a staged fact being edited may hold a value — e.g. a typo — that is
-		# not among the known entities/predicates, and it must still render as selected).
-		field = self.fields[name]
-		values = list(options)
-		current = self.data.get(self.add_prefix(name)) if self.is_bound else self.initial.get(name)
-		if current and current not in values:
-			values = [current, *values]
-		field.widget.choices = [('', '')] + [(value, value) for value in values]
 
 
 # A batch is valid with any mix of asserted facts and retractions, so the formset no longer requires a fact
@@ -75,14 +48,26 @@ page = Page(name='fact_create_page', base_route='knowledge/add')
 def _form_kwargs():
 	# `empty_permitted` lets a fully blanked row validate to an empty cleaned_data (which the save handlers
 	# skip). That is also how a prefilled row is removed when editing a draft: clear it out and save.
+	return {'empty_permitted': True}
+
+
+def _suggestion_values():
 	return {
-		'entities': list(hkm.get_all_entities()),
-		'predicates': list(hkm.get_used_predicates()),
-		'empty_permitted': True,
+		'entity_options': list(hkm.get_all_entities()),
+		'predicate_options': list(hkm.get_used_predicates()),
 	}
 
 
-def _context(formset, retractable, description='', form_error=None, draft=None, selected_retractions=()):
+def _context(
+	formset,
+	retractable,
+	description='',
+	form_error=None,
+	draft=None,
+	selected_retractions=(),
+	entity_options=(),
+	predicate_options=(),
+):
 	# `draft` is None on the create page and the draft being edited on the edit page; the template switches
 	# the heading, the form action and the cancel link on it. `pending_drafts` is filled by main_render only:
 	# the create page is the entry point for anything draft-related, so parked drafts resurface there.
@@ -93,6 +78,8 @@ def _context(formset, retractable, description='', form_error=None, draft=None, 
 		'form_error': form_error,
 		'draft': draft,
 		'selected_retractions': selected_retractions,
+		'entity_options': entity_options,
+		'predicate_options': predicate_options,
 		'pending_drafts': (),
 	}
 
@@ -114,6 +101,7 @@ def _handle_save(request, draft=None):
 	# Shared by create and update: parse the submitted batch, stage it (as a new draft or replacing the one
 	# being edited) and land on the review page; on any problem, re-render the form as submitted.
 	formset = FactFormSet(request.POST, form_kwargs=_form_kwargs())
+	suggestions = _suggestion_values()
 	description = request.POST.get('description', '').strip()
 	retractable = hkm.get_retractable_facts(ignore_transaction_id=draft.id if draft else None)
 	retractions = _submitted_retractions(request, retractable)
@@ -127,14 +115,15 @@ def _handle_save(request, draft=None):
 				hkm.update_draft(draft, facts, retractions=retractions, description=description)
 			return redirect('fact_review_page.main_render', transaction_id=draft.id)
 		error = 'Add at least one fact or retraction before saving.'
-	context = _context(formset, retractable, description, error, draft, set(retractions))
+	context = _context(formset, retractable, description, error, draft, set(retractions), **suggestions)
 	return render(request, 'fact_create/fact_create.html', context)
 
 
 @page.main
 def main_render(request):
+	suggestions = _suggestion_values()
 	formset = FactFormSet(form_kwargs=_form_kwargs())
-	context = _context(formset, hkm.get_retractable_facts())
+	context = _context(formset, hkm.get_retractable_facts(), **suggestions)
 	context['pending_drafts'] = hkm.get_draft_transactions()
 	return render(request, 'fact_create/fact_create.html', context)
 
@@ -155,10 +144,18 @@ def edit_draft(request, transaction_id):
 		lambda fact: {'subject': fact.subject, 'predicate': fact.predicate, 'object': fact.object},
 		draft.facts.order_by('id'),
 	)
+	suggestions = _suggestion_values()
 	formset = FactFormSet(initial=staged, form_kwargs=_form_kwargs())
 	retractable = hkm.get_retractable_facts(ignore_transaction_id=draft.id)
 	selected = set(draft.retractions.values_list('fact_id', flat=True))
-	context = _context(formset, retractable, draft.description or '', draft=draft, selected_retractions=selected)
+	context = _context(
+		formset,
+		retractable,
+		draft.description or '',
+		draft=draft,
+		selected_retractions=selected,
+		**suggestions,
+	)
 	return render(request, 'fact_create/fact_create.html', context)
 
 
