@@ -6,21 +6,23 @@ from core.models import (
 	BankAccount,
 	BankFileImport,
 	BankTransaction,
+	DailySuggestion,
+	Document,
 	Event,
+	File,
+	Flashcard,
+	FlashcardReview,
 	Inbox,
 	Memory,
 	Project,
 	RecurrenceRule,
 	RecurringSuggestion,
+	Task,
 	YnabAccount,
 	YnabBudget,
 	YnabCategory,
 	YnabImport,
 	YnabTransaction,
-	Document,
-	File,
-	DailySuggestion,
-	Task
 )
 
 
@@ -112,3 +114,18 @@ admin.site.register(Document)
 admin.site.register(File)
 admin.site.register(DailySuggestion)
 admin.site.register(Task)
+
+
+class FlashcardAdmin(admin.ModelAdmin):
+	list_display = ['id', 'question', 'state', 'due', 'last_review']
+	search_fields = ['question', 'answer']
+	list_filter = ['state']
+
+
+class FlashcardReviewAdmin(admin.ModelAdmin):
+	list_display = ['flashcard', 'rating', 'reviewed_at']
+	list_filter = ['rating']
+
+
+admin.site.register(Flashcard, FlashcardAdmin)
+admin.site.register(FlashcardReview, FlashcardReviewAdmin)

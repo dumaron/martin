@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<style>
+	.flashcard-question { font-size: 1.3rem; margin: 1rem 0; white-space: pre-line; }
+	.flashcard-answer { font-size: 1.1rem; margin: 1rem 0; white-space: pre-line; }
+	.flashcard-reveal summary { cursor: pointer; color: #555; }
+	.flashcard-ratings { display: flex; gap: 8px; margin-top: 12px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Review{% if tag %} &mdash; {{ tag }}{% endif %}</h1>
+
+	{% if flashcard %}
+		<p class="spaced-bottom">{{ due_count }} card{{ due_count|pluralize }} due</p>
+
+		<div class="flashcard-question">{{ flashcard.question|linebreaksbr }}</div>
+
+		<details class="flashcard-reveal">
+			<summary>Show answer</summary>
+
+			<div class="flashcard-answer">{{ flashcard.answer|linebreaksbr }}</div>
+
+			<form method="post" action="{% url 'flashcard_review_page.actions.answer_flashcard' %}" class="flashcard-ratings">
+				{% csrf_token %}
+				<input type="hidden" name="flashcard_id" value="{{ flashcard.id }}">
+				{% if tag %}<input type="hidden" name="tag" value="{{ tag }}">{% endif %}
+				<button type="submit" name="rating" value="1">Again</button>
+				<button type="submit" name="rating" value="2">Hard</button>
+				<button type="submit" name="rating" value="3">Good</button>
+				<button type="submit" name="rating" value="4">Easy</button>
+			</form>
+		</details>
+	{% else %}
+		<p>All done for now{% if reviewed_today %} &mdash; {{ reviewed_today }} answer{{ reviewed_today|pluralize }} today{% endif %}.</p>
+
+		{% if next_due %}
+			<p>Next card due in {{ next_due|timeuntil }} &mdash; <a href="">refresh</a>.</p>
+		{% endif %}
+
+		<p><a href="{% url 'flashcard_create_page.main_render' %}">Add a flashcard</a></p>
+	{% endif %}
+</div>
+{% endblock %}

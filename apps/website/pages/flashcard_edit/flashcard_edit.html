@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Edit Flashcard</h1>
+
+	<form method="post" action="{% url 'flashcard_edit_page.actions.update_flashcard' flashcard.id %}">
+		{% csrf_token %}
+		<table class="form">
+			<tbody>
+				<tr>
+					<th>{{ form.question.label_tag }}</th>
+					<td>
+						{{ form.question }}
+						{% if form.question.errors %}
+							<div style="color: red;">{{ form.question.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.answer.label_tag }}</th>
+					<td>
+						{{ form.answer }}
+						{% if form.answer.errors %}
+							<div style="color: red;">{{ form.answer.errors }}</div>
+						{% endif %}
+					</td>
+				</tr>
+				<tr>
+					<th>{{ form.tags.label_tag }}</th>
+					<td>
+						{{ form.tags }}
+						{% if form.tags.errors %}
+							<div style="color: red;">{{ form.tags.errors }}</div>
+						{% endif %}
+						<small style="display: block; margin-top: 5px; color: #666;">
+							Enter tags separated by commas
+						</small>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+		<button type="submit">Save</button>
+		<a href="{% url 'flashcard_list_page.main_render' %}" class="spaced-left">Back to list</a>
+	</form>
+
+	<h2>Scheduling</h2>
+	<table class="form">
+		<tbody>
+			<tr>
+				<th>State</th>
+				<td>{{ flashcard.get_state_display }}</td>
+			</tr>
+			<tr>
+				<th>Due</th>
+				<td>{{ flashcard.due }}</td>
+			</tr>
+			<tr>
+				<th>Last review</th>
+				<td>{{ flashcard.last_review|default:'Never' }}</td>
+			</tr>
+			<tr>
+				<th>Reviews</th>
+				<td>{{ flashcard.reviews.count }}</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<form method="post" action="{% url 'flashcard_edit_page.actions.delete_flashcard' flashcard.id %}"
+		  onsubmit="return confirm('Delete this flashcard and its review history?')">
+		{% csrf_token %}
+		<button type="submit">Delete flashcard</button>
+	</form>
+</div>
+{% endblock %}

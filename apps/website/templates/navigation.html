@@ -116,6 +116,29 @@
                 </li>
                 <li>Physical objects location</li>
                 <li>
+                    Flashcards
+                    <ul>
+                        <li>
+                            <a href="{% url 'flashcard_review_page.main_render' %}"
+                               class="{% active request 'flashcard_review_page.main_render' %}">
+                                Review
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'flashcard_list_page.main_render' %}"
+                               class="{% active request 'flashcard_list_page.main_render' %}">
+                                All cards
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'flashcard_create_page.main_render' %}"
+                               class="{% active request 'flashcard_create_page.main_render' %}">
+                                Add card
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
                     Knowledge
                     <ul>
                         <li>

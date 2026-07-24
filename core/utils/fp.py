@@ -49,17 +49,20 @@ def ternary(partial_pred, true_value, false_value, value):
 def eq(value_1, value_2):
 	return value_1 == value_2
 
+
 @curry
 def first(array):
 	if array is None:
 		return None
 	return array[0]
 
+
 @curry
 def last(array):
 	if array is None:
 		return None
 	return array[-1]
+
 
 key = first
 value = last

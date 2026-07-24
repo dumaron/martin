@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Flashcards</h1>
+
+	<div class="spaced-bottom">
+		<a href="{% url 'flashcard_create_page.main_render' %}">Create New Flashcard</a>
+		{% if tag %}
+			<span class="spaced-left">
+				Filtered by <strong>{{ tag }}</strong> &mdash;
+				<a href="{% url 'flashcard_list_page.main_render' %}">clear filter</a> &middot;
+				<a href="{% url 'flashcard_review_page.main_render' %}?tag={{ tag|urlencode }}">review these</a>
+			</span>
+		{% endif %}
+	</div>
+
+	{% render_table table %}
+</div>
+{% endblock %}
