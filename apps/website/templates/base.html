@@ -9,6 +9,23 @@
     <head>
         <title>Martin</title>
 
+        <script>
+            (function () {
+                try {
+                    const savedTheme = localStorage.getItem('theme')
+                    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+                    const theme = savedTheme === 'dark' || savedTheme === 'light'
+                        ? savedTheme
+                        : (prefersDark ? 'dark' : 'light')
+                    document.documentElement.dataset.theme = theme
+                    document.documentElement.style.colorScheme = document.documentElement.dataset.theme
+                } catch (error) {
+                    document.documentElement.dataset.theme = 'light'
+                    document.documentElement.style.colorScheme = 'light'
+                }
+            })()
+        </script>
+
         <link rel="stylesheet" href="{% static '/tom-select/tom-select.css' %}" />
         <link rel="stylesheet" href="{% static '/styles/style.css' %}" />
         <link rel="stylesheet" href="{% static '/styles/forms.css' %}" />
@@ -24,6 +41,7 @@
         <script src="{% static 'htmx-2.0.8.js' %}" type="module" defer></script>
         <script src="{% static 'tabs.js' %}" type="module" defer></script>
         <script src="{% static 'tom-select/tom-select.complete.js' %}" type="module" defer></script>
+        <script src="{% static 'theme.js' %}" defer></script>
     </head>
     <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}' hx-boost="false">
         <div class="grid-content">

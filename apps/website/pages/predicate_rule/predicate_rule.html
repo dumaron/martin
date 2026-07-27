@@ -2,11 +2,11 @@
 
 {% block stylesheets %}
 <style>
-	.rule-arrow { color: #6a1b9a; }
-	td.rule-example { color: #555; font-size: 12px; }
+	.rule-arrow { color: var(--color-badge-implied-text); }
+	td.rule-example { color: var(--color-text-muted); font-size: 12px; }
 	form.inline-delete { display: inline; margin: 0; }
-	.field-help { display: block; margin-top: 4px; color: #666; max-width: 420px; }
-	.field-errors { color: red; }
+	.field-help { display: block; margin-top: 4px; color: var(--color-text-muted); max-width: 420px; }
+	.field-errors { color: var(--color-text-danger); }
 </style>
 {% endblock %}
 

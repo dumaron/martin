@@ -2,29 +2,96 @@
    VARIABLES
    ========================================================================== */
 :root {
+    color-scheme: light;
+
     --main-navbar-height: 30px;
 
     --color-text: #1a1a1a;
     --color-text-secondary: #333333;
     --color-text-muted: #666666;
-    --color-text-link: white;
+    --color-text-link: blue;
     --color-text-inverted: #ffffff;
+    --color-text-danger: #b00020;
+    --color-text-success: #1a7f37;
+    --color-text-warning: #b35900;
+    --color-text-duplicate: #888888;
+    --color-accent: #9b1c1c;
+    --color-accent-muted: #f6d9d9;
 
     --color-background-primary: white;
     --color-background-box: white;
     --color-background-secondary: gainsboro;
     --color-background-hover: bisque;
     --color-background-highlight: papayawhip;
+    --color-background-input: white;
+    --color-background-pre: gainsboro;
+    --color-background-table-header: #e0e0e0;
+    --color-background-table-cell: #f0f0f0;
+    --color-background-table-hover: #e0e0e0;
+    --color-background-tab-active: white;
 
 
+    --color-border-primary: #444444;
     --color-border-secondary: #b3b3b6;
     --color-border-muted: #999999;
     --color-border-light: #aaaaaa;
+    --color-border-inverted: white;
 
     --color-sidebar: #1f1f1f;
     --color-background-sidebar: rgb(169, 180, 195);
     --color-sidebar-link: #1b1b1b;
     --color-btn-background: rgb(233, 233, 237);
+    --color-btn-background-hover: rgb(243, 243, 247);
+    --color-badge-implied-text: #6a1b9a;
+    --color-badge-implied-background: #f3e5f5;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-signal-orange: #f39a2f;
+    --color-signal-blue: #5da5d8;
+    --color-signal-green: #87c990;
+    --color-signal-red: #e25f5a;
+    --color-signal-violet: #b7a2d8;
+
+    --color-text: #d8a05d;
+    --color-text-secondary: #b98a55;
+    --color-text-muted: #806f5d;
+    --color-text-link: var(--color-signal-blue);
+    --color-text-inverted: #151614;
+    --color-text-danger: var(--color-signal-red);
+    --color-text-success: var(--color-signal-green);
+    --color-text-warning: var(--color-signal-orange);
+    --color-text-duplicate: #8a8a82;
+    --color-accent: var(--color-signal-orange);
+    --color-accent-muted: #302416;
+
+    --color-background-primary: #20211f;
+    --color-background-box: #171816;
+    --color-background-secondary: #2b2d2a;
+    --color-background-hover: #30332f;
+    --color-background-highlight: #332719;
+    --color-background-input: #151614;
+    --color-background-pre: #2b2d2a;
+    --color-background-table-header: #2c2e2a;
+    --color-background-table-cell: #242623;
+    --color-background-table-hover: #30332f;
+    --color-background-tab-active: #20211f;
+
+    --color-border-primary: #777974;
+    --color-border-secondary: #4b4e49;
+    --color-border-muted: #62655f;
+    --color-border-light: #858780;
+    --color-border-inverted: #20211f;
+
+    --color-sidebar: #81776a;
+    --color-background-sidebar: #181613;
+    --color-sidebar-link: #d5cabb;
+    --color-btn-background: #171816;
+    --color-btn-background-hover: #2c2f2b;
+    --color-badge-implied-text: var(--color-signal-violet);
+    --color-badge-implied-background: #282238;
 }
 
 body {
@@ -38,7 +105,7 @@ body {
 }
 
 a {
-    color: blue;
+    color: var(--color-text-link);
 }
 
 main {
@@ -53,8 +120,22 @@ main {
 }
 
 h1 {
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid var(--color-border-primary);
     padding-bottom: 4px;
+}
+
+.muted {
+    color: var(--color-text-muted);
+}
+
+.implied-badge {
+    font-size: 11px;
+    color: var(--color-badge-implied-text);
+    background: var(--color-badge-implied-background);
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin-left: 6px;
+    vertical-align: middle;
 }
 
 .grid-content {
@@ -86,6 +167,30 @@ h1 {
     color: var(--color-text);
 }
 
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    gap: .25rem;
+    justify-content: flex-start;
+    margin: 0;
+    min-height: var(--main-navbar-height);
+}
+
+.theme-toggle {
+    flex: 0 0 auto;
+    margin: 0;
+    white-space: nowrap;
+    border-color: var(--color-border-secondary);
+    background-color: var(--color-background-secondary);
+    color: var(--color-text);
+}
+
+:root[data-theme="dark"] .theme-toggle {
+    background-color: #201d18;
+    border-color: #3f3930;
+    color: #aa9b88;
+}
+
 aside {
     margin: 0;
     padding: 0;
@@ -97,10 +202,29 @@ aside {
     border-right: 1px solid var(--color-border-secondary);
 }
 
+:root[data-theme="dark"] aside {
+    border-right-color: #332d25;
+}
+
 /* Sidebar Navigation */
 #sidebar-navigation {
     padding: 1rem 0;
     border-bottom: none;
+}
+
+:root[data-theme="dark"] #sidebar-navigation {
+    padding-top: 1rem;
+}
+
+:root[data-theme="dark"] .sidebar-header {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    margin-bottom: .5rem;
+}
+
+:root[data-theme="dark"] #title {
+    color: #d8a05d;
 }
 
 #sidebar-navigation > ul {
@@ -111,6 +235,10 @@ aside {
 #sidebar-navigation > ul > li {
     margin-left: 0;
     padding-bottom: 4px;
+}
+
+:root[data-theme="dark"] #sidebar-navigation > ul > li {
+    color: #82776a;
 }
 
 #sidebar-navigation > ul ul li {
@@ -199,6 +327,9 @@ ul.tree {
         z-index: 1;
     }
 
+    a.active {
+        color: var(--color-sidebar-link);
+    }
 
     /*
     I spent so much time trying to implement a CSS-only version of a sidebar with full red lines and arrows before each
@@ -230,4 +361,25 @@ ul.tree {
     li:has(~ li a.active)::before {
         border-left: 1px solid red;
     }*/
+}
+
+:root[data-theme="dark"] ul.tree li a:hover {
+    color: #e2b36d;
+}
+
+:root[data-theme="dark"] ul.tree li::before {
+    border-left-color: #40372d;
+}
+
+:root[data-theme="dark"] ul.tree li::after {
+    border-top-color: #40372d;
+}
+
+:root[data-theme="dark"] ul.tree a.active::before,
+:root[data-theme="dark"] ul.tree ul:has(li a.active)::before {
+    color: #d58a3a;
+}
+
+:root[data-theme="dark"] ul.tree a.active {
+    color: #e2b36d;
 }

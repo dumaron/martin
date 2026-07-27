@@ -19,22 +19,38 @@ th {
 	text-transform: none;
 	letter-spacing: normal;
 	border: none;
-	background-color: #e0e0e0;
-	border-left: 1px solid #fff;
+	background-color: var(--color-background-table-header);
+	border-left: 1px solid var(--color-border-inverted);
 	white-space: nowrap;
 }
 
 th a {
-	color: #222;
+	color: var(--color-text);
 	text-decoration: none;
 	font-weight: 700;
+}
+
+:root[data-theme="dark"] th {
+	color: var(--color-text-secondary);
+}
+
+:root[data-theme="dark"] th a {
+	color: var(--color-text-secondary);
 }
 
 td {
 	width: auto;
 	text-align: left;
-	background-color: #f0f0f0;
-	border-left: 1px solid #fff;
+	background-color: var(--color-background-table-cell);
+	border-left: 1px solid var(--color-border-inverted);
+}
+
+:root[data-theme="dark"] td {
+	border-left-color: var(--color-border-inverted);
+}
+
+:root[data-theme="dark"] tr:hover td {
+	color: var(--color-text);
 }
 
 /* tables for forms */
@@ -48,8 +64,8 @@ table.form {
 /* highlightable rows */
 table.highlightable {
 	tr:hover td {
-	background-color: #e0e0e0;
-}
+		background-color: var(--color-background-table-hover);
+	}
 }
 
 table.horizontal th {
