@@ -77,7 +77,7 @@ class PendingDraftsSectionTest(FactCreatePageTestCase):
 
 class CreateFactsTest(FactCreatePageTestCase):
 	def post_save(self, data):
-		return self.client.post(reverse('fact_create_page.actions.create_facts'), data)
+		return self.client.post(reverse('fact_create_page.actions.save_hkm_transaction'), data)
 
 	def test_valid_submission_creates_a_draft_and_redirects_to_review(self):
 		response = self.post_save(_formset_data([('rome', 'is-capital-of', 'italy')], description='capitals'))
@@ -121,9 +121,7 @@ class EditDraftPageTest(FactCreatePageTestCase):
 		)
 
 	def get_page(self, transaction):
-		return self.client.get(
-			reverse('fact_create_page.actions.edit_draft', kwargs={'transaction_id': transaction.id})
-		)
+		return self.client.get(reverse('fact_create_page.main_render', kwargs={'transaction_id': transaction.id}))
 
 	def test_prefills_the_staged_facts_even_when_not_known_entities(self):
 		# 'jhon-doe' only exists in the draft, so it is absent from the known-entities suggestions. A datalist
@@ -142,7 +140,9 @@ class EditDraftPageTest(FactCreatePageTestCase):
 	def test_form_posts_to_the_update_action(self):
 		content = self.get_page(self.draft).content.decode()
 
-		update_url = reverse('fact_create_page.actions.update_facts', kwargs={'transaction_id': self.draft.id})
+		update_url = reverse(
+			'fact_create_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}
+		)
 		self.assertIn(f'action="{update_url}"', content)
 
 	def test_applied_transaction_redirects_to_review(self):
@@ -166,7 +166,8 @@ class UpdateFactsTest(FactCreatePageTestCase):
 
 	def post_update(self, data):
 		return self.client.post(
-			reverse('fact_create_page.actions.update_facts', kwargs={'transaction_id': self.draft.id}), data
+			reverse('fact_create_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}),
+			data,
 		)
 
 	def test_replaces_the_staged_facts_and_redirects_to_review(self):

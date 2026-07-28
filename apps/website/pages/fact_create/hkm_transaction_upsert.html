@@ -83,33 +83,37 @@
 
 {% block content %}
 <div class="fixed-content">
-	<h1>{% if draft %}Edit draft{% else %}Add knowledge{% endif %}</h1>
+	<h1>{% if transaction %}Edit draft{% else %}Add knowledge{% endif %}</h1>
 	<p>
 		Each row is a fact: <em>subject — predicate — object</em>. Pick an existing value or type a new one.
-		{% if draft %}Clear a row completely to drop it from the draft.{% endif %}
+		{% if transaction %}Clear a row completely to drop it from the draft.{% endif %}
 	</p>
 
-	{% if pending_drafts %}
+	{% if draft_transactions %}
 		<h2 class="section-title">Pending drafts</h2>
 		<p class="hint">Saved batches not applied yet — review one to apply, edit or discard it.</p>
-		<ul class="pending-drafts">
-			{% for pending in pending_drafts %}
+		<ul class="draft-transactions">
+			{% for draft_transaction in draft_transactions %}
 				<li>
-					<a href="{% url 'fact_review_page.main_render' transaction_id=pending.id %}">
-						{% if pending.description %}{{ pending.description }}{% else %}Draft #{{ pending.id }}{% endif %}
+					<a href="{% url 'fact_review_page.main_render' transaction_id=draft_transaction.id %}">
+						{% if draft_transaction.description %}
+							{{ draft_transaction.description }}
+						{% else %}
+							Draft #{{ draft_transaction.id }}
+						{% endif %}
 					</a>
-					— {{ pending.fact_count }} fact{{ pending.fact_count|pluralize }},
-					{{ pending.retraction_count }} retraction{{ pending.retraction_count|pluralize }},
-					started {{ pending.created_at|date:'j M Y, H:i' }}
+					— {{ draft_transaction.fact_count }} fact{{ draft_transaction.fact_count|pluralize }},
+					{{ draft_transaction.retraction_count }} retraction{{ draft_transaction.retraction_count|pluralize }},
+					started {{ draft_transaction.created_at|date:'j M Y, H:i' }}
 				</li>
 			{% endfor %}
 		</ul>
 	{% endif %}
 
-	{% if draft %}
-		<form method="post" action="{% url 'fact_create_page.actions.update_facts' transaction_id=draft.id %}">
+	{% if transaction %}
+		<form method="post" action="{% url 'fact_create_page.actions.save_hkm_transaction' transaction_id=transaction.id %}">
 	{% else %}
-		<form method="post" action="{% url 'fact_create_page.actions.create_facts' %}">
+		<form method="post" action="{% url 'fact_create_page.actions.save_hkm_transaction' %}">
 	{% endif %}
 		{% csrf_token %}
 		{{ formset.management_form }}
@@ -182,8 +186,8 @@
 
 		<div>
 			<button type="submit">Save draft &amp; review</button>
-			{% if draft %}
-				<a href="{% url 'fact_review_page.main_render' transaction_id=draft.id %}" class="spaced-left">Cancel</a>
+			{% if transaction %}
+				<a href="{% url 'fact_review_page.main_render' transaction_id=transaction.id %}" class="spaced-left">Cancel</a>
 			{% else %}
 				<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
 			{% endif %}

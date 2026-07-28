@@ -58,6 +58,8 @@ def get_incoming_facts(entity):
 
 
 def get_retractable_facts(ignore_transaction_id=None):
+	# TODO fix this to only pick from facts that are in applied transactions!
+	# ---
 	# Current facts that can be cleanly retracted: applied, not already removed, and with no retraction at all
 	# (not even a draft one — a fact's OneToOne retraction PK means it can be retracted at most once, so we
 	# must not offer a fact that already has a retraction staged). Returned as dicts with the fact id, which a

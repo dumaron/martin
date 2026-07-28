@@ -1,3 +1,5 @@
+from operator import itemgetter
+
 from django import forms
 from django.forms import formset_factory
 from django.shortcuts import get_object_or_404, redirect, render
@@ -5,12 +7,12 @@ from django.shortcuts import get_object_or_404, redirect, render
 from apps.website.pages.page import Page
 from core import hkm
 from core.hkm.models import Transaction
-from core.utils.fp import lfilter, lmap
+from core.utils.fp import lfilter, lmap, pipe, pluck
 
 
 class FactForm(forms.Form):
 	# Each field is a CharField rendered as a plain text input backed by a datalist: the browser offers known
-	# values while still accepting a brand-new string. A ChoiceField would reject anything outside its choices.
+	# values while still accepting a brand-new string.
 	subject = forms.CharField(
 		widget=forms.TextInput(
 			attrs={
@@ -47,7 +49,7 @@ page = Page(name='fact_create_page', base_route='knowledge/add')
 
 def _form_kwargs():
 	# `empty_permitted` lets a fully blanked row validate to an empty cleaned_data (which the save handlers
-	# skip). That is also how a prefilled row is removed when editing a draft: clear it out and save.
+	# skip). That is also how a prefilled row is removed when editing a draft transaction: clear it and save.
 	return {'empty_permitted': True}
 
 
@@ -58,110 +60,106 @@ def _suggestion_values():
 	}
 
 
-def _context(
-	formset,
-	retractable,
-	description='',
-	form_error=None,
-	draft=None,
-	selected_retractions=(),
-	entity_options=(),
-	predicate_options=(),
-):
-	# `draft` is None on the create page and the draft being edited on the edit page; the template switches
-	# the heading, the form action and the cancel link on it. `pending_drafts` is filled by main_render only:
-	# the create page is the entry point for anything draft-related, so parked drafts resurface there.
-	return {
+# A first interesting case where my "page" abstraction looks a bit stretched: both transaction creation and update
+# share the same template, form, and some logic. So, to avoid having to create a "shared" folder, I made this page
+# available at two URLs.
+# Not super-happy, but I think I can also change my perspective and see this as a single page with just an optional
+# argument, a draft transaction ID. Mah.
+@page.main('<int?:transaction_id>')
+def main_render(request, transaction_id=None):
+	transaction = None
+	staged_facts = []
+	staged_retractions = []
+
+	if transaction_id:
+		transaction = get_object_or_404(Transaction, pk=transaction_id)
+
+		if transaction.applied_at:
+			return redirect('fact_review_page.main_render', transaction_id=transaction.id)
+
+		# The formset wants a list of dicts here, so this one stays a lambda: `itemgetter` works on the
+		# mappings coming back out of `cleaned_data`, not on the Fact instances going in.
+		staged_facts = lmap(
+			lambda fact: {'subject': fact.subject, 'predicate': fact.predicate, 'object': fact.object},
+			transaction.facts.order_by('id'),
+		)
+		staged_retractions = transaction.retractions.values_list('fact_id', flat=True)
+
+	formset = FactFormSet(initial=staged_facts, form_kwargs=_form_kwargs())
+	entity_options = hkm.get_all_entities()
+	predicate_options = hkm.get_used_predicates()
+
+	context = {
+		'formset': formset,
+		# `ignore_transaction_id` is what keeps this transaction's own staged retractions in the offered set —
+		# without it they read as "already taken" and the rows they point at vanish from the picker.
+		'retractable': hkm.get_retractable_facts(ignore_transaction_id=transaction.id if transaction else None),
+		# `description` is nullable (mutations store an empty note as NULL), and a None here would render as
+		# the literal 'None' inside the textarea — so normalise to '' the way the save handler already does.
+		'description': (transaction.description or '') if transaction else '',
+		'form_error': None,
+		'transaction': transaction,
+		'selected_retractions': staged_retractions,
+		'entity_options': entity_options,
+		'predicate_options': predicate_options,
+		'draft_transactions': [] if transaction else hkm.get_draft_transactions(),
+	}
+
+	return render(request, 'fact_create/hkm_transaction_upsert.html', context)
+
+
+@page.action('<int?:transaction_id>/save')
+def save_hkm_transaction(request, transaction_id=None):
+	# Create and update in one handler: parse the submitted batch, stage it (as a new draft transaction or
+	# replacing the one being edited) and land on the review page; on a problem, re-render the form as sent.
+	transaction = None
+
+	if transaction_id:
+		transaction = get_object_or_404(Transaction, pk=transaction_id)
+		if transaction.applied_at:
+			return redirect('fact_review_page.main_render', transaction_id=transaction.id)
+
+	formset = FactFormSet(request.POST, form_kwargs=_form_kwargs())
+	description = request.POST.get('description', '').strip()
+	retractable = hkm.get_retractable_facts(ignore_transaction_id=transaction.id if transaction else None)
+	error = None
+
+	# Keep only ids that are genuinely retractable right now (guards against stale/forged selections).
+	# `isdecimal` rather than `isdigit`: the latter also accepts things like '²', which then blow up in `int`.
+	retractable_ids = set(pluck('id', retractable))
+	retractions = pipe(
+		request.POST.getlist('retractions'),
+		lfilter(str.isdecimal),
+		lmap(int),
+		lfilter(lambda fact_id: fact_id in retractable_ids),
+	)
+
+	if formset.is_valid():
+		# Blank rows validate to an empty cleaned_data (see `empty_permitted` above) — keep only the real ones.
+		facts = pipe(
+			formset.cleaned_data,
+			lfilter(bool),
+			lmap(itemgetter('subject', 'predicate', 'object')),
+		)
+		if facts or retractions:
+			if transaction is None:
+				transaction = hkm.create_draft_transaction(facts, retractions=retractions, description=description)
+			else:
+				hkm.update_draft(transaction, facts, retractions=retractions, description=description)
+			return redirect('fact_review_page.main_render', transaction_id=transaction.id)
+		error = 'Add at least one fact or retraction before saving.'
+
+	# `draft_transactions` stays empty here: main_render is the entry point for anything draft-related, so
+	# parked transactions resurface there rather than on a form that failed to save.
+	context = {
 		'formset': formset,
 		'retractable': retractable,
 		'description': description,
-		'form_error': form_error,
-		'draft': draft,
-		'selected_retractions': selected_retractions,
-		'entity_options': entity_options,
-		'predicate_options': predicate_options,
-		'pending_drafts': (),
+		'form_error': error,
+		'transaction': transaction,
+		'selected_retractions': set(retractions),
+		**_suggestion_values(),
+		'draft_transactions': (),
 	}
 
-
-def _submitted_facts(formset):
-	# Blank rows validate to an empty cleaned_data (see `empty_permitted` above) — keep only the real ones.
-	rows = lfilter(None, formset.cleaned_data)
-	return lmap(lambda row: (row['subject'], row['predicate'], row['object']), rows)
-
-
-def _submitted_retractions(request, retractable):
-	# Keep only ids that are genuinely retractable right now (guards against stale/forged selections).
-	retractable_ids = {fact['id'] for fact in retractable}
-	submitted = lmap(int, lfilter(str.isdigit, request.POST.getlist('retractions')))
-	return lfilter(lambda fact_id: fact_id in retractable_ids, submitted)
-
-
-def _handle_save(request, draft=None):
-	# Shared by create and update: parse the submitted batch, stage it (as a new draft or replacing the one
-	# being edited) and land on the review page; on any problem, re-render the form as submitted.
-	formset = FactFormSet(request.POST, form_kwargs=_form_kwargs())
-	suggestions = _suggestion_values()
-	description = request.POST.get('description', '').strip()
-	retractable = hkm.get_retractable_facts(ignore_transaction_id=draft.id if draft else None)
-	retractions = _submitted_retractions(request, retractable)
-	error = None
-	if formset.is_valid():
-		facts = _submitted_facts(formset)
-		if facts or retractions:
-			if draft is None:
-				draft = hkm.create_draft_transaction(facts, retractions=retractions, description=description)
-			else:
-				hkm.update_draft(draft, facts, retractions=retractions, description=description)
-			return redirect('fact_review_page.main_render', transaction_id=draft.id)
-		error = 'Add at least one fact or retraction before saving.'
-	context = _context(formset, retractable, description, error, draft, set(retractions), **suggestions)
-	return render(request, 'fact_create/fact_create.html', context)
-
-
-@page.main
-def main_render(request):
-	suggestions = _suggestion_values()
-	formset = FactFormSet(form_kwargs=_form_kwargs())
-	context = _context(formset, hkm.get_retractable_facts(), **suggestions)
-	context['pending_drafts'] = hkm.get_draft_transactions()
-	return render(request, 'fact_create/fact_create.html', context)
-
-
-@page.action('save')
-def create_facts(request):
-	return _handle_save(request)
-
-
-@page.action('<int:transaction_id>', method='GET')
-def edit_draft(request, transaction_id):
-	# The create page, prefilled with a draft's staged facts and retractions. Only drafts are editable:
-	# applied transactions are immutable history, so we bounce to the review page, which explains that.
-	draft = get_object_or_404(Transaction, pk=transaction_id)
-	if draft.applied_at:
-		return redirect('fact_review_page.main_render', transaction_id=draft.id)
-	staged = lmap(
-		lambda fact: {'subject': fact.subject, 'predicate': fact.predicate, 'object': fact.object},
-		draft.facts.order_by('id'),
-	)
-	suggestions = _suggestion_values()
-	formset = FactFormSet(initial=staged, form_kwargs=_form_kwargs())
-	retractable = hkm.get_retractable_facts(ignore_transaction_id=draft.id)
-	selected = set(draft.retractions.values_list('fact_id', flat=True))
-	context = _context(
-		formset,
-		retractable,
-		draft.description or '',
-		draft=draft,
-		selected_retractions=selected,
-		**suggestions,
-	)
-	return render(request, 'fact_create/fact_create.html', context)
-
-
-@page.action('<int:transaction_id>/save')
-def update_facts(request, transaction_id):
-	draft = get_object_or_404(Transaction, pk=transaction_id)
-	if draft.applied_at:
-		return redirect('fact_review_page.main_render', transaction_id=draft.id)
-	return _handle_save(request, draft=draft)
+	return render(request, 'fact_create/hkm_transaction_upsert.html', context)
