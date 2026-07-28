@@ -140,16 +140,16 @@
 		<h2 class="section-title">Facts to add</h2>
 		<div id="fact-forms">
 			{% for form in formset %}
-				{% include 'fact_create/partial_fact_row.html' with form=form %}
+				{% include 'fact_create/partial_fact_row.html' with form=form only %}
 			{% endfor %}
 		</div>
 
-		<template id="empty-fact-row">
-			{% include 'fact_create/partial_fact_row.html' with form=formset.empty_form %}
-		</template>
-
 		<div>
-			<button type="button" id="add-fact">+ Add another fact</button>
+			<button type="button" id="add-fact"
+				hx-get="{% url 'fact_create_page.partials.fact_row' %}"
+				hx-include="#id_{{ formset.prefix }}-TOTAL_FORMS"
+				hx-target="#fact-forms"
+				hx-swap="beforeend">+ Add another fact</button>
 		</div>
 
 		<h2 class="section-title">Facts to retract (optional)</h2>
@@ -157,26 +157,26 @@
 			<p class="hint">Select existing facts to remove. They stop being current once you apply this batch.</p>
 			<div id="retraction-picker" class="retraction-picker">
 				<div class="retraction-picker-row">
-					<input id="retraction-search" type="text" list="hkm-retraction-options"
-						placeholder="search facts to retract" autocomplete="off">
+					<input id="retraction-search" type="text" name="retraction_query"
+						list="hkm-retraction-options" placeholder="search facts to retract" autocomplete="off"
+						hx-get="{% url 'fact_create_page.partials.retraction_row' %}"
+						hx-trigger="change, keydown[key=='Enter'], click from:#add-retraction"
+						hx-include="#selected-retractions"
+						hx-target="#selected-retractions"
+						hx-swap="beforeend"
+						hx-sync="this:drop"
+						hx-on:keydown="if (event.key === 'Enter') event.preventDefault()"
+						hx-on::after-request="if (event.detail.xhr.status === 200) this.value = ''">
 					<button type="button" id="add-retraction">Add retraction</button>
 				</div>
 				<datalist id="hkm-retraction-options">
 					{% for fact in retractable %}
-						<option value="{{ fact.id }}: {{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}"
-							data-id="{{ fact.id }}"
-							data-label="{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}"></option>
+						<option value="{{ fact.id }}: {{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}"></option>
 					{% endfor %}
 				</datalist>
 				<div id="selected-retractions" class="selected-retractions">
-					{% for fact in retractable %}
-						{% if fact.id in selected_retractions %}
-							<div class="selected-retraction" data-retraction-id="{{ fact.id }}">
-								<span>{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}</span>
-								<input type="hidden" name="retractions" value="{{ fact.id }}">
-								<button type="button" data-remove-retraction>Remove</button>
-							</div>
-						{% endif %}
+					{% for fact in selected_retractions %}
+						{% include 'fact_create/partial_retraction_row.html' with fact=fact %}
 					{% endfor %}
 				</div>
 			</div>
@@ -194,91 +194,4 @@
 		</div>
 	</form>
 </div>
-
-<script>
-	function initRetractionPicker() {
-		const input = document.getElementById('retraction-search')
-		const options = document.getElementById('hkm-retraction-options')
-		const selected = document.getElementById('selected-retractions')
-		const addButton = document.getElementById('add-retraction')
-		if (!input || !options || !selected || !addButton || input.dataset.initialized === 'true') return
-		input.dataset.initialized = 'true'
-
-		function selectedIds() {
-			return new Set(
-				Array.from(selected.querySelectorAll('input[name="retractions"]')).map(hidden => hidden.value)
-			)
-		}
-
-		function matchingOption() {
-			const value = input.value.trim()
-			return Array.from(options.options).find(option => option.value === value)
-		}
-
-		function addOption(option) {
-			const id = option.dataset.id
-			if (!id || selectedIds().has(id)) return false
-
-			const item = document.createElement('div')
-			item.className = 'selected-retraction'
-			item.dataset.retractionId = id
-
-			const label = document.createElement('span')
-			label.textContent = option.dataset.label || option.value
-
-			const hidden = document.createElement('input')
-			hidden.type = 'hidden'
-			hidden.name = 'retractions'
-			hidden.value = id
-
-			const remove = document.createElement('button')
-			remove.type = 'button'
-			remove.dataset.removeRetraction = ''
-			remove.textContent = 'Remove'
-
-			item.append(label, hidden, remove)
-			selected.appendChild(item)
-			input.value = ''
-			return true
-		}
-
-		function addFromInput() {
-			const option = matchingOption()
-			return option ? addOption(option) : false
-		}
-
-		addButton.addEventListener('click', addFromInput)
-		input.addEventListener('change', addFromInput)
-		input.addEventListener('keydown', event => {
-			if (event.key === 'Enter') {
-				event.preventDefault()
-				addFromInput()
-			}
-		})
-		selected.addEventListener('click', event => {
-			if (!event.target.matches('[data-remove-retraction]')) return
-			event.target.closest('.selected-retraction').remove()
-		})
-		input.closest('form').addEventListener('submit', addFromInput)
-	}
-
-	window.addEventListener('load', () => {
-		initRetractionPicker()
-
-		const addButton = document.getElementById('add-fact')
-		const container = document.getElementById('fact-forms')
-		const template = document.getElementById('empty-fact-row')
-		// Django's management formset hidden input to handle how many forms we are sending
-		const totalForms = document.getElementById('id_{{ formset.prefix }}-TOTAL_FORMS');
-
-		addButton.addEventListener('click', () => {
-			const index = parseInt(totalForms.value, 10)
-			const wrapper = document.createElement('div')
-			// Also part of Django's formset way to spawn new forms
-			wrapper.innerHTML = template.innerHTML.replace(/__prefix__/g, index)
-			container.appendChild(wrapper)
-			totalForms.value = index + 1
-		});
-	});
-</script>
 {% endblock %}

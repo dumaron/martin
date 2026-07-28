@@ -74,6 +74,23 @@ class PendingDraftsSectionTest(FactCreatePageTestCase):
 		self.assertRegex(content, r'<input[^>]+name="form-0-object"[^>]+list="hkm-entity-options"')
 		self.assertNotIn('class="tom-select"', content)
 
+	def test_asks_the_server_for_extra_fact_rows(self):
+		# Rows come from the fact-row partial, which needs to be told how many the form already has.
+		content = self.get_page().content.decode()
+
+		self.assertRegex(
+			content,
+			r'id="add-fact"\s+hx-get="{}"\s+hx-include="#id_form-TOTAL_FORMS"'.format(
+				reverse('fact_create_page.partials.fact_row')
+			),
+		)
+		# No client-side row cloning left over.
+		self.assertNotIn('empty-fact-row', content)
+		self.assertNotIn('__prefix__', content)
+		# The rows here come from the formset, which writes the management form itself: the row template's
+		# out-of-band counter belongs to the HTMX response alone.
+		self.assertNotIn('hx-swap-oob', content)
+
 
 class CreateFactsTest(FactCreatePageTestCase):
 	def post_save(self, data):
@@ -109,6 +126,114 @@ class CreateFactsTest(FactCreatePageTestCase):
 		self.assertFalse(Transaction.objects.exists())
 
 
+class AddFactRowPartialTest(FactCreatePageTestCase):
+	def get_row(self, **params):
+		return self.client.get(reverse('fact_create_page.partials.fact_row'), params)
+
+	def test_renders_the_row_the_reported_count_names(self):
+		content = self.get_row(**{'form-TOTAL_FORMS': '2'}).content.decode()
+
+		self.assertRegex(content, r'<input[^>]+name="form-2-subject"[^>]+list="hkm-entity-options"')
+		self.assertRegex(content, r'<input[^>]+name="form-2-predicate"[^>]+list="hkm-predicate-options"')
+		self.assertRegex(content, r'<input[^>]+name="form-2-object"[^>]+list="hkm-entity-options"')
+
+	def test_swaps_the_incremented_row_count_back(self):
+		content = self.get_row(**{'form-TOTAL_FORMS': '2'}).content.decode()
+
+		self.assertRegex(
+			content,
+			r'<input type="hidden" name="form-TOTAL_FORMS"[^>]+id="id_form-TOTAL_FORMS"'
+			r'[^>]+value="3" hx-swap-oob="true">',
+		)
+
+	def test_falls_back_to_the_first_row_when_the_count_is_unusable(self):
+		for params in ({}, {'form-TOTAL_FORMS': ''}, {'form-TOTAL_FORMS': 'two'}):
+			with self.subTest(params=params):
+				content = self.get_row(**params).content.decode()
+
+				self.assertIn('name="form-0-subject"', content)
+				self.assertRegex(content, r'name="form-TOTAL_FORMS"[^>]+value="1"')
+
+	def test_the_row_may_be_left_blank(self):
+		# An unused extra row is dropped on save rather than rejected, so it must not be required in the browser
+		# either — which is also what the formset does for the rows it renders itself.
+		self.assertNotIn('required', self.get_row(**{'form-TOTAL_FORMS': '1'}).content.decode())
+
+	def test_a_row_added_this_way_is_bound_on_save(self):
+		row = self.get_row(**{'form-TOTAL_FORMS': '1'}).content.decode()
+		self.assertIn('name="form-1-subject"', row)
+
+		self.client.post(
+			reverse('fact_create_page.actions.save_hkm_transaction'),
+			_formset_data([('rome', 'is-capital-of', 'italy'), ('paris', 'is-capital-of', 'france')]),
+		)
+
+		self.assertEqual(
+			_staged_triples(Transaction.objects.get()),
+			[('rome', 'is-capital-of', 'italy'), ('paris', 'is-capital-of', 'france')],
+		)
+
+
+class RetractionRowPartialTest(FactCreatePageTestCase):
+	def setUp(self):
+		super().setUp()
+		applied = Transaction.objects.create(applied_at=timezone.now())
+		self.rome = Fact.objects.create(
+			subject='rome', predicate='is-capital-of', object='france', transaction=applied
+		)
+		self.paris = Fact.objects.create(
+			subject='paris', predicate='is-capital-of', object='france', transaction=applied
+		)
+
+	def option_value(self, fact):
+		# Exactly what the datalist offers for that fact — the id is what the server reads back out of it.
+		return f'{fact.id}: {fact.subject} — {fact.predicate} — {fact.object}'
+
+	def get_row(self, **params):
+		return self.client.get(reverse('fact_create_page.partials.retraction_row'), params)
+
+	def test_renders_the_row_for_the_fact_the_search_value_names(self):
+		response = self.get_row(retraction_query=self.option_value(self.rome))
+
+		content = response.content.decode()
+		self.assertEqual(response.status_code, 200)
+		self.assertIn(f'<span>{self.rome.subject} — {self.rome.predicate} — {self.rome.object}</span>', content)
+		self.assertIn(f'name="retractions" value="{self.rome.id}"', content)
+
+	def test_answers_no_content_when_the_search_matches_nothing(self):
+		for query in ('', 'rom', 'not-an-id', str(self.rome.id + 1000)):
+			with self.subTest(query=query):
+				self.assertEqual(self.get_row(retraction_query=query).status_code, 204)
+
+	def test_answers_no_content_when_the_fact_is_already_selected(self):
+		# What keeps a search committed twice — the field changing and the button being clicked — from adding
+		# the same fact twice.
+		response = self.get_row(
+			retraction_query=self.option_value(self.rome), retractions=[str(self.rome.id), str(self.paris.id)]
+		)
+
+		self.assertEqual(response.status_code, 204)
+
+	def test_a_fact_held_for_another_one_is_still_added(self):
+		response = self.get_row(retraction_query=self.option_value(self.rome), retractions=[str(self.paris.id)])
+
+		self.assertEqual(response.status_code, 200)
+		self.assertIn(f'name="retractions" value="{self.rome.id}"', response.content.decode())
+
+	def test_a_fact_a_draft_has_staged_for_retraction_is_still_offered(self):
+		# A staged retraction has removed nothing yet, so the fact stays current and stays pickable — including
+		# by the draft that staged it, which is how reopening that draft shows its own selection back.
+		hkm.create_draft_transaction([('jhon-doe', 'works-at', 'acme')], retractions=[self.rome.id])
+
+		self.assertEqual(self.get_row(retraction_query=self.option_value(self.rome)).status_code, 200)
+
+	def test_a_fact_an_applied_retraction_has_removed_is_gone(self):
+		draft = hkm.create_draft_transaction([], retractions=[self.rome.id])
+		hkm.apply_transaction(draft)
+
+		self.assertEqual(self.get_row(retraction_query=self.option_value(self.rome)).status_code, 204)
+
+
 class EditDraftPageTest(FactCreatePageTestCase):
 	def setUp(self):
 		super().setUp()
@@ -136,6 +261,14 @@ class EditDraftPageTest(FactCreatePageTestCase):
 		content = self.get_page(self.draft).content.decode()
 
 		self.assertIn(f'name="retractions" value="{self.current.id}"', content)
+
+	def test_the_picker_points_at_the_retraction_row_partial(self):
+		content = self.get_page(self.draft).content.decode()
+
+		self.assertIn(f'hx-get="{reverse("fact_create_page.partials.retraction_row")}"', content)
+		# No client-side selection bookkeeping left over.
+		self.assertNotIn('data-remove-retraction', content)
+		self.assertNotIn('data-retraction-id', content)
 
 	def test_form_posts_to_the_update_action(self):
 		content = self.get_page(self.draft).content.decode()

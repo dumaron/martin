@@ -57,27 +57,19 @@ def get_incoming_facts(entity):
 	)
 
 
-def get_retractable_facts(ignore_transaction_id=None):
-	# TODO fix this to only pick from facts that are in applied transactions!
-	# ---
-	# Current facts that can be cleanly retracted: applied, not already removed, and with no retraction at all
-	# (not even a draft one — a fact's OneToOne retraction PK means it can be retracted at most once, so we
-	# must not offer a fact that already has a retraction staged). Returned as dicts with the fact id, which a
+def get_retractable_facts():
+	# The facts a new retraction may point at: exactly the current ones. Only applied transactions count here,
+	# which is the whole of what `hkm_current_facts` means — a fact asserted by a draft is not real yet, and a
+	# retraction staged by a draft has not removed anything yet. Returned as dicts with the fact id, which a
 	# new retraction references.
 	#
-	# When editing a draft, pass its id as `ignore_transaction_id`: retractions staged by that draft don't
-	# count as taken (they are about to be replaced), so the facts they point at stay offered — and selected.
-	not_retracted = 'NOT EXISTS (SELECT 1 FROM hkm_retractions r WHERE r.fact_id = cf.id{ignore})'
-	if ignore_transaction_id is None:
-		condition, params = not_retracted.format(ignore=''), []
-	else:
-		condition, params = not_retracted.format(ignore=' AND r.transaction_id <> %s'), [ignore_transaction_id]
+	# So a fact stays on offer while some draft holds a pending retraction of it, including the draft being
+	# edited (which is what lets that draft show its own selection back). Two drafts can therefore both stage
+	# the retraction of one fact, and the second one saved raises: `Retraction.fact` is a primary key, so the
+	# intent to retract a fact can only be stored once. Accepted — offering the truth about what is current
+	# beats hiding facts to dodge a clash between drafts.
 	return _rows(
-		'SELECT id, subject, predicate, object '
-		'FROM hkm_current_facts cf '
-		f'WHERE {condition} '
-		'ORDER BY subject, predicate, object',
-		params,
+		'SELECT id, subject, predicate, object FROM hkm_current_facts ORDER BY subject, predicate, object'
 	)
 
 

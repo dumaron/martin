@@ -8,3 +8,12 @@
 		</div>
 	{% endif %}
 </div>
+{% if total_forms %}
+	{% comment %}
+	Only set when HTMX asked for this row on its own: the row counts as a form once the management form says so,
+	so the response carries the incremented counter as an out-of-band swap. The page renders its rows through
+	the formset, which writes that counter itself.
+	{% endcomment %}
+	<input type="hidden" name="{{ formset_prefix }}-TOTAL_FORMS" id="id_{{ formset_prefix }}-TOTAL_FORMS"
+		value="{{ total_forms }}" hx-swap-oob="true">
+{% endif %}

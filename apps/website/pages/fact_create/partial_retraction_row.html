@@ -1,0 +1,5 @@
+<div class="selected-retraction">
+	<span>{{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}</span>
+	<input type="hidden" name="retractions" value="{{ fact.id }}">
+	<button type="button" hx-on:click="this.closest('.selected-retraction').remove()">Remove</button>
+</div>
