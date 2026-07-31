@@ -5,6 +5,7 @@
             <th>Subject</th>
             <th>Predicate</th>
             <th>Object</th>
+            <th>Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -16,7 +17,7 @@
                 <td class="table-actions">
                     <button
                         type="button"
-                        hx-get="{% url 'fact_create_page.partials.stage_fact_retraction' %}"
+                        hx-get="{% url 'knowledge_transaction_upsert_page.partials.stage_fact_retraction' %}"
                         hx-vals='{"fact_id": "{{ fact.id }}"}'
                         hx-target="#staged-retractions tbody"
                         hx-swap="beforeend"

@@ -39,7 +39,7 @@ class FactCreatePageTestCase(TestCase):
 
 class PendingDraftsSectionTest(FactCreatePageTestCase):
 	def get_page(self):
-		return self.client.get(reverse('fact_create_page.main_render'))
+		return self.client.get(reverse('knowledge_transaction_upsert_page.main_render'))
 
 	def test_lists_pending_drafts_with_links_to_their_review_pages(self):
 		draft = hkm.create_draft_transaction([('rome', 'is-capital-of', 'italy')], description='capitals')
@@ -81,7 +81,7 @@ class PendingDraftsSectionTest(FactCreatePageTestCase):
 		self.assertRegex(
 			content,
 			r'id="add-fact"\s+hx-get="{}"\s+hx-include="#id_form-TOTAL_FORMS"'.format(
-				reverse('fact_create_page.partials.fact_row')
+				reverse('knowledge_transaction_upsert_page.partials.fact_row')
 			),
 		)
 		# No client-side row cloning left over.
@@ -94,7 +94,7 @@ class PendingDraftsSectionTest(FactCreatePageTestCase):
 
 class CreateFactsTest(FactCreatePageTestCase):
 	def post_save(self, data):
-		return self.client.post(reverse('fact_create_page.actions.save_hkm_transaction'), data)
+		return self.client.post(reverse('knowledge_transaction_upsert_page.actions.save_hkm_transaction'), data)
 
 	def test_valid_submission_creates_a_draft_and_redirects_to_review(self):
 		response = self.post_save(_formset_data([('rome', 'is-capital-of', 'italy')], description='capitals'))
@@ -128,7 +128,7 @@ class CreateFactsTest(FactCreatePageTestCase):
 
 class AddFactRowPartialTest(FactCreatePageTestCase):
 	def get_row(self, **params):
-		return self.client.get(reverse('fact_create_page.partials.fact_row'), params)
+		return self.client.get(reverse('knowledge_transaction_upsert_page.partials.fact_row'), params)
 
 	def test_renders_the_row_the_reported_count_names(self):
 		content = self.get_row(**{'form-TOTAL_FORMS': '2'}).content.decode()
@@ -164,7 +164,7 @@ class AddFactRowPartialTest(FactCreatePageTestCase):
 		self.assertIn('name="form-1-subject"', row)
 
 		self.client.post(
-			reverse('fact_create_page.actions.save_hkm_transaction'),
+			reverse('knowledge_transaction_upsert_page.actions.save_hkm_transaction'),
 			_formset_data([('rome', 'is-capital-of', 'italy'), ('paris', 'is-capital-of', 'france')]),
 		)
 
@@ -190,7 +190,7 @@ class RetractionRowPartialTest(FactCreatePageTestCase):
 		return f'{fact.id}: {fact.subject} — {fact.predicate} — {fact.object}'
 
 	def get_row(self, **params):
-		return self.client.get(reverse('fact_create_page.partials.retraction_row'), params)
+		return self.client.get(reverse('knowledge_transaction_upsert_page.partials.retraction_row'), params)
 
 	def test_renders_the_row_for_the_fact_the_search_value_names(self):
 		response = self.get_row(retraction_query=self.option_value(self.rome))
@@ -246,7 +246,7 @@ class EditDraftPageTest(FactCreatePageTestCase):
 		)
 
 	def get_page(self, transaction):
-		return self.client.get(reverse('fact_create_page.main_render', kwargs={'transaction_id': transaction.id}))
+		return self.client.get(reverse('knowledge_transaction_upsert_page.main_render', kwargs={'transaction_id': transaction.id}))
 
 	def test_prefills_the_staged_facts_even_when_not_known_entities(self):
 		# 'jhon-doe' only exists in the draft, so it is absent from the known-entities suggestions. A datalist
@@ -265,7 +265,7 @@ class EditDraftPageTest(FactCreatePageTestCase):
 	def test_the_picker_points_at_the_retraction_row_partial(self):
 		content = self.get_page(self.draft).content.decode()
 
-		self.assertIn(f'hx-get="{reverse("fact_create_page.partials.retraction_row")}"', content)
+		self.assertIn(f'hx-get="{reverse("knowledge_transaction_upsert_page.partials.retraction_row")}"', content)
 		# No client-side selection bookkeeping left over.
 		self.assertNotIn('data-remove-retraction', content)
 		self.assertNotIn('data-retraction-id', content)
@@ -274,7 +274,7 @@ class EditDraftPageTest(FactCreatePageTestCase):
 		content = self.get_page(self.draft).content.decode()
 
 		update_url = reverse(
-			'fact_create_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}
+			'knowledge_transaction_upsert_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}
 		)
 		self.assertIn(f'action="{update_url}"', content)
 
@@ -299,7 +299,7 @@ class UpdateFactsTest(FactCreatePageTestCase):
 
 	def post_update(self, data):
 		return self.client.post(
-			reverse('fact_create_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}),
+			reverse('knowledge_transaction_upsert_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}),
 			data,
 		)
 
