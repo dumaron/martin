@@ -144,7 +144,7 @@ def main_render(request, transaction_id=None):
 		'draft_transactions': [] if transaction else hkm.get_draft_transactions(),
 	}
 
-	return render(request, 'fact_create/hkm_transaction_upsert.html', context)
+	return render(request, 'knowledge_transaction_upsert/hkm_transaction_upsert.html', context)
 
 
 @page.partial('fact-row')
@@ -162,7 +162,7 @@ def fact_row(request):
 		'formset_prefix': FORMSET_PREFIX,
 		'total_forms': index + 1,
 	}
-	return render(request, 'fact_create/partial_fact_row.html', context)
+	return render(request, 'knowledge_transaction_upsert/partial_fact_row.html', context)
 
 
 @page.partial('stage-fact')
@@ -171,7 +171,7 @@ def stage_fact(request):
 	if not form.is_valid():
 		return HttpResponse(status=422)
 
-	return render(request, 'fact_create/stage_fact.html', {'fact': _staged_fact(form.cleaned_data)})
+	return render(request, 'knowledge_transaction_upsert/stage_fact.html', {'fact': _staged_fact(form.cleaned_data)})
 
 
 @page.partial('retraction-facts-search')
@@ -190,13 +190,13 @@ def retraction_facts_search(request):
 			if fact['id'] not in staged_retraction_ids
 		],
 	}
-	return render(request, 'fact_create/retraction_facts_search.html', context)
+	return render(request, 'knowledge_transaction_upsert/retraction_facts_search.html', context)
 
 @page.partial('stage-fact-retraction')
 def stage_fact_retraction(request):
 	fact_id = request.GET.get('fact_id')
 	fact = get_object_or_404(Fact, pk=fact_id)
-	return render(request, 'fact_create/stage_retraction.html', { 'fact': fact })
+	return render(request, 'knowledge_transaction_upsert/stage_retraction.html', {'fact': fact})
 
 
 @page.action('<int?:transaction_id>/save')
@@ -253,4 +253,4 @@ def save_hkm_transaction(request, transaction_id=None):
 		'draft_transactions': (),
 	}
 
-	return render(request, 'fact_create/hkm_transaction_upsert.html', context)
+	return render(request, 'knowledge_transaction_upsert/hkm_transaction_upsert.html', context)

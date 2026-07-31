@@ -108,7 +108,7 @@
 			</thead>
 			<tbody>
 				{% for fact in staged_facts %}
-					{% include 'fact_create/stage_fact.html' with fact=fact only %}
+					{% include 'knowledge_transaction_upsert/stage_fact.html' with fact=fact only %}
 				{% endfor %}
 			</tbody>
 		</table>
@@ -127,7 +127,7 @@
 			</thead>
 			<tbody>
 				{% for fact in selected_retractions %}
-					{% include 'fact_create/stage_retraction.html' with fact=fact only %}
+					{% include 'knowledge_transaction_upsert/stage_retraction.html' with fact=fact only %}
 				{% endfor %}
 			</tbody>
 		</table>
@@ -169,7 +169,7 @@
 		<h2 class="section-title">Facts to add</h2>
 		<div id="fact-forms">
 			{% for form in formset %}
-				{% include 'fact_create/partial_fact_row.html' with form=form only %}
+				{% include 'knowledge_transaction_upsert/partial_fact_row.html' with form=form only %}
 			{% endfor %}
 		</div>
 
