@@ -1,0 +1,33 @@
+{% if facts %}
+<table>
+    <thead>
+        <tr>
+            <th>Subject</th>
+            <th>Predicate</th>
+            <th>Object</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for fact in facts %}
+            <tr>
+                <td>{{ fact.subject }}</td>
+                <td>{{ fact.predicate }}</td>
+                <td>{{ fact.object }}</td>
+                <td class="table-actions">
+                    <button
+                        type="button"
+                        hx-get="{% url 'fact_create_page.partials.stage_fact_retraction' %}"
+                        hx-vals='{"fact_id": "{{ fact.id }}"}'
+                        hx-target="#staged-retractions tbody"
+                        hx-swap="beforeend"
+                        hx-on::after-request="if (event.detail.successful) this.closest('tr').remove()">
+                        Retract
+                    </button>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>No retractable facts found.</p>
+{% endif %}

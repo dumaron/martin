@@ -1,0 +1,12 @@
+<tr>
+    <td>
+        {{ fact.id }}
+        <input type="hidden" name="retractions" value="{{ fact.id }}">
+    </td>
+    <td>{{ fact.subject }}</td>
+    <td>{{ fact.predicate }}</td>
+    <td>{{ fact.object }}</td>
+    <td class="table-actions">
+        <button type="button" hx-on:click="this.closest('tr').remove()">Remove</button>
+    </td>
+</tr>

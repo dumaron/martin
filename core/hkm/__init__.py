@@ -9,6 +9,7 @@ from core.hkm.queries import (
 	get_retractable_facts,
 	get_used_predicates,
 	review_transaction,
+	search_retractable_facts,
 )
 
 __all__ = [
@@ -22,5 +23,6 @@ __all__ = [
 	'get_retractable_facts',
 	'get_used_predicates',
 	'review_transaction',
+	'search_retractable_facts',
 	'update_draft',
 ]

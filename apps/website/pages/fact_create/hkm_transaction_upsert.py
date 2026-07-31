@@ -1,3 +1,4 @@
+import json
 from operator import itemgetter
 
 from django import forms
@@ -7,7 +8,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.website.pages.page import Page
 from core import hkm
-from core.hkm.models import Transaction
+from core.hkm.models import Fact, Transaction
 from core.utils.fp import lfilter, lmap, pipe, pluck
 
 
@@ -40,21 +41,17 @@ class FactForm(forms.Form):
 	)
 
 
-# A batch is valid with any mix of asserted facts and retractions, so the formset no longer requires a fact
-# (the "at least one of either" check lives in the view). Per-form validation still rejects a half-filled row.
-#
-# Hence the `empty_permitted` every instantiation below passes its forms: a fully blanked row then validates to
-# an empty cleaned_data, which the save handler skips. That is also how a prefilled row is removed when editing
-# a draft transaction — clear it and save.
+# The formset only generates independently stageable editor rows in the sidebar. The transaction form submits
+# the JSON payload owned by each staged row instead of these controls.
 FactFormSet = formset_factory(FactForm, extra=1)
 
-# The formset's own prefix ('form'), which names both the field counting the rows Django will bind and the
-# prefix of each row ('form-3-subject'). The row partial needs both, so keep the string in one place.
+# Its prefix and counter still give every dynamically added editor row distinct field names.
 FORMSET_PREFIX = FactFormSet.get_default_prefix()
 TOTAL_FORMS_FIELD = f'{FORMSET_PREFIX}-TOTAL_FORMS'
+FACT_FIELDS = ('subject', 'predicate', 'object')
 
 
-page = Page(name='fact_create_page', base_route='knowledge/add')
+page = Page(name='fact_create_page', base_route='knowledge/transactions')
 
 
 def _as_int(value, default=None):
@@ -70,12 +67,43 @@ def _retractable_by_id():
 	return retractable, {fact['id']: fact for fact in retractable}
 
 
+def _staged_fact(data):
+	fact = {field: data[field] for field in FACT_FIELDS}
+	fact['payload'] = json.dumps(fact, separators=(',', ':'))
+	return fact
+
+
+def _parse_staged_facts(payloads):
+	facts = []
+	invalid = False
+
+	for payload in payloads:
+		try:
+			data = json.loads(payload)
+		except (TypeError, json.JSONDecodeError):
+			invalid = True
+			continue
+
+		if not isinstance(data, dict):
+			invalid = True
+			continue
+
+		form = FactForm(data)
+		if form.is_valid():
+			facts.append(_staged_fact(form.cleaned_data))
+		else:
+			invalid = True
+
+	return facts, invalid
+
+
 # A first interesting case where my "page" abstraction looks a bit stretched: both transaction creation and update
 # share the same template, form, and some logic. So, to avoid having to create a "shared" folder, I made this page
 # available at two URLs.
 # Not super-happy, but I think I can also change my perspective and see this as a single page with just an optional
 # argument, a draft transaction ID. Mah.
-@page.main('<int?:transaction_id>')
+@page.main('new')
+@page.main('<int:transaction_id>/edit')
 def main_render(request, transaction_id=None):
 	transaction = None
 	staged_facts = []
@@ -87,19 +115,21 @@ def main_render(request, transaction_id=None):
 		if transaction.applied_at:
 			return redirect('fact_review_page.main_render', transaction_id=transaction.id)
 
-		# The formset wants a list of dicts here, so this one stays a lambda: `itemgetter` works on the
-		# mappings coming back out of `cleaned_data`, not on the Fact instances going in.
+		# Existing facts are already staged operations, while the sidebar starts with a fresh editor row.
 		staged_facts = lmap(
-			lambda fact: {'subject': fact.subject, 'predicate': fact.predicate, 'object': fact.object},
+			lambda fact: _staged_fact(
+				{'subject': fact.subject, 'predicate': fact.predicate, 'object': fact.object}
+			),
 			transaction.facts.order_by('id'),
 		)
 		staged_retractions = transaction.retractions.values_list('fact_id', flat=True)
 
-	formset = FactFormSet(initial=staged_facts, form_kwargs={'empty_permitted': True})
+	formset = FactFormSet(form_kwargs={'empty_permitted': True})
 	retractable, facts_by_id = _retractable_by_id()
 
 	context = {
 		'formset': formset,
+		'staged_facts': staged_facts,
 		# `description` is nullable (mutations store an empty note as NULL), and a None here would render as
 		# the literal 'None' inside the textarea — so normalise to '' the way the save handler already does.
 		'description': (transaction.description or '') if transaction else '',
@@ -120,20 +150,14 @@ def main_render(request, transaction_id=None):
 @page.partial('fact-row')
 def fact_row(request):
 	"""
-	One more fact row, appended to the form by HTMX.
+	One more fact editor row, appended to the sidebar by HTMX.
 
-	The browser says how many rows it already has by sending the formset's TOTAL_FORMS along (see `hx-include`
-	in the template), and the response carries that counter back, incremented, as an out-of-band swap — Django
-	binds exactly the number of rows the management form declares, so an appended row that does not bump it
-	would be ignored on save. That counter is the only thing setting this apart from a row the page renders
-	itself, hence the same template for both.
+	The browser sends the current formset counter so every editor gets a distinct prefix. The response increments
+	the counter out of band; final submission ignores these editor fields and reads the staged JSON payloads.
 	"""
 	index = _as_int(request.GET.get(TOTAL_FORMS_FIELD, ''), 0)
 	context = {
-		# A lone form standing in for the index-th form of the formset, so it carries that form's prefix and
-		# the POST binds it like any row rendered by the formset itself. `use_required_attribute=False` is what
-		# `BaseFormSet._construct_form` passes its own forms: a row left blank here is legal, and the attribute
-		# may not be combined with `empty_permitted` anyway.
+		# A lone form standing in for the index-th editor, so its fields share one unique prefix.
 		'form': FactForm(prefix=f'{FORMSET_PREFIX}-{index}', use_required_attribute=False, empty_permitted=True),
 		'formset_prefix': FORMSET_PREFIX,
 		'total_forms': index + 1,
@@ -141,29 +165,38 @@ def fact_row(request):
 	return render(request, 'fact_create/partial_fact_row.html', context)
 
 
-@page.partial('retraction-row')
-def retraction_row(request):
-	"""
-	One selected-retraction row, appended to the picker by HTMX.
+@page.partial('stage-fact')
+def stage_fact(request):
+	form = FactForm(request.GET, prefix=request.GET.get('prefix'))
+	if not form.is_valid():
+		return HttpResponse(status=422)
 
-	`retraction_query` is the datalist value to resolve, `retractions` the rows the picker already holds (see
-	`hx-include` in the template). A value naming no retractable fact, or naming one that is already in, has no
-	row to answer with: 204 tells HTMX to leave the page alone, which is also what keeps a search committed
-	twice — the field both changing and the button being clicked — from adding the fact twice.
+	return render(request, 'fact_create/stage_fact.html', {'fact': _staged_fact(form.cleaned_data)})
 
-	Which fact is retractable no longer depends on the draft being edited, so unlike the page around it this
-	partial needs nothing of the transaction.
-	"""
-	_, facts_by_id = _retractable_by_id()
-	# The datalist offers "<id>: <subject> — <predicate> — <object>", a label alone not being unique, so the id
-	# is whatever sits before the first colon.
-	queried_id = _as_int(request.GET.get('retraction_query', '').strip().split(':', 1)[0])
-	held = set(lmap(_as_int, request.GET.getlist('retractions')))
 
-	if queried_id not in facts_by_id or queried_id in held:
-		return HttpResponse(status=204)
+@page.partial('retraction-facts-search')
+def retraction_facts_search(request):
+	search_query = request.GET.get('retraction-query')
+	staged_retraction_ids = {
+		fact_id
+		for value in request.GET.getlist('retractions')
+		if (fact_id := _as_int(value)) is not None
+	}
+	context = {
+		'search_query': search_query,
+		'facts': [
+			fact
+			for fact in hkm.search_retractable_facts(search_query)
+			if fact['id'] not in staged_retraction_ids
+		],
+	}
+	return render(request, 'fact_create/retraction_facts_search.html', context)
 
-	return render(request, 'fact_create/partial_retraction_row.html', {'fact': facts_by_id[queried_id]})
+@page.partial('stage-fact-retraction')
+def stage_fact_retraction(request):
+	fact_id = request.GET.get('fact_id')
+	fact = get_object_or_404(Fact, pk=fact_id)
+	return render(request, 'fact_create/stage_retraction.html', { 'fact': fact })
 
 
 @page.action('<int?:transaction_id>/save')
@@ -177,9 +210,10 @@ def save_hkm_transaction(request, transaction_id=None):
 		if transaction.applied_at:
 			return redirect('fact_review_page.main_render', transaction_id=transaction.id)
 
-	formset = FactFormSet(request.POST, form_kwargs={'empty_permitted': True})
+	formset = FactFormSet(form_kwargs={'empty_permitted': True})
+	staged_facts, invalid_facts = _parse_staged_facts(request.POST.getlist('facts'))
 	description = request.POST.get('description', '').strip()
-	error = None
+	error = 'One or more staged facts are invalid.' if invalid_facts else None
 
 	# The picker's hidden inputs are the whole story of what to retract. Resolving them against what is
 	# retractable right now is what keeps a stale or forged id out of the batch, and the facts that survive are
@@ -194,13 +228,8 @@ def save_hkm_transaction(request, transaction_id=None):
 	)
 	retractions = list(pluck('id', selected_retractions))
 
-	if formset.is_valid():
-		# Blank rows validate to an empty cleaned_data (see `empty_permitted` above) — keep only the real ones.
-		facts = pipe(
-			formset.cleaned_data,
-			lfilter(bool),
-			lmap(itemgetter('subject', 'predicate', 'object')),
-		)
+	if not invalid_facts:
+		facts = lmap(itemgetter(*FACT_FIELDS), staged_facts)
 		if facts or retractions:
 			if transaction is None:
 				transaction = hkm.create_draft_transaction(facts, retractions=retractions, description=description)
@@ -213,6 +242,7 @@ def save_hkm_transaction(request, transaction_id=None):
 	# parked transactions resurface there rather than on a form that failed to save.
 	context = {
 		'formset': formset,
+		'staged_facts': staged_facts,
 		'description': description,
 		'form_error': error,
 		'transaction': transaction,

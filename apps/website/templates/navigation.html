@@ -125,10 +125,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{% url 'fact_create_page.main_render' %}"
-                               class="{% active request 'fact_create_page.main_render' %}">
-                                Add new
-                            </a>
+                            Transactions
+                            <ul>
+                                <li>
+                                    <a href="{% url 'fact_create_page.main_render' %}"
+                                       class="{% active request 'fact_create_page.main_render' %}">
+                                        Add new
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <a href="{% url 'predicate_rule_page.main_render' %}"

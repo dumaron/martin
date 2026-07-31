@@ -2,13 +2,6 @@
 
 {% block stylesheets %}
 <style>
-	.fact-row {
-		display: flex;
-		gap: 8px;
-		align-items: flex-start;
-		flex-wrap: wrap;
-		margin-bottom: 6px;
-	}
 
 	.fact-row input[list] {
 		width: 240px;
@@ -17,13 +10,6 @@
 	.fact-row-errors {
 		color: red;
 		flex-basis: 100%;
-	}
-
-	#batch-note {
-		width: 100%;
-		max-width: 740px;
-		display: block;
-		margin-bottom: 12px;
 	}
 
 	.section-title {
@@ -54,23 +40,6 @@
 		min-width: 260px;
 	}
 
-	.selected-retractions {
-		display: flex;
-		flex-direction: column;
-		gap: 4px;
-		margin-top: 6px;
-	}
-
-	.selected-retraction {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		gap: 8px;
-		border: 1px solid var(--color-border-muted);
-		border-radius: 4px;
-		padding: 4px 6px;
-	}
-
 	.selected-retraction span {
 		overflow-wrap: anywhere;
 	}
@@ -78,18 +47,105 @@
 	.selected-retraction button {
 		flex: 0 0 auto;
 	}
+
+	td.table-actions {
+		padding-top: 1px;
+		padding-bottom: 1px;
+	}
+
+	td.table-actions button {
+		padding: 1px 4px;
+		font-size: 0.75rem;
+		line-height: 1.2;
+	}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="fixed-content">
-	<h1>{% if transaction %}Edit draft{% else %}Add knowledge{% endif %}</h1>
-	<p>
-		Each row is a fact: <em>subject — predicate — object</em>. Pick an existing value or type a new one.
-		{% if transaction %}Clear a row completely to drop it from the draft.{% endif %}
-	</p>
+	<h1>{% if transaction %}Edit{% else %}Add{% endif %} knowledge transaction</h1>
 
-	{% if draft_transactions %}
+	{% if transaction %}
+		<form id="transaction-form" method="post" action="{% url 'fact_create_page.actions.save_hkm_transaction' transaction_id=transaction.id %}">
+	{% else %}
+		<form id="transaction-form" method="post" action="{% url 'fact_create_page.actions.save_hkm_transaction' %}">
+	{% endif %}
+		{% csrf_token %}
+		{{ formset.management_form }}
+
+		<datalist id="hkm-entity-options">
+			{% for value in entity_options %}
+				<option value="{{ value }}"></option>
+			{% endfor %}
+		</datalist>
+		<datalist id="hkm-predicate-options">
+			{% for value in predicate_options %}
+				<option value="{{ value }}"></option>
+			{% endfor %}
+		</datalist>
+
+		<label for="batch-note">Note (optional)</label>
+		<textarea name="description"
+                  rows="2"
+                  cols="80"
+                  placeholder="What is this batch about?">
+            {{ description }}
+        </textarea>
+
+		{% if form_error %}
+			<div class="fact-row-errors">{{ form_error }}</div>
+		{% endif %}
+
+		<h3>New facts</h3>
+		<table id="staged-facts">
+			<thead>
+				<tr>
+					<th>Subject</th>
+					<th>Predicate</th>
+					<th>Object</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for fact in staged_facts %}
+					{% include 'fact_create/stage_fact.html' with fact=fact only %}
+				{% endfor %}
+			</tbody>
+		</table>
+
+
+		<h3>Retractions</h3>
+		<table id="staged-retractions">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Subject</th>
+					<th>Predicate</th>
+					<th>Object</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for fact in selected_retractions %}
+					{% include 'fact_create/stage_retraction.html' with fact=fact only %}
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div>
+			<button type="submit">Save draft &amp; review</button>
+			{% if transaction %}
+				<a href="{% url 'fact_review_page.main_render' transaction_id=transaction.id %}" class="spaced-left">Cancel</a>
+			{% else %}
+				<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
+			{% endif %}
+		</div>
+	</form>
+</div>
+
+<div class="suggestions">
+
+{% if draft_transactions %}
 		<h2 class="section-title">Pending drafts</h2>
 		<p class="hint">Saved batches not applied yet — review one to apply, edit or discard it.</p>
 		<ul class="draft-transactions">
@@ -110,33 +166,6 @@
 		</ul>
 	{% endif %}
 
-	{% if transaction %}
-		<form method="post" action="{% url 'fact_create_page.actions.save_hkm_transaction' transaction_id=transaction.id %}">
-	{% else %}
-		<form method="post" action="{% url 'fact_create_page.actions.save_hkm_transaction' %}">
-	{% endif %}
-		{% csrf_token %}
-		{{ formset.management_form }}
-
-		<datalist id="hkm-entity-options">
-			{% for value in entity_options %}
-				<option value="{{ value }}"></option>
-			{% endfor %}
-		</datalist>
-		<datalist id="hkm-predicate-options">
-			{% for value in predicate_options %}
-				<option value="{{ value }}"></option>
-			{% endfor %}
-		</datalist>
-
-		<label for="batch-note">Note (optional)</label>
-		<textarea id="batch-note" name="description" rows="2"
-			placeholder="What is this batch about?">{{ description }}</textarea>
-
-		{% if form_error %}
-			<div class="fact-row-errors">{{ form_error }}</div>
-		{% endif %}
-
 		<h2 class="section-title">Facts to add</h2>
 		<div id="fact-forms">
 			{% for form in formset %}
@@ -144,54 +173,40 @@
 			{% endfor %}
 		</div>
 
-		<div>
-			<button type="button" id="add-fact"
-				hx-get="{% url 'fact_create_page.partials.fact_row' %}"
-				hx-include="#id_{{ formset.prefix }}-TOTAL_FORMS"
-				hx-target="#fact-forms"
-				hx-swap="beforeend">+ Add another fact</button>
-		</div>
-
 		<h2 class="section-title">Facts to retract (optional)</h2>
 		{% if retractable %}
 			<p class="hint">Select existing facts to remove. They stop being current once you apply this batch.</p>
 			<div id="retraction-picker" class="retraction-picker">
 				<div class="retraction-picker-row">
-					<input id="retraction-search" type="text" name="retraction_query"
-						list="hkm-retraction-options" placeholder="search facts to retract" autocomplete="off"
-						hx-get="{% url 'fact_create_page.partials.retraction_row' %}"
-						hx-trigger="change, keydown[key=='Enter'], click from:#add-retraction"
-						hx-include="#selected-retractions"
-						hx-target="#selected-retractions"
-						hx-swap="beforeend"
-						hx-sync="this:drop"
-						hx-on:keydown="if (event.key === 'Enter') event.preventDefault()"
-						hx-on::after-request="if (event.detail.xhr.status === 200) this.value = ''">
-					<button type="button" id="add-retraction">Add retraction</button>
+					<input id="retraction-search"
+                           type="text"
+                           name="retraction-query"
+                           list="hkm-retraction-options"
+                           placeholder="search facts to retract"
+                           autocomplete="off"
+                           hx-get="{% url 'fact_create_page.partials.retraction_facts_search' %}"
+                           hx-trigger="input changed delay:1s"
+                           hx-target="#retractions-search-results"
+                           hx-include="#transaction-form"
+                           hx-on:input="
+                               const status = document.querySelector('#retraction-search-status');
+                               status.hidden = false;
+                               status.textContent = 'Waiting to search...';
+                           "
+                           hx-on::before-request="
+                               const status = document.querySelector('#retraction-search-status');
+                               status.textContent = 'Searching...';
+                           "
+                           hx-on::after-request="
+                               document.querySelector('#retraction-search-status').hidden = true;
+                           "
+                           hx-on:keydown="if (event.key === 'Enter') event.preventDefault()">
+					<span id="retraction-search-status" aria-live="polite" hidden></span>
 				</div>
-				<datalist id="hkm-retraction-options">
-					{% for fact in retractable %}
-						<option value="{{ fact.id }}: {{ fact.subject }} — {{ fact.predicate }} — {{ fact.object }}"></option>
-					{% endfor %}
-				</datalist>
-				<div id="selected-retractions" class="selected-retractions">
-					{% for fact in selected_retractions %}
-						{% include 'fact_create/partial_retraction_row.html' with fact=fact %}
-					{% endfor %}
-				</div>
+				<div id="retractions-search-results"></div>
 			</div>
 		{% else %}
 			<p class="hint">No current facts available to retract yet.</p>
 		{% endif %}
-
-		<div>
-			<button type="submit">Save draft &amp; review</button>
-			{% if transaction %}
-				<a href="{% url 'fact_review_page.main_render' transaction_id=transaction.id %}" class="spaced-left">Cancel</a>
-			{% else %}
-				<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
-			{% endif %}
-		</div>
-	</form>
 </div>
 {% endblock %}

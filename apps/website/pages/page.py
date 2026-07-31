@@ -86,17 +86,25 @@ class Page:
 
 		@page.main('<int?:transaction_id>')   -> GET base_route  and  base_route/<int:transaction_id>
 
-		reverse('fact_create_page.main_render')                     -> /knowledge/add
-		reverse('fact_create_page.main_render', args=[7])           -> /knowledge/add/7
+		reverse('item_page.main_render')                     -> /items
+		reverse('item_page.main_render', args=[7])           -> /items/7
 
 	The view has to default the argument (`def main_render(request, transaction_id=None)`), because the
 	shorter pattern calls it without.
+
+	A view may also use repeated decorators when its routes have different shapes. They share the same URL name,
+	and `reverse` selects the pattern matching the supplied arguments:
+
+		@page.main('new')
+		@page.main('<int:transaction_id>/edit')
+		def main_render(request, transaction_id=None):
+			...
 	"""
 
 	def __init__(self, name, base_route):
 		self.name = name
 		self.base_route = base_route
-		self._main = None  # (sub_route, fn)
+		self._main = []  # [(sub_route, fn)]
 		self._actions = []  # [(sub_route, route_override, method, fn)]
 		self._partials = []  # [(sub_route, route_override, fn)]
 
@@ -110,14 +118,14 @@ class Page:
 		"""
 		if callable(fn_or_sub_route):
 			# @page.main without parens
-			self._main = ('', fn_or_sub_route)
+			self._main.append(('', fn_or_sub_route))
 			return fn_or_sub_route
 
 		# @page.main() or @page.main('<str:kind>')
 		sub_route = fn_or_sub_route or ''
 
 		def decorator(fn):
-			self._main = (sub_route, fn)
+			self._main.append((sub_route, fn))
 			return fn
 
 		return decorator
@@ -189,8 +197,7 @@ class Page:
 				)
 			)
 
-		if self._main:
-			sub_route, fn = self._main
+		for sub_route, fn in self._main:
 			urls.extend(
 				self._paths(
 					route=self._build_route(sub_route, None),
