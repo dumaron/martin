@@ -75,30 +75,30 @@ class RetractableFactsTest(TestCase):
 			subject='rome', predicate='is-capital-of', object='france', transaction=self.tx
 		)
 
-	def _retractable_ids(self, **kwargs):
-		return lmap(lambda fact: fact['id'], hkm.get_retractable_facts(**kwargs))
+	def _retractable_ids(self):
+		return lmap(lambda fact: fact['id'], hkm.get_retractable_facts())
 
 	def test_offers_current_unretracted_facts(self):
 		self.assertEqual(self._retractable_ids(), [self.fact.id])
 
-	def test_excludes_facts_with_a_retraction_even_a_draft_one(self):
+	def test_keeps_offering_a_fact_a_draft_has_staged_for_retraction(self):
+		# A staged retraction has removed nothing yet, so the fact is still current — and still on offer, which
+		# is what lets the draft that staged it show its own selection back when reopened.
 		draft = Transaction.objects.create()
 		Retraction.objects.create(fact=self.fact, transaction=draft)
+
+		self.assertEqual(self._retractable_ids(), [self.fact.id])
+
+	def test_excludes_a_fact_an_applied_retraction_has_removed(self):
+		Retraction.objects.create(fact=self.fact, transaction=self.tx)
 
 		self.assertEqual(self._retractable_ids(), [])
 
-	def test_ignores_retractions_staged_by_the_transaction_being_edited(self):
+	def test_excludes_facts_asserted_by_a_draft(self):
 		draft = Transaction.objects.create()
-		Retraction.objects.create(fact=self.fact, transaction=draft)
+		Fact.objects.create(subject='rome', predicate='founded-in', object='-753', transaction=draft)
 
-		self.assertEqual(self._retractable_ids(ignore_transaction_id=draft.id), [self.fact.id])
-
-	def test_still_excludes_retractions_staged_by_other_transactions(self):
-		other = Transaction.objects.create()
-		Retraction.objects.create(fact=self.fact, transaction=other)
-		editing = Transaction.objects.create()
-
-		self.assertEqual(self._retractable_ids(ignore_transaction_id=editing.id), [])
+		self.assertEqual(self._retractable_ids(), [self.fact.id])
 
 
 class FactsTest(TestCase):

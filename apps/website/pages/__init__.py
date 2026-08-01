@@ -15,8 +15,8 @@ from . import (
 	event_create,
 	event_detail,
 	event_list,
-	fact_create,
 	fact_review,
+	knowledge_transaction_upsert,
 	maybe_list,
 	monthly_report,
 	pair_transactions,
@@ -57,7 +57,7 @@ __all__ = [
 	'project_detail',
 	'entity_list',
 	'entity_detail',
-	'fact_create',
 	'fact_review',
+	'knowledge_transaction_upsert',
 	'predicate_rule',
 ]

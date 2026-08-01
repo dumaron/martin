@@ -1,0 +1,9 @@
+<tr>
+    <td>{{ staged_fact.subject }}</td>
+    <td>{{ staged_fact.predicate }}</td>
+    <td>{{ staged_fact.object }}</td>
+    <td class="table-actions">
+        <input type="hidden" name="facts" value="{{ staged_fact.serialized }}">
+        <button type="button" hx-on:click="this.closest('tr').remove()">Remove</button>
+    </td>
+</tr>

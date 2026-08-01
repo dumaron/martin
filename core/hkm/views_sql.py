@@ -23,6 +23,10 @@ WHERE t.applied_at IS NOT NULL
 CREATE_INFERRED_FACTS = """
 CREATE VIEW hkm_inferred_facts AS
 SELECT
+  -- Grouping by the triple leaves no natural key, and the InferredFact model reading this view needs the
+  -- primary key Django requires of every model. Hence a positional one: it renumbers whenever the graph
+  -- changes, so it is good for identifying a row within one query and nothing else — never store it.
+  ROW_NUMBER() OVER (ORDER BY subject, predicate, object) AS id,
   subject,
   predicate,
   object,

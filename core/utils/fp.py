@@ -1,4 +1,8 @@
-from toolz import curry
+from toolz import curry, pipe, pluck
+
+# `pipe` and `pluck` are re-exported as-is: toolz's versions already do exactly what we want, and keeping
+# them here means callers get the whole fp toolbox from a single import instead of reaching into toolz.
+__all__ = ['pipe', 'pluck', 'lmap', 'lfilter', 'separate', 'ternary', 'eq', 'first', 'last', 'key', 'value']
 
 
 @curry
@@ -49,17 +53,20 @@ def ternary(partial_pred, true_value, false_value, value):
 def eq(value_1, value_2):
 	return value_1 == value_2
 
+
 @curry
 def first(array):
 	if array is None:
 		return None
 	return array[0]
 
+
 @curry
 def last(array):
 	if array is None:
 		return None
 	return array[-1]
+
 
 key = first
 value = last
