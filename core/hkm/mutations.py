@@ -17,19 +17,19 @@ def create_draft_transaction(
 	Saves the input facts and retractions as a draft transaction in the database
 	"""
 	with db_transaction.atomic():
-		draft = Transaction.objects.create(description=description or None)
+		transaction = Transaction.objects.create(description=description or None)
 		Fact.objects.bulk_create(
 			starmap(
 				lambda subject, predicate, value: Fact(
-					subject=subject, predicate=predicate, object=value, transaction=draft
+					subject=subject, predicate=predicate, object=value, transaction=transaction
 				),
 				facts,
 			)
 		)
 		Retraction.objects.bulk_create(
-			lmap(lambda fact_id: Retraction(fact_id=fact_id, transaction=draft), retractions)
+			lmap(lambda fact_id: Retraction(fact_id=fact_id, transaction=transaction), retractions)
 		)
-	return draft
+	return transaction
 
 
 def update_draft(

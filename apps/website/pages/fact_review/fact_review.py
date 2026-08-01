@@ -25,4 +25,4 @@ def apply_draft(request, transaction_id):
 def discard_draft(request, transaction_id):
 	transaction = get_object_or_404(Transaction, pk=transaction_id)
 	hkm.discard_draft(transaction)
-	return redirect('fact_create_page.main_render')
+	return redirect('knowledge_transaction_upsert_page.main_render')

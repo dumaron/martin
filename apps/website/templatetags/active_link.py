@@ -26,6 +26,11 @@ def active(request, url_name, css_class='active', match_children=True, **kwargs)
 		if match_children and target_url and current_path.startswith(target_url + '/'):
 			return css_class
 
+		# A URL name may have several route shapes, such as `/new` and `/<id>/edit`. Reversing without kwargs
+		# can produce only one of them, so compare the current route's name as well.
+		if not kwargs and resolve(request.path).url_name == url_name:
+			return css_class
+
 	except:
 		# If reverse fails, try fallback URL name matching for compatibility
 		try:
