@@ -1,8 +1,9 @@
 import json
 from dataclasses import dataclass
+from typing import Self
 
 from django import forms
-from django.http import HttpResponse
+from django.http import HttpRequest, HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.website.pages.page import Page
@@ -27,7 +28,7 @@ class StagedFact:
 	predicate: str
 	object: str
 
-	def __post_init__(self):
+	def __post_init__(self) -> None:
 		values = (self.subject, self.predicate, self.object)
 		if not all(isinstance(value, str) for value in values):
 			raise ValueError('Fact values must be strings')
@@ -41,18 +42,18 @@ class StagedFact:
 		object.__setattr__(self, 'object', values[2])
 
 	@classmethod
-	def from_fact(cls, fact):
+	def from_fact(cls, fact: Fact) -> Self:
 		return cls(fact.subject, fact.predicate, fact.object)
 
 	@classmethod
-	def from_data(cls, data):
+	def from_data(cls, data: object) -> Self:
 		if not isinstance(data, list) or len(data) != 3:
 			raise ValueError('A staged fact must contain exactly three values')
 
 		return cls(*data)
 
 	@classmethod
-	def from_serialized(cls, payload):
+	def from_serialized(cls, payload: str) -> Self:
 		try:
 			data = json.loads(payload)
 		except (TypeError, json.JSONDecodeError) as error:
@@ -60,10 +61,10 @@ class StagedFact:
 
 		return cls.from_data(data)
 
-	def as_tuple(self):
+	def as_tuple(self) -> tuple[str, str, str]:
 		return self.subject, self.predicate, self.object
 
-	def serialized(self):
+	def serialized(self) -> str:
 		return json.dumps(self.as_tuple(), separators=(',', ':'))
 
 
@@ -105,12 +106,12 @@ page = Page(name='knowledge_transaction_upsert_page', base_route='knowledge/tran
 # Not super-happy, but I think I can also change my perspective and see this as a single page with just an optional
 # argument, a draft transaction ID. Mah.
 @page.main(['new', '<int:transaction_id>/edit'])
-def main_render(request, transaction_id=None):
-	transaction = None
-	staged_facts = []
-	staged_retractions = []
+def main_render(request: HttpRequest, transaction_id: int | None = None) -> HttpResponse:
+	transaction: Transaction | None = None
+	staged_facts: list[StagedFact] = []
+	staged_retractions: list[Fact] = []
 
-	if transaction_id:
+	if transaction_id is not None:
 		transaction = get_object_or_404(Transaction, pk=transaction_id)
 
 		if transaction.applied_at:
@@ -137,7 +138,7 @@ def main_render(request, transaction_id=None):
 
 
 @page.partial('stage-fact')
-def stage_fact(request):
+def stage_fact(request: HttpRequest) -> HttpResponse:
 	form = FactForm(request.GET)
 	if not form.is_valid():
 		return HttpResponse(status=422)
@@ -150,7 +151,7 @@ def stage_fact(request):
 
 
 @page.partial('retraction-facts-search')
-def retraction_facts_search(request):
+def retraction_facts_search(request: HttpRequest) -> HttpResponse:
 	search_query = request.GET.get('retraction-query')
 	staged_retraction_ids = set(request.GET.getlist('retractions'))
 	context = {
@@ -163,24 +164,24 @@ def retraction_facts_search(request):
 
 
 @page.partial('stage-fact-retraction')
-def stage_fact_retraction(request):
+def stage_fact_retraction(request: HttpRequest) -> HttpResponse:
 	fact_id = request.GET.get('fact_id')
 	fact = get_object_or_404(Fact, pk=fact_id)
 	return render(request, 'knowledge_transaction_upsert/stage_retraction.html', {'fact': fact})
 
 
 @page.action('<int?:transaction_id>/save')
-def save_hkm_transaction(request, transaction_id=None):
+def save_hkm_transaction(request: HttpRequest, transaction_id: int | None = None) -> HttpResponse:
 	# Create and update in one handler: parse the submitted batch, stage it (as a new draft transaction or
 	# replacing the one being edited) and land on the review page; on a problem, re-render the form as sent.
-	transaction = None
+	transaction: Transaction | None = None
 
-	if transaction_id:
+	if transaction_id is not None:
 		transaction = get_object_or_404(Transaction, pk=transaction_id)
 		if transaction.applied_at:
 			return redirect('fact_review_page.main_render', transaction_id=transaction.id)
 
-	staged_facts = []
+	staged_facts: list[StagedFact] = []
 	invalid_facts = False
 	for payload in request.POST.getlist('facts'):
 		try:
@@ -190,7 +191,7 @@ def save_hkm_transaction(request, transaction_id=None):
 
 	# Only current facts may be retracted. Resolve the submitted IDs directly against that view instead of
 	# loading every retractable fact; the set also deduplicates repeated hidden inputs.
-	staged_retraction_ids = set()
+	staged_retraction_ids: set[int] = set()
 	invalid_retractions = False
 	for value in request.POST.getlist('retractions'):
 		try:
