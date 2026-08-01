@@ -1,4 +1,5 @@
 import re
+from collections.abc import Sequence
 from itertools import product
 
 from django.contrib.auth.decorators import login_required
@@ -92,11 +93,10 @@ class Page:
 	The view has to default the argument (`def main_render(request, transaction_id=None)`), because the
 	shorter pattern calls it without.
 
-	A view may also use repeated decorators when its routes have different shapes. They share the same URL name,
-	and `reverse` selects the pattern matching the supplied arguments:
+	A view may also provide multiple routes with different shapes. They share the same URL name, and `reverse`
+	selects the pattern matching the supplied arguments:
 
-		@page.main('new')
-		@page.main('<int:transaction_id>/edit')
+		@page.main(['new', '<int:transaction_id>/edit'])
 		def main_render(request, transaction_id=None):
 			...
 	"""
@@ -108,24 +108,35 @@ class Page:
 		self._actions = []  # [(sub_route, route_override, method, fn)]
 		self._partials = []  # [(sub_route, route_override, fn)]
 
-	def main(self, fn_or_sub_route=None):
+	def main(self, fn_or_sub_routes=None):
 		"""
 		Register the main GET render function.
 
 		Can be used as:
-			@page.main                  -> route = base_route
-			@page.main('<str:kind>')    -> route = base_route/<str:kind>
+			@page.main                                      -> route = base_route
+			@page.main('<str:kind>')                        -> route = base_route/<str:kind>
+			@page.main(['new', '<int:item_id>/edit'])       -> register both routes
 		"""
-		if callable(fn_or_sub_route):
+		if callable(fn_or_sub_routes):
 			# @page.main without parens
-			self._main.append(('', fn_or_sub_route))
-			return fn_or_sub_route
+			self._main.append(('', fn_or_sub_routes))
+			return fn_or_sub_routes
 
-		# @page.main() or @page.main('<str:kind>')
-		sub_route = fn_or_sub_route or ''
+		if fn_or_sub_routes is None:
+			sub_routes = ('',)
+		elif isinstance(fn_or_sub_routes, str):
+			sub_routes = (fn_or_sub_routes,)
+		elif isinstance(fn_or_sub_routes, Sequence):
+			sub_routes = tuple(fn_or_sub_routes)
+			if not sub_routes:
+				raise ValueError('Page.main requires at least one route')
+			if not all(isinstance(sub_route, str) for sub_route in sub_routes):
+				raise TypeError('Page.main routes must be strings')
+		else:
+			raise TypeError('Page.main expects a route string or a sequence of route strings')
 
 		def decorator(fn):
-			self._main.append((sub_route, fn))
+			self._main.extend((sub_route, fn) for sub_route in sub_routes)
 			return fn
 
 		return decorator

@@ -9,38 +9,37 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
+	dependencies = [
+		('core', '0027_hkm_views'),
+	]
 
-    dependencies = [
-        ('core', '0027_hkm_views'),
-    ]
-
-    operations = [
-        migrations.CreateModel(
-            name='CurrentFact',
-            fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('subject', models.CharField(max_length=512)),
-                ('predicate', models.CharField(max_length=128)),
-                ('object', models.TextField()),
-            ],
-            options={
-                'db_table': 'hkm_current_facts',
-                'managed': False,
-            },
-        ),
-        migrations.CreateModel(
-            name='InferredFact',
-            fields=[
-                ('id', models.IntegerField(primary_key=True, serialize=False)),
-                ('subject', models.CharField(max_length=512)),
-                ('predicate', models.CharField(max_length=128)),
-                ('object', models.TextField()),
-                ('origin', models.CharField(max_length=16)),
-                ('source_fact_id', models.IntegerField()),
-            ],
-            options={
-                'db_table': 'hkm_inferred_facts',
-                'managed': False,
-            },
-        ),
-    ]
+	operations = [
+		migrations.CreateModel(
+			name='CurrentFact',
+			fields=[
+				('id', models.IntegerField(primary_key=True, serialize=False)),
+				('subject', models.CharField(max_length=512)),
+				('predicate', models.CharField(max_length=128)),
+				('object', models.TextField()),
+			],
+			options={
+				'db_table': 'hkm_current_facts',
+				'managed': False,
+			},
+		),
+		migrations.CreateModel(
+			name='InferredFact',
+			fields=[
+				('id', models.IntegerField(primary_key=True, serialize=False)),
+				('subject', models.CharField(max_length=512)),
+				('predicate', models.CharField(max_length=128)),
+				('object', models.TextField()),
+				('origin', models.CharField(max_length=16)),
+				('source_fact_id', models.IntegerField()),
+			],
+			options={
+				'db_table': 'hkm_inferred_facts',
+				'managed': False,
+			},
+		),
+	]

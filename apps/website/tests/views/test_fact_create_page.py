@@ -246,7 +246,9 @@ class EditDraftPageTest(FactCreatePageTestCase):
 		)
 
 	def get_page(self, transaction):
-		return self.client.get(reverse('knowledge_transaction_upsert_page.main_render', kwargs={'transaction_id': transaction.id}))
+		return self.client.get(
+			reverse('knowledge_transaction_upsert_page.main_render', kwargs={'transaction_id': transaction.id})
+		)
 
 	def test_prefills_the_staged_facts_even_when_not_known_entities(self):
 		# 'jhon-doe' only exists in the draft, so it is absent from the known-entities suggestions. A datalist
@@ -299,7 +301,9 @@ class UpdateFactsTest(FactCreatePageTestCase):
 
 	def post_update(self, data):
 		return self.client.post(
-			reverse('knowledge_transaction_upsert_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}),
+			reverse(
+				'knowledge_transaction_upsert_page.actions.save_hkm_transaction', kwargs={'transaction_id': self.draft.id}
+			),
 			data,
 		)
 

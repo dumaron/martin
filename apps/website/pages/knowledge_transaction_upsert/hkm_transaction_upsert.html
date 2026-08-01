@@ -99,8 +99,8 @@
 				</tr>
 			</thead>
 			<tbody>
-				{% for fact in staged_facts %}
-					{% include 'knowledge_transaction_upsert/stage_fact.html' with fact=fact only %}
+				{% for staged_fact in staged_facts %}
+					{% include 'knowledge_transaction_upsert/stage_fact.html' with staged_fact=staged_fact only %}
 				{% endfor %}
 			</tbody>
 		</table>
