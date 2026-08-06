@@ -58,7 +58,7 @@
     --color-text: #d8a05d;
     --color-text-secondary: #b98a55;
     --color-text-muted: #806f5d;
-    --color-text-link: var(--color-signal-blue);
+    --color-text-link: var(--color-signal-red);
     --color-text-inverted: #151614;
     --color-text-danger: var(--color-signal-red);
     --color-text-success: var(--color-signal-green);
