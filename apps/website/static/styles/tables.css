@@ -22,20 +22,13 @@ th {
 	background-color: var(--color-background-table-header);
 	border-left: 1px solid var(--color-border-inverted);
 	white-space: nowrap;
+	color: var(--color-table-header-text);
 }
 
 th a {
-	color: var(--color-text);
+	color: var(--color-table-header-text);
 	text-decoration: none;
 	font-weight: 700;
-}
-
-:root[data-theme="dark"] th {
-	color: var(--color-text-secondary);
-}
-
-:root[data-theme="dark"] th a {
-	color: var(--color-text-secondary);
 }
 
 td {
@@ -43,14 +36,6 @@ td {
 	text-align: left;
 	background-color: var(--color-background-table-cell);
 	border-left: 1px solid var(--color-border-inverted);
-}
-
-:root[data-theme="dark"] td {
-	border-left-color: var(--color-border-inverted);
-}
-
-:root[data-theme="dark"] tr:hover td {
-	color: var(--color-text);
 }
 
 /* tables for forms */

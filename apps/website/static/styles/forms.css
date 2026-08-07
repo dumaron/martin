@@ -21,13 +21,13 @@ button:hover {
     background-color: var(--color-btn-background-hover);
 }
 
-:root[data-theme="dark"] button,
+:root[data-theme="dark"] button:not(.theme-toggle),
 :root[data-theme="dark"] input[type="submit"] {
     color: var(--color-text);
     border-color: var(--color-signal-orange);
 }
 
-:root[data-theme="dark"] button:hover,
+:root[data-theme="dark"] button:not(.theme-toggle):hover,
 :root[data-theme="dark"] input[type="submit"]:hover {
     color: var(--color-text-inverted);
     background-color: var(--color-signal-orange);
@@ -72,12 +72,6 @@ input[type="search"] {
     box-sizing: border-box;
 }
 
-:root[data-theme="dark"] input[type="text"],
-:root[data-theme="dark"] input[type="email"],
-:root[data-theme="dark"] input[type="password"],
-:root[data-theme="dark"] input[type="url"],
-:root[data-theme="dark"] input[type="tel"],
-:root[data-theme="dark"] input[type="search"],
 :root[data-theme="dark"] input[type="date"],
 :root[data-theme="dark"] input[type="time"],
 :root[data-theme="dark"] input[type="number"],
