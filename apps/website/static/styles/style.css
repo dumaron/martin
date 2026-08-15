@@ -2,29 +2,110 @@
    VARIABLES
    ========================================================================== */
 :root {
+    color-scheme: light;
+
     --main-navbar-height: 30px;
 
     --color-text: #1a1a1a;
     --color-text-secondary: #333333;
     --color-text-muted: #666666;
-    --color-text-link: white;
+    --color-text-link: blue;
     --color-text-inverted: #ffffff;
+    --color-text-danger: #b00020;
+    --color-text-success: #1a7f37;
+    --color-text-warning: #b35900;
+    --color-text-duplicate: #888888;
+    --color-accent: #9b1c1c;
+    --color-accent-muted: #f6d9d9;
 
     --color-background-primary: white;
     --color-background-box: white;
     --color-background-secondary: gainsboro;
     --color-background-hover: bisque;
     --color-background-highlight: papayawhip;
+    --color-background-input: white;
+    --color-background-pre: gainsboro;
+    --color-background-table-header: #e0e0e0;
+    --color-background-table-cell: #f0f0f0;
+    --color-background-table-hover: #e0e0e0;
+    --color-background-tab-active: white;
+    --color-table-header-text: var(--color-text);
+    --color-tab-active-text: black;
+    --color-tab-active-border: var(--color-border-primary);
 
 
+    --color-border-primary: #444444;
     --color-border-secondary: #b3b3b6;
     --color-border-muted: #999999;
     --color-border-light: #aaaaaa;
+    --color-border-inverted: white;
 
     --color-sidebar: #1f1f1f;
     --color-background-sidebar: rgb(169, 180, 195);
     --color-sidebar-link: #1b1b1b;
+    --color-sidebar-link-emphasis: var(--color-sidebar-link);
+    --color-sidebar-border: var(--color-border-secondary);
+    --color-sidebar-tree-line: var(--color-border-muted);
+    --color-sidebar-marker: red;
     --color-btn-background: rgb(233, 233, 237);
+    --color-btn-background-hover: rgb(243, 243, 247);
+    --color-badge-implied-text: #6a1b9a;
+    --color-badge-implied-background: #f3e5f5;
+}
+
+:root[data-theme="dark"] {
+    color-scheme: dark;
+
+    --color-signal-orange: #f39a2f;
+    --color-signal-blue: #5da5d8;
+    --color-signal-green: #87c990;
+    --color-signal-red: #d76152;
+    --color-signal-violet: #b7a2d8;
+
+    --color-text: #d0a268;
+    --color-text-secondary: #b28c5d;
+    --color-text-muted: #9c9081;
+    --color-text-link: var(--color-signal-red);
+    --color-text-inverted: #1c1913;
+    --color-text-danger: var(--color-signal-red);
+    --color-text-success: var(--color-signal-green);
+    --color-text-warning: var(--color-signal-orange);
+    --color-text-duplicate: #9d968b;
+    --color-accent: var(--color-signal-orange);
+    --color-accent-muted: #332a1c;
+
+    --color-background-primary: #2a2724;
+    --color-background-box: #211e1b;
+    --color-background-secondary: #3a3631;
+    --color-background-hover: #413c36;
+    --color-background-highlight: #3a2f1e;
+    --color-background-input: #211e1b;
+    --color-background-pre: #3a3631;
+    --color-background-table-header: #3a3631;
+    --color-background-table-cell: #302d29;
+    --color-background-table-hover: #3a3631;
+    --color-background-tab-active: #2a2724;
+    --color-table-header-text: var(--color-text-secondary);
+    --color-tab-active-text: var(--color-text);
+    --color-tab-active-border: var(--color-border-light);
+
+    --color-border-primary: #787975;
+    --color-border-secondary: #4a443b;
+    --color-border-muted: #5f584d;
+    --color-border-light: #857d70;
+    --color-border-inverted: #2a2724;
+
+    --color-sidebar: #80786c;
+    --color-background-sidebar: #26231a;
+    --color-sidebar-link: #d3cbbd;
+    --color-sidebar-link-emphasis: #dbb577;
+    --color-sidebar-border: #322e24;
+    --color-sidebar-tree-line: #50493a;
+    --color-sidebar-marker: #ca8e4a;
+    --color-btn-background: #302d29;
+    --color-btn-background-hover: #3a3631;
+    --color-badge-implied-text: var(--color-signal-violet);
+    --color-badge-implied-background: #2e2838;
 }
 
 body {
@@ -38,7 +119,7 @@ body {
 }
 
 a {
-    color: blue;
+    color: var(--color-text-link);
 }
 
 main {
@@ -53,8 +134,22 @@ main {
 }
 
 h1 {
-    border-bottom: 1px solid #444;
+    border-bottom: 1px solid var(--color-border-primary);
     padding-bottom: 4px;
+}
+
+.muted {
+    color: var(--color-text-muted);
+}
+
+.implied-badge {
+    font-size: 11px;
+    color: var(--color-badge-implied-text);
+    background: var(--color-badge-implied-background);
+    border-radius: 3px;
+    padding: 1px 4px;
+    margin-left: 6px;
+    vertical-align: middle;
 }
 
 .grid-content {
@@ -86,19 +181,54 @@ h1 {
     color: var(--color-text);
 }
 
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    margin: 0 0 .5rem;
+    min-height: var(--main-navbar-height);
+}
+
+.theme-toggle {
+    align-self: flex-start;
+    margin: 0;
+    padding: 1rem 0 1rem 16px;
+    background: none;
+    border: none;
+    border-radius: 0;
+    font-family: inherit;
+    font-size: 18px;
+    line-height: 1;
+    color: var(--color-sidebar-link);
+}
+
+.theme-toggle::before {
+    content: "\263E";
+}
+
+.theme-toggle:hover {
+    background: none;
+    color: var(--color-sidebar-link-emphasis);
+}
+
+:root[data-theme="dark"] .theme-toggle::before {
+    content: "\2600\FE0E";
+}
+
 aside {
     margin: 0;
     padding: 0;
-    display: block;
+    display: flex;
+    flex-direction: column;
     grid-area: sidebar;
     background-color: var(--color-background-sidebar);
     color: var(--color-sidebar);
     min-height: 100vh;
-    border-right: 1px solid var(--color-border-secondary);
+    border-right: 1px solid var(--color-sidebar-border);
 }
 
 /* Sidebar Navigation */
 #sidebar-navigation {
+    flex: 1 0 auto;
     padding: 1rem 0;
     border-bottom: none;
 }
@@ -142,6 +272,10 @@ ul.tree {
         font-weight: 700;
     }
 
+    li a:hover {
+        color: var(--color-sidebar-link-emphasis);
+    }
+
     li a,
     li span {
         display: inline-block;
@@ -156,7 +290,7 @@ ul.tree {
         height: 100%;
         left: 10px;
         top: 0;
-        border-left: 1px solid var(--color-border-muted);
+        border-left: 1px solid var(--color-sidebar-tree-line);
         z-index: 1;
     }
 
@@ -169,7 +303,7 @@ ul.tree {
         height: 1px;
         left: 10px;
         top: 9px;
-        border-top: 1px solid var(--color-border-muted);
+        border-top: 1px solid var(--color-sidebar-tree-line);
     }
 
     /* Remove vertical line from last items */
@@ -186,7 +320,7 @@ ul.tree {
 
     a.active::before,
     ul:has(li a.active)::before {
-        color: red;
+        color: var(--color-sidebar-marker);
         font-family: "Inter V";
         content: "->";
         font-weight: bold;
@@ -199,6 +333,9 @@ ul.tree {
         z-index: 1;
     }
 
+    a.active {
+        color: var(--color-sidebar-link-emphasis);
+    }
 
     /*
     I spent so much time trying to implement a CSS-only version of a sidebar with full red lines and arrows before each

@@ -13,7 +13,7 @@
 					<td>
 						{{ form.name }}
 						{% if form.name.errors %}
-							<div style="color: red;">{{ form.name.errors }}</div>
+							<div class="form-error">{{ form.name.errors }}</div>
 						{% endif %}
 					</td>
 				</tr>
@@ -22,7 +22,7 @@
 					<td>
 						{{ form.description }}
 						{% if form.description.errors %}
-							<div style="color: red;">{{ form.description.errors }}</div>
+							<div class="form-error">{{ form.description.errors }}</div>
 						{% endif %}
 					</td>
 				</tr>
@@ -31,7 +31,7 @@
 					<td>
 						{{ form.location }}
 						{% if form.location.errors %}
-							<div style="color: red;">{{ form.location.errors }}</div>
+							<div class="form-error">{{ form.location.errors }}</div>
 						{% endif %}
 					</td>
 				</tr>
@@ -40,9 +40,9 @@
 					<td>
 						{{ form.tags }}
 						{% if form.tags.errors %}
-							<div style="color: red;">{{ form.tags.errors }}</div>
+							<div class="form-error">{{ form.tags.errors }}</div>
 						{% endif %}
-						<small style="display: block; margin-top: 5px; color: #666;">
+						<small class="form-help">
 							Enter tags separated by commas
 						</small>
 					</td>
@@ -52,9 +52,9 @@
 					<td>
 						{{ form.files }}
 						{% if form.files.errors %}
-							<div style="color: red;">{{ form.files.errors }}</div>
+							<div class="form-error">{{ form.files.errors }}</div>
 						{% endif %}
-						<small style="display: block; margin-top: 5px; color: #666;">
+						<small class="form-help">
 							{{ form.files.help_text }}
 						</small>
 					</td>
@@ -64,9 +64,9 @@
 					<td>
 						{{ form.representative_date }}
 						{% if form.representative_date.errors %}
-							<div style="color: red;">{{ form.representative_date.errors }}</div>
+							<div class="form-error">{{ form.representative_date.errors }}</div>
 						{% endif %}
-						<small style="display: block; margin-top: 5px; color: #666;">
+						<small class="form-help">
 							{{ form.representative_date.help_text }}
 						</small>
 					</td>

@@ -13,7 +13,7 @@
 					<td>
 						{{ form.description }}
 						{% if form.description.errors %}
-							<div style="color: red;">{{ form.description.errors }}</div>
+							<div class="form-error">{{ form.description.errors }}</div>
 						{% endif %}
 					</td>
 				</tr>
@@ -22,7 +22,7 @@
 					<td>
 						{{ form.date }}
 						{% if form.date.errors %}
-							<div style="color: red;">{{ form.date.errors }}</div>
+							<div class="form-error">{{ form.date.errors }}</div>
 						{% endif %}
 					</td>
 				</tr>
@@ -31,7 +31,7 @@
 					<td>
 						{{ form.time }}
 						{% if form.time.errors %}
-							<div style="color: red;">{{ form.time.errors }}</div>
+							<div class="form-error">{{ form.time.errors }}</div>
 						{% endif %}
 					</td>
 				</tr>
@@ -40,9 +40,9 @@
 					<td>
 						{{ form.documents }}
 						{% if form.documents.errors %}
-							<div style="color: red;">{{ form.documents.errors }}</div>
+							<div class="form-error">{{ form.documents.errors }}</div>
 						{% endif %}
-						<small style="display: block; margin-top: 5px; color: #666;">
+						<small class="form-help">
 							Optional: Link documents to this event
 						</small>
 					</td>

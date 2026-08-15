@@ -2,10 +2,10 @@
 
 {% block stylesheets %}
 <style>
-	tr.status-new td:last-child { color: #1a7f37; }
-	tr.status-duplicate td { color: #888; }
-	tr.status-conflict td:last-child { color: #b35900; }
-	tr.status-retract td { color: #b00020; }
+	tr.status-new td:last-child { color: var(--color-text-success); }
+	tr.status-duplicate td { color: var(--color-text-duplicate); }
+	tr.status-conflict td:last-child { color: var(--color-text-warning); }
+	tr.status-retract td { color: var(--color-text-danger); }
 	tr.status-retract td:nth-child(-n+3) { text-decoration: line-through; }
 	td .existing-values { margin: 2px 0 0 16px; }
 	.review-section-title { font-size: 1rem; margin: 1.2rem 0 .3rem; }

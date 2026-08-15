@@ -23,7 +23,7 @@
         margin-block-start: 5px;
         padding-inline-start: 1em;
         list-style: none;
-        border-left: 1px solid gainsboro;
+        border-left: 1px solid var(--color-border-secondary);
     }
 
     h2 {
@@ -38,7 +38,7 @@
     .warning {
         .title:before {
             content: "● ";
-            color: red;
+            color: var(--color-text-danger);
             animation: blinker 1s step-start infinite;
         }
     }

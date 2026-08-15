@@ -18,7 +18,19 @@ button {
 }
 
 button:hover {
-    background-color: rgb(243, 243, 247);
+    background-color: var(--color-btn-background-hover);
+}
+
+:root[data-theme="dark"] button:not(.theme-toggle),
+:root[data-theme="dark"] input[type="submit"] {
+    color: var(--color-text);
+    border-color: var(--color-signal-orange);
+}
+
+:root[data-theme="dark"] button:not(.theme-toggle):hover,
+:root[data-theme="dark"] input[type="submit"]:hover {
+    color: var(--color-text-inverted);
+    background-color: var(--color-signal-orange);
 }
 
 button:disabled {
@@ -30,15 +42,26 @@ button:disabled:hover {
     background-color: var(--color-btn-background);
 }
 
+:root[data-theme="dark"] button:disabled:hover {
+    color: var(--color-text);
+    background-color: var(--color-btn-background);
+}
+
 pre {
     text-transform: uppercase;
     display: inline-block;
     padding: 3px 6px;
-    background-color: gainsboro;
+    background-color: var(--color-background-pre);
 }
 
-input[type="text"], input[type="email"], input[type="password"], input[type="url"], input[type="tel"], input[type="search"] {
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="tel"],
+input[type="search"] {
     color: var(--color-text);
+    background-color: var(--color-background-input);
     border: 1px solid var(--color-border-muted);
     border-radius: 4px;
     padding: 3px 5px;
@@ -49,9 +72,34 @@ input[type="text"], input[type="email"], input[type="password"], input[type="url
     box-sizing: border-box;
 }
 
+:root[data-theme="dark"] input[type="date"],
+:root[data-theme="dark"] input[type="time"],
+:root[data-theme="dark"] input[type="number"],
+:root[data-theme="dark"] select,
+:root[data-theme="dark"] textarea {
+    color: var(--color-text);
+    border-color: var(--color-border-muted);
+}
+
 textarea {
    font-family: 'Berkeley Mono', 'SF Mono', monospace;
    font-size: inherit;
+}
+
+:root[data-theme="dark"] textarea {
+    color: var(--color-text);
+    background-color: var(--color-background-input);
+    border: 1px solid var(--color-border-muted);
+}
+
+.form-error {
+    color: var(--color-text-danger);
+}
+
+.form-help {
+    display: block;
+    margin-top: 5px;
+    color: var(--color-text-muted);
 }
 
 
@@ -68,9 +116,38 @@ table.form textarea {
     border-radius: 4px;
     padding: 4px 6px;
     font-size: 13px;
+    background: var(--color-background-input);
+    color: var(--color-text);
 
     input {
+        color: var(--color-text) !important;
         width: 100px !important;
     }
 }
 
+.ts-wrapper.single .ts-control,
+.ts-dropdown {
+    background: var(--color-background-input);
+    color: var(--color-text);
+    border-color: var(--color-border-muted);
+}
+
+.ts-dropdown .option,
+.ts-dropdown .optgroup-header,
+.ts-control .item {
+    color: var(--color-text);
+}
+
+.ts-dropdown .active {
+    background: var(--color-background-hover);
+    color: var(--color-text);
+}
+
+:root[data-theme="dark"] .ts-control,
+:root[data-theme="dark"] .ts-dropdown {
+    border-color: var(--color-border-muted);
+}
+
+:root[data-theme="dark"] .ts-dropdown .active {
+    color: var(--color-signal-blue);
+}
