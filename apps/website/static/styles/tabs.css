@@ -8,27 +8,27 @@
   margin: 0;
   padding: 0;
   display: flex;
-  border-bottom: 1px solid #444;
+  border-bottom: 1px solid var(--color-border-primary);
 }
 
 .tabs-nav li {
   padding: 4px 8px;
   cursor: pointer;
-  border: 1px solid #bbb;
-  border-bottom: 1px solid #444; /* Tutti i tab hanno bordo sotto */
+  border: 1px solid var(--color-border-secondary);
+  border-bottom: 1px solid var(--color-border-primary); /* Tutti i tab hanno bordo sotto */
   margin-right: 5px;
   position: relative;
   margin-bottom: -1px;
-  color: #999;
+  color: var(--color-text-muted);
   border-top-left-radius: 4px;
   border-top-right-radius: 4px;
 }
 
 .tabs-nav li.active {
-  background-color: #fff;
-  border: 1px solid #444;
-  border-bottom: 1px solid #fff;
-  color: black;
+  background-color: var(--color-background-tab-active);
+  border: 1px solid var(--color-tab-active-border);
+  border-bottom: 1px solid var(--color-background-tab-active);
+  color: var(--color-tab-active-text);
   /*font-weight: 600;*/
 }
 

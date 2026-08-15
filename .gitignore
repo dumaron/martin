@@ -5,6 +5,7 @@ db.sqlite3-shm
 uploads/
 media/
 .idea/
+.claude/
 **/*.pyc
 *.pyc
 */__pycache__/

@@ -14,6 +14,8 @@ If you don't know something, just say so.
 
 ## Claude interaction
 - Never not extend CLAUDE.md if not explicitly required.
+- Never add tests unless explicitly asked to do so. Existing tests may be run, and fixed when a change breaks them, but no new test is to be written on your own initiative.
+- Never add comments to the code unless explicitly asked to do so. Existing comments must be kept, and updated when a change makes them wrong, but no new comment is to be written on your own initiative.
 
 ## Commands
 - Run server: `pipenv run python manage.py runserver`

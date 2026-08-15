@@ -1,4 +1,8 @@
-from toolz import curry
+from toolz import curry, pipe, pluck
+
+# `pipe` and `pluck` are re-exported as-is: toolz's versions already do exactly what we want, and keeping
+# them here means callers get the whole fp toolbox from a single import instead of reaching into toolz.
+__all__ = ['pipe', 'pluck', 'lmap', 'lfilter', 'separate', 'ternary', 'eq', 'first', 'last', 'key', 'value']
 
 
 @curry

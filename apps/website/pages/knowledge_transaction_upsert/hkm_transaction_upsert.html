@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+
+{% block stylesheets %}
+<style>
+	#batch-note {
+		box-sizing: border-box;
+		width: 100%;
+		resize: vertical;
+	}
+
+	.fact-row {
+		display: grid;
+		gap: 6px;
+	}
+
+	.fact-row input {
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	.fact-row button {
+		justify-self: start;
+	}
+
+	.form-error {
+		color: red;
+	}
+
+	.hint {
+		color: var(--color-text-muted);
+		font-size: 12px;
+		margin: 0 0 6px;
+	}
+
+	.retraction-search-row {
+		display: flex;
+		gap: 8px;
+		align-items: flex-start;
+		flex-wrap: wrap;
+	}
+
+	#retraction-search {
+		flex: 1 1 420px;
+		min-width: 260px;
+	}
+
+	td.table-actions {
+		padding-top: 1px;
+		padding-bottom: 1px;
+	}
+
+	td.table-actions button {
+		padding: 1px 4px;
+		font-size: 0.75rem;
+		line-height: 1.2;
+	}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>{% if transaction %}Edit{% else %}Add{% endif %} knowledge transaction</h1>
+
+	{% if transaction %}
+		{% url 'knowledge_transaction_upsert_page.actions.save_hkm_transaction' transaction_id=transaction.id as save_url %}
+	{% else %}
+		{% url 'knowledge_transaction_upsert_page.actions.save_hkm_transaction' as save_url %}
+	{% endif %}
+	<form id="transaction-form" method="post" action="{{ save_url }}">
+		{% csrf_token %}
+
+		<datalist id="hkm-entity-options">
+			{% for value in entity_options %}
+				<option value="{{ value }}"></option>
+			{% endfor %}
+		</datalist>
+		<datalist id="hkm-predicate-options">
+			{% for value in predicate_options %}
+				<option value="{{ value }}"></option>
+			{% endfor %}
+		</datalist>
+
+		<label for="batch-note">Note (optional)</label>
+		<textarea id="batch-note" name="description" rows="2"
+			placeholder="What is this batch about?">{{ description }}</textarea>
+
+		{% if form_error %}
+			<div class="form-error">{{ form_error }}</div>
+		{% endif %}
+
+		<h2>New facts</h2>
+		<table id="staged-facts">
+			<thead>
+				<tr>
+					<th>Subject</th>
+					<th>Predicate</th>
+					<th>Object</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for staged_fact in staged_facts %}
+					{% include 'knowledge_transaction_upsert/stage_fact.html' with staged_fact=staged_fact only %}
+				{% endfor %}
+			</tbody>
+		</table>
+
+
+		<h2>Retractions</h2>
+		<table id="staged-retractions">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Subject</th>
+					<th>Predicate</th>
+					<th>Object</th>
+					<th>Actions</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for fact in staged_retractions %}
+					{% include 'knowledge_transaction_upsert/stage_retraction.html' with fact=fact only %}
+				{% endfor %}
+			</tbody>
+		</table>
+
+		<div>
+			<button type="submit">Save draft &amp; review</button>
+			{% if transaction %}
+				<a href="{% url 'fact_review_page.main_render' transaction_id=transaction.id %}" class="spaced-left">Cancel</a>
+			{% else %}
+				<a href="{% url 'entity_list_page.main_render' %}" class="spaced-left">Cancel</a>
+			{% endif %}
+		</div>
+	</form>
+</div>
+
+<div>
+	{% if draft_transactions %}
+		<h2>Pending drafts</h2>
+		<p class="hint">Saved batches not applied yet — review one to apply, edit or discard it.</p>
+		<ul>
+			{% for draft_transaction in draft_transactions %}
+				<li>
+					<a href="{% url 'fact_review_page.main_render' transaction_id=draft_transaction.id %}">
+						{% if draft_transaction.description %}
+							{{ draft_transaction.description }}
+						{% else %}
+							Draft #{{ draft_transaction.id }}
+						{% endif %}
+					</a>
+					— {{ draft_transaction.fact_count }} fact{{ draft_transaction.fact_count|pluralize }},
+					{{ draft_transaction.retraction_count }} retraction{{ draft_transaction.retraction_count|pluralize }},
+					started {{ draft_transaction.created_at|date:'j M Y, H:i' }}
+				</li>
+			{% endfor %}
+		</ul>
+	{% endif %}
+
+		<h2>Facts to add</h2>
+		<form
+			class="fact-row"
+			hx-get="{% url 'knowledge_transaction_upsert_page.partials.stage_fact' %}"
+			hx-target="#staged-facts tbody"
+			hx-swap="beforeend"
+			hx-on::after-request="if (event.detail.successful) this.reset()">
+			{{ form.subject }}
+			{{ form.predicate }}
+			{{ form.object }}
+			<button type="submit">Stage fact</button>
+		</form>
+
+		<h2>Facts to retract (optional)</h2>
+		<p class="hint">Select existing facts to remove. They stop being current once you apply this batch.</p>
+		<div class="retraction-search-row">
+			<input id="retraction-search"
+				type="text"
+				name="retraction-query"
+				placeholder="search facts to retract"
+				autocomplete="off"
+				hx-get="{% url 'knowledge_transaction_upsert_page.partials.retraction_facts_search' %}"
+				hx-trigger="input changed delay:1s"
+				hx-target="#retractions-search-results"
+				hx-include="#transaction-form"
+				hx-on:input="
+					const status = document.querySelector('#retraction-search-status');
+					status.hidden = false;
+					status.textContent = 'Waiting to search...';
+				"
+				hx-on::before-request="
+					const status = document.querySelector('#retraction-search-status');
+					status.textContent = 'Searching...';
+				"
+				hx-on::after-request="
+					document.querySelector('#retraction-search-status').hidden = true;
+				">
+			<span id="retraction-search-status" aria-live="polite" hidden></span>
+		</div>
+		<div id="retractions-search-results"></div>
+</div>
+{% endblock %}

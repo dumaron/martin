@@ -1,7 +1,9 @@
 {% load active_link %}
 
 <nav id="sidebar-navigation">
-    <div id="title">Martin</div>
+    <div class="sidebar-header">
+        <div id="title">Martin</div>
+    </div>
 
     <ul class="tree">
         <li>
@@ -148,10 +150,15 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{% url 'fact_create_page.main_render' %}"
-                               class="{% active request 'fact_create_page.main_render' %}">
-                                Add new
-                            </a>
+                            Transactions
+                            <ul>
+                                <li>
+                                    <a href="{% url 'knowledge_transaction_upsert_page.main_render' %}"
+                                       class="{% active request 'knowledge_transaction_upsert_page.main_render' %}">
+                                        Add new
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
                         <li>
                             <a href="{% url 'predicate_rule_page.main_render' %}"
@@ -174,3 +181,6 @@
         </li>
     </ul>
 </nav>
+
+<button type="button" class="theme-toggle" data-theme-toggle
+        aria-label="Switch light/dark theme" title="Switch light/dark theme"></button>
