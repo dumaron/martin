@@ -6,7 +6,7 @@
 	<h1>Flashcards</h1>
 
 	<div class="spaced-bottom">
-		<a href="{% url 'flashcard_create_page.main_render' %}">Create New Flashcard</a>
+		<a href="{% url 'flashcard_upsert_page.main_render' %}">Create New Flashcard</a>
 		{% if tag %}
 			<span class="spaced-left">
 				Filtered by <strong>{{ tag }}</strong> &mdash;

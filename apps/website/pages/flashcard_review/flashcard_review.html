@@ -40,7 +40,7 @@
 			<p>Next card due in {{ next_due|timeuntil }} &mdash; <a href="">refresh</a>.</p>
 		{% endif %}
 
-		<p><a href="{% url 'flashcard_create_page.main_render' %}">Add a flashcard</a></p>
+		<p><a href="{% url 'flashcard_upsert_page.main_render' %}">Add a flashcard</a></p>
 	{% endif %}
 </div>
 {% endblock %}

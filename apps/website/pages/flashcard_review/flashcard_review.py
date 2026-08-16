@@ -7,7 +7,7 @@ from apps.website.pages.page import Page
 from core.models import Flashcard, FlashcardReview
 from core.mutations import review_flashcard
 
-page = Page(name='flashcard_review_page', base_route='srs/review')
+page = Page(name='flashcard_review_page', base_route='knowledge/flashcards/study')
 
 
 @page.main

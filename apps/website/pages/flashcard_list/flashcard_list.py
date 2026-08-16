@@ -8,7 +8,7 @@ from core.models import Flashcard
 
 
 class FlashcardTable(tables.Table):
-	id = tables.LinkColumn('flashcard_edit_page.main_render', args=[tables.A('pk')], verbose_name='ID')
+	id = tables.LinkColumn('flashcard_upsert_page.main_render', args=[tables.A('pk')], verbose_name='ID')
 	question = tables.Column(verbose_name='Question')
 	state = tables.Column(verbose_name='State')
 	due = tables.DateTimeColumn(verbose_name='Due', format='Y-m-d H:i')
@@ -31,7 +31,7 @@ class FlashcardTable(tables.Table):
 		)
 
 
-page = Page(name='flashcard_list_page', base_route='models/flashcard')
+page = Page(name='flashcard_list_page', base_route='knowledge/flashcards')
 
 
 @page.main
