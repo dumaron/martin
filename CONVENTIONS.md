@@ -55,6 +55,22 @@ Key conventions:
 6. Routes can be fully overridden with the `route=` kwarg: `@page.action(route='models/project/do-thing')`
 7. There are no views that accept both POST and GET
 
+### Validating action input
+
+Views receive raw strings from `request.POST` / `request.GET`. Validate the raw value *before* casting it, and reject bad input explicitly by returning `HttpResponseBadRequest('<message>')` — never let a cast decide the outcome, and never silently skip the work and redirect as if it succeeded.
+
+```python
+rating = request.POST.get('rating')
+if rating not in ('1', '2', '3', '4'):
+    return HttpResponseBadRequest('Invalid flashcard rating')
+
+review_flashcard(flashcard, int(rating))
+```
+
+Casting first (`int(request.POST.get('rating'))`) turns a missing or non-numeric field into a `TypeError` / `ValueError` and a 500. Guarding with `if value in (...): do_work()` and falling through to the redirect hides the failure from the user, who just sees the unchanged page.
+
+For anything beyond a couple of fields, use a Django `Form` and return `HttpResponseBadRequest('Invalid form data')` when `form.is_valid()` fails — see `create_ynab_transaction` in `apps/website/pages/pair_transactions/pair_transactions.py`. Object lookups keep using `get_object_or_404`.
+
 ## Python style
 
 ### Prefer `list(map(...))` / `list(filter(...))` over list comprehensions
