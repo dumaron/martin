@@ -1,4 +1,4 @@
-from django.core.exceptions import BadRequest
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
@@ -39,7 +39,7 @@ def answer_flashcard(request):
 	flashcard = get_object_or_404(Flashcard, pk=request.POST.get('flashcard_id'))
 	rating = request.POST.get('rating')
 	if rating not in ('1', '2', '3', '4'):
-		raise BadRequest('invalid flashcard rating')
+		return HttpResponseBadRequest('Invalid flashcard rating')
 
 	review_flashcard(flashcard, int(rating))
 
