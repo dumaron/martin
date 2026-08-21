@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from django.db import transaction as db_transaction
 from django.utils import timezone
 from fsrs import Card as FsrsCard
 from fsrs import Rating, Scheduler
@@ -43,10 +44,11 @@ def review_flashcard(
 	"""
 	reviewed_at = reviewed_at or timezone.now()
 
-	updated_card, _ = scheduler.review_card(
-		_to_fsrs_card(flashcard), Rating(rating), review_datetime=reviewed_at
-	)
-	_apply_fsrs_card(flashcard, updated_card)
-	flashcard.save()
+	with db_transaction.atomic():
+		updated_card, _ = scheduler.review_card(
+			_to_fsrs_card(flashcard), Rating(rating), review_datetime=reviewed_at
+		)
+		_apply_fsrs_card(flashcard, updated_card)
+		flashcard.save()
 
-	return FlashcardReview.objects.create(flashcard=flashcard, rating=rating, reviewed_at=reviewed_at)
+		return FlashcardReview.objects.create(flashcard=flashcard, rating=rating, reviewed_at=reviewed_at)
