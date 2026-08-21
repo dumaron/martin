@@ -16,6 +16,9 @@ from . import (
 	event_detail,
 	event_list,
 	fact_review,
+	flashcard_list,
+	flashcard_review,
+	flashcard_upsert,
 	knowledge_transaction_upsert,
 	maybe_list,
 	monthly_report,
@@ -60,4 +63,7 @@ __all__ = [
 	'fact_review',
 	'knowledge_transaction_upsert',
 	'predicate_rule',
+	'flashcard_list',
+	'flashcard_review',
+	'flashcard_upsert',
 ]

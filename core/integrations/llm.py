@@ -102,7 +102,9 @@ def _strip_fences(text: str) -> str:
 T = TypeVar('T', bound=BaseModel)
 
 
-def ask(prompt: str, model: Model, *, system: str | None = None, schema: Type[T] | None = None, **kwargs) -> str | T:
+def ask(
+	prompt: str, model: Model, *, system: str | None = None, schema: Type[T] | None = None, **kwargs
+) -> str | T:
 	"""Send a single-turn query to `model` and return its reply.
 
 	Args:

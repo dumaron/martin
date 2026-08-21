@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% load django_tables2 %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Flashcards</h1>
+
+	<div class="spaced-bottom">
+		<a href="{% url 'flashcard_upsert_page.main_render' %}">Create New Flashcard</a>
+		{% if tag %}
+			<span class="spaced-left">
+				Filtered by <strong>{{ tag }}</strong> &mdash;
+				<a href="{% url 'flashcard_list_page.main_render' %}">clear filter</a>
+			</span>
+		{% endif %}
+	</div>
+
+	{% render_table table %}
+</div>
+{% endblock %}
