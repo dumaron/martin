@@ -13,27 +13,6 @@ from core.models import Flashcard, FlashcardReview
 scheduler = Scheduler()
 
 
-def _to_fsrs_card(flashcard: Flashcard) -> FsrsCard:
-	return FsrsCard(
-		card_id=flashcard.id,
-		state=FsrsState(flashcard.state),
-		step=flashcard.step,
-		stability=flashcard.stability,
-		difficulty=flashcard.difficulty,
-		due=flashcard.due,
-		last_review=flashcard.last_review,
-	)
-
-
-def _apply_fsrs_card(flashcard: Flashcard, fsrs_card: FsrsCard) -> None:
-	flashcard.state = fsrs_card.state.value
-	flashcard.step = fsrs_card.step
-	flashcard.stability = fsrs_card.stability
-	flashcard.difficulty = fsrs_card.difficulty
-	flashcard.due = fsrs_card.due
-	flashcard.last_review = fsrs_card.last_review
-
-
 def review_flashcard(
 	flashcard: Flashcard, rating: int, reviewed_at: datetime | None = None
 ) -> FlashcardReview:
@@ -45,10 +24,23 @@ def review_flashcard(
 	reviewed_at = reviewed_at or timezone.now()
 
 	with db_transaction.atomic():
-		updated_card, _ = scheduler.review_card(
-			_to_fsrs_card(flashcard), Rating(rating), review_datetime=reviewed_at
+		fsrs_card = FsrsCard(
+			card_id=flashcard.id,
+			state=FsrsState(flashcard.state),
+			step=flashcard.step,
+			stability=flashcard.stability,
+			difficulty=flashcard.difficulty,
+			due=flashcard.due,
+			last_review=flashcard.last_review,
 		)
-		_apply_fsrs_card(flashcard, updated_card)
+		updated_card, _ = scheduler.review_card(fsrs_card, Rating(rating), review_datetime=reviewed_at)
+
+		flashcard.state = updated_card.state.value
+		flashcard.step = updated_card.step
+		flashcard.stability = updated_card.stability
+		flashcard.difficulty = updated_card.difficulty
+		flashcard.due = updated_card.due
+		flashcard.last_review = updated_card.last_review
 		flashcard.save()
 
 		return FlashcardReview.objects.create(flashcard=flashcard, rating=rating, reviewed_at=reviewed_at)
