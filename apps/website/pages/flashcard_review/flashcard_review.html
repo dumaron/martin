@@ -23,7 +23,7 @@
 
 			<div class="flashcard-answer">{{ flashcard.answer|linebreaksbr }}</div>
 
-			<form method="post" action="{% url 'flashcard_review_page.actions.answer_flashcard' %}" class="flashcard-ratings">
+			<form method="post" action="{% url 'flashcard_review_page.actions.rate_flashcard' %}" class="flashcard-ratings">
 				{% csrf_token %}
 				<input type="hidden" name="flashcard_id" value="{{ flashcard.id }}">
 				<button type="submit" name="rating" value="1">Again</button>
@@ -33,7 +33,7 @@
 			</form>
 		</details>
 	{% else %}
-		<p>All done for now{% if reviewed_today %} &mdash; {{ reviewed_today }} answer{{ reviewed_today|pluralize }} today{% endif %}.</p>
+		<p>All done for now{% if reviewed_today %} &mdash; {{ reviewed_today }} review{{ reviewed_today|pluralize }} today{% endif %}.</p>
 
 		{% if next_due %}
 			<p>Next card due in {{ next_due|timeuntil }} &mdash; <a href="">refresh</a>.</p>

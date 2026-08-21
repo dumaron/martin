@@ -4,10 +4,10 @@ from apps.website.pages.page import Page
 from core import hkm
 from core.hkm.models import Transaction
 
-page = Page(name='fact_review_page', base_route='knowledge/review/<int:transaction_id>')
+page = Page(name='fact_review_page', base_route='knowledge/transactions/<int:transaction_id>')
 
 
-@page.main
+@page.main('review')
 def main_render(request, transaction_id):
 	transaction = get_object_or_404(Transaction, pk=transaction_id)
 	review = hkm.review_transaction(transaction.id)
