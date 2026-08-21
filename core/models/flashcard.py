@@ -1,5 +1,8 @@
+from datetime import datetime
+
 from django.db import models
-from django.db.models import Q
+from django.db.models import Case, DateTimeField, F, Q, When
+from django.db.models.functions import TruncDay
 from django.utils import timezone
 from taggit.managers import TaggableManager
 
@@ -46,3 +49,28 @@ class Flashcard(models.Model):
 		return Flashcard.objects.filter(
 			Q(due__lte=now) | Q(state=Flashcard.State.REVIEW, due__date__lte=now.date())
 		).order_by('due', 'id')
+
+	@staticmethod
+	def next_due_at(now=None) -> datetime | None:
+		"""
+		When the next card becomes reviewable, or None if nothing is scheduled ahead.
+
+		`unlock` is the moment a card enters `due_now`: its exact due time for learning and relearning
+		cards, the start of its due date for review cards. Expressing the rule as an annotation keeps the
+		countdown shown on the review page from drifting away from the availability query.
+		"""
+		now = now or timezone.now()
+
+		return (
+			Flashcard.objects.annotate(
+				unlock=Case(
+					When(state=Flashcard.State.REVIEW, then=TruncDay('due')),
+					default=F('due'),
+					output_field=DateTimeField(),
+				)
+			)
+			.filter(unlock__gt=now)
+			.order_by('unlock')
+			.values_list('unlock', flat=True)
+			.first()
+		)

@@ -22,10 +22,9 @@ def main_render(request):
 		# a day, so if we reach this branch we should probably forbid user from doing more reviews later today, and tell
 		# him/her to come back tomorrow instead.
 		# That will likely require a new entity, something like `ReviewSession` or `StudySession`. Out of scope for now.
-		next_card = Flashcard.objects.filter(due__gt=now).order_by('due').first()
 		context = {
 			'flashcard': None,
-			'next_due': next_card.due if next_card else None,
+			'next_due': Flashcard.next_due_at(now=now),
 			'reviewed_today': FlashcardReview.objects.filter(reviewed_at__date=now.date()).count(),
 		}
 
@@ -36,7 +35,7 @@ def main_render(request):
 def answer_flashcard(request):
 	flashcard = get_object_or_404(Flashcard, pk=request.POST.get('flashcard_id'))
 	rating = request.POST.get('rating')
-	
+
 	if rating not in ('1', '2', '3', '4'):
 		return HttpResponseBadRequest('Invalid flashcard rating')
 
