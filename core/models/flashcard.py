@@ -33,7 +33,7 @@ class Flashcard(models.Model):
 		return self.question
 
 	@staticmethod
-	def due_now(now=None, tag=None) -> 'models.QuerySet[Flashcard]':
+	def due_now(now=None) -> 'models.QuerySet[Flashcard]':
 		"""
 		Cards reviewable right now, most overdue first.
 
@@ -43,11 +43,6 @@ class Flashcard(models.Model):
 		review card due at 22:00 today is already reviewable this morning.
 		"""
 		now = now or timezone.now()
-		queryset = Flashcard.objects.filter(
+		return Flashcard.objects.filter(
 			Q(due__lte=now) | Q(state=Flashcard.State.REVIEW, due__date__lte=now.date())
-		)
-
-		if tag:
-			queryset = queryset.filter(tags__name=tag)
-
-		return queryset.order_by('due', 'id')
+		).order_by('due', 'id')

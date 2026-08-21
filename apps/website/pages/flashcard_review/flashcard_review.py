@@ -1,8 +1,6 @@
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
 from django.utils import timezone
-from django.utils.http import urlencode
 
 from apps.website.pages.page import Page
 from core.models import Flashcard, FlashcardReview
@@ -13,23 +11,23 @@ page = Page(name='flashcard_review_page', base_route='knowledge/flashcards/study
 
 @page.main
 def main_render(request):
-	tag = request.GET.get('tag') or None
 	now = timezone.now()
 
-	flashcard = Flashcard.due_now(now=now, tag=tag).first()
-	context = {'flashcard': flashcard, 'tag': tag}
+	flashcard = Flashcard.due_now(now=now).first()
 
 	if flashcard:
-		context['due_count'] = Flashcard.due_now(now=now, tag=tag).count()
+		context = {'flashcard': flashcard, 'due_count': Flashcard.due_now(now=now).count()}
 	else:
-		# Session done. Learning cards may be due again in minutes: surface the next due time.
-		upcoming = Flashcard.objects.filter(due__gt=now).order_by('due')
-		if tag:
-			upcoming = upcoming.filter(tags__name=tag)
-
-		next_card = upcoming.first()
-		context['next_due'] = next_card.due if next_card else None
-		context['reviewed_today'] = FlashcardReview.objects.filter(reviewed_at__date=now.date()).count()
+		# This will have to be fixed in the future. The mental model of my approach should be to do one review session
+		# a day, so if we reach this branch we should probably forbid user from doing more reviews later today, and tell
+		# him/her to come back tomorrow instead.
+		# That will likely require a new entity, something like `ReviewSession` or `StudySession`. Out of scope for now.
+		next_card = Flashcard.objects.filter(due__gt=now).order_by('due').first()
+		context = {
+			'flashcard': None,
+			'next_due': next_card.due if next_card else None,
+			'reviewed_today': FlashcardReview.objects.filter(reviewed_at__date=now.date()).count(),
+		}
 
 	return render(request, 'flashcard_review/flashcard_review.html', context)
 
@@ -38,11 +36,10 @@ def main_render(request):
 def answer_flashcard(request):
 	flashcard = get_object_or_404(Flashcard, pk=request.POST.get('flashcard_id'))
 	rating = request.POST.get('rating')
+	
 	if rating not in ('1', '2', '3', '4'):
 		return HttpResponseBadRequest('Invalid flashcard rating')
 
 	review_flashcard(flashcard, int(rating))
 
-	url = reverse('flashcard_review_page.main_render')
-	tag = request.POST.get('tag')
-	return redirect(f'{url}?{urlencode({"tag": tag})}' if tag else url)
+	return redirect('flashcard_review_page.main_render')

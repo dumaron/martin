@@ -11,7 +11,7 @@
 
 {% block content %}
 <div class="fixed-content">
-	<h1>Review{% if tag %} &mdash; {{ tag }}{% endif %}</h1>
+	<h1>Review</h1>
 
 	{% if flashcard %}
 		<p class="spaced-bottom">{{ due_count }} card{{ due_count|pluralize }} due</p>
@@ -26,7 +26,6 @@
 			<form method="post" action="{% url 'flashcard_review_page.actions.answer_flashcard' %}" class="flashcard-ratings">
 				{% csrf_token %}
 				<input type="hidden" name="flashcard_id" value="{{ flashcard.id }}">
-				{% if tag %}<input type="hidden" name="tag" value="{{ tag }}">{% endif %}
 				<button type="submit" name="rating" value="1">Again</button>
 				<button type="submit" name="rating" value="2">Hard</button>
 				<button type="submit" name="rating" value="3">Good</button>

@@ -10,8 +10,7 @@
 		{% if tag %}
 			<span class="spaced-left">
 				Filtered by <strong>{{ tag }}</strong> &mdash;
-				<a href="{% url 'flashcard_list_page.main_render' %}">clear filter</a> &middot;
-				<a href="{% url 'flashcard_review_page.main_render' %}?tag={{ tag|urlencode }}">review these</a>
+				<a href="{% url 'flashcard_list_page.main_render' %}">clear filter</a>
 			</span>
 		{% endif %}
 	</div>
