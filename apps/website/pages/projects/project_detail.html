@@ -1,42 +1,5 @@
 <h3>{{ project.title }}</h3>
 
-<table class="horizontal">
-    <tbody>
-        {% if project.goal %}
-        <tr>
-            <th>Goal</th>
-            <td>{{ project.goal }}</td>
-        </tr>
-        {% endif %}
-        <tr>
-            <th>Status</th>
-            <td>{{ project.get_status_display }}</td>
-        </tr>
-        <tr>
-            <th>Created</th>
-            <td>{{ project.created_at|date:"N j, Y" }}</td>
-        </tr>
-        <tr>
-            <th>Last Updated</th>
-            <td>{{ project.updated_at|date:"N j, Y" }}</td>
-        </tr>
-        <tr>
-            <th>Tasks</th>
-            <td>
-                {{ tasks|length }} total
-                {% if tasks %}
-                    {% regroup tasks by is_done as task_groups %}
-                    {% for group in task_groups %}
-                        {% if group.grouper %}
-                            ({{ group.list|length }} completed)
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            </td>
-        </tr>
-    </tbody>
-</table>
-
 <form action="{% url 'projects_page.actions.update_project_status' project.id %}" method="post">
     {% csrf_token %}
     <label for="project-status-select">Change status:</label>
@@ -47,3 +10,11 @@
     </select>
     <button type="submit">Update</button>
 </form>
+
+{% include "partials/partial_quick_links.html" %}
+
+<h4>Notes</h4>
+{% include "partials/partial_project_notes.html" with project=project %}
+
+<h4>Updates</h4>
+{% include "partials/partial_project_updates.html" with project=project updates=updates %}

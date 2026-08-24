@@ -1,8 +1,10 @@
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from apps.website.pages.page import Page
-from core.models import Project, Task
+from apps.website.pages.quick_links import quick_link
+from core.models import Project, ProjectUpdate, Task
 
 page = Page(name='projects_page', base_route='pages/projects')
 
@@ -76,7 +78,41 @@ def project_detail(request, project_id):
 	return render(
 		request,
 		'projects/project_detail.html',
-		{'project': project, 'tasks': tasks, 'status_choices': Project.STATUS_CHOICES},
+		{
+			'project': project,
+			'tasks': tasks,
+			'updates': project.updates.all(),
+			'status_choices': Project.STATUS_CHOICES,
+			'quick_links': [
+				quick_link('Open full project page', 'project_detail_page.main_render', project.id),
+			],
+		},
+	)
+
+
+@page.action('project/<int:project_id>/save-notes')
+def save_project_notes(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	project.notes = request.POST.get('notes', '').strip()
+	project.save()
+
+	return render(request, 'partials/partial_project_notes.html', {'project': project})
+
+
+@page.action('project/<int:project_id>/create-update')
+def create_project_update(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	content = request.POST.get('content', '').strip()
+
+	if not content:
+		return HttpResponseBadRequest('A project update needs some content')
+
+	ProjectUpdate.objects.create(project=project, content=content)
+
+	return render(
+		request,
+		'partials/partial_project_updates.html',
+		{'project': project, 'updates': project.updates.all()},
 	)
 
 

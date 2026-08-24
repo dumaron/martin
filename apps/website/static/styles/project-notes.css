@@ -1,0 +1,5 @@
+.project-notes textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font: inherit;
+}
