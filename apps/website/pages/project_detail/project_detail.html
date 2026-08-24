@@ -67,4 +67,13 @@
             <button type="submit">Update Status</button>
         </form>
     </div>
+    <div class="secondary-content">
+        {% include "partials/partial_quick_links.html" %}
+
+        <h2>Notes</h2>
+        {% include "partials/partial_project_notes.html" with project=project %}
+
+        <h2>Updates</h2>
+        {% include "partials/partial_project_updates.html" with project=project updates=updates %}
+    </div>
 {% endblock %}

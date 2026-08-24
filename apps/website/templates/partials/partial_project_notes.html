@@ -1,0 +1,7 @@
+<form class="project-notes"
+      hx-post="{% url 'projects_page.actions.save_project_notes' project.id %}"
+      hx-target="this"
+      hx-swap="outerHTML">
+    <textarea name="notes" rows="8" placeholder="Links, references, anything not tied to a moment in time">{{ project.notes|default:'' }}</textarea>
+    <button type="submit">Save notes</button>
+</form>

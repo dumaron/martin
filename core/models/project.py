@@ -13,6 +13,7 @@ class Project(models.Model):
 
 	id = models.AutoField(primary_key=True)
 	title = models.CharField(max_length=255)
+	notes = models.TextField(blank=True, null=True)
 	goal = models.TextField(blank=True)
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
 	created_at = models.DateTimeField(auto_now_add=True)

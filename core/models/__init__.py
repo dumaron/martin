@@ -13,6 +13,7 @@ from core.models.inbox import Inbox
 from core.models.maybe import Maybe
 from core.models.memory import Memory
 from core.models.project import Project
+from core.models.project_update import ProjectUpdate
 from core.models.recurrence_rule import RecurrenceRule
 from core.models.recurring_suggestion import RecurringSuggestion
 from core.models.task import Task
@@ -44,4 +45,5 @@ __all__ = [
 	'Maybe',
 	'Flashcard',
 	'FlashcardReview',
+	'ProjectUpdate'
 ]
