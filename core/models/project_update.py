@@ -1,6 +1,6 @@
 from django.db import models
 
-from . import Project
+from core.models.project import Project
 
 
 class ProjectUpdate(models.Model):
