@@ -45,5 +45,5 @@ __all__ = [
 	'Maybe',
 	'Flashcard',
 	'FlashcardReview',
-	'ProjectUpdate'
+	'ProjectUpdate',
 ]
