@@ -1,0 +1,10 @@
+{% if quick_links %}
+<nav class="quick-links">
+    <h2>Quick links</h2>
+    <ul>
+        {% for quick_link in quick_links %}
+        <li><a href="{{ quick_link.url }}">{{ quick_link.label }}</a></li>
+        {% endfor %}
+    </ul>
+</nav>
+{% endif %}

@@ -21,4 +21,11 @@
     max-width: 400px;
     position: sticky;
     top: 1rem;
+    padding-left: 2.1rem;
+}
+
+.secondary-content > h2 {
+    margin: 1.5rem 0 0;
+    font-size: 13px;
+    text-transform: uppercase;
 }

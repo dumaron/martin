@@ -1,0 +1,19 @@
+<div class="project-updates">
+    <form hx-post="{% url 'projects_page.actions.create_project_update' project.id %}"
+          hx-target="closest .project-updates"
+          hx-swap="outerHTML">
+        <textarea name="content" rows="3" placeholder="What happened?" required></textarea>
+        <button type="submit">Add update</button>
+    </form>
+
+    <ul class="update-list">
+        {% for update in updates %}
+        <li>
+            <div class="update-meta">{{ update.created_at|date:"N j, Y, H:i" }}</div>
+            <div class="update-content">{{ update.content|linebreaksbr }}</div>
+        </li>
+        {% empty %}
+        <li class="update-empty">No updates yet.</li>
+        {% endfor %}
+    </ul>
+</div>

@@ -1,0 +1,25 @@
+.project-updates textarea {
+    width: 100%;
+    box-sizing: border-box;
+    font: inherit;
+}
+
+ul.update-list {
+    list-style-type: none;
+    padding-left: 0;
+    margin: 12px 0 0;
+}
+
+ul.update-list > li {
+    border-top: 1px solid var(--color-border-muted);
+    padding: 8px 0;
+}
+
+.update-meta {
+    font-size: .85em;
+    color: var(--color-text-muted);
+}
+
+.update-empty {
+    color: var(--color-text-muted);
+}

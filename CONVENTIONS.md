@@ -71,6 +71,51 @@ Casting first (`int(request.POST.get('rating'))`) turns a missing or non-numeric
 
 For anything beyond a couple of fields, use a Django `Form` and return `HttpResponseBadRequest('Invalid form data')` when `form.is_valid()` fails — see `create_ynab_transaction` in `apps/website/pages/pair_transactions/pair_transactions.py`. Object lookups keep using `get_object_or_404`.
 
+### Quick links
+
+A page can offer a "Quick links" section: a short list of places worth going next from here. It belongs in
+the right-hand `.secondary-content` column, next to sidebars and suggestion panels, not in the main
+`.fixed-content` flow. The section is one shared partial, so every page that has one looks the same and
+gains new entries by touching only its view.
+
+Build the entries with `quick_link` (`apps/website/pages/quick_links.py`) and put them in the context under
+`quick_links`:
+
+```python
+from apps.website.pages.quick_links import quick_link
+
+@page.main
+def main_render(request, project_id):
+	...
+	return render(request, 'project_detail/project_detail.html', {
+		...,
+		'quick_links': [
+			quick_link('Add another root project', 'project_create_page.main_render'),
+			quick_link('Go to working tree', 'projects_page.main_render'),
+		],
+	})
+```
+
+Then include the partial in the page's secondary column — it reads `quick_links` straight from the context
+and renders nothing when the list is missing or empty:
+
+```html
+    </div>
+    <div class="secondary-content">
+        {% include "partials/partial_quick_links.html" %}
+    </div>
+{% endblock %}
+```
+
+The partial renders only its own `<nav>`, never the surrounding `.secondary-content`, because that column is
+also an HTMX swap target on some pages (the project tree swaps details into it) and a page may want to stack
+other panels beside the links.
+
+`quick_link` takes the label first, then a URL name and whatever `reverse` needs
+(`quick_link('Back to project', 'project_detail_page.main_render', project.id)`). Reversing happens in the
+view, not the template, so a wrong route name raises `NoReverseMatch` at render time instead of quietly
+producing a dead link.
+
 ## Python style
 
 ### Prefer `list(map(...))` / `list(filter(...))` over list comprehensions
