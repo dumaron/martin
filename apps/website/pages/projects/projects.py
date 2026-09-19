@@ -74,13 +74,11 @@ def create_subproject(request, project_id):
 @page.partial('project/<int:project_id>/detail')
 def project_detail(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
-	tasks = project.tasks.all()
 	return render(
 		request,
 		'projects/project_detail.html',
 		{
 			'project': project,
-			'tasks': tasks,
 			'updates': project.updates.all(),
 			'status_choices': Project.STATUS_CHOICES,
 			'quick_links': [
