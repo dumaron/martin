@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from apps.website.pages.page import Page
 from apps.website.pages.quick_links import quick_link
-from core.models import Project, ProjectUpdate, Task
+from core.models import Project, Task
 
 page = Page(name='projects_page', base_route='pages/projects')
 
@@ -91,10 +91,9 @@ def project_detail(request, project_id):
 @page.action('project/<int:project_id>/save-notes')
 def save_project_notes(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
-	project.notes = request.POST.get('notes', '').strip()
-	project.save()
+	project.save_notes(request.POST.get('notes', ''))
 
-	return render(request, 'partials/partial_project_notes.html', {'project': project})
+	return render(request, 'projects/partial_project_notes.html', {'project': project})
 
 
 @page.action('project/<int:project_id>/create-update')
@@ -105,11 +104,11 @@ def create_project_update(request, project_id):
 	if not content:
 		return HttpResponseBadRequest('A project update needs some content')
 
-	ProjectUpdate.objects.create(project=project, content=content)
+	project.add_update(content)
 
 	return render(
 		request,
-		'partials/partial_project_updates.html',
+		'projects/partial_project_updates.html',
 		{'project': project, 'updates': project.updates.all()},
 	)
 

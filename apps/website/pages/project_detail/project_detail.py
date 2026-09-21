@@ -1,4 +1,5 @@
 from django import forms
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.website.pages.page import Page
@@ -34,6 +35,31 @@ def main_render(request, project_id):
 				quick_link('Go to working tree', 'projects_page.main_render'),
 			],
 		},
+	)
+
+
+@page.action('save-notes')
+def save_project_notes(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	project.save_notes(request.POST.get('notes', ''))
+
+	return render(request, 'project_detail/partial_project_notes.html', {'project': project})
+
+
+@page.action('create-update')
+def create_project_update(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	content = request.POST.get('content', '').strip()
+
+	if not content:
+		return HttpResponseBadRequest('A project update needs some content')
+
+	project.add_update(content)
+
+	return render(
+		request,
+		'project_detail/partial_project_updates.html',
+		{'project': project, 'updates': project.updates.all()},
 	)
 
 

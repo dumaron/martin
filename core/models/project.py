@@ -32,6 +32,14 @@ class Project(models.Model):
 	def get_children(self):
 		return Project.objects.filter(parent=self, status='active')
 
+	def save_notes(self, notes):
+		self.notes = notes.strip()
+		self.save()
+		return self
+
+	def add_update(self, content):
+		return self.updates.create(content=content.strip())
+
 	def promote_to_active(self):
 		self.status = 'active'
 		self.save()
