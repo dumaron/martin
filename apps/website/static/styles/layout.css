@@ -21,4 +21,31 @@
     max-width: 400px;
     position: sticky;
     top: 1rem;
+    padding-left: 2.1rem;
+}
+
+.secondary-content > h2 {
+    margin: 1.5rem 0 0;
+    font-size: 13px;
+    text-transform: uppercase;
+}
+
+@keyframes swapped-panel-flash {
+    0%   { background-color: transparent; }
+    30%  { background-color: var(--color-background-flash); }
+    100% { background-color: transparent; }
+}
+
+.swapped-panel {
+    padding: 1rem;
+    margin-left: -1rem;
+    animation: swapped-panel-flash 450ms ease-in-out 2;
+}
+
+.swapped-panel > :first-child {
+    margin-top: 0;
+}
+
+.swapped-panel > :last-child {
+    margin-bottom: 0;
 }

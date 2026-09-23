@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 
-{% block title %}Projects{% endblock %}
+{% block title %}Project work tree{% endblock %}
 
 {% block stylesheets %}
 <style>
-    .project-info {
-        font-weight: bold;
 
-        a {
-            font-weight: normal;
+    ul.project-tree a {
+        color: var(--color-text);
+
+        &:hover {
+            text-decoration: underline;
+            cursor: pointer;
         }
     }
 
@@ -16,7 +18,6 @@
         margin: 16px 0;
     }
 
-    /* Tree structure styling */
     ul.project-tree,
     ul.task-list,
     ul.project-children {
@@ -31,7 +32,6 @@
         position: relative;
     }
 
-    /* Tree lines */
     ul.task-list > li,
     ul.project-children > li {
         position: relative;
@@ -70,13 +70,13 @@
 
 {% block content %}
 <div class="fixed-content">
-    <h1>Projects</h1>
+    <h1>Project work tree</h1>
 
     <form action="{% url 'project_create_page.main_render' %}" method="get">
         <button type="submit">Add root project</button>
     </form>
 
-    <form action="{% url 'projects_page.actions.mark_tasks_complete' %}" method="post">
+    <form action="{% url 'project_work_tree_page.actions.mark_tasks_complete' %}" method="post">
         {% csrf_token %}
 
         <ul class="project-tree">
@@ -86,14 +86,14 @@
                 {% for task in orphan_tasks %}
                     <li class="task-item">
                         <input type="checkbox" name="task_ids" value="{{ task.id }}" />
-                        <a hx-get="{% url 'projects_page.partials.task_detail' task.id %}"
+                        <a hx-get="{% url 'project_work_tree_page.partials.task_detail' task.id %}"
                            hx-target=".secondary-content"
                            hx-swap="innerHTML">{{ task.description }}</a>
                     </li>
                 {% endfor %}
                     <li class="add-task-link" id="add-orphan-task-link">
-                        <a href="{% url 'projects_page.partials.add_orphan_task_form' %}"
-                           hx-get="{% url 'projects_page.partials.add_orphan_task_form' %}"
+                        <a href="{% url 'project_work_tree_page.partials.add_orphan_task_form' %}"
+                           hx-get="{% url 'project_work_tree_page.partials.add_orphan_task_form' %}"
                            hx-target="#add-orphan-task-link"
                            hx-swap="beforebegin">+</a>
                     </li>

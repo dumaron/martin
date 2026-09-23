@@ -15,6 +15,7 @@ from core.models import (
 	Inbox,
 	Memory,
 	Project,
+	ProjectUpdate,
 	RecurrenceRule,
 	RecurringSuggestion,
 	Task,
@@ -129,3 +130,4 @@ class FlashcardReviewAdmin(admin.ModelAdmin):
 
 admin.site.register(Flashcard, FlashcardAdmin)
 admin.site.register(FlashcardReview, FlashcardReviewAdmin)
+admin.site.register(ProjectUpdate)

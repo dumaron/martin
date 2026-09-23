@@ -1,0 +1,22 @@
+<div class="swapped-panel">
+    <h3>{{ project.title }}</h3>
+
+    <form action="{% url 'project_work_tree_page.actions.update_project_status' project.id %}" method="post">
+        {% csrf_token %}
+        <label for="project-status-select">Change status:</label>
+        <select name="status" id="project-status-select">
+            {% for value, label in status_choices %}
+            <option value="{{ value }}" {% if project.status == value %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Update</button>
+    </form>
+
+    {% include "quick_links/partial_quick_links.html" %}
+
+    <h4>Notes</h4>
+    {% include "project_work_tree/partial_project_notes.html" with project=project %}
+
+    <h4>Updates</h4>
+    {% include "project_work_tree/partial_project_updates.html" with project=project updates=updates %}
+</div>

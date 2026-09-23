@@ -1,10 +1,10 @@
 <li class="project-item">
     <div class="project-info">
-        <a hx-get="{% url 'projects_page.partials.project_detail' project.id %}"
+        <a hx-get="{% url 'project_work_tree_page.partials.project_detail' project.id %}"
            hx-target=".secondary-content"
            hx-swap="innerHTML">{{ project.title }}</a>
-        <a href="{% url 'projects_page.partials.add_subproject_form' project.id %}"
-           hx-get="{% url 'projects_page.partials.add_subproject_form' project.id %}"
+        <a href="{% url 'project_work_tree_page.partials.add_subproject_form' project.id %}"
+           hx-get="{% url 'project_work_tree_page.partials.add_subproject_form' project.id %}"
            hx-target="#project-children-{{ project.id }}"
            hx-swap="beforeend">↵</a>
     </div>
@@ -13,14 +13,14 @@
         {% for task in project.active_tasks %}
         <li class="task-item">
             <input type="checkbox" name="task_ids" value="{{ task.id }}" />
-            <a hx-get="{% url 'projects_page.partials.task_detail' task.id %}"
+            <a hx-get="{% url 'project_work_tree_page.partials.task_detail' task.id %}"
                hx-target=".secondary-content"
                hx-swap="innerHTML">{{ task.description }}</a>
         </li>
     {% endfor %}
         <li class="add-task-link" id="add-task-link-{{ project.id }}">
-            <a href="{% url 'projects_page.partials.add_project_task_form' project.id %}"
-               hx-get="{% url 'projects_page.partials.add_project_task_form' project.id %}"
+            <a href="{% url 'project_work_tree_page.partials.add_project_task_form' project.id %}"
+               hx-get="{% url 'project_work_tree_page.partials.add_project_task_form' project.id %}"
                hx-target="#add-task-link-{{ project.id }}"
                hx-swap="beforebegin">+</a>
         </li>

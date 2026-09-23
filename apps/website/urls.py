@@ -47,7 +47,7 @@ urlpatterns = [
 	*pages.document_list.page.get_urls(),
 	*pages.document_create.page.get_urls(),
 	*pages.document_detail.page.get_urls(),
-	*pages.projects.page.get_urls(),
+	*pages.project_work_tree.page.get_urls(),
 	*pages.maybe_list.page.get_urls(),
 	*pages.monthly_report.page.get_urls(),
 	*pages.project_create.page.get_urls(),

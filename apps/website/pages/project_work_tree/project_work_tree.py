@@ -1,10 +1,12 @@
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
 from apps.website.pages.page import Page
+from apps.website.components.quick_links import quick_link
 from core.models import Project, Task
 
-page = Page(name='projects_page', base_route='pages/projects')
+page = Page(name='project_work_tree_page', base_route='pages/project-work-tree')
 
 
 @page.main
@@ -13,13 +15,15 @@ def main_render(request):
 	orphan_tasks = Task.objects.filter(project__isnull=True, status__in=['pending', 'active'])
 
 	return render(
-		request, 'projects/projects.html', {'root_projects': root_projects, 'orphan_tasks': orphan_tasks}
+		request,
+		'project_work_tree/project_work_tree.html',
+		{'root_projects': root_projects, 'orphan_tasks': orphan_tasks},
 	)
 
 
 @page.partial('add-orphan-task-form')
 def add_orphan_task_form(request):
-	return render(request, 'projects/add_orphan_task_form.html')
+	return render(request, 'project_work_tree/add_orphan_task_form.html')
 
 
 @page.action('create-orphan-task')
@@ -28,15 +32,15 @@ def create_orphan_task(request):
 
 	if description:
 		task = Task.objects.create(description=description, status='pending')
-		return render(request, 'projects/task_item.html', {'task': task})
+		return render(request, 'project_work_tree/task_item.html', {'task': task})
 
-	return render(request, 'projects/add_orphan_task_form.html')
+	return render(request, 'project_work_tree/add_orphan_task_form.html')
 
 
 @page.partial('<int:project_id>/add-task-form')
 def add_project_task_form(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
-	return render(request, 'projects/add_task_form.html', {'project': project})
+	return render(request, 'project_work_tree/add_task_form.html', {'project': project})
 
 
 @page.action('<int:project_id>/create-task')
@@ -46,15 +50,15 @@ def create_project_task(request, project_id):
 
 	if description:
 		task = Task.objects.create(project=project, description=description, status='pending')
-		return render(request, 'projects/task_item.html', {'task': task})
+		return render(request, 'project_work_tree/task_item.html', {'task': task})
 
-	return render(request, 'projects/add_task_form.html', {'project': project})
+	return render(request, 'project_work_tree/add_task_form.html', {'project': project})
 
 
 @page.partial('<int:project_id>/add-subproject-form')
 def add_subproject_form(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
-	return render(request, 'projects/add_subproject_form.html', {'project': project})
+	return render(request, 'project_work_tree/add_subproject_form.html', {'project': project})
 
 
 @page.action('<int:project_id>/create-subproject')
@@ -64,19 +68,50 @@ def create_subproject(request, project_id):
 
 	if title:
 		subproject = Project.objects.create(title=title, parent=parent_project, status='active')
-		return render(request, 'projects/subproject_item.html', {'subproject': subproject})
+		return render(request, 'project_work_tree/subproject_item.html', {'subproject': subproject})
 
-	return render(request, 'projects/add_subproject_form.html', {'project': parent_project})
+	return render(request, 'project_work_tree/add_subproject_form.html', {'project': parent_project})
 
 
 @page.partial('project/<int:project_id>/detail')
 def project_detail(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
-	tasks = project.tasks.all()
 	return render(
 		request,
-		'projects/project_detail.html',
-		{'project': project, 'tasks': tasks, 'status_choices': Project.STATUS_CHOICES},
+		'project_work_tree/project_detail.html',
+		{
+			'project': project,
+			'updates': project.updates.all(),
+			'status_choices': Project.STATUS_CHOICES,
+			'quick_links': [
+				quick_link('Open full project page', 'project_detail_page.main_render', project.id),
+			],
+		},
+	)
+
+
+@page.action('project/<int:project_id>/save-notes')
+def save_project_notes(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	project.save_notes(request.POST.get('notes', ''))
+
+	return render(request, 'project_work_tree/partial_project_notes.html', {'project': project})
+
+
+@page.action('project/<int:project_id>/create-update')
+def create_project_update(request, project_id):
+	project = get_object_or_404(Project, pk=project_id)
+	content = request.POST.get('content', '').strip()
+
+	if not content:
+		return HttpResponseBadRequest('A project update needs some content')
+
+	project.add_update(content)
+
+	return render(
+		request,
+		'project_work_tree/partial_project_updates.html',
+		{'project': project, 'updates': project.updates.all()},
 	)
 
 
@@ -90,13 +125,13 @@ def update_project_status(request, project_id):
 		project.status = new_status
 		project.save()
 
-	return redirect('projects_page.main_render')
+	return redirect('project_work_tree_page.main_render')
 
 
 @page.partial('task/<int:task_id>/detail')
 def task_detail(request, task_id):
 	task = get_object_or_404(Task, pk=task_id)
-	return render(request, 'projects/task_detail.html', {'task': task})
+	return render(request, 'project_work_tree/task_detail.html', {'task': task})
 
 
 @page.action('task/<int:task_id>/update-status')
@@ -113,7 +148,7 @@ def update_task_status(request, task_id):
 		task.status = new_status
 		task.save()
 
-	return redirect('projects_page.main_render')
+	return redirect('project_work_tree_page.main_render')
 
 
 @page.action('mark-tasks-complete')
@@ -123,4 +158,4 @@ def mark_tasks_complete(request):
 	if task_ids:
 		Task.objects.filter(id__in=task_ids).update(status='completed', completed_at=timezone.now())
 
-	return redirect('projects_page.main_render')
+	return redirect('project_work_tree_page.main_render')

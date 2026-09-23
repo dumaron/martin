@@ -13,6 +13,7 @@ class Project(models.Model):
 
 	id = models.AutoField(primary_key=True)
 	title = models.CharField(max_length=255)
+	notes = models.TextField(blank=True)
 	goal = models.TextField(blank=True)
 	status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
 	created_at = models.DateTimeField(auto_now_add=True)
@@ -30,6 +31,14 @@ class Project(models.Model):
 
 	def get_children(self):
 		return Project.objects.filter(parent=self, status='active')
+
+	def save_notes(self, notes):
+		self.notes = notes.strip()
+		self.save()
+		return self
+
+	def add_update(self, content):
+		return self.updates.create(content=content.strip())
 
 	def promote_to_active(self):
 		self.status = 'active'
