@@ -37,5 +37,15 @@
 }
 
 .swapped-panel {
+    padding: 1rem;
+    margin-left: -1rem;
     animation: swapped-panel-flash 450ms ease-in-out 2;
+}
+
+.swapped-panel > :first-child {
+    margin-top: 0;
+}
+
+.swapped-panel > :last-child {
+    margin-bottom: 0;
 }
