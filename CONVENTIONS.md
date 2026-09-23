@@ -71,6 +71,17 @@ Casting first (`int(request.POST.get('rating'))`) turns a missing or non-numeric
 
 For anything beyond a couple of fields, use a Django `Form` and return `HttpResponseBadRequest('Invalid form data')` when `form.is_valid()` fails — see `create_ynab_transaction` in `apps/website/pages/pair_transactions/pair_transactions.py`. Object lookups keep using `get_object_or_404`.
 
+## Components
+
+A piece of UI that more than one page shows does not belong to any of them, so it lives in
+`apps/website/components/<name>/` rather than under `apps/website/pages/`: the Python module and its
+`partial_*.html`. That directory is on the template search path, so a page includes it as
+`{% include "<name>/partial_<name>.html" %}`. The CSS stays in `apps/website/static/styles/` with every
+other stylesheet.
+
+A component is markup plus the helper a view uses to build its context. It registers no routes of its own:
+an action belongs to the page that triggers it, duplicated across pages if need be.
+
 ### Quick links
 
 A page can offer a "Quick links" section: a short list of places worth going next from here. It belongs in
@@ -78,11 +89,11 @@ the right-hand `.secondary-content` column, next to sidebars and suggestion pane
 `.fixed-content` flow. The section is one shared partial, so every page that has one looks the same and
 gains new entries by touching only its view.
 
-Build the entries with `quick_link` (`apps/website/pages/quick_links.py`) and put them in the context under
+Build the entries with `quick_link` (`apps/website/components/quick_links/quick_links.py`) and put them in the context under
 `quick_links`:
 
 ```python
-from apps.website.pages.quick_links import quick_link
+from apps.website.components.quick_links import quick_link
 
 @page.main
 def main_render(request, project_id):
@@ -91,7 +102,7 @@ def main_render(request, project_id):
 		...,
 		'quick_links': [
 			quick_link('Add another root project', 'project_create_page.main_render'),
-			quick_link('Go to working tree', 'projects_page.main_render'),
+			quick_link('Go to project work tree', 'project_work_tree_page.main_render'),
 		],
 	})
 ```
@@ -102,7 +113,7 @@ and renders nothing when the list is missing or empty:
 ```html
     </div>
     <div class="secondary-content">
-        {% include "partials/partial_quick_links.html" %}
+        {% include "quick_links/partial_quick_links.html" %}
     </div>
 {% endblock %}
 ```

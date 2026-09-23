@@ -5,7 +5,7 @@ from django.urls import reverse
 from core.models import Project, Task
 
 
-class ProjectsPageTest(TestCase):
+class ProjectWorkTreePageTest(TestCase):
 	def setUp(self):
 		self.user = User.objects.create_user(username='testuser', password='password')
 		self.client = Client()
@@ -17,7 +17,7 @@ class ProjectsPageTest(TestCase):
 		self.archived_project = Project.objects.create(title='Archived Project', status='archived')
 
 	def get_page(self):
-		url = reverse('projects_page.main_render')
+		url = reverse('project_work_tree_page.main_render')
 		return self.client.get(url)
 
 	def test_shows_only_active_root_projects(self):

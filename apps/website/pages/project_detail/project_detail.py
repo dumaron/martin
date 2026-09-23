@@ -3,7 +3,7 @@ from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.website.pages.page import Page
-from apps.website.pages.quick_links import quick_link
+from apps.website.components.quick_links import quick_link
 from core.models import Project
 
 
@@ -32,7 +32,7 @@ def main_render(request, project_id):
 			'updates': project.updates.all(),
 			'quick_links': [
 				quick_link('Add another root project', 'project_create_page.main_render'),
-				quick_link('Go to working tree', 'projects_page.main_render'),
+				quick_link('Go to project work tree', 'project_work_tree_page.main_render'),
 			],
 		},
 	)

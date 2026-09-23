@@ -1,5 +1,5 @@
 <div class="project-updates">
-    <form hx-post="{% url 'projects_page.actions.create_project_update' project.id %}"
+    <form hx-post="{% url 'project_work_tree_page.actions.create_project_update' project.id %}"
           hx-target="closest .project-updates"
           hx-swap="outerHTML">
         <textarea name="content" rows="3" placeholder="What happened?" required></textarea>

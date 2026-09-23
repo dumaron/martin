@@ -29,3 +29,13 @@
     font-size: 13px;
     text-transform: uppercase;
 }
+
+@keyframes swapped-panel-flash {
+    0%   { background-color: transparent; }
+    30%  { background-color: var(--color-background-flash); }
+    100% { background-color: transparent; }
+}
+
+.swapped-panel {
+    animation: swapped-panel-flash 450ms ease-in-out 2;
+}
