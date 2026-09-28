@@ -24,7 +24,35 @@ class BankTransaction(models.Model):
 	id = models.AutoField(primary_key=True)
 	file_import = models.ForeignKey('BankFileImport', on_delete=models.CASCADE)
 	name = models.CharField(max_length=1024)
+
+	# Date attribute represents the closest available date to when the transaction was made.
+	# In the real world, bank transaction is linked to many dates:
+	# - the day the transaction was made;
+	# - the day the transaction was recorded within the bank system;
+	# - the day used for money value reference;
+	# - eventual dates written within the transaction description.
+	#
+	# Bank exports include a different combination of dates, so we need to be careful when matching transactions: while
+	# only the event date is interesting when pairing with a YNAB entry, if an export does not include it (I'm looking at
+	# you Credem), we need to match on other attributes.
+	#
+	# The ideal solution would have been to store all of them and then calculate the best depending on the entry source.
+	# However, I realized the limit imposed by having only a single date field in this data model too late. Now I cannot
+	# create all these columns without introducing a nullability that is required not by the data nature but by
+	# retro-compatibility, and I don't like that. On top of that, I also want to keep the model simple whenever possible,
+	# and having a single field containing the "best" I can do for a single transaction is not that bad after all.
+	#
+	# So this field is it: the best I can do to match the date the event triggering the transaction has happened. For
+	# Fineco I have the "operation date", so everyone is happy. For Credem I have the booking datem which is usually 2/3
+	# days later than when the transaction occurred. Unicredit is already just kept for archiving purposes right now, so
+	# I don't remember, and I don't care.
+	#
+	# I will maybe add a tooltip on the UI when matching Credem transactions to remember myself that a perfect date match
+	# when doing pairing for the shared account is very hard to occur.
 	date = models.DateField()
+	#
+	#
+
 	amount = models.DecimalField(max_digits=10, decimal_places=2)
 	matched_ynab_transaction = models.ForeignKey(
 		'YnabTransaction', null=True, blank=True, on_delete=models.CASCADE
@@ -37,6 +65,8 @@ class BankTransaction(models.Model):
 	# description from one import to another.
 	# I want to link the two (or more??) transactions together, as it can be useful in the future to list all the
 	# possible variations in the future.
+	# I wonder if it could make sense to switch instead to an "alias" data model, where a transaction might have many
+	# descriptions. Mah.
 	duplicate_of = models.ForeignKey('self', null=True, blank=True, on_delete=models.SET_NULL)
 
 	# The bank account this transaction is coming from.
@@ -72,9 +102,13 @@ class BankTransaction(models.Model):
 		"""
 		Find potential duplicate bank transactions with the same amount and date.
 		Bank exports are unreliable: many times they change description text for the same transaction between two exports,
-		making matching unreliable.
+		making matching unstable.
 		"""
-		return BankTransaction.objects.filter(amount=self.amount, date=self.date).exclude(id=self.id).first()
+		return (
+			BankTransaction.objects.filter(amount=self.amount, date=self.date, paired_on__isnull=False)
+			.exclude(id=self.id)
+			.first()
+		)
 
 	def __str__(self):
 		return self.name
