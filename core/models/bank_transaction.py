@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 from django.db import models
 
@@ -23,7 +24,7 @@ CREDEM_BANK_ACCOUNT_ID = 3
 class BankTransaction(models.Model):
 	id = models.AutoField(primary_key=True)
 	file_import = models.ForeignKey('BankFileImport', on_delete=models.CASCADE)
-	name = models.CharField(max_length=1024)
+	name = models.CharField(max_length=1024) # TODO rename to description
 
 	# Date attribute represents the closest available date to when the transaction was made.
 	# In the real world, bank transaction is linked to many dates:
@@ -74,6 +75,9 @@ class BankTransaction(models.Model):
 
 	class Meta:
 		constraints = (
+			# I'm not sure this is correct. If I ever move to an "alias" approach where bank transactions are expected to
+			# have different descriptions over time, then is there any need for this constraint? How am I supposed to avoid
+			# duplicating transactions that have already been imported?
 			models.UniqueConstraint('name', 'date', 'amount', name='bank-transaction-uniqueness-name-date-amount'),
 		)
 		db_table = 'bank_transactions'
@@ -93,7 +97,7 @@ class BankTransaction(models.Model):
 		return cls(
 			name=clean_description(row['Descrizione:']),
 			amount=float(fix_italian_floating_point(row['Importo']) or 0),
-			date=datetime.strptime(row['Data contabile'], '%d/%m/%Y'),
+			date=datetime.strptime(row['Data contabile'], '%d/%m/%Y'), # Unfortunately only booking date from Credem
 			file_import=file_import,
 			bank_account_id=CREDEM_BANK_ACCOUNT_ID,
 		)
@@ -109,6 +113,29 @@ class BankTransaction(models.Model):
 			.exclude(id=self.id)
 			.first()
 		)
+
+	def get_description_suggestions(self):
+		"""
+		Returns a list of suggestions based on the description
+		"""
+		suggestions = [
+			('AMZ', 'It l12312312')
+		]
+
+		regex_based_hints = [
+			('AMZ', 'It l'),
+			(re.escape('*2492'), 'Performed using Federica\'s card'),
+		]
+
+		for regex, explanation in regex_based_hints:
+			if match := re.search(regex, self.name):
+				suggestions.append((match.group(0), explanation))
+
+
+		# Then add one related to dates
+
+		return suggestions
+
 
 	def __str__(self):
 		return self.name
