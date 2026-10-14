@@ -11,7 +11,7 @@
             </tr>
             <tr>
                 <th>Description</th>
-                <td class="emphasis">{{ bank_transaction.name }}</td>
+                <td class="emphasis">{{ bank_transaction.description }}</td>
             </tr>
             <tr>
                 <th>Date</th>
@@ -143,6 +143,28 @@
         {% include "pair_transactions/potential_duplicate_warning.html" with potential_duplicate=potential_duplicate target_bank_transaction=bank_transaction%}
     {% endif %}
 
-    {{ bank_transaction.get_description_suggestions }}
+    {% with description_hints=bank_transaction.get_description_hints %}
+        {% if description_hints %}
+            <div>
+                <div class="title">Suggestions based on description</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Match</th>
+                            <th>Hint</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    {% for matched_text, hint in description_hints %}
+                        <tr>
+                            <td class="mono">{{ matched_text }}</td>
+                            <td>{{ hint }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    {% endwith %}
     </div>
 {% endblock %}

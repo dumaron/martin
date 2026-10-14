@@ -41,7 +41,7 @@ class PairingViewIntegrationTest(FileCleanupTestCase):
 
 		# Create first transaction (this will be the one shown in pairing view since it's oldest)
 		BankTransaction.objects.create(
-			name='Current Transaction',
+			description='Current Transaction',
 			date=date(2024, 1, 14),  # Earlier date so it's shown first
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
@@ -50,7 +50,7 @@ class PairingViewIntegrationTest(FileCleanupTestCase):
 
 		# Create a second transaction (potential duplicate with same date and amount)
 		duplicate_transaction = BankTransaction.objects.create(
-			name='Original Transaction',
+			description='Original Transaction',
 			date=date(2024, 1, 14),  # Same date for duplicate detection
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
@@ -81,7 +81,7 @@ class PairingViewIntegrationTest(FileCleanupTestCase):
 
 		# Create only one transaction (no duplicate)
 		BankTransaction.objects.create(
-			name='Single Transaction',
+			description='Single Transaction',
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,

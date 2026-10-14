@@ -7,7 +7,7 @@ from core.models import BankFileImport, BankTransaction
 
 class BankTransactionTable(tables.Table):
 	id = tables.LinkColumn('bank_transaction_detail_page.main_render', args=[tables.A('pk')], verbose_name='ID')
-	name = tables.Column(verbose_name='Description')
+	description = tables.Column(verbose_name='Description')
 	date = tables.DateColumn(verbose_name='Date', format='Y-m-d')
 	amount = tables.Column(verbose_name='Amount')
 	duplicate_of = tables.LinkColumn(
@@ -22,7 +22,7 @@ class BankTransactionTable(tables.Table):
 	class Meta:
 		model = BankTransaction
 		template_name = 'django_tables2/table.html'
-		fields = ('id', 'name', 'date', 'amount', 'duplicate_of')
+		fields = ('id', 'description', 'date', 'amount', 'duplicate_of')
 
 
 page = Page(

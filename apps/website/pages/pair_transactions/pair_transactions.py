@@ -82,7 +82,7 @@ def pair_transactions_page(request, kind):
 
 	if potential_duplicate:
 		potential_duplicate_highlighted = highlight_text_differences(
-			first_unpaired_bank_transaction.name, potential_duplicate.name
+			first_unpaired_bank_transaction.description, potential_duplicate.description
 		)
 
 	return render(

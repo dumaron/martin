@@ -6,6 +6,7 @@ from core.models import (
 	BankAccount,
 	BankFileImport,
 	BankTransaction,
+	BankTransactionDescriptionHint,
 	DailySuggestion,
 	Document,
 	Event,
@@ -33,8 +34,8 @@ def snooze(modeladmin, request, queryset):
 
 
 class BankTransactionAdmin(admin.ModelAdmin):
-	list_display = ['name', 'date', 'amount', 'snoozed_on', 'paired_on']
-	search_fields = ['name', 'amount']
+	list_display = ['description', 'date', 'amount', 'snoozed_on', 'paired_on']
+	search_fields = ['description', 'amount']
 	list_filter = [
 		('snoozed_on', admin.EmptyFieldListFilter),
 		('paired_on', admin.EmptyFieldListFilter),
@@ -131,3 +132,4 @@ class FlashcardReviewAdmin(admin.ModelAdmin):
 admin.site.register(Flashcard, FlashcardAdmin)
 admin.site.register(FlashcardReview, FlashcardReviewAdmin)
 admin.site.register(ProjectUpdate)
+admin.site.register(BankTransactionDescriptionHint)

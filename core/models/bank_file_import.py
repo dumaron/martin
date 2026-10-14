@@ -93,7 +93,7 @@ class BankFileImport(models.Model):
 		rows = self.get_file_rows()
 		bank_transactions = list(map(lambda row: file_parsing_strategy(row, self), rows))
 
-		# Given that we have a unique constraint based on SQL based on name, date and amount, the already-imported
+		# Given that we have a unique constraint based on SQL based on description, date and amount, the already-imported
 		# transactions will trigger an error. However, by using `ignore_conflicts`, we can just simulate a behavior where
 		# the duplicates are just skipped
 		BankTransaction.objects.bulk_create(bank_transactions, ignore_conflicts=True)

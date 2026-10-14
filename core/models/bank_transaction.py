@@ -1,15 +1,17 @@
-from datetime import datetime
 import re
+from datetime import datetime
 
 from django.db import models
+
+from core.models.bank_transaction_description_hint import BankTransactionDescriptionHint
 
 
 def fix_italian_floating_point(string):
 	return string.replace('.', '').replace(',', '.')
 
 
-def clean_description(name):
-	return ' '.join(name.split())
+def clean_description(description):
+	return ' '.join(description.split())
 
 
 # I'm not happy about this approach, but it is a good compromise between creating a "proper" DB structure, which is
@@ -24,7 +26,7 @@ CREDEM_BANK_ACCOUNT_ID = 3
 class BankTransaction(models.Model):
 	id = models.AutoField(primary_key=True)
 	file_import = models.ForeignKey('BankFileImport', on_delete=models.CASCADE)
-	name = models.CharField(max_length=1024) # TODO rename to description
+	description = models.CharField(max_length=1024)
 
 	# Date attribute represents the closest available date to when the transaction was made.
 	# In the real world, bank transaction is linked to many dates:
@@ -44,15 +46,17 @@ class BankTransaction(models.Model):
 	# and having a single field containing the "best" I can do for a single transaction is not that bad after all.
 	#
 	# So this field is it: the best I can do to match the date the event triggering the transaction has happened. For
-	# Fineco I have the "operation date", so everyone is happy. For Credem I have the booking datem which is usually 2/3
+	# Fineco I have the "operation date", so everyone is happy. For Credem I have the booking date which is usually 2/3
 	# days later than when the transaction occurred. Unicredit is already just kept for archiving purposes right now, so
 	# I don't remember, and I don't care.
 	#
-	# I will maybe add a tooltip on the UI when matching Credem transactions to remember myself that a perfect date match
+	# I will maybe add a tooltip on the UI when matching Credem transactions to remind myself that a perfect date match
 	# when doing pairing for the shared account is very hard to occur.
 	date = models.DateField()
-	#
-	#
+
+	# booking_date = models.DateField(null=True, blank=True)
+	# money_value_reference_date = models.DateField(null=True, blank=True)
+	# operation_date = models.DateField(null=True, blank=True)
 
 	amount = models.DecimalField(max_digits=10, decimal_places=2)
 	matched_ynab_transaction = models.ForeignKey(
@@ -78,14 +82,16 @@ class BankTransaction(models.Model):
 			# I'm not sure this is correct. If I ever move to an "alias" approach where bank transactions are expected to
 			# have different descriptions over time, then is there any need for this constraint? How am I supposed to avoid
 			# duplicating transactions that have already been imported?
-			models.UniqueConstraint('name', 'date', 'amount', name='bank-transaction-uniqueness-name-date-amount'),
+			models.UniqueConstraint(
+				'description', 'date', 'amount', name='bank-transaction-uniqueness-description-date-amount'
+			),
 		)
 		db_table = 'bank_transactions'
 
 	@classmethod
 	def from_fineco_bank_account_xslx_row(cls, row, file_import):
 		return cls(
-			name=clean_description(row['Descrizione_Completa']),
+			description=clean_description(row['Descrizione_Completa']),
 			amount=float(row['Entrate'] or 0) + float(row['Uscite'] or 0),
 			date=row['Data_Operazione'],
 			file_import=file_import,
@@ -95,9 +101,9 @@ class BankTransaction(models.Model):
 	@classmethod
 	def from_credem_csv_row(cls, row, file_import):
 		return cls(
-			name=clean_description(row['Descrizione:']),
+			description=clean_description(row['Descrizione:']),
 			amount=float(fix_italian_floating_point(row['Importo']) or 0),
-			date=datetime.strptime(row['Data contabile'], '%d/%m/%Y'), # Unfortunately only booking date from Credem
+			date=datetime.strptime(row['Data contabile'], '%d/%m/%Y'),  # Unfortunately only booking date from Credem
 			file_import=file_import,
 			bank_account_id=CREDEM_BANK_ACCOUNT_ID,
 		)
@@ -114,28 +120,22 @@ class BankTransaction(models.Model):
 			.first()
 		)
 
-	def get_description_suggestions(self):
+	def get_description_hints(self):
 		"""
 		Returns a list of suggestions based on the description
 		"""
-		suggestions = [
-			('AMZ', 'It l12312312')
-		]
+		matched_hints = []
 
-		regex_based_hints = [
-			('AMZ', 'It l'),
-			(re.escape('*2492'), 'Performed using Federica\'s card'),
-		]
+		regex_based_hints = BankTransactionDescriptionHint.objects.all()
 
-		for regex, explanation in regex_based_hints:
-			if match := re.search(regex, self.name):
-				suggestions.append((match.group(0), explanation))
+		for potential_hint in regex_based_hints:
+			if match := re.search(potential_hint.regex, self.description):
+				matched_hints.append((match.group(0), potential_hint.hint))
 
+		# There can be specific hints based on the bank account the transaction comes from
+		# TODO end this
 
-		# Then add one related to dates
-
-		return suggestions
-
+		return matched_hints
 
 	def __str__(self):
-		return self.name
+		return self.description

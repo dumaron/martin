@@ -36,7 +36,7 @@ class LinkDuplicateBankTransactionViewTest(FileCleanupTestCase):
 
 		# Create test transactions
 		self.original_transaction = BankTransaction.objects.create(
-			name='Original Transaction',
+			description='Original Transaction',
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
@@ -44,7 +44,7 @@ class LinkDuplicateBankTransactionViewTest(FileCleanupTestCase):
 		)
 
 		self.duplicate_transaction = BankTransaction.objects.create(
-			name='Duplicate Transaction',
+			description='Duplicate Transaction',
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
@@ -173,7 +173,7 @@ class LinkDuplicateBankTransactionViewTest(FileCleanupTestCase):
 
 		# Create a third transaction to attempt linking to
 		third_transaction = BankTransaction.objects.create(
-			name='Third Transaction',
+			description='Third Transaction',
 			date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
