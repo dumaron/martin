@@ -1,0 +1,19 @@
+{% if results %}
+    <ul class="paired-search-results">
+    {% for result in results %}
+        {% with ynab_transaction=result.bank_transaction.matched_ynab_transaction %}
+            <li>
+                <div class="ynab-line">
+                    <span class="ynab-memo">{{ ynab_transaction.memo|default:"-" }}</span>
+                    {% if ynab_transaction.category %}
+                        <span class="ynab-category">{{ ynab_transaction.category.name }}</span>
+                    {% endif %}
+                </div>
+                <div class="bank-description">{% for text, is_match in result.description_parts %}{% if is_match %}<mark>{{ text }}</mark>{% else %}{{ text }}{% endif %}{% endfor %}</div>
+            </li>
+        {% endwith %}
+    {% endfor %}
+    </ul>
+{% elif query %}
+    <p>No paired bank transaction matches "{{ query }}".</p>
+{% endif %}
