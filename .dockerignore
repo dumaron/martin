@@ -1,7 +1,7 @@
 fly.toml
 .git/
 *.sqlite3*
-.env
+.env*
 *.md
 uploads/
 media/
