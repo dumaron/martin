@@ -36,46 +36,9 @@
             </tbody>
         </table>
 
-        <h2>Same amount</h2>
-        {% if same_amount_suggestions %}
-            <div>
-                <form action="{% url 'pair_transactions_page.actions.pair_transactions' %}" method="post">
-                    {% csrf_token %}
-                    <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
-                    <input type="hidden" name="redirect-to" value="{% url 'pair_transactions_page.main_render' kind=kind %}"/>
-                    <table class="highlightable">
-                        <thead>
-                            <tr>
-                                <th class="hidden" scope="col"></th>
-                                <th scope="col">Amount</th>
-                                <th scope="col">Memo</th>
-                                <th scope="col">Date</th>
-                                <th scope="col">Date Diff</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                        {% for suggestion in same_amount_suggestions %}
-                            <tr>
-                                <td class="selection"><input type="radio" name="ynab-transaction"
-                                                             value="{{ suggestion.transaction.id }}"/></td>
-                                <td class="amount">{{ suggestion.transaction.amount | floatformat:2 }}</td>
-                                <td>{{ suggestion.transaction.memo }}</td>
-                                <td class="date">{{ suggestion.transaction.date | date:"Y-m-d" }}</td>
-                                <td class="date-diff">{{ suggestion.date_diff }} day{{ suggestion.date_diff|pluralize }}</td>
-                            </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                    <button type="submit">Pair expenses</button>
-                </form>
-            </div>
-        {% else %}
-            <p>No uncleared YNAB transaction with the same amount found.</p>
-        {% endif %}
-
-        <h2>Similar date</h2>
-        {% if similar_date_suggestions %}
-            <div id="similar-date-suggestions">
+        <h2>Best matches</h2>
+        {% if best_matches %}
+            <div id="best-matches">
                 <form action="{% url 'pair_transactions_page.actions.pair_transactions' %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="bank_transaction" value="{{ bank_transaction.id }}"/>
@@ -86,18 +49,22 @@
                             <tr>
                                 <th class="hidden"></th>
                                 <th>Amount</th>
-                                <th>Memo</th>
+                                <th>Diff</th>
                                 <th>Date</th>
+                                <th>Diff</th>
+                                <th>Memo</th>
                             </tr>
                         </thead>
                         <tbody>
-                        {% for transaction in similar_date_suggestions %}
+                        {% for suggestion in best_matches %}
                             <tr>
-                                <td class="selection"><input type="radio" name="ynab-transaction"
-                                                             value="{{ transaction.id }}"/></td>
-                                <td class="amount">{{ transaction.amount | floatformat:2 }}</td>
-                                <td>{{ transaction.memo }}</td>
-                                <td class="date">{{ transaction.date | date:"Y-m-d" }}</td>
+                                <td class="selection shrink"><input type="radio" name="ynab-transaction"
+                                                             value="{{ suggestion.transaction.id }}"/></td>
+                                <td class="amount shrink">{{ suggestion.transaction.amount | floatformat:2 }}€</td>
+                                <td class="amount diff shrink {{ suggestion.amount_diff_level }}">{% if suggestion.amount_diff_level == 'equal' %}=={% else %}{{ suggestion.amount_diff | floatformat:2 }}€{% endif %}</td>
+                                <td class="date shrink">{{ suggestion.transaction.date | date:"Y-m-d" }}</td>
+                                <td class="date-diff diff shrink {{ suggestion.date_diff_level }}">{% if suggestion.date_diff_level == 'equal' %}=={% else %}{{ suggestion.date_diff }}d{% endif %}</td>
+                                <td>{{ suggestion.transaction.memo }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
@@ -106,9 +73,8 @@
                 </form>
             </div>
         {% else %}
-            <p>No uncleared YNAB transaction found within the date range.</p>
+            <p>No uncleared YNAB transaction close enough in amount and date.</p>
         {% endif %}
-
 
         <h2>Create YNAB transaction</h2>
         <form action="{% url 'pair_transactions_page.actions.create_ynab_transaction' %}" method="post" class="pairing-form">
@@ -147,13 +113,7 @@
         {% if description_hints %}
             <div>
                 <div class="title">Suggestions based on description</div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Match</th>
-                            <th>Hint</th>
-                        </tr>
-                    </thead>
+                <table class="description-hints">
                     <tbody>
                     {% for matched_text, hint in description_hints %}
                         <tr>
@@ -166,5 +126,17 @@
             </div>
         {% endif %}
     {% endwith %}
+
+    <div class="paired-search">
+        <div class="title">Search paired transactions</div>
+        <input type="search"
+               name="paired-query"
+               placeholder="Text in the bank description"
+               autocomplete="off"
+               hx-get="{% url 'pair_transactions_page.partials.paired_transactions_search' %}"
+               hx-trigger="input changed delay:300ms, search"
+               hx-target="#paired-transactions-search-results"/>
+        <div id="paired-transactions-search-results"></div>
+    </div>
     </div>
 {% endblock %}

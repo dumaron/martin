@@ -1,4 +1,6 @@
+import re
 from datetime import datetime, timedelta
+from decimal import Decimal
 
 from django import forms
 from django.http import HttpResponseBadRequest
@@ -12,6 +14,7 @@ from core.mutations import (
 	create_ynab_transaction_from_bank_transaction,
 	pair_bank_transaction_with_ynab_transaction,
 )
+from core.utils.fp import lfilter, lmap
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 
@@ -28,6 +31,61 @@ class YnabTransactionCreationForm(forms.Form):
 		# update the category field now that we have the budget_id available
 		filtered_queryset = YnabCategory.objects.filter(budget_id=budget_id, hidden=False)
 		self.fields['ynab_category'].queryset = filtered_queryset
+
+
+MATCH_DATE_SCALE_DAYS = 5
+MAX_MATCH_SCORE = 3
+PAIRED_SEARCH_LIMIT = 20
+
+
+def get_date_diff_level(date_diff):
+	distance = abs(date_diff)
+	if distance == 0:
+		return 'equal'
+	if distance < 5:
+		return 'green'
+	if distance < 10:
+		return 'yellow'
+	return 'red'
+
+
+def get_amount_tolerance(bank_amount):
+	return max(Decimal(1), abs(bank_amount) * Decimal('0.1'))
+
+
+def get_amount_diff_level(amount_diff, bank_amount):
+	distance = abs(amount_diff)
+	if distance == 0:
+		return 'equal'
+	if distance < 1:
+		return 'green'
+	if distance < get_amount_tolerance(bank_amount):
+		return 'yellow'
+	return 'red'
+
+
+def split_on_matches(text, query):
+	if not query:
+		return [(text, False)]
+
+	return lmap(
+		lambda indexed_part: (indexed_part[1], indexed_part[0] % 2 == 1),
+		enumerate(re.split(f'({re.escape(query)})', text, flags=re.IGNORECASE)),
+	)
+
+
+def build_pairing_suggestion(bank_transaction, ynab_transaction):
+	amount_diff = abs(bank_transaction.amount - Decimal(str(ynab_transaction.amount)))
+	date_diff = abs((bank_transaction.date - ynab_transaction.date).days)
+	amount_tolerance = get_amount_tolerance(bank_transaction.amount)
+	return {
+		'transaction': ynab_transaction,
+		'amount_diff': amount_diff,
+		'amount_diff_level': get_amount_diff_level(amount_diff, bank_transaction.amount),
+		'date_diff': date_diff,
+		'date_diff_level': get_date_diff_level(date_diff),
+		'score': Decimal(date_diff) / MATCH_DATE_SCALE_DAYS + amount_diff / amount_tolerance,
+	}
 
 
 page = Page(name='pair_transactions_page', base_route='flows/pair-transactions')
@@ -56,26 +114,26 @@ def pair_transactions_page(request, kind):
 	if first_unpaired_bank_transaction is None:
 		return render(request, 'pair_transactions/pairing_empty.html', {})
 
-	same_amount_ynab_transactions = YnabTransaction.objects.filter(
+	max_date_distance = timedelta(days=MAX_MATCH_SCORE * MATCH_DATE_SCALE_DAYS)
+
+	candidate_ynab_transactions = YnabTransaction.objects.filter(
 		deleted=False,
-		amount=first_unpaired_bank_transaction.amount,
+		date__lte=first_unpaired_bank_transaction.date + max_date_distance,
+		date__gte=first_unpaired_bank_transaction.date - max_date_distance,
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
 		budget_id=budget_id,
 	)
 
-	# Add date difference for each suggestion
-	same_amount_suggestions = [
-		{'transaction': transaction, 'date_diff': (first_unpaired_bank_transaction.date - transaction.date).days}
-		for transaction in same_amount_ynab_transactions
-	]
-
-	similar_date_suggestions = YnabTransaction.objects.filter(
-		deleted=False,
-		date__lte=first_unpaired_bank_transaction.date + timedelta(days=6),
-		date__gte=first_unpaired_bank_transaction.date - timedelta(days=6),
-		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
-		budget_id=budget_id,
-	).exclude(id__in=list(map(lambda suggestion: suggestion['transaction'].id, same_amount_suggestions)))
+	best_matches = sorted(
+		lfilter(
+			lambda suggestion: suggestion['score'] <= MAX_MATCH_SCORE,
+			lmap(
+				lambda transaction: build_pairing_suggestion(first_unpaired_bank_transaction, transaction),
+				candidate_ynab_transactions,
+			),
+		),
+		key=lambda suggestion: (suggestion['score'], suggestion['date_diff']),
+	)
 
 	potential_duplicate = first_unpaired_bank_transaction.get_potential_duplicate()
 	potential_duplicate_highlighted = None
@@ -91,13 +149,31 @@ def pair_transactions_page(request, kind):
 		{
 			'kind': kind,
 			'bank_transaction': first_unpaired_bank_transaction,
-			'same_amount_suggestions': same_amount_suggestions,
-			'similar_date_suggestions': similar_date_suggestions,
+			'best_matches': best_matches,
 			'transaction_creation_form': YnabTransactionCreationForm(
 				budget_id=budget_id, initial={'bank_transaction_id': first_unpaired_bank_transaction.id}
 			),
 			'potential_duplicate': potential_duplicate,
 			'potential_duplicate_highlighted': potential_duplicate_highlighted,
+		},
+	)
+
+
+@page.partial('paired-transactions-search')
+def paired_transactions_search(request):
+	query = request.GET.get('paired-query', '').strip()
+	return render(
+		request,
+		'pair_transactions/partial_paired_transactions_search.html',
+		{
+			'query': query,
+			'results': lmap(
+				lambda bank_transaction: {
+					'bank_transaction': bank_transaction,
+					'description_parts': split_on_matches(bank_transaction.description, query),
+				},
+				BankTransaction.search_paired_by_description(query)[:PAIRED_SEARCH_LIMIT],
+			),
 		},
 	)
 

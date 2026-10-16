@@ -35,6 +35,7 @@ def snooze(modeladmin, request, queryset):
 
 class BankTransactionAdmin(admin.ModelAdmin):
 	list_display = ['description', 'date', 'amount', 'snoozed_on', 'paired_on']
+	readonly_fields = ['date']
 	search_fields = ['description', 'amount']
 	list_filter = [
 		('snoozed_on', admin.EmptyFieldListFilter),

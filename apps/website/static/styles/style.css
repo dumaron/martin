@@ -14,6 +14,12 @@
     --color-text-danger: #b00020;
     --color-text-success: #1a7f37;
     --color-text-warning: #b35900;
+    --color-diff-green: var(--color-text-success);
+    --color-diff-yellow: #d4a300;
+    --color-diff-red: var(--color-text-danger);
+    --color-hint-match: #8b5cf6;
+    --color-search-highlight: #ffd000;
+    --color-search-highlight-text: #1a1a1a;
     --color-text-duplicate: #888888;
     --color-accent: #9b1c1c;
     --color-accent-muted: #f6d9d9;
@@ -29,10 +35,7 @@
     --color-background-table-header: #e0e0e0;
     --color-background-table-cell: #f0f0f0;
     --color-background-table-hover: #e0e0e0;
-    --color-background-tab-active: white;
     --color-table-header-text: var(--color-text);
-    --color-tab-active-text: black;
-    --color-tab-active-border: var(--color-border-primary);
 
 
     --color-border-primary: #444444;
@@ -71,6 +74,10 @@
     --color-text-danger: var(--color-signal-red);
     --color-text-success: var(--color-signal-green);
     --color-text-warning: var(--color-signal-orange);
+    --color-diff-green: var(--color-signal-green);
+    --color-diff-yellow: #e2c044;
+    --color-diff-red: var(--color-signal-red);
+    --color-hint-match: #ae81ff;
     --color-text-duplicate: #9d968b;
     --color-accent: var(--color-signal-orange);
     --color-accent-muted: #332a1c;
@@ -86,10 +93,7 @@
     --color-background-table-header: #3a3631;
     --color-background-table-cell: #302d29;
     --color-background-table-hover: #3a3631;
-    --color-background-tab-active: #2a2724;
     --color-table-header-text: var(--color-text-secondary);
-    --color-tab-active-text: var(--color-text);
-    --color-tab-active-border: var(--color-border-light);
 
     --color-border-primary: #787975;
     --color-border-secondary: #4a443b;

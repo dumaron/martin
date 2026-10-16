@@ -105,6 +105,7 @@ textarea {
 
 .ts-wrapper,
 .pairing-form input[type="text"],
+.paired-search input[type="search"],
 table.form input,
 table.form textarea {
     width: 340px;
