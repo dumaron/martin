@@ -6,10 +6,11 @@ from django import forms
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django_htmx.http import HttpResponseClientRefresh
 
 from apps.website.pages.page import Page
 from apps.website.utils import highlight_text_differences
-from core.models import BankTransaction, YnabCategory, YnabTransaction
+from core.models import BankTransaction, BankTransactionDescriptionHint, YnabCategory, YnabTransaction
 from core.mutations import (
 	create_ynab_transaction_from_bank_transaction,
 	pair_bank_transaction_with_ynab_transaction,
@@ -176,6 +177,18 @@ def paired_transactions_search(request):
 			),
 		},
 	)
+
+
+@page.action('save-description-hint')
+def save_description_hint(request):
+	text = request.POST.get('text', '').strip()
+	hint = (request.htmx.prompt or '').strip()
+
+	if not text or not hint:
+		return HttpResponseBadRequest('Both the text and the hint are required')
+
+	BankTransactionDescriptionHint.create_from_text(text, hint)
+	return HttpResponseClientRefresh()
 
 
 @page.action('pair-transactions')

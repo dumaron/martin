@@ -1,4 +1,10 @@
 {% if results %}
+    <form class="save-hint"
+          hx-post="{% url 'pair_transactions_page.actions.save_description_hint' %}"
+          hx-prompt='Label to show when a description contains "{{ query }}"'>
+        <input type="hidden" name="text" value="{{ query }}"/>
+        <button type="submit">Save "{{ query }}" as hint</button>
+    </form>
     <ul class="paired-search-results">
     {% for result in results %}
         {% with ynab_transaction=result.bank_transaction.matched_ynab_transaction %}

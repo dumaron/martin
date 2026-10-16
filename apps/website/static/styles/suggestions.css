@@ -70,6 +70,10 @@
         }
     }
 
+    .save-hint button {
+        margin: 6px 0 0;
+    }
+
     ul.paired-search-results {
         margin: 6px 0 0;
         padding: 0;
