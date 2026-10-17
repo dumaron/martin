@@ -188,11 +188,8 @@ class BankTransaction(models.Model):
 			date_match = date_text if date_text in DATE_DD_MM_YY.findall(self.description) else operation_date
 			matched_hints.append((date_match, datetime.strftime(operation_date, '%A %d/%m/%y')))
 
-		operation_time = self.get_operation_time_with_description()
-		if operation_time:
-			time_text = operation_time.strftime('%H:%M')
-			time_match = time_text if time_text in TIME_HH_MM.findall(self.description) else operation_time
-			matched_hints.append((time_match, get_part_of_day(operation_time)))
+		if operation_time := self.get_operation_time_with_description():
+			matched_hints.append((operation_time.strftime('%H:%M'), get_part_of_day(operation_time)))
 
 		return matched_hints
 

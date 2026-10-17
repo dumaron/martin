@@ -74,9 +74,7 @@
     --color-text-danger: var(--color-signal-red);
     --color-text-success: var(--color-signal-green);
     --color-text-warning: var(--color-signal-orange);
-    --color-diff-green: var(--color-signal-green);
     --color-diff-yellow: #e2c044;
-    --color-diff-red: var(--color-signal-red);
     --color-hint-match: #ae81ff;
     --color-text-duplicate: #9d968b;
     --color-accent: var(--color-signal-orange);

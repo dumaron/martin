@@ -20,16 +20,6 @@
             <th>Bank</th>
             <td>{{ potential_duplicate.bank_account }}</td>
         </tr>
-        <tr>
-            <th>Status</th>
-            <td>
-                {% if potential_duplicate.matched_ynab_transaction %}
-                PAIRED
-                {% else %}
-                NOT PAIRED
-                {% endif %}
-            </td>
-        </tr>
         {% if potential_duplicate.matched_ynab_transaction %}
         <tr>
             <th>Matched memo</th>

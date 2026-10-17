@@ -66,19 +66,6 @@ th.hidden {
 	border-left-color: transparent;
 }
 
-th.indented {
-	padding-left: 1.6em;
-}
-
-th.indented::before {
-	content: '';
-	position: absolute;
-	left: 0.5em;
-	top: 50%;
-	width: 0.7em;
-	border-top: 1px dotted var(--color-text-muted);
-}
-
 td.selection {
 	width: 2em;
 	text-align: center;
