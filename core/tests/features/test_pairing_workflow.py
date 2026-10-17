@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.urls import reverse
+from django.utils import timezone
 
 from core.models import BankAccount, BankFileImport, BankTransaction
 from core.tests.base import FileCleanupTestCase
@@ -55,6 +56,7 @@ class PairingViewIntegrationTest(FileCleanupTestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Get the pairing view

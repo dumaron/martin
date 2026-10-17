@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.utils import timezone
 
 from core.models import BankAccount, BankFileImport, BankTransaction
 
@@ -51,6 +52,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create second transaction with same amount and date but different description
@@ -76,6 +78,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create second transaction with same amount but different date
@@ -101,6 +104,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create second transaction with same date but different amount
@@ -126,6 +130,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create second transaction with same amount and date
@@ -135,6 +140,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create third transaction with same amount and date
@@ -165,6 +171,7 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create transaction in second bank account with same amount and date

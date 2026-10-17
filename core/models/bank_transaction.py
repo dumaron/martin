@@ -144,7 +144,7 @@ class BankTransaction(models.Model):
 
 	def get_potential_duplicate(self):
 		"""
-		Find potential duplicate bank transactions with the same amount and date.
+		Find potential duplicate bank transactions: already paired ones with the same amount and date.
 		Bank exports are unreliable: many times they change description text for the same transaction between two exports,
 		making matching unstable.
 		"""
