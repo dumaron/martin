@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
+from django.utils import timezone
 
 from core.models import BankAccount, BankFileImport, BankTransaction
 
@@ -31,8 +32,8 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 	def test_get_potential_duplicate_returns_none_when_no_duplicates(self):
 		"""Test that get_potential_duplicate returns None when no duplicates exist."""
 		transaction = BankTransaction.objects.create(
-			name='Test Transaction',
-			date=date(2024, 1, 15),
+			description='Test Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
@@ -43,20 +44,21 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 		self.assertIsNone(result)
 
 	def test_get_potential_duplicate_returns_transaction_when_exact_match_exists(self):
-		"""Test that get_potential_duplicate returns a transaction when exact match exists (same amount, date, different name)."""
+		"""Test that get_potential_duplicate returns a transaction when exact match exists (same amount, date, different description)."""
 		# Create first transaction
 		transaction1 = BankTransaction.objects.create(
-			name='Original Transaction',
-			date=date(2024, 1, 15),
+			description='Original Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
-		# Create second transaction with same amount and date but different name
+		# Create second transaction with same amount and date but different description
 		transaction2 = BankTransaction.objects.create(
-			name='Different Transaction Name',
-			date=date(2024, 1, 15),
+			description='Different Transaction Name',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
@@ -71,17 +73,18 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 		"""Test that get_potential_duplicate returns None when only amount matches but date differs."""
 		# Create first transaction
 		BankTransaction.objects.create(
-			name='Original Transaction',
-			date=date(2024, 1, 15),
+			description='Original Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create second transaction with same amount but different date
 		transaction2 = BankTransaction.objects.create(
-			name='Different Transaction',
-			date=date(2024, 1, 16),  # Different date
+			description='Different Transaction',
+			booking_date=date(2024, 1, 16),  # Different date
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
@@ -96,17 +99,18 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 		"""Test that get_potential_duplicate returns None when only date matches but amount differs."""
 		# Create first transaction
 		BankTransaction.objects.create(
-			name='Original Transaction',
-			date=date(2024, 1, 15),
+			description='Original Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create second transaction with same date but different amount
 		transaction2 = BankTransaction.objects.create(
-			name='Different Transaction',
-			date=date(2024, 1, 15),
+			description='Different Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('200.75'),  # Different amount
 			file_import=self.file_import,
 			bank_account=self.bank_account,
@@ -121,26 +125,28 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 		"""Test that get_potential_duplicate returns first match when multiple duplicates exist."""
 		# Create first transaction
 		transaction1 = BankTransaction.objects.create(
-			name='First Transaction',
-			date=date(2024, 1, 15),
+			description='First Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create second transaction with same amount and date
 		BankTransaction.objects.create(
-			name='Second Transaction',
-			date=date(2024, 1, 15),
+			description='Second Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create third transaction with same amount and date
 		transaction3 = BankTransaction.objects.create(
-			name='Third Transaction',
-			date=date(2024, 1, 15),
+			description='Third Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
@@ -160,17 +166,18 @@ class BankTransactionGetPotentialDuplicateTest(TestCase):
 
 		# Create transaction in first bank account
 		transaction1 = BankTransaction.objects.create(
-			name='Transaction Bank 1',
-			date=date(2024, 1, 15),
+			description='Transaction Bank 1',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Create transaction in second bank account with same amount and date
 		transaction2 = BankTransaction.objects.create(
-			name='Transaction Bank 2',
-			date=date(2024, 1, 15),
+			description='Transaction Bank 2',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=bank_account2,
@@ -211,9 +218,9 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Test Income Transaction')
+		self.assertEqual(transaction.description, 'Test Income Transaction')
 		self.assertEqual(transaction.amount, 150.75)
-		self.assertEqual(transaction.date, date(2024, 3, 15))
+		self.assertEqual(transaction.transaction_date, date(2024, 3, 15))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
@@ -228,9 +235,9 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Test Expense Transaction')
+		self.assertEqual(transaction.description, 'Test Expense Transaction')
 		self.assertEqual(transaction.amount, -85.30)
-		self.assertEqual(transaction.date, date(2024, 3, 20))
+		self.assertEqual(transaction.transaction_date, date(2024, 3, 20))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
@@ -245,9 +252,9 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Transaction with both values')
+		self.assertEqual(transaction.description, 'Transaction with both values')
 		self.assertEqual(transaction.amount, 75.0)  # 100.0 + (-25.0)
-		self.assertEqual(transaction.date, date(2024, 3, 25))
+		self.assertEqual(transaction.transaction_date, date(2024, 3, 25))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -262,9 +269,9 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Zero amount transaction')
+		self.assertEqual(transaction.description, 'Zero amount transaction')
 		self.assertEqual(transaction.amount, 0.0)
-		self.assertEqual(transaction.date, date(2024, 3, 30))
+		self.assertEqual(transaction.transaction_date, date(2024, 3, 30))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -279,9 +286,9 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Transaction with None values')
+		self.assertEqual(transaction.description, 'Transaction with None values')
 		self.assertEqual(transaction.amount, 0.0)  # None or 0 + None or 0 = 0.0
-		self.assertEqual(transaction.date, date(2024, 4, 1))
+		self.assertEqual(transaction.transaction_date, date(2024, 4, 1))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -296,9 +303,9 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Mixed None and value')
+		self.assertEqual(transaction.description, 'Mixed None and value')
 		self.assertEqual(transaction.amount, 250.0)  # 250.0 + 0
-		self.assertEqual(transaction.date, date(2024, 4, 5))
+		self.assertEqual(transaction.transaction_date, date(2024, 4, 5))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -313,7 +320,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Whitespace Transaction Test')
+		self.assertEqual(transaction.description, 'Whitespace Transaction Test')
 
 	def test_from_fineco_bank_account_xslx_row_with_decimal_amounts(self):
 		"""Test creating BankTransaction from Fineco XLSX row with decimal amounts."""
@@ -326,8 +333,8 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
-		self.assertEqual(transaction.name, 'Decimal Transaction')
+		self.assertEqual(transaction.description, 'Decimal Transaction')
 		self.assertAlmostEqual(transaction.amount, 77.667, places=3)  # 123.456 + (-45.789)
-		self.assertEqual(transaction.date, date(2024, 4, 15))
+		self.assertEqual(transaction.transaction_date, date(2024, 4, 15))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)

@@ -3,6 +3,7 @@ import core.hkm.models  # noqa: F401
 from core.models.bank_account import BankAccount
 from core.models.bank_file_import import BankFileImport
 from core.models.bank_transaction import BankTransaction
+from core.models.bank_transaction_description_hint import BankTransactionDescriptionHint
 from core.models.daily_suggestion import DailySuggestion
 from core.models.document import Document
 from core.models.event import Event
@@ -46,4 +47,5 @@ __all__ = [
 	'Flashcard',
 	'FlashcardReview',
 	'ProjectUpdate',
+	'BankTransactionDescriptionHint',
 ]

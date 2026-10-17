@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.urls import reverse
+from django.utils import timezone
 
 from core.models import BankAccount, BankFileImport, BankTransaction
 from core.tests.base import FileCleanupTestCase
@@ -41,8 +42,8 @@ class PairingViewIntegrationTest(FileCleanupTestCase):
 
 		# Create first transaction (this will be the one shown in pairing view since it's oldest)
 		BankTransaction.objects.create(
-			name='Current Transaction',
-			date=date(2024, 1, 14),  # Earlier date so it's shown first
+			description='Current Transaction',
+			booking_date=date(2024, 1, 14),  # Earlier date so it's shown first
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
@@ -50,11 +51,12 @@ class PairingViewIntegrationTest(FileCleanupTestCase):
 
 		# Create a second transaction (potential duplicate with same date and amount)
 		duplicate_transaction = BankTransaction.objects.create(
-			name='Original Transaction',
-			date=date(2024, 1, 14),  # Same date for duplicate detection
+			description='Original Transaction',
+			booking_date=date(2024, 1, 14),  # Same date for duplicate detection
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		# Get the pairing view
@@ -81,8 +83,8 @@ class PairingViewIntegrationTest(FileCleanupTestCase):
 
 		# Create only one transaction (no duplicate)
 		BankTransaction.objects.create(
-			name='Single Transaction',
-			date=date(2024, 1, 15),
+			description='Single Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,

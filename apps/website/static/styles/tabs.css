@@ -8,34 +8,38 @@
   margin: 0;
   padding: 0;
   display: flex;
+  gap: 1px;
   border-bottom: 1px solid var(--color-border-primary);
 }
 
 .tabs-nav li {
-  padding: 4px 8px;
+  padding: 3px 10px;
   cursor: pointer;
-  border: 1px solid var(--color-border-secondary);
-  border-bottom: 1px solid var(--color-border-primary); /* Tutti i tab hanno bordo sotto */
-  margin-right: 5px;
-  position: relative;
-  margin-bottom: -1px;
+  user-select: none;
+  font-size: 13px;
+  font-weight: bold;
+  background-color: var(--color-background-table-cell);
   color: var(--color-text-muted);
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+}
+
+.tabs-nav li:hover {
+  color: var(--color-text);
 }
 
 .tabs-nav li.active {
-  background-color: var(--color-background-tab-active);
-  border: 1px solid var(--color-tab-active-border);
-  border-bottom: 1px solid var(--color-background-tab-active);
-  color: var(--color-tab-active-text);
-  /*font-weight: 600;*/
+  background-color: var(--color-background-table-header);
+  color: var(--color-table-header-text);
+}
+
+.tabs-nav li.active::before {
+  content: "->";
+  font-family: "Inter V";
+  margin-right: 0.4em;
+  color: var(--color-sidebar-marker);
 }
 
 .tab-content {
   display: none;
-  padding: 0;
-  border-top: none;
   padding-top: 10px;
 }
 
