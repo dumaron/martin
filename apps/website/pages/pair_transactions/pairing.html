@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load pair_transactions %}
 
 {% block content %}
     <div class="fixed-content">
@@ -56,16 +57,18 @@
                             </tr>
                         </thead>
                         <tbody>
-                        {% for suggestion in best_matches %}
+                        {% for ynab_transaction in best_matches %}
+                            {% with amount_diff=ynab_transaction|amount_diff:bank_transaction date_diff=ynab_transaction|date_diff:bank_transaction %}
                             <tr>
                                 <td class="selection shrink"><input type="radio" name="ynab-transaction"
-                                                             value="{{ suggestion.transaction.id }}"/></td>
-                                <td class="amount shrink">{{ suggestion.transaction.amount | floatformat:2 }}€</td>
-                                <td class="amount diff shrink {{ suggestion.amount_diff_level }}">{% if suggestion.amount_diff_level == 'equal' %}=={% else %}{{ suggestion.amount_diff | floatformat:2 }}€{% endif %}</td>
-                                <td class="date shrink">{{ suggestion.transaction.date | date:"Y-m-d" }}</td>
-                                <td class="date-diff diff shrink {{ suggestion.date_diff_level }}">{% if suggestion.date_diff_level == 'equal' %}=={% else %}{{ suggestion.date_diff }}d{% endif %}</td>
-                                <td>{{ suggestion.transaction.memo }}</td>
+                                                             value="{{ ynab_transaction.id }}"/></td>
+                                <td class="amount shrink">{{ ynab_transaction.amount | floatformat:2 }}€</td>
+                                <td class="amount diff shrink {{ amount_diff|amount_diff_level:bank_transaction.amount }}">{% if amount_diff %}{{ amount_diff | floatformat:2 }}€{% else %}=={% endif %}</td>
+                                <td class="date shrink">{{ ynab_transaction.date | date:"Y-m-d" }}</td>
+                                <td class="date-diff diff shrink {{ date_diff|date_diff_level }}">{% if date_diff %}{{ date_diff }}d{% else %}=={% endif %}</td>
+                                <td>{{ ynab_transaction.memo }}</td>
                             </tr>
+                            {% endwith %}
                         {% endfor %}
                         </tbody>
                     </table>

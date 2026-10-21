@@ -62,7 +62,10 @@ TEMPLATES = [
 				'django.template.context_processors.request',
 				'django.contrib.auth.context_processors.auth',
 				'django.contrib.messages.context_processors.messages',
-			]
+			],
+			'libraries': {
+				'pair_transactions': 'apps.website.pages.pair_transactions.pair_transactions',
+			},
 		},
 	}
 ]

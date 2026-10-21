@@ -2,7 +2,7 @@ import re
 from datetime import datetime, timedelta
 from decimal import Decimal
 
-from django import forms
+from django import forms, template
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -15,7 +15,7 @@ from core.mutations import (
 	create_ynab_transaction_from_bank_transaction,
 	pair_bank_transaction_with_ynab_transaction,
 )
-from core.utils.fp import lfilter, lmap
+from core.utils.fp import lmap
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 
@@ -34,11 +34,13 @@ class YnabTransactionCreationForm(forms.Form):
 		self.fields['ynab_category'].queryset = filtered_queryset
 
 
-MATCH_DATE_SCALE_DAYS = 5
-MAX_MATCH_SCORE = 3
 PAIRED_SEARCH_LIMIT = 20
+PAIRING_DATE_WINDOW = timedelta(days=15)
+
+register = template.Library()
 
 
+@register.filter(name='date_diff_level')
 def get_date_diff_level(date_diff):
 	distance = abs(date_diff)
 	if distance == 0:
@@ -54,6 +56,7 @@ def get_amount_tolerance(bank_amount):
 	return max(Decimal(1), abs(bank_amount) * Decimal('0.1'))
 
 
+@register.filter(name='amount_diff_level')
 def get_amount_diff_level(amount_diff, bank_amount):
 	distance = abs(amount_diff)
 	if distance == 0:
@@ -65,6 +68,30 @@ def get_amount_diff_level(amount_diff, bank_amount):
 	return 'red'
 
 
+def get_pairing_amount_window(amount):
+	return min(1, abs(amount * Decimal('0.1')))
+
+
+@register.filter(name='date_diff')
+def get_pairing_date_distance(ynab_transaction, bank_transaction):
+	return abs((bank_transaction.date - ynab_transaction.date).days)
+
+
+@register.filter(name='amount_diff')
+def get_pairing_amount_distance(ynab_transaction, bank_transaction):
+	return abs(bank_transaction.amount - Decimal(str(ynab_transaction.amount)))
+
+
+def sort_by_pairing_distance(bank_transaction, ynab_transactions):
+	return sorted(
+		ynab_transactions,
+		key=lambda ynab_transaction: (
+			get_pairing_date_distance(ynab_transaction, bank_transaction),
+			get_pairing_amount_distance(ynab_transaction, bank_transaction),
+		),
+	)
+
+
 def split_on_matches(text, query):
 	if not query:
 		return [(text, False)]
@@ -73,20 +100,6 @@ def split_on_matches(text, query):
 		lambda indexed_part: (indexed_part[1], indexed_part[0] % 2 == 1),
 		enumerate(re.split(f'({re.escape(query)})', text, flags=re.IGNORECASE)),
 	)
-
-
-def build_pairing_suggestion(bank_transaction, ynab_transaction):
-	amount_diff = abs(bank_transaction.amount - Decimal(str(ynab_transaction.amount)))
-	date_diff = abs((bank_transaction.date - ynab_transaction.date).days)
-	amount_tolerance = get_amount_tolerance(bank_transaction.amount)
-	return {
-		'transaction': ynab_transaction,
-		'amount_diff': amount_diff,
-		'amount_diff_level': get_amount_diff_level(amount_diff, bank_transaction.amount),
-		'date_diff': date_diff,
-		'date_diff_level': get_date_diff_level(date_diff),
-		'score': Decimal(date_diff) / MATCH_DATE_SCALE_DAYS + amount_diff / amount_tolerance,
-	}
 
 
 page = Page(name='pair_transactions_page', base_route='flows/pair-transactions')
@@ -115,26 +128,24 @@ def pair_transactions_page(request, kind):
 	if first_unpaired_bank_transaction is None:
 		return render(request, 'pair_transactions/pairing_empty.html', {})
 
-	max_date_distance = timedelta(days=MAX_MATCH_SCORE * MATCH_DATE_SCALE_DAYS)
+	#
+	amount_window = get_pairing_amount_window(first_unpaired_bank_transaction.amount)
 
 	candidate_ynab_transactions = YnabTransaction.objects.filter(
 		deleted=False,
-		date__lte=first_unpaired_bank_transaction.date + max_date_distance,
-		date__gte=first_unpaired_bank_transaction.date - max_date_distance,
+		date__range=(
+			first_unpaired_bank_transaction.date - PAIRING_DATE_WINDOW,
+			first_unpaired_bank_transaction.date + PAIRING_DATE_WINDOW,
+		),
+		amount__range=(
+			first_unpaired_bank_transaction.amount - amount_window,
+			first_unpaired_bank_transaction.amount + amount_window,
+		),
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
 		budget_id=budget_id,
 	)
 
-	best_matches = sorted(
-		lfilter(
-			lambda suggestion: suggestion['score'] <= MAX_MATCH_SCORE,
-			lmap(
-				lambda transaction: build_pairing_suggestion(first_unpaired_bank_transaction, transaction),
-				candidate_ynab_transactions,
-			),
-		),
-		key=lambda suggestion: (suggestion['score'], suggestion['date_diff']),
-	)
+	best_matches = sort_by_pairing_distance(first_unpaired_bank_transaction, candidate_ynab_transactions)
 
 	potential_duplicate = first_unpaired_bank_transaction.get_potential_duplicate()
 	potential_duplicate_highlighted = None

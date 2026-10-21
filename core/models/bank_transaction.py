@@ -29,7 +29,7 @@ def get_part_of_day(time):
 	return 'Night'
 
 
-# I'm not happy about this approach, but it is a good compromise between creating a "proper" DB structure, which is
+# I'm not happy with this approach, but it is a good compromise between creating a "proper" DB structure, which is
 # overkill and unnecessarily complex for my needs, and hard-coding too much stuff. Here I inserted into code the IDs of
 # the two bank accounts I have on the database. Given that I use a clone of production DB for local development, and
 # that I don't change bank accounts often, I can rely on these values being stable enough.
