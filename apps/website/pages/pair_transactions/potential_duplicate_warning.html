@@ -8,7 +8,7 @@
                 {% if potential_duplicate_highlighted %}
                     {{ potential_duplicate_highlighted|safe }}
                 {% else %}
-                    {{ potential_duplicate.name }}
+                    {{ potential_duplicate.description }}
                 {% endif %}
             </td>
         </tr>
@@ -19,16 +19,6 @@
         <tr>
             <th>Bank</th>
             <td>{{ potential_duplicate.bank_account }}</td>
-        </tr>
-        <tr>
-            <th>Status</th>
-            <td>
-                {% if potential_duplicate.matched_ynab_transaction %}
-                PAIRED
-                {% else %}
-                NOT PAIRED
-                {% endif %}
-            </td>
         </tr>
         {% if potential_duplicate.matched_ynab_transaction %}
         <tr>

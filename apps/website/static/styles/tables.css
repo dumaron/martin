@@ -76,3 +76,29 @@ td.amount {
 	text-align: right;
 	font-family: 'Berkeley Mono', monospace;
 }
+
+td.date, td.date-diff {
+	white-space: nowrap;
+}
+
+td.shrink {
+	width: 1%;
+	white-space: nowrap;
+}
+
+td.diff.equal {
+	background-color: color-mix(in srgb, var(--color-diff-green) 55%, var(--color-background-table-cell));
+	font-variant-ligatures: none;
+}
+
+td.diff.green {
+	background-color: color-mix(in srgb, var(--color-diff-green) 25%, var(--color-background-table-cell));
+}
+
+td.diff.yellow {
+	background-color: color-mix(in srgb, var(--color-diff-yellow) 25%, var(--color-background-table-cell));
+}
+
+td.diff.red {
+	background-color: color-mix(in srgb, var(--color-diff-red) 25%, var(--color-background-table-cell));
+}

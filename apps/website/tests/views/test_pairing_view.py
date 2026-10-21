@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import Client
 from django.urls import reverse
+from django.utils import timezone
 
 from core.models import BankAccount, BankFileImport, BankTransaction
 from core.tests.base import FileCleanupTestCase
@@ -36,16 +37,16 @@ class PairingViewTest(FileCleanupTestCase):
 
 		# Create test transactions
 		self.original_transaction = BankTransaction.objects.create(
-			name='Original Transaction',
-			date=date(2024, 1, 15),
+			description='Original Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
 		)
 
 		self.duplicate_transaction = BankTransaction.objects.create(
-			name='Duplicate Transaction',
-			date=date(2024, 1, 15),
+			description='Duplicate Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
@@ -95,20 +96,21 @@ class PairingViewTest(FileCleanupTestCase):
 
 		# Create a main transaction (will be shown in pairing view)
 		BankTransaction.objects.create(
-			name='Main Transaction',
-			date=date(2024, 1, 15),
+			description='Main Transaction',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
 		)
 
-		# Create a potential duplicate with slightly different name but same date/amount
+		# Create a potential duplicate with slightly different description but same date/amount
 		BankTransaction.objects.create(
-			name='Slightly Different Transaction Name',
-			date=date(2024, 1, 15),
+			description='Slightly Different Transaction Name',
+			booking_date=date(2024, 1, 15),
 			amount=Decimal('100.50'),
 			file_import=self.file_import,
 			bank_account=self.bank_account,
+			paired_on=timezone.now(),
 		)
 
 		self.client.force_login(self.user)

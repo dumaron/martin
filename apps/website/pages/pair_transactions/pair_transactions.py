@@ -1,17 +1,21 @@
+import re
 from datetime import datetime, timedelta
+from decimal import Decimal
 
-from django import forms
+from django import forms, template
 from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django_htmx.http import HttpResponseClientRefresh
 
 from apps.website.pages.page import Page
 from apps.website.utils import highlight_text_differences
-from core.models import BankTransaction, YnabCategory, YnabTransaction
+from core.models import BankTransaction, BankTransactionDescriptionHint, YnabCategory, YnabTransaction
 from core.mutations import (
 	create_ynab_transaction_from_bank_transaction,
 	pair_bank_transaction_with_ynab_transaction,
 )
+from core.utils.fp import lmap
 from settings.base import YNAB_PERSONAL_BUDGET_ID, YNAB_SHARED_BUDGET_ID
 
 
@@ -28,6 +32,74 @@ class YnabTransactionCreationForm(forms.Form):
 		# update the category field now that we have the budget_id available
 		filtered_queryset = YnabCategory.objects.filter(budget_id=budget_id, hidden=False)
 		self.fields['ynab_category'].queryset = filtered_queryset
+
+
+PAIRED_SEARCH_LIMIT = 20
+PAIRING_DATE_WINDOW = timedelta(days=15)
+
+register = template.Library()
+
+
+@register.filter(name='date_diff_level')
+def get_date_diff_level(date_diff):
+	distance = abs(date_diff)
+	if distance == 0:
+		return 'equal'
+	if distance < 5:
+		return 'green'
+	if distance < 10:
+		return 'yellow'
+	return 'red'
+
+
+def get_amount_tolerance(bank_amount):
+	return max(Decimal(1), abs(bank_amount) * Decimal('0.1'))
+
+
+@register.filter(name='amount_diff_level')
+def get_amount_diff_level(amount_diff, bank_amount):
+	distance = abs(amount_diff)
+	if distance == 0:
+		return 'equal'
+	if distance < 1:
+		return 'green'
+	if distance < get_amount_tolerance(bank_amount):
+		return 'yellow'
+	return 'red'
+
+
+def get_pairing_amount_window(amount):
+	return min(1, abs(amount * Decimal('0.1')))
+
+
+@register.filter(name='date_diff')
+def get_pairing_date_distance(ynab_transaction, bank_transaction):
+	return abs((bank_transaction.date - ynab_transaction.date).days)
+
+
+@register.filter(name='amount_diff')
+def get_pairing_amount_distance(ynab_transaction, bank_transaction):
+	return abs(bank_transaction.amount - Decimal(str(ynab_transaction.amount)))
+
+
+def sort_by_pairing_distance(bank_transaction, ynab_transactions):
+	return sorted(
+		ynab_transactions,
+		key=lambda ynab_transaction: (
+			get_pairing_date_distance(ynab_transaction, bank_transaction),
+			get_pairing_amount_distance(ynab_transaction, bank_transaction),
+		),
+	)
+
+
+def split_on_matches(text, query):
+	if not query:
+		return [(text, False)]
+
+	return lmap(
+		lambda indexed_part: (indexed_part[1], indexed_part[0] % 2 == 1),
+		enumerate(re.split(f'({re.escape(query)})', text, flags=re.IGNORECASE)),
+	)
 
 
 page = Page(name='pair_transactions_page', base_route='flows/pair-transactions')
@@ -56,33 +128,31 @@ def pair_transactions_page(request, kind):
 	if first_unpaired_bank_transaction is None:
 		return render(request, 'pair_transactions/pairing_empty.html', {})
 
-	same_amount_ynab_transactions = YnabTransaction.objects.filter(
+	#
+	amount_window = get_pairing_amount_window(first_unpaired_bank_transaction.amount)
+
+	candidate_ynab_transactions = YnabTransaction.objects.filter(
 		deleted=False,
-		amount=first_unpaired_bank_transaction.amount,
+		date__range=(
+			first_unpaired_bank_transaction.date - PAIRING_DATE_WINDOW,
+			first_unpaired_bank_transaction.date + PAIRING_DATE_WINDOW,
+		),
+		amount__range=(
+			first_unpaired_bank_transaction.amount - amount_window,
+			first_unpaired_bank_transaction.amount + amount_window,
+		),
 		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
 		budget_id=budget_id,
 	)
 
-	# Add date difference for each suggestion
-	same_amount_suggestions = [
-		{'transaction': transaction, 'date_diff': (first_unpaired_bank_transaction.date - transaction.date).days}
-		for transaction in same_amount_ynab_transactions
-	]
-
-	similar_date_suggestions = YnabTransaction.objects.filter(
-		deleted=False,
-		date__lte=first_unpaired_bank_transaction.date + timedelta(days=6),
-		date__gte=first_unpaired_bank_transaction.date - timedelta(days=6),
-		cleared=YnabTransaction.ClearedStatuses.UNCLEARED,
-		budget_id=budget_id,
-	).exclude(id__in=list(map(lambda suggestion: suggestion['transaction'].id, same_amount_suggestions)))
+	best_matches = sort_by_pairing_distance(first_unpaired_bank_transaction, candidate_ynab_transactions)
 
 	potential_duplicate = first_unpaired_bank_transaction.get_potential_duplicate()
 	potential_duplicate_highlighted = None
 
 	if potential_duplicate:
 		potential_duplicate_highlighted = highlight_text_differences(
-			first_unpaired_bank_transaction.name, potential_duplicate.name
+			first_unpaired_bank_transaction.description, potential_duplicate.description
 		)
 
 	return render(
@@ -91,8 +161,7 @@ def pair_transactions_page(request, kind):
 		{
 			'kind': kind,
 			'bank_transaction': first_unpaired_bank_transaction,
-			'same_amount_suggestions': same_amount_suggestions,
-			'similar_date_suggestions': similar_date_suggestions,
+			'best_matches': best_matches,
 			'transaction_creation_form': YnabTransactionCreationForm(
 				budget_id=budget_id, initial={'bank_transaction_id': first_unpaired_bank_transaction.id}
 			),
@@ -100,6 +169,37 @@ def pair_transactions_page(request, kind):
 			'potential_duplicate_highlighted': potential_duplicate_highlighted,
 		},
 	)
+
+
+@page.partial('paired-transactions-search')
+def paired_transactions_search(request):
+	query = request.GET.get('paired-query', '').strip()
+	return render(
+		request,
+		'pair_transactions/partial_paired_transactions_search.html',
+		{
+			'query': query,
+			'results': lmap(
+				lambda bank_transaction: {
+					'bank_transaction': bank_transaction,
+					'description_parts': split_on_matches(bank_transaction.description, query),
+				},
+				BankTransaction.search_paired_by_description(query)[:PAIRED_SEARCH_LIMIT],
+			),
+		},
+	)
+
+
+@page.action('save-description-hint')
+def save_description_hint(request):
+	text = request.POST.get('text', '').strip()
+	hint = (request.htmx.prompt or '').strip()
+
+	if not text or not hint:
+		return HttpResponseBadRequest('Both the text and the hint are required')
+
+	BankTransactionDescriptionHint.create_from_text(text, hint)
+	return HttpResponseClientRefresh()
 
 
 @page.action('pair-transactions')

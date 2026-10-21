@@ -1,11 +1,18 @@
 #suggestions {
     margin-top: 48px;
-    min-width: 200px;
-    max-width: 400px;
+    margin-left: 2rem;
     flex-shrink: 0;
 
     > div {
-        min-width: 400px;
+        width: 400px;
+    }
+
+    > div + div {
+        margin-top: 2rem;
+    }
+
+    > div.paired-search {
+        width: 520px;
     }
 
     legend {
@@ -44,11 +51,61 @@
     }
 
     .title {
-        text-transform: uppercase;
-        font-family: "Berkeley Mono", monospace;
+        font-family: 'Public Sans', sans-serif;
         font-weight: 700;
         font-size: 16px;
         margin: 4px;
+    }
+
+    table.description-hints {
+        td {
+            background-color: transparent;
+        }
+
+        td.mono {
+            color: var(--color-hint-match);
+        }
+    }
+
+    .save-hint button {
+        margin: 6px 0 0;
+    }
+
+    ul.paired-search-results {
+        margin: 6px 0 0;
+        padding: 0;
+        list-style: none;
+
+        li {
+            padding: 6px 4px;
+            border-bottom: 1px dotted var(--color-border-secondary);
+        }
+
+        .ynab-line {
+            display: flex;
+            justify-content: space-between;
+            gap: 1em;
+        }
+
+        .ynab-memo {
+            font-weight: 600;
+        }
+
+        .ynab-category {
+            font-size: 12px;
+            color: var(--color-text-muted);
+            white-space: nowrap;
+        }
+
+        .bank-description {
+            font-size: 12px;
+            color: var(--color-text-muted);
+        }
+
+        mark {
+            background-color: var(--color-search-highlight);
+            color: var(--color-search-highlight-text);
+        }
     }
 }
 
