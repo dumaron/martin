@@ -1,5 +1,7 @@
-# Public surface of HKM. Functions are authored in submodules (queries.py, mutations.py) and re-exported
-# here so callers reach them as `hkm.get_all_entities()` rather than `hkm.queries.get_all_entities()`.
+# Public surface of HKM. Functions are authored in submodules (queries.py, mutations.py, hkmq.py) and
+# re-exported here so callers reach them as `hkm.get_all_entities()` rather than
+# `hkm.queries.get_all_entities()`.
+from core.hkm.hkmq import QueryError, run_query
 from core.hkm.mutations import apply_transaction, create_draft_transaction, discard_draft, update_draft
 from core.hkm.queries import (
 	get_all_entities,
@@ -13,6 +15,7 @@ from core.hkm.queries import (
 )
 
 __all__ = [
+	'QueryError',
 	'apply_transaction',
 	'create_draft_transaction',
 	'discard_draft',
@@ -23,6 +26,7 @@ __all__ = [
 	'get_retractable_facts',
 	'get_used_predicates',
 	'review_transaction',
+	'run_query',
 	'search_retractable_facts',
 	'update_draft',
 ]

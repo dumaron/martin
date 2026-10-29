@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>Playground</h1>
+
+	<form method="get" action="{% url 'knowledge_playground_page.main_render' %}">
+		<textarea name="query" rows="8" cols="80" placeholder="$p, first_name, $fn&#10;$p, ?wrote, $b&#10;$b, ?name, $title">{{ query }}</textarea>
+		<div>
+			<button type="submit">Run</button>
+		</div>
+	</form>
+
+	{% if error %}
+		<p class="form-error">{{ error }}</p>
+	{% elif rows %}
+		<table>
+			<thead>
+				<tr>
+					{% for column in columns %}
+						<th>${{ column }}</th>
+					{% endfor %}
+				</tr>
+			</thead>
+			<tbody>
+				{% for row in rows %}
+					<tr>
+						{% for value in row %}
+							<td>{{ value|default_if_none:'' }}</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% elif has_run %}
+		<p>No results.</p>
+	{% endif %}
+</div>
+{% endblock %}
