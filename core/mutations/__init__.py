@@ -1,6 +1,7 @@
 from .create_ynab_transaction_from_bank_transaction import create_ynab_transaction_from_bank_transaction
 from .pair_bank_transaction_with_ynab_transaction import pair_bank_transaction_with_ynab_transaction
 from .review_flashcard import review_flashcard
+from .sync_generated_flashcards import sync_generated_flashcards
 from .sync_ynab_categories import sync_ynab_categories
 from .sync_ynab_transactions import sync_ynab_transactions
 
@@ -8,6 +9,7 @@ __all__ = [
 	'create_ynab_transaction_from_bank_transaction',
 	'pair_bank_transaction_with_ynab_transaction',
 	'review_flashcard',
+	'sync_generated_flashcards',
 	'sync_ynab_categories',
 	'sync_ynab_transactions',
 ]

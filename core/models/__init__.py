@@ -9,6 +9,7 @@ from core.models.document import Document
 from core.models.event import Event
 from core.models.file import File
 from core.models.flashcard import Flashcard
+from core.models.flashcard_generator import FlashcardGenerator
 from core.models.flashcard_review import FlashcardReview
 from core.models.inbox import Inbox
 from core.models.maybe import Maybe
@@ -45,6 +46,7 @@ __all__ = [
 	'File',
 	'Maybe',
 	'Flashcard',
+	'FlashcardGenerator',
 	'FlashcardReview',
 	'ProjectUpdate',
 	'BankTransactionDescriptionHint',

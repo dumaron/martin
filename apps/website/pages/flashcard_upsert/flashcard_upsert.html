@@ -2,47 +2,81 @@
 
 {% block content %}
 <div class="fixed-content">
-	<h1>{% if flashcard %}Edit Flashcard{% else %}Create New Flashcard{% endif %}</h1>
+	<h1>{% if flashcard.generated_at %}Flashcard{% elif flashcard %}Edit Flashcard{% else %}Create New Flashcard{% endif %}</h1>
 
-	<form method="post" action="{% if flashcard %}{% url 'flashcard_upsert_page.actions.save_flashcard' flashcard.id %}{% else %}{% url 'flashcard_upsert_page.actions.save_flashcard' %}{% endif %}">
-		{% csrf_token %}
+	{% if flashcard.generated_at %}
 		<table class="form">
 			<tbody>
 				<tr>
-					<th>{{ form.question.label_tag }}</th>
-					<td>
-						{{ form.question }}
-						{% if form.question.errors %}
-							<div style="color: red;">{{ form.question.errors }}</div>
-						{% endif %}
-					</td>
+					<th>Question</th>
+					<td>{{ flashcard.question|linebreaksbr }}</td>
 				</tr>
 				<tr>
-					<th>{{ form.answer.label_tag }}</th>
-					<td>
-						{{ form.answer }}
-						{% if form.answer.errors %}
-							<div style="color: red;">{{ form.answer.errors }}</div>
-						{% endif %}
-					</td>
+					<th>Answer</th>
+					<td>{{ flashcard.answer|linebreaksbr }}</td>
 				</tr>
 				<tr>
-					<th>{{ form.tags.label_tag }}</th>
+					<th>Generated</th>
 					<td>
-						{{ form.tags }}
-						{% if form.tags.errors %}
-							<div style="color: red;">{{ form.tags.errors }}</div>
+						{{ flashcard.generated_at }}
+						{% if flashcard.generator %}
+							by <a href="{% url 'flashcard_generator_page.main_render' flashcard.generator.id %}">{{ flashcard.generator }}</a>
 						{% endif %}
-						<small style="display: block; margin-top: 5px; color: #666;">
-							Enter tags separated by commas
-						</small>
 					</td>
 				</tr>
+				{% if flashcard.archived_at %}
+					<tr>
+						<th>Archived</th>
+						<td>{{ flashcard.archived_at }}</td>
+					</tr>
+				{% endif %}
 			</tbody>
 		</table>
-		<button type="submit">{% if flashcard %}Save{% else %}Create Flashcard{% endif %}</button>
-		<a href="{% url 'flashcard_list_page.main_render' %}" class="spaced-left">Back to list</a>
-	</form>
+		<p class="form-help">
+			A generated card follows the knowledge base: to change it, change the facts or its generator.
+		</p>
+		<a href="{% url 'flashcard_list_page.main_render' %}">Back to list</a>
+	{% else %}
+		<form method="post" action="{% if flashcard %}{% url 'flashcard_upsert_page.actions.save_flashcard' flashcard.id %}{% else %}{% url 'flashcard_upsert_page.actions.save_flashcard' %}{% endif %}">
+			{% csrf_token %}
+			<table class="form">
+				<tbody>
+					<tr>
+						<th>{{ form.question.label_tag }}</th>
+						<td>
+							{{ form.question }}
+							{% if form.question.errors %}
+								<div style="color: red;">{{ form.question.errors }}</div>
+							{% endif %}
+						</td>
+					</tr>
+					<tr>
+						<th>{{ form.answer.label_tag }}</th>
+						<td>
+							{{ form.answer }}
+							{% if form.answer.errors %}
+								<div style="color: red;">{{ form.answer.errors }}</div>
+							{% endif %}
+						</td>
+					</tr>
+					<tr>
+						<th>{{ form.tags.label_tag }}</th>
+						<td>
+							{{ form.tags }}
+							{% if form.tags.errors %}
+								<div style="color: red;">{{ form.tags.errors }}</div>
+							{% endif %}
+							<small style="display: block; margin-top: 5px; color: #666;">
+								Enter tags separated by commas
+							</small>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+			<button type="submit">{% if flashcard %}Save{% else %}Create Flashcard{% endif %}</button>
+			<a href="{% url 'flashcard_list_page.main_render' %}" class="spaced-left">Back to list</a>
+		</form>
+	{% endif %}
 
 	{% if flashcard %}
 		<h2>Scheduling</h2>
@@ -67,11 +101,13 @@
 			</tbody>
 		</table>
 
-		<form method="post" action="{% url 'flashcard_upsert_page.actions.delete_flashcard' flashcard.id %}"
-			  onsubmit="return confirm('Delete this flashcard and its review history?')">
-			{% csrf_token %}
-			<button type="submit">Delete flashcard</button>
-		</form>
+		{% if not flashcard.generated_at %}
+			<form method="post" action="{% url 'flashcard_upsert_page.actions.delete_flashcard' flashcard.id %}"
+				  onsubmit="return confirm('Delete this flashcard and its review history?')">
+				{% csrf_token %}
+				<button type="submit">Delete flashcard</button>
+			</form>
+		{% endif %}
 	{% endif %}
 </div>
 {% endblock %}

@@ -58,6 +58,7 @@ urlpatterns = [
 	*pages.fact_review.page.get_urls(),
 	*pages.predicate_rule.page.get_urls(),
 	*pages.knowledge_playground.page.get_urls(),
+	*pages.flashcard_generator.page.get_urls(),
 	*pages.flashcard_upsert.page.get_urls(),
 	*pages.flashcard_list.page.get_urls(),
 	*pages.flashcard_review.page.get_urls(),
