@@ -1,4 +1,5 @@
 from django import forms
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.website.pages.page import Page
@@ -36,6 +37,8 @@ def main_render(request, flashcard_id=None):
 @page.action('<int?:flashcard_id>/save')
 def save_flashcard(request, flashcard_id=None):
 	flashcard = _flashcard_or_none(flashcard_id)
+	if flashcard and flashcard.generated_at:
+		return HttpResponseBadRequest('Generated flashcards cannot be edited')
 	form = FlashcardForm(request.POST, instance=flashcard)
 	if form.is_valid():
 		form.save()
@@ -47,5 +50,7 @@ def save_flashcard(request, flashcard_id=None):
 @page.action('<int:flashcard_id>/delete')
 def delete_flashcard(request, flashcard_id):
 	flashcard = get_object_or_404(Flashcard, pk=flashcard_id)
+	if flashcard.generated_at:
+		return HttpResponseBadRequest('Generated flashcards cannot be deleted')
 	flashcard.delete()
 	return redirect('flashcard_list_page.main_render')

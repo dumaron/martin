@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from apps.website.pages.page import Page
 from core import hkm
 from core.hkm.models import Transaction
+from core.mutations import sync_generated_flashcards
 
 page = Page(name='fact_review_page', base_route='knowledge/transactions/<int:transaction_id>')
 
@@ -18,6 +19,7 @@ def main_render(request, transaction_id):
 def apply_draft(request, transaction_id):
 	transaction = get_object_or_404(Transaction, pk=transaction_id)
 	hkm.apply_transaction(transaction)
+	sync_generated_flashcards()
 	return redirect('entity_list_page.main_render')
 
 

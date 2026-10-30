@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="fixed-content">
+	<h1>{% if generator %}Edit generator{% else %}New generator{% endif %}</h1>
+	<p>
+		A generator makes a flashcard for each result of its query, filling the <code>$variables</code> of the
+		query into the templates. Its cards follow the knowledge base: they are created, archived and brought back
+		whenever a generator, a rule or a fact changes.
+	</p>
+
+	<form method="post" action="{% if generator %}{% url 'flashcard_generator_page.actions.save_generator' generator.id %}{% else %}{% url 'flashcard_generator_page.actions.save_generator' %}{% endif %}">
+		{% csrf_token %}
+		<table class="form">
+			<tbody>
+				{% for field in form %}
+					<tr>
+						<th>{{ field.label_tag }}</th>
+						<td>
+							{{ field }}
+							{% if field.errors %}
+								<div class="form-error">{{ field.errors }}</div>
+							{% endif %}
+						</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+		<button type="submit">Save</button>
+		{% if generator %}
+			<a href="{% url 'flashcard_generator_page.main_render' %}" class="spaced-left">New generator</a>
+		{% endif %}
+	</form>
+
+	{% if generator %}
+		<form method="post" action="{% url 'flashcard_generator_page.actions.delete_generator' generator.id %}"
+			  onsubmit="return confirm('Delete this generator? Its cards will be archived.')">
+			{% csrf_token %}
+			<button type="submit">Delete generator</button>
+		</form>
+	{% endif %}
+
+	<h2>Generators</h2>
+	{% if generators %}
+		<table>
+			<thead>
+				<tr><th>Name</th><th>Cards</th></tr>
+			</thead>
+			<tbody>
+				{% for item in generators %}
+					<tr>
+						<td><a href="{% url 'flashcard_generator_page.main_render' item.id %}">{{ item.name }}</a></td>
+						<td>{{ item.card_count }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	{% else %}
+		<p>No generators yet.</p>
+	{% endif %}
+</div>
+{% endblock %}
