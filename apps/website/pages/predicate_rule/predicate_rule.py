@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from apps.website.pages.page import Page
 from core import hkm
 from core.hkm.models import PredicateRule
+from core.mutations import sync_generated_flashcards
 
 
 class PredicateRuleForm(forms.ModelForm):
@@ -52,6 +53,7 @@ def create_rule(request):
 	form = PredicateRuleForm(request.POST, predicates=list(hkm.get_used_predicates()))
 	if form.is_valid():
 		form.save()
+		sync_generated_flashcards()
 		return redirect('predicate_rule_page.main_render')
 	return _render(request, form)
 
@@ -59,4 +61,5 @@ def create_rule(request):
 @page.action('<int:rule_id>/delete')
 def delete_rule(request, rule_id):
 	PredicateRule.objects.filter(id=rule_id).delete()
+	sync_generated_flashcards()
 	return redirect('predicate_rule_page.main_render')

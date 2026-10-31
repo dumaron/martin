@@ -1,10 +1,9 @@
 import re
 from dataclasses import dataclass
-from itertools import chain
 
 from django.db import connection
 
-from core.utils.fp import lfilter, lmap, separate
+from core.utils.fp import concat, lfilter, lmap, pipe, separate, unique
 
 RELATIONS = ('hkm_current_facts', 'hkm_inferred_facts')
 VARIABLE = re.compile(r'\$[A-Za-z_][A-Za-z0-9_]*')
@@ -120,6 +119,18 @@ def order_rows(rows):
 	return attach(core, set().union(*map(Row.variables, core)), optional)
 
 
+def column_names(rows: list[Row]) -> list[str]:
+	return pipe(
+		rows,
+		lmap(Row.terms),
+		concat,
+		lfilter(lambda t: t.is_variable),
+		lmap(lambda t: t.text),
+		unique,
+		list,
+	)
+
+
 def compile_query(rows, relation):
 	if relation not in RELATIONS:
 		raise ValueError(f'Unknown relation: {relation}')
@@ -147,8 +158,7 @@ def compile_query(rows, relation):
 			joins.append(f'{join} {relation} {alias} ON {" AND ".join(conditions)}')
 			join_params += params
 
-	variables = filter(lambda value: value.is_variable, chain.from_iterable(map(Row.terms, rows)))
-	columns = list(dict.fromkeys(map(lambda value: value.text, variables)))
+	columns = column_names(rows)
 	sql = ' '.join(
 		[
 			f'SELECT DISTINCT {", ".join(map(sites.get, columns))}',
@@ -166,3 +176,9 @@ def run_query(query, relation='hkm_inferred_facts'):
 	with connection.cursor() as cursor:
 		cursor.execute(sql, params)
 		return lmap(lambda values: dict(zip(columns, values)), cursor.fetchall())
+
+
+def query_variables(query):
+	rows = parse(query)
+	order_rows(rows)
+	return column_names(rows)

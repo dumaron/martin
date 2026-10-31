@@ -1,12 +1,15 @@
-from toolz import curry, pipe, pluck
+from toolz import concat, curry, pipe, pluck, unique
 from toolz.curried import sorted
 
-# `pipe`, `pluck` and `sorted` are re-exported as-is: toolz's versions already do exactly what we want, and
-# keeping them here means callers get the whole fp toolbox from a single import instead of reaching into toolz.
+# `pipe`, `pluck`, `sorted`, `concat` and `unique` are re-exported as-is: toolz's versions already do exactly
+# what we want, and keeping them here means callers get the whole fp toolbox from a single import instead of
+# reaching into toolz.
 __all__ = [
 	'pipe',
 	'pluck',
 	'sorted',
+	'concat',
+	'unique',
 	'lmap',
 	'lfilter',
 	'separate',

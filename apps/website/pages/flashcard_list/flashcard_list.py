@@ -38,7 +38,7 @@ page = Page(name='flashcard_list_page', base_route='knowledge/flashcards')
 def main_render(request):
 	tag = request.GET.get('tag') or None
 
-	queryset = Flashcard.objects.prefetch_related('tags').order_by('due')
+	queryset = Flashcard.objects.filter(archived_at=None).prefetch_related('tags').order_by('due')
 	if tag:
 		queryset = queryset.filter(tags__name=tag)
 

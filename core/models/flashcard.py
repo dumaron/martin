@@ -18,6 +18,11 @@ class Flashcard(models.Model):
 	answer = models.TextField()
 	tags = TaggableManager(blank=True)
 	created_at = models.DateTimeField(auto_now_add=True)
+	generator = models.ForeignKey(
+		'core.FlashcardGenerator', on_delete=models.SET_NULL, blank=True, null=True, related_name='flashcards'
+	)
+	generated_at = models.DateTimeField(blank=True, null=True)
+	archived_at = models.DateTimeField(blank=True, null=True)
 
 	# FSRS scheduling state, a column-per-field mirror of fsrs.Card.
 	# The defaults reproduce a brand-new fsrs.Card(): Learning state, step 0, no stability/difficulty
@@ -47,7 +52,7 @@ class Flashcard(models.Model):
 		"""
 		now = now or timezone.now()
 		return Flashcard.objects.filter(
-			Q(due__lte=now) | Q(state=Flashcard.State.REVIEW, due__date__lte=now.date())
+			Q(due__lte=now) | Q(state=Flashcard.State.REVIEW, due__date__lte=now.date()), archived_at=None
 		).order_by('due', 'id')
 
 	@staticmethod
@@ -62,7 +67,8 @@ class Flashcard(models.Model):
 		now = now or timezone.now()
 
 		return (
-			Flashcard.objects.annotate(
+			Flashcard.objects.filter(archived_at=None)
+			.annotate(
 				unlock=Case(
 					When(state=Flashcard.State.REVIEW, then=TruncDay('due')),
 					default=F('due'),
