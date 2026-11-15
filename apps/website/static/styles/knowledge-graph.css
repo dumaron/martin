@@ -34,7 +34,7 @@
 }
 
 .knowledge-graph .node.focus ellipse {
-    fill: var(--color-background-highlight);
+    fill: var(--color-graph-focus);
 }
 
 .knowledge-graph .node text {
@@ -43,6 +43,10 @@
 
 .knowledge-graph .node.entity text {
     fill: var(--color-text-link);
+}
+
+.knowledge-graph .node.focus text {
+    fill: var(--color-graph-focus-text);
 }
 
 .knowledge-graph .edge path {
