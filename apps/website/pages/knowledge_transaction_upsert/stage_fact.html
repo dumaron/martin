@@ -4,6 +4,6 @@
     <td>{{ staged_fact.object }}</td>
     <td class="table-actions">
         <input type="hidden" name="facts" value="{{ staged_fact.serialized }}">
-        <button type="button" hx-on:click="this.closest('tr').remove()">Remove</button>
+        <button type="button" hx-on:click="const form = this.form; this.closest('tr').remove(); form.dispatchEvent(new Event('staged-change'))">Remove</button>
     </td>
 </tr>

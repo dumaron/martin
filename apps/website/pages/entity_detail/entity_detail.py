@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from apps.website.components.knowledge_graph import GraphEdge, knowledge_graph
 from apps.website.pages.page import Page
 from core import hkm
 from core.utils.fp import lmap
@@ -29,10 +30,21 @@ def main_render(request, entity):
 		hkm.get_incoming_facts(entity),
 	)
 
+	graph_edges = [
+		*map(
+			lambda fact: GraphEdge(
+				entity, fact['predicate'], fact['object'], fact['object_is_entity'], fact['origin']
+			),
+			outgoing,
+		),
+		*map(lambda fact: GraphEdge(fact['subject'], fact['predicate'], entity, True, fact['origin']), incoming),
+	]
+
 	context = {
 		'entity': entity,
 		'outgoing': outgoing,
 		'incoming': incoming,
 		'has_facts': bool(outgoing or incoming),
+		'knowledge_graph': knowledge_graph(graph_edges, focus=entity),
 	}
 	return render(request, 'entity_detail/entity_detail.html', context)

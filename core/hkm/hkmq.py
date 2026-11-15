@@ -1,9 +1,10 @@
 import re
 from dataclasses import dataclass
+from itertools import product
 
 from django.db import connection
 
-from core.utils.fp import concat, lfilter, lmap, pipe, separate, unique
+from core.utils.fp import concat, lfilter, lmap, lunique, pipe, separate
 
 RELATIONS = ('hkm_current_facts', 'hkm_inferred_facts')
 VARIABLE = re.compile(r'\$[A-Za-z_][A-Za-z0-9_]*')
@@ -89,7 +90,7 @@ def parse_row(line, text):
 	return Row(term(subject), name, term(object_), optional, line)
 
 
-def parse(query):
+def parse(query: str) -> list[Row]:
 	lines = enumerate(query.splitlines(), start=1)
 	return lmap(lambda numbered: parse_row(*numbered), filter(lambda numbered: numbered[1].strip(), lines))
 
@@ -126,8 +127,7 @@ def column_names(rows: list[Row]) -> list[str]:
 		concat,
 		lfilter(lambda t: t.is_variable),
 		lmap(lambda t: t.text),
-		unique,
-		list,
+		lunique,
 	)
 
 
@@ -182,3 +182,32 @@ def query_variables(query):
 	rows = parse(query)
 	order_rows(rows)
 	return column_names(rows)
+
+
+### FILLING QUERY VARIABLES FROM RESULTS ###
+
+type Result = dict[str, str | None]  # variable name (no `$`) -> value, None if an optional row didn't match
+type Fact = tuple[str, str, str]  # (subject, predicate, object)
+
+
+def matched_facts(query: str, results: list[Result]) -> list[Fact]:
+	"""
+	Return the distinct facts behind the given results.
+	Each query row is filled with each result's values; optional rows that didn't match are dropped.
+	"""
+
+	def bound(term: Term, result: Result) -> str | None:
+		return result[term.text] if term.is_variable else term.text
+
+	def bound_fact(pair: tuple[Result, Row]) -> tuple[str | None, str, str | None]:
+		result, row = pair
+		return bound(row.subject, result), row.predicate, bound(row.object, result)
+
+	drop_optionals_missing_matches = lfilter(lambda fact: None not in fact)
+
+	return pipe(
+		product(results, parse(query)),  # Iterator[tuple[Result, Row]]
+		lmap(bound_fact),  # list[tuple[str | None, str, str | None]]
+		drop_optionals_missing_matches,  # list[Fact]
+		lunique,  # list[Fact]
+	)

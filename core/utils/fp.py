@@ -12,6 +12,7 @@ __all__ = [
 	'unique',
 	'lmap',
 	'lfilter',
+	'lunique',
 	'separate',
 	'ternary',
 	'eq',
@@ -83,6 +84,10 @@ def last(array):
 	if array is None:
 		return None
 	return array[-1]
+
+
+def lunique(seq):
+	return list(unique(seq))
 
 
 key = first
