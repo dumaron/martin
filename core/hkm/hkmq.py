@@ -1,5 +1,6 @@
 import re
 from dataclasses import dataclass
+from itertools import product, starmap
 
 from django.db import connection
 
@@ -182,3 +183,15 @@ def query_variables(query):
 	rows = parse(query)
 	order_rows(rows)
 	return column_names(rows)
+
+
+def bound(term, result):
+	return result[term.text] if term.is_variable else term.text
+
+
+def matched_facts(query, results):
+	facts = starmap(
+		lambda result, row: (bound(row.subject, result), row.predicate, bound(row.object, result)),
+		product(results, parse(query)),
+	)
+	return list(unique(filter(lambda fact: None not in fact, facts)))

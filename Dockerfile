@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 
 
 RUN apt-get update \
-    && apt-get install -y sqlite3 curl ffmpeg\
+    && apt-get install -y sqlite3 curl ffmpeg graphviz\
     && rm -rf /var/lib/apt/lists/*
 
 

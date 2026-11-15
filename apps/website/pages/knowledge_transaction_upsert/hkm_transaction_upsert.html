@@ -133,6 +133,12 @@
 			{% endif %}
 		</div>
 	</form>
+
+	<div id="transaction-graph"
+		hx-get="{% url 'knowledge_transaction_upsert_page.partials.transaction_graph' %}"
+		hx-include="#staged-facts, #staged-retractions"
+		hx-trigger="load, htmx:afterSettle from:#transaction-form, staged-change from:#transaction-form">
+	</div>
 </div>
 
 <div>

@@ -1,11 +1,12 @@
 import json
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
 from typing import Self
 
 from django import forms
-from django.http import HttpRequest, HttpResponse
+from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.website.components.knowledge_graph import review_graph
 from apps.website.pages.page import Page
 from core import hkm
 from core.hkm.models import CurrentFact, Fact, Transaction
@@ -168,6 +169,32 @@ def stage_fact_retraction(request: HttpRequest) -> HttpResponse:
 	fact_id = request.GET.get('fact_id')
 	fact = get_object_or_404(Fact, pk=fact_id)
 	return render(request, 'knowledge_transaction_upsert/stage_retraction.html', {'fact': fact})
+
+
+@page.partial('transaction-graph')
+def transaction_graph(request: HttpRequest) -> HttpResponse:
+	try:
+		staged_facts = lmap(StagedFact.from_serialized, request.GET.getlist('facts'))
+	except ValueError:
+		return HttpResponseBadRequest('Invalid staged fact')
+
+	retraction_ids = request.GET.getlist('retractions')
+	if not all(map(str.isdecimal, retraction_ids)):
+		return HttpResponseBadRequest('Invalid staged retraction')
+
+	review = {
+		'additions': hkm.review_additions(lmap(asdict, staged_facts)),
+		'retractions': list(
+			CurrentFact.objects.filter(id__in=retraction_ids)
+			.order_by('subject', 'predicate', 'object')
+			.values('subject', 'predicate', 'object')
+		),
+	}
+	return render(
+		request,
+		'knowledge_transaction_upsert/partial_transaction_graph.html',
+		{'knowledge_graph': review_graph(review)},
+	)
 
 
 @page.action('<int?:transaction_id>/save')

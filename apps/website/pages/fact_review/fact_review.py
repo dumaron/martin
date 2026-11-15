@@ -1,5 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.website.components.knowledge_graph import review_graph
 from apps.website.pages.page import Page
 from core import hkm
 from core.hkm.models import Transaction
@@ -12,7 +13,11 @@ page = Page(name='fact_review_page', base_route='knowledge/transactions/<int:tra
 def main_render(request, transaction_id):
 	transaction = get_object_or_404(Transaction, pk=transaction_id)
 	review = hkm.review_transaction(transaction.id)
-	return render(request, 'fact_review/fact_review.html', {'transaction': transaction, 'review': review})
+	return render(
+		request,
+		'fact_review/fact_review.html',
+		{'transaction': transaction, 'review': review, 'knowledge_graph': review_graph(review)},
+	)
 
 
 @page.action('apply')

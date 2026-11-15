@@ -14,12 +14,14 @@
 	{% if error %}
 		<p class="form-error">{{ error }}</p>
 	{% elif rows %}
+		{% url 'knowledge_playground_page.partials.row_graph' as row_graph_url %}
 		<table>
 			<thead>
 				<tr>
 					{% for column in columns %}
 						<th>${{ column }}</th>
 					{% endfor %}
+					<th></th>
 				</tr>
 			</thead>
 			<tbody>
@@ -28,6 +30,12 @@
 						{% for value in row %}
 							<td>{{ value|default_if_none:'' }}</td>
 						{% endfor %}
+						<td>
+							<a href="{{ row_graph_url }}?query={{ query|urlencode }}&amp;row={{ forloop.counter0 }}"
+								hx-get="{{ row_graph_url }}?query={{ query|urlencode }}&amp;row={{ forloop.counter0 }}"
+								hx-target=".secondary-content"
+								hx-swap="innerHTML">preview</a>
+						</td>
 					</tr>
 				{% endfor %}
 			</tbody>
@@ -36,4 +44,5 @@
 		<p>No results.</p>
 	{% endif %}
 </div>
+<div class="secondary-content"></div>
 {% endblock %}

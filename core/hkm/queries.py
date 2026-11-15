@@ -96,21 +96,14 @@ def get_draft_transactions():
 	)
 
 
-def review_transaction(transaction_id):
-	# Preview the effect a still-draft transaction would have on current knowledge: what it would add and what
-	# it would retract. The draft's own facts/retractions are unapplied, so they are absent from
-	# hkm_current_facts; we read them straight from the base tables and compare against the asserted current
-	# view (deliberately not the inferred graph — a review is judged against what you have asserted).
-	#
-	# Each addition is tagged:
+def review_additions(facts):
+	# Compare facts to add against the asserted current view (deliberately not the inferred graph — a review is
+	# judged against what you have asserted). Each addition is tagged:
 	#   'duplicate' - the exact triple is already current
 	#   'conflict'  - the same (subject, predicate) is current with a different object (see `existing`)
 	#   'new'       - that (subject, predicate) is absent from current knowledge
-	staged = list(
-		Fact.objects.filter(transaction_id=transaction_id).order_by('id').values('subject', 'predicate', 'object')
-	)
 	additions = []
-	for fact in staged:
+	for fact in facts:
 		existing = list(
 			CurrentFact.objects.filter(subject=fact['subject'], predicate=fact['predicate'])
 			.values_list('object', flat=True)
@@ -122,6 +115,16 @@ def review_transaction(transaction_id):
 			additions.append({'fact': fact, 'status': 'conflict', 'existing': existing})
 		else:
 			additions.append({'fact': fact, 'status': 'new', 'existing': []})
+	return additions
+
+
+def review_transaction(transaction_id):
+	# Preview the effect a still-draft transaction would have on current knowledge: what it would add and what
+	# it would retract. The draft's own facts/retractions are unapplied, so they are absent from
+	# hkm_current_facts; we read them straight from the base tables and compare them with review_additions.
+	staged = list(
+		Fact.objects.filter(transaction_id=transaction_id).order_by('id').values('subject', 'predicate', 'object')
+	)
 
 	# Facts this draft would retract, resolved back to their (subject, predicate, object) for display. Read from
 	# Retraction and aliased across the relation, so a row reads like every other triple in here.
@@ -130,4 +133,4 @@ def review_transaction(transaction_id):
 		.order_by('fact__subject', 'fact__predicate', 'fact__object')
 		.values(subject=F('fact__subject'), predicate=F('fact__predicate'), object=F('fact__object'))
 	)
-	return {'additions': additions, 'retractions': retractions}
+	return {'additions': review_additions(staged), 'retractions': retractions}

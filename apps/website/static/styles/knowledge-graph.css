@@ -1,0 +1,68 @@
+.knowledge-graph {
+    margin: 0 0 1.5rem;
+}
+
+.knowledge-graph svg {
+    max-width: 100%;
+    height: auto;
+}
+
+.knowledge-graph .implied {
+    --graph-color: var(--color-badge-implied-text);
+}
+
+.knowledge-graph .status-new {
+    --graph-color: var(--color-text-success);
+}
+
+.knowledge-graph .status-duplicate {
+    --graph-color: var(--color-text-duplicate);
+}
+
+.knowledge-graph .status-conflict {
+    --graph-color: var(--color-text-warning);
+}
+
+.knowledge-graph .status-retract {
+    --graph-color: var(--color-text-danger);
+}
+
+.knowledge-graph .node ellipse,
+.knowledge-graph .node polygon {
+    fill: var(--color-background-box);
+    stroke: var(--graph-color, var(--color-border-primary));
+}
+
+.knowledge-graph .node.focus ellipse {
+    fill: var(--color-background-highlight);
+}
+
+.knowledge-graph .node text {
+    fill: var(--graph-color, var(--color-text));
+}
+
+.knowledge-graph .node.entity text {
+    fill: var(--color-text-link);
+}
+
+.knowledge-graph .edge path {
+    stroke: var(--graph-color, var(--color-border-primary));
+}
+
+.knowledge-graph .edge polygon {
+    fill: var(--graph-color, var(--color-border-primary));
+    stroke: var(--graph-color, var(--color-border-primary));
+}
+
+.knowledge-graph .edge text {
+    fill: var(--graph-color, var(--color-text-muted));
+}
+
+.knowledge-graph .edge.implied path,
+.knowledge-graph .edge.status-retract path {
+    stroke-dasharray: 5 3;
+}
+
+.knowledge-graph .status-retract text {
+    text-decoration: line-through;
+}
