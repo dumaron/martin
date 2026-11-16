@@ -157,7 +157,7 @@ def pair_transactions_page(request, kind):
 
 	return render(
 		request,
-		'pair_transactions/pairing.html',
+		'pair_transactions/pair_transactions.html',
 		{
 			'kind': kind,
 			'bank_transaction': first_unpaired_bank_transaction,
