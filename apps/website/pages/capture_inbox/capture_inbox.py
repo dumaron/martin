@@ -18,7 +18,7 @@ page = Page(name='capture_inbox_page', base_route='pages/create-inbox-item')
 @page.main
 def main_render(request):
 	form = InboxForm()
-	return render(request, 'capture_inbox/inbox_create.html', {'form': form, 'creation_success': False})
+	return render(request, 'capture_inbox/capture_inbox.html', {'form': form, 'creation_success': False})
 
 
 @page.action('create')
@@ -27,5 +27,5 @@ def capture_inbox_item(request):
 	if form.is_valid():
 		form.save()
 		# Redirect to the main render to show the success state
-		return render(request, 'capture_inbox/inbox_create.html', {'form': InboxForm(), 'creation_success': True})
-	return render(request, 'capture_inbox/inbox_create.html', {'form': form, 'creation_success': False})
+		return render(request, 'capture_inbox/capture_inbox.html', {'form': InboxForm(), 'creation_success': True})
+	return render(request, 'capture_inbox/capture_inbox.html', {'form': form, 'creation_success': False})
