@@ -8,7 +8,7 @@ page = Page(name='process_inboxes_page', base_route='flows/process-inboxes')
 
 
 @page.main
-def process_inboxes_page(request):
+def main_render(request):
 	# TODO add description
 	# Get the oldest unprocessed inbox item
 	oldest_inbox = Inbox.objects.filter(processed_at__isnull=True).order_by('created_at').first()
