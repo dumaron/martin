@@ -12,7 +12,7 @@ def main_render(request):
 	"""
 	Shows a list of possible operations to sync local database with YNAB APIs
 	"""
-	return render(request, 'ynab_integration/ynab_synchronizations.html', {})
+	return render(request, 'ynab_integration/ynab_integration.html', {})
 
 
 @page.action('synchronize-categories')
