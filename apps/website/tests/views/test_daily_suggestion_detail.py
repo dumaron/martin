@@ -27,7 +27,7 @@ class DailySuggestionDetailTest(TestCase):
 		description_with_special_chars = 'Task with > and à'
 		Task.objects.create(description=description_with_special_chars, project=self.project, status='pending')
 
-		url = reverse('daily_suggestions_editor_page.main_render', kwargs={'date': date.today().isoformat()})
+		url = reverse('daily_suggestion_detail_page.main_render', kwargs={'date': date.today().isoformat()})
 		response = self.client.get(url)
 
 		self.assertEqual(response.status_code, 200)
