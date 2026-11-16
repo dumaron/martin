@@ -135,7 +135,7 @@ def main_render(request: HttpRequest, transaction_id: int | None = None) -> Http
 		'draft_transactions': [] if transaction else hkm.get_draft_transactions(),
 	}
 
-	return render(request, 'knowledge_transaction_upsert/hkm_transaction_upsert.html', context)
+	return render(request, 'knowledge_transaction_upsert/knowledge_transaction_upsert.html', context)
 
 
 @page.partial('stage-fact')
@@ -263,4 +263,4 @@ def save_hkm_transaction(request: HttpRequest, transaction_id: int | None = None
 		'draft_transactions': (),
 	}
 
-	return render(request, 'knowledge_transaction_upsert/hkm_transaction_upsert.html', context)
+	return render(request, 'knowledge_transaction_upsert/knowledge_transaction_upsert.html', context)
