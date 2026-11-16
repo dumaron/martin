@@ -1,7 +1,8 @@
+import datetime as dt
 from datetime import datetime
 
 from django.db.models import Q
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from fpdf import FPDF
 
@@ -12,21 +13,27 @@ from settings import FONTS_DIR
 page = Page(name='daily_suggestions_editor_page', base_route='pages/daily-suggestions/<str:date>')
 
 
+def parsed_date(date: str) -> dt.date | None:
+	try:
+		return datetime.strptime(date, '%Y-%m-%d').date()
+	except ValueError:
+		return None
+
+
 @page.main
 def main_render(request, date):
-	date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+	date_obj = parsed_date(date)
+	if date_obj is None:
+		return HttpResponseBadRequest('Invalid date')
+
 	today = datetime.now().date()
 	is_in_the_past = date_obj < today
 
+	daily_suggestion = DailySuggestion.objects.filter(date=date_obj).first()
+
 	if is_in_the_past:
-		daily_suggestion = DailySuggestion.objects.get(date=date)
 		active_recurring_suggestions = []
 	else:
-		try:
-			daily_suggestion = DailySuggestion.objects.get(date=date)
-		except DailySuggestion.DoesNotExist:
-			daily_suggestion = None
-
 		active_recurring_suggestions = RecurringSuggestion.get_actives_in_date(date_obj)
 
 	pending_tasks = Task.objects.filter(
@@ -48,8 +55,12 @@ def main_render(request, date):
 
 @page.action('save')
 def save_daily_suggestion(request, date):
+	date_obj = parsed_date(date)
+	if date_obj is None:
+		return HttpResponseBadRequest('Invalid date')
+
 	content = request.POST.get('content')
-	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
+	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date_obj)
 	daily_suggestion.content = content
 	daily_suggestion.save()
 	return redirect('daily_suggestions_editor_page.main_render', date=date)
@@ -57,7 +68,11 @@ def save_daily_suggestion(request, date):
 
 @page.action('pdf', method='GET')
 def daily_suggestion_pdf(request, date):
-	daily_suggestion = get_object_or_404(DailySuggestion, date=date)
+	date_obj = parsed_date(date)
+	if date_obj is None:
+		return HttpResponseBadRequest('Invalid date')
+
+	daily_suggestion = get_object_or_404(DailySuggestion, date=date_obj)
 
 	# Create PDF
 	pdf = FPDF()
