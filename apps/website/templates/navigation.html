@@ -128,7 +128,7 @@
                         </li>
                         <li>
                             <a href="{% url 'flashcard_list_page.main_render' %}"
-                               class="{% active request 'flashcard_list_page.main_render' %}">
+                               class="{% active request 'flashcard_list_page.main_render' match_children=False %}">
                                 All cards
                             </a>
                         </li>

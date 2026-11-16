@@ -73,7 +73,7 @@ For anything beyond a couple of fields, use a Django `Form` and return `HttpResp
 
 ## Components
 
-A piece of UI that more than one page shows does not belong to any of them, so it lives in
+A piece of UI that is shown in more than one pages does not belong to them, so it lives in
 `apps/website/components/<name>/` rather than under `apps/website/pages/`: the Python module and its
 `partial_*.html`. That directory is on the template search path, so a page includes it as
 `{% include "<name>/partial_<name>.html" %}`. The CSS stays in `apps/website/static/styles/` with every
@@ -118,20 +118,11 @@ and renders nothing when the list is missing or empty:
 {% endblock %}
 ```
 
-The partial renders only its own `<nav>`, never the surrounding `.secondary-content`, because that column is
-also an HTMX swap target on some pages (the project tree swaps details into it) and a page may want to stack
-other panels beside the links.
-
-`quick_link` takes the label first, then a URL name and whatever `reverse` needs
-(`quick_link('Back to project', 'project_detail_page.main_render', project.id)`). Reversing happens in the
-view, not the template, so a wrong route name raises `NoReverseMatch` at render time instead of quietly
-producing a dead link.
-
 ## Python style
 
 ### Prefer `list(map(...))` / `list(filter(...))` over list comprehensions
 
-This codebase favours functional-style sequence transformations. Do not use list comprehensions of the form `[expr for x in xs]` or `[x for x in xs if pred]`.
+This codebase favors functional-style sequence transformations. Do not use list comprehensions of the form `[expr for x in xs]` or `[x for x in xs if pred]`.
 
 | Avoid                                              | Prefer                                              |
 |----------------------------------------------------|-----------------------------------------------------|
@@ -143,6 +134,56 @@ This codebase favours functional-style sequence transformations. Do not use list
 Drop the outer `list(...)` when the consumer already accepts any iterable — e.g. `str.join`, `sum`, `any`, `all`, `set`, `tuple`, `bulk_create`. In those cases `', '.join(map(f, xs))` is preferred over `', '.join(list(map(f, xs)))`.
 
 This convention applies to **list** comprehensions only. Dict comprehensions (`{k: v for ...}`) and set comprehensions (`{x for ...}`) remain idiomatic and are unchanged.
+
+### Use `pipe` when multiple transformation occurs over a single variable
+
+On top of what said in the previous chapter about list comprehension, this codebase should also use `pipe` - exported from the
+core `fp` module - when multiple sequential transformation are in place. That does _not_ mean `pipe` and curried function
+should be used anywhere: try to make the call when using it or not makes the end code more readable.
+
+### An example piece of code I'm proud of
+
+```python
+### FILLING QUERY VARIABLES FROM RESULTS ###
+
+type Result = dict[str, str | None]  # variable name (no `$`) -> value, None if an optional row didn't match
+type Fact = tuple[str, str, str]  # (subject, predicate, object)
+
+
+def matched_facts(query: str, results: list[Result]) -> list[Fact]:
+	"""
+	Return the distinct facts behind the given results.
+	Each query row is filled with each result's values; optional rows that didn't match are dropped.
+	"""
+
+	def bound(term: Term, result: Result) -> str | None:
+		return result[term.text] if term.is_variable else term.text
+
+	def bound_fact(pair: tuple[Result, Row]) -> tuple[str | None, str, str | None]:
+		result, row = pair
+		return bound(row.subject, result), row.predicate, bound(row.object, result)
+
+	drop_optionals_missing_matches = lfilter(lambda fact: None not in fact)
+
+	return pipe(
+		product(results, parse(query)),  # Iterator[tuple[Result, Row]]
+		lmap(bound_fact),  #               list[tuple[str | None, str, str | None]]
+		drop_optionals_missing_matches,  # list[Fact]
+		lunique,  #                        list[Fact]
+	)
+
+```
+
+In the piece of code above you can find many interesting elements that, composed together, creates readable code - at least for my eyes. And in this codebase we're maximizing readability for only one user - myself.
+
+- variables and functions are typed
+- function names can be long, if it helps to explain what they do
+- helper functions are welcome, but they should not pollute the main scope if they're used only to make a function more readable
+- main functions should be commented
+- some additional types are welcome if they make function safer and easier to read, but they should be close to the functions that requires them
+- inline function definition thanks to currying is welcome, actually encouraged (look at `drop_optionals_missing_matches`)
+- `pipe` used when it makes sense: in this case it helps me see how we're basically chaining a set of transformations on top of the input
+- the comments for types are optional, but they made it easier for me to grasp the transformations since I'm still confused by Python's data structures
 
 ## PDF reports
 PDF reports are generated via typst. The example report is `apps/website/pages/monthly_report/report_renderer.py`.
