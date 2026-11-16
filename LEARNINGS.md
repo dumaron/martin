@@ -6,6 +6,8 @@ This document captures important lessons learned during development to avoid rep
 
 ## 2025-10-10: Django URL Trailing Slash and POST Redirects
 
+> **Superseded on 2026-11-16.** Routes are now registered by the `Page` abstraction (see `CONVENTIONS.md`), which builds every route **without** a trailing slash, so the advice below to add one no longer applies: do not add trailing slashes. What still holds is to generate URLs with `{% url %}` / `reverse`, so they always match the registered route.
+
 ### Problem
 Form submission with POST method resulted in a 405 (Method Not Allowed) error, even though the view was decorated with `@require_POST`.
 
