@@ -9,7 +9,7 @@ from apps.website.pages.page import Page
 from core.models import DailySuggestion, RecurringSuggestion, Task
 from settings import FONTS_DIR
 
-page = Page(name='daily_suggestions_editor_page', base_route='pages/daily-suggestions/<str:date>')
+page = Page(name='daily_suggestion_detail_page', base_route='pages/daily-suggestions/<str:date>')
 
 
 @page.main
@@ -52,7 +52,7 @@ def save_daily_suggestion(request, date):
 	daily_suggestion, _ = DailySuggestion.objects.get_or_create(date=date)
 	daily_suggestion.content = content
 	daily_suggestion.save()
-	return redirect('daily_suggestions_editor_page.main_render', date=date)
+	return redirect('daily_suggestion_detail_page.main_render', date=date)
 
 
 @page.action('pdf', method='GET')
