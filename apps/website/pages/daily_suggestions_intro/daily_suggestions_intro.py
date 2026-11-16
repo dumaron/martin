@@ -10,7 +10,7 @@ page = Page(name='daily_suggestions_intro_page', base_route='pages/daily-suggest
 
 
 @page.main
-def daily_suggestions_intro_page(request):
+def main_render(request):
 	today = datetime.date.today().strftime('%Y-%m-%d')
 	tomorrow = (datetime.date.today() + datetime.timedelta(days=1)).strftime('%Y-%m-%d')
 	entries = DailySuggestion.objects.order_by('-date').all()
