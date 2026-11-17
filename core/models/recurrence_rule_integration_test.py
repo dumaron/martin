@@ -65,7 +65,7 @@ class RecurrenceRuleGetActiveInDateTest(TestCase):
 		self.assertIn(sunday_rule, result)
 
 	def test_get_active_in_date_does_not_return_day_of_week_sunday(self):
-		"""Test that get_active_in_date returns recurrence rules for Sunday."""
+		"""Test that get_active_in_date does not return a Sunday rule on a Monday."""
 		# Create a Sunday recurrence rule (7 = Sunday)
 		sunday_rule = RecurrenceRule.objects.create(type='day_of_the_week', day=7, suggestion=self.suggestion)
 
