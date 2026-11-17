@@ -9,9 +9,10 @@
 ## Commands
 - Run server: `pipenv run python manage.py runserver`
 - Run all tests: `pipenv run python manage.py test`
-- Run specific test: `pipenv run python manage.py test finances.tests.test_models_import`
-- Run specific test class: `pipenv run python manage.py test finances.tests.test_models_import.TestClassName`
-- Run specific test method: `pipenv run python manage.py test finances.tests.test_models_import.TestClassName.test_method`
+- Run unit tests only: `pipenv run python manage.py test --pattern "*_unit_test.py"`
+- Run specific test file: `pipenv run python manage.py test apps.website.pages.process_inboxes.process_inboxes_integration_test`
+- Run specific test class: `pipenv run python manage.py test apps.website.pages.process_inboxes.process_inboxes_integration_test.ProcessInboxTest`
+- Run specific test method: `pipenv run python manage.py test apps.website.pages.process_inboxes.process_inboxes_integration_test.ProcessInboxTest.test_unknown_inbox`
 - Lint code: `pipenv run ruff check`
 - Format code: `pipenv run ruff format`
 - Make migrations: `pipenv run python manage.py makemigrations`

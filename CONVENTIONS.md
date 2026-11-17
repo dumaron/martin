@@ -20,6 +20,7 @@ Each page lives in its own module under `apps/website/pages/<name>/` with:
 - `<name>.py` — a `page` instance and view functions
 - `<name>.html` — the main template
 - `partial_<what>.html` — any partial template (see [Template partials](#template-partials))
+- `<name>_integration_test.py` / `<name>_unit_test.py` — the tests of the module, when it has any (see [Tests](#tests))
 
 A page module creates a `Page` instance and registers views with decorators:
 
@@ -222,6 +223,102 @@ In the piece of code above you can find many interesting elements that, composed
 - `pipe` used because three transformations are chained: it helps me see how we're basically chaining a set of transformations on top of the input
 - the comments for types are optional, but they made it easier for me to grasp the transformations since I'm still confused by Python's data structures
 
+## Tests
+
+Tests run with Django's test runner, which is Python's `unittest`. The project does not use pytest. The commands to run them are in `AGENTS.md`.
+
+### Where a test lives
+
+A test file sits in the same folder as the module it tests, and is named after it:
+
+1. `<module>_unit_test.py` or `<module>_integration_test.py`, where `<module>` is the tested file name without `.py`: the tests of `pair_transactions.py` are in `pair_transactions_unit_test.py` and `pair_transactions_integration_test.py`
+2. A module can have both files, one of them, or none
+3. Use underscores only. Never write dots (`pair_transactions.unit.test.py`): the runner skips a file whose name is not a valid Python module name, without any warning
+4. Do not create `tests/` folders, and do not name a file `test_<module>.py`: the runner collects only the files matching `*_test.py`, and a test file with any other name does not run
+5. The folder must contain an `__init__.py`, otherwise the runner does not look inside it
+
+### Unit or integration
+
+The suffix says whether the test needs the database, and the base class enforces it:
+
+| File suffix            | Base class                    | Database                                  |
+|------------------------|-------------------------------|-------------------------------------------|
+| `_unit_test.py`        | `django.test.SimpleTestCase`  | Not available: any query fails the test   |
+| `_integration_test.py` | `django.test.TestCase`        | Available, rolled back after every test   |
+
+1. A test that reads or writes a model is an integration test
+2. A test that calls a view is an integration test, even when the view runs no query: every page requires login, and logging in needs the database
+3. Everything else is a unit test: pure functions, template filters, parsers, the helpers in `core/utils/fp.py`
+4. A unit test file never imports `TestCase`, and an integration test file never imports `SimpleTestCase`
+
+### Every test has a title
+
+Every `test_*` method starts with a one-line docstring, and that sentence is the title of the test. The runner prints it under the method name when the test fails, and for every test with `-v 2`.
+
+1. The title is one full sentence that names the situation and the expected outcome: `"""Processing an inbox that does not exist answers 404 and leaves the existing inbox unprocessed."""`
+2. Never write a title that only repeats the method name or says nothing about the outcome (`"""Test process inbox."""`, `"""It works."""`)
+3. The method name is a short handle (`test_unknown_inbox`). It does not need to repeat the title
+4. Test classes are named `<WhatIsTested>Test`, one class per function or view under test
+5. This docstring is required. It is not a comment, so the "never add comments" rule of `AGENTS.md` does not apply to it
+
+### Examples
+
+A unit test, in `apps/website/pages/pair_transactions/pair_transactions_unit_test.py`:
+
+```python
+from django.test import SimpleTestCase
+
+from apps.website.pages.pair_transactions.pair_transactions import split_on_matches
+
+
+class SplitOnMatchesTest(SimpleTestCase):
+	def test_flags_matches(self):
+		"""The text is split around each occurrence of the query, ignoring case, and only the matches are flagged."""
+		self.assertEqual(
+			split_on_matches('Pagamento Coop Milano', 'coop'),
+			[('Pagamento ', False), ('Coop', True), (' Milano', False)],
+		)
+
+	def test_empty_query(self):
+		"""Without a query the whole text comes back as one part that is not a match."""
+		self.assertEqual(split_on_matches('Pagamento Coop Milano', ''), [('Pagamento Coop Milano', False)])
+```
+
+An integration test, in `apps/website/pages/process_inboxes/process_inboxes_integration_test.py`:
+
+```python
+from django.contrib.auth.models import User
+from django.test import TestCase
+from django.urls import reverse
+
+from core.models import Inbox
+
+
+class ProcessInboxTest(TestCase):
+	def setUp(self):
+		self.client.force_login(User.objects.create_user(username='tester'))
+		self.inbox = Inbox.objects.create(content='Call the plumber')
+
+	def test_marks_inbox_as_processed(self):
+		"""Processing an inbox sets its processed date and goes back to the process inboxes page."""
+		response = self.client.post(
+			reverse('process_inboxes_page.actions.process_inbox'), {'inbox_id': self.inbox.id}
+		)
+
+		self.inbox.refresh_from_db()
+		self.assertIsNotNone(self.inbox.processed_at)
+		self.assertRedirects(response, reverse('process_inboxes_page.main_render'))
+
+	def test_unknown_inbox(self):
+		"""Processing an inbox that does not exist answers 404 and leaves the existing inbox unprocessed."""
+		response = self.client.post(reverse('process_inboxes_page.actions.process_inbox'), {'inbox_id': 999})
+
+		self.inbox.refresh_from_db()
+		self.assertEqual(response.status_code, 404)
+		self.assertIsNone(self.inbox.processed_at)
+```
+
+`self.client` is provided by Django's test classes, so a test never builds its own `Client()`. URLs come from `reverse` with the names the `Page` class generates, never from a hand-written path.
 ## PDF reports
 PDF reports are generated via typst. The example report is `apps/website/pages/monthly_report/report_renderer.py`.
 
