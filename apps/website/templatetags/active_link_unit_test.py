@@ -1,12 +1,12 @@
 from unittest.mock import Mock, patch
 
 from django.template import Context, Template
-from django.test import RequestFactory, TestCase
+from django.test import RequestFactory, SimpleTestCase
 
 from apps.website.templatetags.active_link import active
 
 
-class ActiveTemplateTagTest(TestCase):
+class ActiveTemplateTagTest(SimpleTestCase):
 	def setUp(self):
 		self.factory = RequestFactory()
 
@@ -22,7 +22,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, 'active')
 
 	def test_exact_match_with_trailing_slash_normalization(self):
-		"""Test that trailing slashes are properly normalized"""
+		"""A request path without the trailing slash matches a URL that ends with one."""
 		request = self.factory.get('/blog')
 		request.path = '/blog'
 
@@ -88,7 +88,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, 'active')
 
 	def test_match_children_with_custom_css_class(self):
-		"""Test that custom CSS class works with child page matching"""
+		"""A child page of the URL returns the custom CSS class when one is given."""
 		request = self.factory.get('/blog/123/')
 		request.path = '/blog/123/'
 
@@ -99,7 +99,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, 'current')
 
 	def test_url_with_kwargs_exact_match(self):
-		"""Test that URLs with kwargs work for exact matches"""
+		"""A URL reversed with kwargs is active when the request path equals it."""
 		request = self.factory.get('/blog/123/')
 		request.path = '/blog/123/'
 
@@ -110,7 +110,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, 'active')
 
 	def test_url_with_kwargs_child_match(self):
-		"""Test that URLs with kwargs work for child page matching"""
+		"""A URL reversed with kwargs is active on its child pages when match_children=True."""
 		request = self.factory.get('/blog/123/edit/')
 		request.path = '/blog/123/edit/'
 
@@ -143,7 +143,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, '')
 
 	def test_fallback_url_name_matching(self):
-		"""Test fallback URL name matching for compatibility"""
+		"""When reverse() fails, the link is still active if the request path resolves to the same URL name."""
 		request = self.factory.get('/blog/')
 		request.path = '/blog/'
 
@@ -161,7 +161,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, 'active')
 
 	def test_fallback_url_name_matching_with_kwargs_fails(self):
-		"""Test that fallback URL name matching doesn't work with kwargs"""
+		"""When reverse() fails and kwargs are given, the URL name fallback is skipped and an empty string is returned."""
 		request = self.factory.get('/blog/123/')
 		request.path = '/blog/123/'
 
@@ -190,7 +190,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, '')
 
 	def test_root_path_matching(self):
-		"""Test that root path matching works correctly"""
+		"""The root path is active when the URL reverses to the root path."""
 		request = self.factory.get('/')
 		request.path = '/'
 
@@ -201,7 +201,7 @@ class ActiveTemplateTagTest(TestCase):
 		self.assertEqual(result, 'active')
 
 	def test_empty_path_normalization(self):
-		"""Test that empty paths are handled correctly"""
+		"""An empty request path is active when the URL reverses to an empty path."""
 		request = self.factory.get('')
 		request.path = ''
 
@@ -211,12 +211,8 @@ class ActiveTemplateTagTest(TestCase):
 
 		self.assertEqual(result, 'active')
 
-
-class ActiveTemplateTagIntegrationTest(TestCase):
-	"""Integration tests using actual Django template rendering"""
-
 	def test_template_tag_in_template(self):
-		"""Test that the template tag works correctly when used in a template"""
+		"""Rendered in a template, the tag outputs the active class on the page the URL points to."""
 		template = Template('{% load active_link %}{% active request "blog_list" %}')
 		request = RequestFactory().get('/blog/')
 		request.path = '/blog/'
@@ -228,7 +224,7 @@ class ActiveTemplateTagIntegrationTest(TestCase):
 		self.assertEqual(rendered, 'active')
 
 	def test_template_tag_with_all_parameters(self):
-		"""Test template tag with all parameters in template"""
+		"""Rendered in a template with a custom class and kwargs, the tag outputs that class on a child page."""
 		template = Template('{% load active_link %}{% active request "blog_detail" "current-page" True pk=123 %}')
 		request = RequestFactory().get('/blog/123/edit/')
 		request.path = '/blog/123/edit/'
