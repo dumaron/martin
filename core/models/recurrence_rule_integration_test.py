@@ -3,6 +3,7 @@ from datetime import date
 from django.test import TestCase
 
 from core.models import RecurrenceRule, RecurringSuggestion
+from core.utils.fp import lmap
 
 
 class RecurrenceRuleGetActiveInDateTest(TestCase):
@@ -22,10 +23,10 @@ class RecurrenceRuleGetActiveInDateTest(TestCase):
 
 		# Test with all days in a leap year
 		start_date = date(2024, 1, 1)
-		dates_to_test = [
-			start_date + timedelta(days=i)
-			for i in range(366)  # 2024 is a leap year, so it has 366 days
-		]
+		dates_to_test = lmap(
+			lambda day_offset: start_date + timedelta(days=day_offset),
+			range(366),  # 2024 is a leap year, so it has 366 days
+		)
 
 		for test_date in dates_to_test:
 			result = RecurrenceRule.get_active_in_date(test_date)
