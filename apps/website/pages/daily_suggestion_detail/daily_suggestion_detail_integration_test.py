@@ -1,20 +1,22 @@
 from datetime import date
+
 from django.contrib.auth.models import User
-from django.test import TestCase, Client
+from django.test import TestCase
 from django.urls import reverse
-from core.models import RecurringSuggestion, Task, Project, RecurrenceRule
+
+from core.models import Project, RecurrenceRule, RecurringSuggestion, Task
 
 
 class DailySuggestionDetailTest(TestCase):
 	def setUp(self):
 		self.user = User.objects.create_user(username='testuser', password='password')
-		self.client = Client()
 		self.client.force_login(self.user)
 
 		# Project for tasks
 		self.project = Project.objects.create(title='Test Project', status='active')
 
 	def test_special_characters_escaping(self):
+		"""Special characters in recurring suggestions and task descriptions reach the page HTML-escaped."""
 		# Create a recurring suggestion with special characters
 		content_with_special_chars = 'Special chars: > and à'
 		# RecurringSuggestion needs a rule or something? Let's check RecurringSuggestion.get_actives_in_date
