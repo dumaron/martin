@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
@@ -9,7 +9,6 @@ from core.hkm.models import Fact, Retraction, Transaction
 class EntityListPageTest(TestCase):
 	def setUp(self):
 		self.user = User.objects.create_user(username='testuser', password='password')
-		self.client = Client()
 		self.client.force_login(self.user)
 
 		self.tx = Transaction.objects.create(applied_at=timezone.now())
@@ -19,6 +18,7 @@ class EntityListPageTest(TestCase):
 		return self.client.get(url)
 
 	def test_lists_subjects_of_current_facts(self):
+		"""The page lists the subject of a current fact and leaves out the subject of a retracted one."""
 		Fact.objects.create(subject='michelangelo', predicate='born-in', object='florence', transaction=self.tx)
 		retracted = Fact.objects.create(
 			subject='atlantis', predicate='label', object='Atlantis', transaction=self.tx
@@ -33,6 +33,7 @@ class EntityListPageTest(TestCase):
 		self.assertNotIn('atlantis', content)
 
 	def test_shows_empty_state_when_no_facts(self):
+		"""Without any fact the page shows its empty state message."""
 		response = self.get_page()
 
 		self.assertEqual(response.status_code, 200)
