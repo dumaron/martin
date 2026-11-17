@@ -44,7 +44,7 @@ class BankFileImportFinecoHeaderDetectionTest(FileCleanupTestCase):
 		return xlsx_buffer
 
 	def test_find_fineco_header_row_with_no_introduction_rows(self):
-		"""Test _find_fineco_header_row when Data_Operazione is in the first row (no introduction)."""
+		"""With the header in the first row, _find_fineco_header_row reports 0 rows to skip."""
 		# Create XLSX file with 0 introduction rows
 		xlsx_content = self._create_test_xlsx_file(header_rows_before_data=0)
 
@@ -69,7 +69,7 @@ class BankFileImportFinecoHeaderDetectionTest(FileCleanupTestCase):
 		self.assertEqual(rows_to_skip, 0)
 
 	def test_find_fineco_header_row_with_one_introduction_row(self):
-		"""Test _find_fineco_header_row when Data_Operazione is in the second row (1 introduction row)."""
+		"""With one introduction row before the header, _find_fineco_header_row reports 1 row to skip."""
 		# Create XLSX file with 1 introduction row
 		xlsx_content = self._create_test_xlsx_file(header_rows_before_data=1)
 
@@ -93,7 +93,7 @@ class BankFileImportFinecoHeaderDetectionTest(FileCleanupTestCase):
 		self.assertEqual(rows_to_skip, 1)
 
 	def test_find_fineco_header_row_with_nine_introduction_rows(self):
-		"""Test _find_fineco_header_row when Data_Operazione is in the tenth row (9 introduction rows)."""
+		"""With nine introduction rows before the header, _find_fineco_header_row reports 9 rows to skip."""
 		# Create XLSX file with 9 introduction rows
 		xlsx_content = self._create_test_xlsx_file(header_rows_before_data=9)
 
@@ -117,7 +117,7 @@ class BankFileImportFinecoHeaderDetectionTest(FileCleanupTestCase):
 		self.assertEqual(rows_to_skip, 9)
 
 	def test_find_fineco_header_row_integration_with_get_file_rows(self):
-		"""Test that get_file_rows correctly uses the dynamic header detection."""
+		"""get_file_rows skips the introduction rows and returns the 3 data rows, keyed by the header columns."""
 		# Create XLSX file with 9 introduction rows (like the old hardcoded value)
 		xlsx_content = self._create_test_xlsx_file(header_rows_before_data=9)
 
