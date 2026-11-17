@@ -10,6 +10,7 @@ def _apply_facts(triples):
 
 class RunQueryTest(TestCase):
 	def test_required_rows_match_only_where_every_row_does(self):
+		"""An entity is returned only when every required row of the query matches it."""
 		_apply_facts(
 			[
 				('lem', 'first_name', 'Stanisław'),
@@ -26,6 +27,7 @@ class RunQueryTest(TestCase):
 		self.assertEqual(rows, [{'p': 'lem', 'fn': 'Stanisław', 'ln': 'Lem'}])
 
 	def test_optional_row_keeps_the_result_when_the_graph_lacks_it(self):
+		"""An entity that lacks an optional row is still returned, with None for the variable of that row."""
 		_apply_facts(
 			[
 				('lem', 'name', 'Stanisław Lem'),
@@ -48,6 +50,7 @@ class RunQueryTest(TestCase):
 		)
 
 	def test_rows_match_edges_implied_by_predicate_rules(self):
+		"""A row matches a fact that exists only because a predicate rule implies it."""
 		PredicateRule.objects.create(source_predicate='father_of', implied_predicate='child_of', flip=True)
 		_apply_facts(
 			[
@@ -64,6 +67,7 @@ class RunQueryTest(TestCase):
 		self.assertEqual(rows, [{'c': 'stanislaw', 'f': 'samuel', 'father': 'Samuel Lem'}])
 
 	def test_returns_one_row_per_match(self):
+		"""An entity that matches a row several times gives one result per match."""
 		_apply_facts(
 			[
 				('lem', 'wrote', 'solaris'),
@@ -90,6 +94,7 @@ class RunQueryTest(TestCase):
 		)
 
 	def test_returns_nothing_when_no_entity_matches_every_row(self):
+		"""The result is empty when no single entity matches all the required rows."""
 		_apply_facts(
 			[
 				('lem', 'first_name', 'Stanisław'),
