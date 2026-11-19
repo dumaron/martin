@@ -3,6 +3,7 @@ from datetime import date
 from django.test import TestCase
 
 from core.models import RecurrenceRule, RecurringSuggestion
+from core.utils.fp import lmap
 
 
 class RecurrenceRuleGetActiveInDateTest(TestCase):
@@ -22,10 +23,10 @@ class RecurrenceRuleGetActiveInDateTest(TestCase):
 
 		# Test with all days in a leap year
 		start_date = date(2024, 1, 1)
-		dates_to_test = [
-			start_date + timedelta(days=i)
-			for i in range(366)  # 2024 is a leap year, so it has 366 days
-		]
+		dates_to_test = lmap(
+			lambda day_offset: start_date + timedelta(days=day_offset),
+			range(366),  # 2024 is a leap year, so it has 366 days
+		)
 
 		for test_date in dates_to_test:
 			result = RecurrenceRule.get_active_in_date(test_date)
@@ -65,7 +66,7 @@ class RecurrenceRuleGetActiveInDateTest(TestCase):
 		self.assertIn(sunday_rule, result)
 
 	def test_get_active_in_date_does_not_return_day_of_week_sunday(self):
-		"""Test that get_active_in_date returns recurrence rules for Sunday."""
+		"""Test that get_active_in_date does not return a Sunday rule on a Monday."""
 		# Create a Sunday recurrence rule (7 = Sunday)
 		sunday_rule = RecurrenceRule.objects.create(type='day_of_the_week', day=7, suggestion=self.suggestion)
 
