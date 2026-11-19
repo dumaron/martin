@@ -69,7 +69,7 @@ class MemorySelectMemoryForTodayTest(FileCleanupTestCase):
 		self.assertEqual(memory1.last_selected_on, today)
 
 	def test_select_memory_for_today_handles_memories_with_null_last_selected_on(self):
-		"""Test that select_memory_for_today properly handles memories with null last_selected_on."""
+		"""A memory that was never selected can be picked, and its last_selected_on goes from None to today."""
 		today = date.today()
 
 		# Create memories, some with null last_selected_on
