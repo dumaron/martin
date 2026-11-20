@@ -157,7 +157,7 @@ def pair_transactions_page(request, kind):
 
 	return render(
 		request,
-		'pair_transactions/pairing.html',
+		'pair_transactions/pair_transactions.html',
 		{
 			'kind': kind,
 			'bank_transaction': first_unpaired_bank_transaction,
@@ -224,8 +224,11 @@ def snooze_bank_transaction(request):
 	"""
 	Snoozes a bank transaction. Useful for transactions that are actually just money transfers like reloading the debit card
 	"""
-	bank_transaction_id = int(request.POST.get('bank_transaction'))
-	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
+	bank_transaction_id = request.POST.get('bank_transaction_id', '')
+	if not bank_transaction_id.isdecimal():
+		return HttpResponseBadRequest('Invalid bank transaction id')
+
+	bank_transaction = get_object_or_404(BankTransaction, pk=int(bank_transaction_id))
 	redirect_to = request.POST.get('redirect-to')
 	bank_transaction.snoozed_on = datetime.now()
 	bank_transaction.save()
