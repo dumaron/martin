@@ -68,10 +68,10 @@ def update_status(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
 	form = ProjectStatusForm(request.POST)
 
-	if form.is_valid():
-		new_status = form.cleaned_data['status']
-		if new_status:  # Make sure it's not empty
-			project.status = new_status
-			project.save()
+	if not form.is_valid():
+		return HttpResponseBadRequest('Invalid form data')
+
+	project.status = form.cleaned_data['status']
+	project.save()
 
 	return redirect('project_detail_page.main_render', project_id=project.id)
