@@ -1,4 +1,3 @@
-import datetime as dt
 from datetime import datetime
 
 from django.db.models import Q
@@ -13,17 +12,11 @@ from settings import FONTS_DIR
 page = Page(name='daily_suggestions_editor_page', base_route='pages/daily-suggestions/<str:date>')
 
 
-def parsed_date(date: str) -> dt.date | None:
-	try:
-		return datetime.strptime(date, '%Y-%m-%d').date()
-	except ValueError:
-		return None
-
-
 @page.main
 def main_render(request, date):
-	date_obj = parsed_date(date)
-	if date_obj is None:
+	try:
+		date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+	except ValueError:
 		return HttpResponseBadRequest('Invalid date')
 
 	today = datetime.now().date()
@@ -55,8 +48,9 @@ def main_render(request, date):
 
 @page.action('save')
 def save_daily_suggestion(request, date):
-	date_obj = parsed_date(date)
-	if date_obj is None:
+	try:
+		date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+	except ValueError:
 		return HttpResponseBadRequest('Invalid date')
 
 	content = request.POST.get('content')
@@ -68,8 +62,9 @@ def save_daily_suggestion(request, date):
 
 @page.action('pdf', method='GET')
 def daily_suggestion_pdf(request, date):
-	date_obj = parsed_date(date)
-	if date_obj is None:
+	try:
+		date_obj = datetime.strptime(date, '%Y-%m-%d').date()
+	except ValueError:
 		return HttpResponseBadRequest('Invalid date')
 
 	daily_suggestion = get_object_or_404(DailySuggestion, date=date_obj)
