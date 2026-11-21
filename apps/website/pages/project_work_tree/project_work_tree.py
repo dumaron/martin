@@ -30,11 +30,11 @@ def add_orphan_task_form(request):
 def create_orphan_task(request):
 	description = request.POST.get('description', '').strip()
 
-	if description:
-		task = Task.objects.create(description=description, status='pending')
-		return render(request, 'project_work_tree/task_item.html', {'task': task})
+	if not description:
+		return HttpResponseBadRequest('A task needs a description')
 
-	return render(request, 'project_work_tree/add_orphan_task_form.html')
+	task = Task.objects.create(description=description, status='pending')
+	return render(request, 'project_work_tree/task_item.html', {'task': task})
 
 
 @page.partial('<int:project_id>/add-task-form')
@@ -48,11 +48,11 @@ def create_project_task(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
 	description = request.POST.get('description', '').strip()
 
-	if description:
-		task = Task.objects.create(project=project, description=description, status='pending')
-		return render(request, 'project_work_tree/task_item.html', {'task': task})
+	if not description:
+		return HttpResponseBadRequest('A task needs a description')
 
-	return render(request, 'project_work_tree/add_task_form.html', {'project': project})
+	task = Task.objects.create(project=project, description=description, status='pending')
+	return render(request, 'project_work_tree/task_item.html', {'task': task})
 
 
 @page.partial('<int:project_id>/add-subproject-form')
@@ -66,11 +66,11 @@ def create_subproject(request, project_id):
 	parent_project = get_object_or_404(Project, pk=project_id)
 	title = request.POST.get('title', '').strip()
 
-	if title:
-		subproject = Project.objects.create(title=title, parent=parent_project, status='active')
-		return render(request, 'project_work_tree/subproject_item.html', {'subproject': subproject})
+	if not title:
+		return HttpResponseBadRequest('A project needs a title')
 
-	return render(request, 'project_work_tree/add_subproject_form.html', {'project': parent_project})
+	subproject = Project.objects.create(title=title, parent=parent_project, status='active')
+	return render(request, 'project_work_tree/subproject_item.html', {'subproject': subproject})
 
 
 @page.partial('project/<int:project_id>/detail')
@@ -120,10 +120,11 @@ def update_project_status(request, project_id):
 	project = get_object_or_404(Project, pk=project_id)
 	new_status = request.POST.get('status', '').strip()
 
-	valid_statuses = {choice[0] for choice in Project.STATUS_CHOICES}
-	if new_status in valid_statuses:
-		project.status = new_status
-		project.save()
+	if new_status not in dict(Project.STATUS_CHOICES):
+		return HttpResponseBadRequest('Invalid project status')
+
+	project.status = new_status
+	project.save()
 
 	return redirect('project_work_tree_page.main_render')
 
@@ -139,12 +140,15 @@ def update_task_status(request, task_id):
 	task = get_object_or_404(Task, pk=task_id)
 	new_status = request.POST.get('status', '').strip()
 
+	if new_status not in dict(Task.STATUS_CHOICES):
+		return HttpResponseBadRequest('Invalid task status')
+
 	status_handlers = {'completed': lambda t: t.mark_as_completed(), 'aborted': lambda t: t.abort()}
 
 	handler = status_handlers.get(new_status)
 	if handler:
 		handler(task)
-	elif new_status in ('pending', 'active'):
+	else:
 		task.status = new_status
 		task.save()
 
