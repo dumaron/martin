@@ -1,3 +1,4 @@
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.website.pages.page import Page
@@ -38,8 +39,8 @@ def create(request):
 	title = request.POST.get('title', '').strip()
 	notes = request.POST.get('notes', '').strip()
 
-	if title:
-		maybe = Maybe.objects.create(title=title, notes=notes)
-		return render(request, 'maybe_list/maybe_row.html', {'maybe': maybe})
+	if not title:
+		return HttpResponseBadRequest('A maybe needs a title')
 
-	return render(request, 'maybe_list/maybe_add_form.html')
+	maybe = Maybe.objects.create(title=title, notes=notes)
+	return render(request, 'maybe_list/maybe_row.html', {'maybe': maybe})

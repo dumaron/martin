@@ -1,3 +1,4 @@
+from django.http import HttpResponseBadRequest
 from django.shortcuts import redirect, render
 
 from apps.website.pages.page import Page
@@ -31,7 +32,11 @@ def sync(request):
 	Synchronizes local transactions with the ones in YNAB, taking the latter as a source of truth. Can work both in
 	partial mode or "full" mode.
 	"""
-	partial_mode = request.POST['ynab-sync'] == 'partial-sync'
+	sync_mode = request.POST.get('ynab-sync')
+	if sync_mode not in ('partial-sync', 'total-sync'):
+		return HttpResponseBadRequest('Invalid YNAB sync mode')
+
+	partial_mode = sync_mode == 'partial-sync'
 
 	# Each sync call synchronizes both personal and shared transactions
 	sync_ynab_transactions(YNAB_SHARED_BUDGET_ID, partial_mode)

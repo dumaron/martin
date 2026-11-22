@@ -1,5 +1,5 @@
 from django import forms
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 from apps.website.pages.page import Page
 from core import hkm
@@ -60,6 +60,6 @@ def create_rule(request):
 
 @page.action('<int:rule_id>/delete')
 def delete_rule(request, rule_id):
-	PredicateRule.objects.filter(id=rule_id).delete()
+	get_object_or_404(PredicateRule, pk=rule_id).delete()
 	sync_generated_flashcards()
 	return redirect('predicate_rule_page.main_render')

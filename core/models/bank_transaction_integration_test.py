@@ -208,7 +208,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			)
 
 	def test_from_fineco_bank_account_xslx_row_with_income_only(self):
-		"""Test creating BankTransaction from Fineco XLSX row with income only."""
+		"""A row with only an income becomes a transaction with that amount, the trimmed description and the Fineco account."""
 		row = {
 			'Descrizione_Completa': '  Test Income Transaction  ',
 			'Entrate': 150.75,
@@ -225,7 +225,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
 	def test_from_fineco_bank_account_xslx_row_with_expense_only(self):
-		"""Test creating BankTransaction from Fineco XLSX row with expense only."""
+		"""A row with only an expense becomes a transaction with that negative amount."""
 		row = {
 			'Descrizione_Completa': 'Test Expense Transaction',
 			'Entrate': 0,
@@ -242,7 +242,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
 	def test_from_fineco_bank_account_xslx_row_with_both_values(self):
-		"""Test creating BankTransaction from Fineco XLSX row with both income and expense values."""
+		"""A row with both an income and an expense gets their sum as amount."""
 		row = {
 			'Descrizione_Completa': 'Transaction with both values',
 			'Entrate': 100.0,
@@ -259,7 +259,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_with_zero_values(self):
-		"""Test creating BankTransaction from Fineco XLSX row with zero values."""
+		"""A row with zero income and zero expense gets a zero amount."""
 		row = {
 			'Descrizione_Completa': 'Zero amount transaction',
 			'Entrate': 0,
@@ -276,7 +276,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_with_none_values(self):
-		"""Test creating BankTransaction from Fineco XLSX row with None values (empty cells)."""
+		"""A row with empty income and expense cells gets a zero amount."""
 		row = {
 			'Descrizione_Completa': 'Transaction with None values',
 			'Entrate': None,
@@ -293,7 +293,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_with_mixed_none_and_value(self):
-		"""Test creating BankTransaction from Fineco XLSX row with mixed None and numeric values."""
+		"""A row with an income and an empty expense cell gets the income as amount."""
 		row = {
 			'Descrizione_Completa': 'Mixed None and value',
 			'Entrate': 250.0,
@@ -310,7 +310,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.bank_account_id, 2)
 
 	def test_from_fineco_bank_account_xslx_row_strips_whitespace_from_description(self):
-		"""Test that description whitespace is properly cleaned."""
+		"""Leading, trailing and repeated whitespace in the description is reduced to single spaces."""
 		row = {
 			'Descrizione_Completa': '   \t  Whitespace    Transaction  \n\t Test  ',
 			'Entrate': 100.0,
@@ -323,7 +323,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 		self.assertEqual(transaction.description, 'Whitespace Transaction Test')
 
 	def test_from_fineco_bank_account_xslx_row_with_decimal_amounts(self):
-		"""Test creating BankTransaction from Fineco XLSX row with decimal amounts."""
+		"""A row with decimal income and expense gets their sum as amount, to three decimal places."""
 		row = {
 			'Descrizione_Completa': 'Decimal Transaction',
 			'Entrate': 123.456,
