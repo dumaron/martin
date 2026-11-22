@@ -1,3 +1,4 @@
+from django.http import HttpResponseBadRequest
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -21,8 +22,11 @@ def process_inboxes_page(request):
 def process_inbox(request):
 	# TODO write description for process_inbox_item action
 
-	inbox_id = int(request.POST.get('inbox_id'))
-	inbox = get_object_or_404(Inbox, pk=inbox_id)
+	inbox_id = request.POST.get('inbox_id', '')
+	if not inbox_id.isdecimal():
+		return HttpResponseBadRequest('Invalid inbox id')
+
+	inbox = get_object_or_404(Inbox, pk=int(inbox_id))
 	inbox.processed_at = timezone.now()
 	inbox.save()
 

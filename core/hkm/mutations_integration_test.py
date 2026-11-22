@@ -16,6 +16,7 @@ def _staged_retraction_ids(transaction):
 
 class CreateDraftTest(TestCase):
 	def test_creates_an_unapplied_transaction_with_facts_and_retractions(self):
+		"""Creating a draft stores an unapplied transaction with its description, staged facts and staged retractions."""
 		applied = Transaction.objects.create(applied_at=timezone.now())
 		current = Fact.objects.create(
 			subject='rome', predicate='is-capital-of', object='france', transaction=applied
@@ -33,6 +34,7 @@ class CreateDraftTest(TestCase):
 
 class ApplyTransactionTest(TestCase):
 	def test_stamps_applied_at(self):
+		"""Applying a draft sets its applied date."""
 		draft = hkm.create_draft_transaction([('hannibal', 'crossed', 'alps')])
 
 		hkm.apply_transaction(draft)
@@ -41,6 +43,7 @@ class ApplyTransactionTest(TestCase):
 		self.assertIsNotNone(draft.applied_at)
 
 	def test_reapplying_keeps_the_original_timestamp(self):
+		"""Applying a transaction that is already applied keeps its first applied date."""
 		draft = hkm.create_draft_transaction([('hannibal', 'crossed', 'alps')])
 		hkm.apply_transaction(draft)
 		first_applied_at = draft.applied_at
@@ -53,6 +56,7 @@ class ApplyTransactionTest(TestCase):
 
 class DiscardDraftTest(TestCase):
 	def test_deletes_the_draft_and_its_staged_facts_and_retractions(self):
+		"""Discarding a draft deletes it with its staged facts and retractions, and leaves the current facts alone."""
 		applied = Transaction.objects.create(applied_at=timezone.now())
 		current = Fact.objects.create(
 			subject='rome', predicate='is-capital-of', object='france', transaction=applied
@@ -66,6 +70,7 @@ class DiscardDraftTest(TestCase):
 		self.assertFalse(Retraction.objects.exists())
 
 	def test_refuses_to_discard_an_applied_transaction(self):
+		"""Discarding an applied transaction raises ValueError."""
 		draft = hkm.create_draft_transaction([('hannibal', 'crossed', 'alps')])
 		hkm.apply_transaction(draft)
 
@@ -81,6 +86,7 @@ class UpdateDraftTest(TestCase):
 		)
 
 	def test_replaces_staged_facts_and_description(self):
+		"""Updating a draft replaces its staged facts and its description, and the draft stays unapplied."""
 		draft = hkm.create_draft_transaction([('michelangelo', 'born-in', 'florencee')], description='old note')
 
 		hkm.update_draft(draft, [('michelangelo', 'born-in', 'florence')], description='fixed note')
@@ -91,6 +97,7 @@ class UpdateDraftTest(TestCase):
 		self.assertIsNone(draft.applied_at)
 
 	def test_keeps_the_same_transaction(self):
+		"""Updating a draft returns the same transaction and creates no new one."""
 		draft = hkm.create_draft_transaction([('michelangelo', 'born-in', 'florencee')])
 
 		updated = hkm.update_draft(draft, [('michelangelo', 'born-in', 'florence')])
@@ -100,6 +107,7 @@ class UpdateDraftTest(TestCase):
 		self.assertEqual(Transaction.objects.count(), 2)
 
 	def test_can_keep_a_retraction_staged_on_the_same_fact(self):
+		"""Updating a draft can stage again the retraction it already had on the same fact."""
 		# Re-staging the same retraction must not collide with the OneToOne row left by the previous version.
 		draft = hkm.create_draft_transaction([], retractions=[self.current.id])
 
@@ -108,6 +116,7 @@ class UpdateDraftTest(TestCase):
 		self.assertEqual(_staged_retraction_ids(draft), [self.current.id])
 
 	def test_can_drop_a_staged_retraction(self):
+		"""Updating a draft without a retraction it had staged removes that retraction."""
 		draft = hkm.create_draft_transaction([('rome', 'is-capital-of', 'italy')], retractions=[self.current.id])
 
 		hkm.update_draft(draft, [('rome', 'is-capital-of', 'italy')], retractions=[])
@@ -115,6 +124,7 @@ class UpdateDraftTest(TestCase):
 		self.assertFalse(draft.retractions.exists())
 
 	def test_refuses_to_update_an_applied_transaction(self):
+		"""Updating an applied transaction raises ValueError and leaves its facts as they were."""
 		draft = hkm.create_draft_transaction([('hannibal', 'crossed', 'alps')])
 		hkm.apply_transaction(draft)
 
