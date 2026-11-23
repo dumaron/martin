@@ -38,11 +38,7 @@ class SyncGeneratedFlashcardsTest(TestCase):
 		)
 
 	def test_creates_a_card_for_each_result_with_a_value_for_every_template_variable(self):
-		"""
-		Lem wrote Solaris, so his row fills both templates and becomes a card, linked to its generator and
-		stamped with the sync time. Calvino wrote nothing: his $b is empty, and a card with a hole in it is
-		not made.
-		"""
+		"""A result that fills both templates becomes a card, linked to its generator and stamped with the sync time, while a result with an empty variable makes no card."""
 		now = timezone.now()
 
 		sync_generated_flashcards(now=now)
@@ -53,10 +49,7 @@ class SyncGeneratedFlashcardsTest(TestCase):
 		self.assertEqual(card.generated_at, now)
 
 	def test_skips_cards_already_present(self):
-		"""
-		A card with the same question and answer already exists, made by hand, so no generated copy is added,
-		not even when the sync runs a second time.
-		"""
+		"""A card with the same question and answer already exists, made by hand, so no generated copy is added, not even when the sync runs a second time."""
 		Flashcard.objects.create(question='Who wrote Solaris?', answer='Stanisław Lem')
 
 		sync_generated_flashcards()
@@ -65,10 +58,7 @@ class SyncGeneratedFlashcardsTest(TestCase):
 		self.assertIsNone(Flashcard.objects.get().generated_at)
 
 	def test_archives_cards_no_generator_produces_any_more(self):
-		"""
-		Once the fact behind a card is retracted, no generator produces the card any more, so the next sync
-		archives it instead of deleting it.
-		"""
+		"""Once the fact behind a card is retracted, no generator produces the card any more, so the next sync archives it instead of deleting it."""
 		sync_generated_flashcards()
 		_retract('lem', 'wrote', 'Solaris')
 
@@ -78,10 +68,7 @@ class SyncGeneratedFlashcardsTest(TestCase):
 		self.assertIsNotNone(Flashcard.objects.get().archived_at)
 
 	def test_brings_back_an_archived_card_produced_again(self):
-		"""
-		A fact retracted and then asserted again brings back the very card it had, with its review history,
-		instead of creating a new one.
-		"""
+		"""A fact retracted and then asserted again brings back the very card it had, with its review history, instead of creating a new one."""
 		sync_generated_flashcards()
 		card = Flashcard.objects.get()
 		_retract('lem', 'wrote', 'Solaris')
@@ -95,9 +82,7 @@ class SyncGeneratedFlashcardsTest(TestCase):
 		self.assertEqual(Flashcard.objects.count(), 1)
 
 	def test_never_archives_cards_made_by_hand(self):
-		"""
-		A card made by hand is never archived, even though no generator produces it.
-		"""
+		"""A card made by hand is never archived, even though no generator produces it."""
 		Flashcard.objects.create(question='Who wrote Ficciones?', answer='Jorge Luis Borges')
 
 		sync_generated_flashcards()

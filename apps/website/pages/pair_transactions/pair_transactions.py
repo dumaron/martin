@@ -36,6 +36,7 @@ class YnabTransactionCreationForm(forms.Form):
 
 PAIRED_SEARCH_LIMIT = 20
 PAIRING_DATE_WINDOW = timedelta(days=15)
+PAIRING_KINDS = ('personal', 'shared')
 
 register = template.Library()
 
@@ -113,6 +114,9 @@ def pair_transactions_page(request, kind):
 	some suggestions for pair-able YNAB transactions.
 	"""
 
+	if kind not in PAIRING_KINDS:
+		return HttpResponseBadRequest('Invalid pairing kind')
+
 	personal = kind == 'personal'
 	budget_id = YNAB_PERSONAL_BUDGET_ID if personal else YNAB_SHARED_BUDGET_ID
 
@@ -157,7 +161,7 @@ def pair_transactions_page(request, kind):
 
 	return render(
 		request,
-		'pair_transactions/pairing.html',
+		'pair_transactions/pair_transactions.html',
 		{
 			'kind': kind,
 			'bank_transaction': first_unpaired_bank_transaction,
@@ -224,8 +228,11 @@ def snooze_bank_transaction(request):
 	"""
 	Snoozes a bank transaction. Useful for transactions that are actually just money transfers like reloading the debit card
 	"""
-	bank_transaction_id = int(request.POST.get('bank_transaction'))
-	bank_transaction = get_object_or_404(BankTransaction, pk=bank_transaction_id)
+	bank_transaction_id = request.POST.get('bank_transaction_id', '')
+	if not bank_transaction_id.isdecimal():
+		return HttpResponseBadRequest('Invalid bank transaction id')
+
+	bank_transaction = get_object_or_404(BankTransaction, pk=int(bank_transaction_id))
 	redirect_to = request.POST.get('redirect-to')
 	bank_transaction.snoozed_on = datetime.now()
 	bank_transaction.save()
@@ -239,8 +246,13 @@ def link_duplicate_bank_transactions(request):
 	The transaction ID from the URL becomes a duplicate of the transaction from the query parameter.
 	"""
 
-	duplicate_transaction_id = int(request.POST.get('bank_transaction_id'))
-	target_bank_transaction_id = int(request.POST.get('target_bank_transaction_id'))
+	raw_duplicate_transaction_id = request.POST.get('bank_transaction_id', '')
+	raw_target_bank_transaction_id = request.POST.get('target_bank_transaction_id', '')
+	if not raw_duplicate_transaction_id.isdecimal() or not raw_target_bank_transaction_id.isdecimal():
+		return HttpResponseBadRequest('Invalid bank transaction id')
+
+	duplicate_transaction_id = int(raw_duplicate_transaction_id)
+	target_bank_transaction_id = int(raw_target_bank_transaction_id)
 
 	# Get both transactions
 	duplicate_transaction = get_object_or_404(BankTransaction, pk=duplicate_transaction_id)
@@ -282,7 +294,11 @@ def create_ynab_transaction(request):
 	Returns redirect to pairing view on success, or None if form validation fails.
 	"""
 
-	personal = request.POST.get('kind') == 'personal'
+	kind = request.POST.get('kind')
+	if kind not in PAIRING_KINDS:
+		return HttpResponseBadRequest('Invalid pairing kind')
+
+	personal = kind == 'personal'
 	budget_id = YNAB_PERSONAL_BUDGET_ID if personal else YNAB_SHARED_BUDGET_ID
 	form = YnabTransactionCreationForm(request.POST, budget_id=budget_id)
 	redirect_to = request.POST.get('redirect-to')
