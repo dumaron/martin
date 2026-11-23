@@ -1,13 +1,11 @@
-from django.test import TestCase
+from django.test import SimpleTestCase
 
 from apps.website.utils import highlight_text_differences
 
 
-class TextDiffUtilsTest(TestCase):
-	"""Test the text diff highlighting utility functions."""
-
+class HighlightTextDifferencesTest(SimpleTestCase):
 	def test_highlight_text_differences_identical_texts(self):
-		"""Test highlighting when texts are identical."""
+		"""Identical texts come back unchanged, with no highlighting."""
 		original = 'Same text'
 		modified = 'Same text'
 		result = highlight_text_differences(original, modified)
@@ -15,7 +13,7 @@ class TextDiffUtilsTest(TestCase):
 		self.assertNotIn('<span', result)
 
 	def test_highlight_text_differences_completely_different(self):
-		"""Test highlighting when texts are completely different."""
+		"""Completely different texts come back with highlighting."""
 		original = 'Original'
 		modified = 'Modified'
 		result = highlight_text_differences(original, modified)
@@ -24,7 +22,7 @@ class TextDiffUtilsTest(TestCase):
 		self.assertIn('Modified'[0], result)  # Check that first char of modified is somewhere
 
 	def test_highlight_text_differences_partial_changes(self):
-		"""Test highlighting when texts have partial differences."""
+		"""A partial change keeps the unchanged part as plain text and highlights the changed part."""
 		original = 'Original Transaction'
 		modified = 'Original Payment'
 		result = highlight_text_differences(original, modified)
@@ -35,7 +33,7 @@ class TextDiffUtilsTest(TestCase):
 		# Don't check for exact "Payment" since difflib might break it up character by character
 
 	def test_highlight_text_differences_insertions(self):
-		"""Test highlighting when modified text has insertions."""
+		"""Text added at the end of the modified version comes back highlighted, after the unchanged part."""
 		original = 'Short'
 		modified = 'Short text'
 		result = highlight_text_differences(original, modified)
@@ -44,7 +42,7 @@ class TextDiffUtilsTest(TestCase):
 		self.assertIn('<span style="background-color: #ffcccc; color: #cc0000;"> text</span>', result)
 
 	def test_highlight_text_differences_deletions(self):
-		"""Test highlighting when modified text has deletions."""
+		"""Text removed from the modified version leaves the unchanged part in the result."""
 		original = 'Long text'
 		modified = 'Long'
 		result = highlight_text_differences(original, modified)
@@ -52,13 +50,13 @@ class TextDiffUtilsTest(TestCase):
 		self.assertIn('Long', result)  # Unchanged part
 
 	def test_highlight_text_differences_empty_strings(self):
-		"""Test highlighting with empty strings."""
+		"""An empty modified text gives an empty result, and an empty original gives the modified text as is."""
 		self.assertEqual(highlight_text_differences('', ''), '')
 		self.assertEqual(highlight_text_differences('text', ''), '')
 		self.assertEqual(highlight_text_differences('', 'text'), 'text')
 
 	def test_highlight_text_differences_html_escaping(self):
-		"""Test that HTML characters are properly escaped."""
+		"""HTML in the modified text comes back escaped, inside the highlighting."""
 		original = 'Normal text'
 		modified = 'Text with <script>alert("xss")</script>'
 		result = highlight_text_differences(original, modified)
