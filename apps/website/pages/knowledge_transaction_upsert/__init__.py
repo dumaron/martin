@@ -1,1 +1,1 @@
-from .hkm_transaction_upsert import *
+from .knowledge_transaction_upsert import *
