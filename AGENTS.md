@@ -23,6 +23,7 @@
 
 ## General
 - Remember to add generated files to the current git commit
+- Run `git add` on every file you create (code, tests, templates, migrations) as soon as it is created, even when you are not asked to commit: an untracked file is easy to miss in review and to leave out of a commit
 
 ## Task playbooks
 Self-contained instructions for one job each, in the [Agent Skills](https://agentskills.io) format. Read the matching one *before* starting that kind of task:
