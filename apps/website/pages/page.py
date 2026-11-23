@@ -68,12 +68,12 @@ class Page:
 
 		@page.partial('add-form')
 		def add_form(request):
-			return render(request, 'maybe_list/maybe_add_form.html')
+			return render(request, 'maybe_list/partial_maybe_add_form.html')
 
 	In urls.py:
 
 		urlpatterns = [
-			*pages.maybe_list_page.page.get_urls(),
+			*pages.maybe_list.page.get_urls(),
 		]
 
 	URL names follow the convention:

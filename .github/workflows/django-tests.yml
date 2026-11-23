@@ -24,6 +24,10 @@ jobs:
         pip install pipenv
         pipenv install --dev --python 3.12
     
+    - name: Check conventions
+      run: |
+        pipenv run python scripts/check_conventions.py
+    
     - name: Run Django tests
       run: |
         DJANGO_SETTINGS_MODULE=settings.test pipenv run python manage.py test

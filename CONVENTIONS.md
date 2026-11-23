@@ -9,7 +9,7 @@ More precisely:
 1. All the business logic is in the `core` folder
 2. All the presentation logic is in the `apps` folder
 3. The website is in the `apps/website` folder
-4. The code relative to the Telegram bot is in the `apps/telegram` folder
+4. The code relative to the Telegram bot is in the `apps/telegram_bot` folder
 
 ## Page abstraction for views
 
@@ -18,7 +18,8 @@ Instead of standard Django views + `urlpatterns`, this project uses a `Page` cla
 Each page lives in its own module under `apps/website/pages/<name>/` with:
 - `__init__.py` — re-exports from the module
 - `<name>.py` — a `page` instance and view functions
-- `<name>.html` — the main template (plus any partial templates)
+- `<name>.html` — the main template
+- `partial_<what>.html` — any partial template (see [Template partials](#template-partials))
 
 A page module creates a `Page` instance and registers views with decorators:
 
@@ -35,7 +36,7 @@ def create(request):
 
 @page.partial('add-form')
 def add_form(request):
-    return render(request, 'task_list/add_form.html')
+    return render(request, 'task_list/partial_add_form.html')
 ```
 
 The `Page` class automatically applies `@login_required` and the correct HTTP method decorator (`@require_GET` / `@require_POST`) to all registered views. In `urls.py`, pages are registered by spreading `get_urls()`:
@@ -47,13 +48,22 @@ urlpatterns = [
 ```
 
 Key conventions:
-1. Page names end with `_page` (e.g. `task_list_page`)
+1. The page name is the folder name plus `_page`: the page in `pages/task_list/` is `Page(name='task_list_page', ...)`
 2. `@page.main` registers the main GET render, URL name: `{name}.main_render`
 3. `@page.action(sub_route)` registers a POST handler, URL name: `{name}.actions.{fn_name}`
 4. `@page.partial(sub_route)` registers a GET HTMX partial, URL name: `{name}.partials.{fn_name}`
 5. Actions can override the HTTP method with `@page.action('pdf', method='GET')`
 6. Routes can be fully overridden with the `route=` kwarg: `@page.action(route='models/project/do-thing')`
 7. There are no views that accept both POST and GET
+
+### Template partials
+
+A partial is a template that renders a fragment instead of a whole page: it is pulled in with `{% include %}`, or returned to HTMX by a `@page.partial` or an action. A partial never `{% extends %}` another template.
+
+Under `apps/website/pages/` and `apps/website/components/`:
+1. Every partial is named `partial_<what>.html` (e.g. `partial_fact_row.html`)
+2. Never use a leading underscore (`_fact_row.html`) or no prefix at all (`fact_row.html`)
+3. A template that does `{% extends %}` a layout is a page, and never takes the prefix
 
 ### Validating action input
 
@@ -120,26 +130,53 @@ and renders nothing when the list is missing or empty:
 
 ## Python style
 
-### Prefer `list(map(...))` / `list(filter(...))` over list comprehensions
+### Use `lmap` / `lfilter` instead of comprehensions
 
-This codebase favors functional-style sequence transformations. Do not use list comprehensions of the form `[expr for x in xs]` or `[x for x in xs if pred]`.
+This codebase favors functional-style sequence transformations. Do not write list comprehensions (`[f(x) for x in xs]`) or generator expressions (`(f(x) for x in xs)`). Use the helpers exported by `core/utils/fp.py` instead:
 
-| Avoid                                              | Prefer                                              |
+```python
+from core.utils.fp import concat, lfilter, lmap
+```
+
+| Avoid                                              | Write                                               |
 |----------------------------------------------------|-----------------------------------------------------|
-| `[f(x) for x in xs]`                               | `list(map(f, xs))`                                  |
-| `[x for x in xs if pred(x)]`                       | `list(filter(pred, xs))`                            |
-| `[f(x) for x in xs if pred(x)]`                    | `list(map(f, filter(pred, xs)))`                    |
+| `[f(x) for x in xs]`                               | `lmap(f, xs)`                                       |
+| `[x for x in xs if pred(x)]`                       | `lfilter(pred, xs)`                                 |
+| `[f(x) for x in xs if pred(x)]`                    | `lmap(f, filter(pred, xs))`                         |
+| `[f(x) for xs in xss for x in xs]`                 | `lmap(f, concat(xss))`                              |
 | `[x for x in iterable]` (pure materialisation)     | `list(iterable)`                                    |
+| `list(map(f, xs))`                                 | `lmap(f, xs)`                                       |
+| `list(filter(pred, xs))`                           | `lfilter(pred, xs)`                                 |
+| `any(pred(x) for x in xs)`                         | `any(map(pred, xs))`                                |
+| `', '.join(f(x) for x in xs)`                      | `', '.join(map(f, xs))`                             |
 
-Drop the outer `list(...)` when the consumer already accepts any iterable — e.g. `str.join`, `sum`, `any`, `all`, `set`, `tuple`, `bulk_create`. In those cases `', '.join(map(f, xs))` is preferred over `', '.join(list(map(f, xs)))`.
+`lmap` and `lfilter` return a list. When the consumer already accepts any iterable — e.g. `str.join`, `sum`, `any`, `all`, `set`, `tuple`, `bulk_create`, or a spread such as `[first, *map(f, xs)]` — pass the lazy builtin `map` / `filter` instead: `', '.join(map(f, xs))`, not `', '.join(lmap(f, xs))`.
 
-This convention applies to **list** comprehensions only. Dict comprehensions (`{k: v for ...}`) and set comprehensions (`{x for ...}`) remain idiomatic and are unchanged.
+Where the rule applies:
+1. `apps/` and `core/`, tests included
+2. Not `scripts/`: those files run standalone and cannot import `core`
+3. Not dict comprehensions (`{k: v for ...}`) and set comprehensions (`{x for ...}`), which remain idiomatic and are unchanged
 
-### Use `pipe` when multiple transformation occurs over a single variable
+### Use `pipe` for three or more chained transformations
 
-On top of what said in the previous chapter about list comprehension, this codebase should also use `pipe` - exported from the
-core `fp` module - when multiple sequential transformation are in place. That does _not_ mean `pipe` and curried function
-should be used anywhere: try to make the call when using it or not makes the end code more readable.
+When one value goes through three or more transformations in a row, write the chain with `pipe` (exported by `core/utils/fp.py`): the value first, then one step per line, using the curried helpers (`lmap(f)`, `lfilter(pred)`) as steps.
+
+```python
+return pipe(
+	rows,
+	lmap(Row.terms),
+	concat,
+	lfilter(lambda term: term.is_variable),
+)
+```
+
+With one or two transformations, nest the calls or name an intermediate variable. `pipe` only adds noise there:
+
+```python
+return lmap(parse_row, filter(has_content, lines))
+```
+
+Do not use `pipe` when the steps are not a straight line: when a later step needs an earlier intermediate result, or when the flow branches.
 
 ### An example piece of code I'm proud of
 
@@ -182,7 +219,7 @@ In the piece of code above you can find many interesting elements that, composed
 - main functions should be commented
 - some additional types are welcome if they make function safer and easier to read, but they should be close to the functions that requires them
 - inline function definition thanks to currying is welcome, actually encouraged (look at `drop_optionals_missing_matches`)
-- `pipe` used when it makes sense: in this case it helps me see how we're basically chaining a set of transformations on top of the input
+- `pipe` used because three transformations are chained: it helps me see how we're basically chaining a set of transformations on top of the input
 - the comments for types are optional, but they made it easier for me to grasp the transformations since I'm still confused by Python's data structures
 
 ## PDF reports
@@ -193,3 +230,23 @@ A few notes on them:
     a typst string
 - Every report starts by fetching all the data it needs from the database; it is up to every section to filter / manipulate
     the big set of data as needed
+
+## Checking the conventions
+
+`scripts/check_conventions.py` checks the rules a script can decide, and CI runs it on every pull request:
+
+```
+pipenv run python scripts/check_conventions.py
+```
+
+What it checks:
+1. Every folder in `apps/website/pages/` has `__init__.py`, `<name>.py` and `<name>.html`
+2. Every page module registers `Page(name='<name>_page', ...)`
+3. Templates in `apps/website/pages/` and `apps/website/components/` follow the [Template partials](#template-partials) naming
+4. `apps/` and `core/` contain no list comprehension, no generator expression, and no `list(map(...))` / `list(filter(...))`
+
+Violations older than the check are counted in `scripts/conventions_baseline.txt`, one line per rule and place. The check fails only when a place has more violations than its baseline line allows, so never add a violation and never raise a count by hand. After fixing old violations, lower the counts with:
+
+```
+pipenv run python scripts/check_conventions.py --update-baseline
+```
