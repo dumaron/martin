@@ -108,7 +108,7 @@ page = Page(name='pair_transactions_page', base_route='flows/pair-transactions')
 
 # TODO update description
 @page.main('<str:kind>')
-def pair_transactions_page(request, kind):
+def main_render(request, kind):
 	"""
 	Second version of the pairing view. It is bank transaction centric: takes the oldest unpaired bank transaction and shows
 	some suggestions for pair-able YNAB transactions.
