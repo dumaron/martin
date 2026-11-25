@@ -1,0 +1,16 @@
+Conto Corrente:;000000000000
+Filiale:;PARMA AG. 0
+Saldo al:;31/10/2026
+Saldo contabile:;1.000,00
+Saldo disponibile:;1.000,00
+
+Criteri utilizzati per estrazione
+Data Inizio:;01/10/2026
+Data Fine:;31/10/2026
+Tipo movimenti:;Tutti
+
+Data contabile;Data valuta;Importo;Importo orig.;Divisa orig.;Canale;Categoria;Causale ABI;Causale;Descrizione:;Note
+30/10/2026;28/10/2026;-122,02;-122,02;EUR;AUT;-;43;PDINT;PAGAMENTO DEBINT PAGAMENTO CARTA DI DEBITO INTERNAZIONALE          537572******0000 -28/10/26-19:33 ROSSI            AMAZON* B27GE7IZ4 LUXEMBOU;-
+30/10/2026;30/10/2026;2.000,00;2.000,00;EUR;AUT;-;48;OCRET;BONIFICO A CREDITO ROSSI MARIO                                     Parte conto comune                            RIF. 0000000000;-
+27/10/2026;27/10/2026;-744,50;-744,50;EUR;AUT;-;15;PDMUP;RATA MUTUO;-
+06/08/2026;06/08/2026;-1.608,90;-1.608,90;EUR;AUT;-;26;BOEUR;BONIFICO A DEBITO A FAVORE DI ESEMPIO SRL FT N. 52 DEL 31.07.26 RIF=0000000000;-
