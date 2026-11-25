@@ -17,6 +17,7 @@ __all__ = [
 	'ternary',
 	'eq',
 	'first',
+	'first_or_none',
 	'last',
 	'key',
 	'value',
@@ -77,6 +78,10 @@ def first(array):
 	if array is None:
 		return None
 	return array[0]
+
+
+def first_or_none(seq):
+	return next(iter(seq), None)
 
 
 @curry
