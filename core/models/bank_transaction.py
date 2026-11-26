@@ -6,9 +6,11 @@ from django.db import models
 from django.db.models.functions import Coalesce
 
 from core.models.bank_transaction_description_hint import BankTransactionDescriptionHint
+from core.utils.fp import first_or_none, lfilter, lmap, pipe
 
-DATE_DD_MM_YY = re.compile(r'(?<![\d/])(?:0[1-9]|[12]\d|3[01])/(?:0[1-9]|1[0-2])/\d{2}(?![\d/])')
+DATE_D_M_Y = re.compile(r'(?<![\d/])(\d{1,2})/(\d{1,2})/(\d{4}|\d{2})(?![\d/])')
 TIME_HH_MM = re.compile(r'(?<![\d:])(?:[01]\d|2[0-3]):[0-5]\d(?![\d:])')
+MAX_TIME_FROM_TRANSACTION_TO_BOOKING = dt.timedelta(days=60)
 
 
 def fix_italian_floating_point(string):
@@ -53,10 +55,12 @@ class BankTransaction(models.Model):
 	# only the event date is interesting when pairing with a YNAB entry, if an export does not include it (I'm looking at
 	# you Credem), we need to match on other attributes.
 	#
-	# The first three are stored as they come from the exports, and each one is empty when the export does not include
-	# it: the nullability is required by the data nature. For Fineco I have the transaction date, so everyone is happy.
-	# For Credem I have the booking date which is usually 2/3 days later than when the transaction occurred. Unicredit
-	# is just kept for archiving purposes, and its exports had the booking date ("Data Registrazione").
+	# The booking date is stored as it comes from the exports, and it is empty when the export does not include it: the
+	# nullability is required by the data nature. Both Fineco ("Data_Operazione", despite its name) and Credem give me
+	# the booking date, which is usually 2/3 days later than when the transaction occurred. Unicredit is just kept for
+	# archiving purposes, and its exports had the booking date ("Data Registrazione").
+	# No export includes the transaction date: it is filled with the date written within the description, if any.
+	# The value date is not stored, as I have no use for it.
 	#
 	# The `date` attribute represents the closest available date to when the transaction was made: the best I can do to
 	# match the date the event triggering the transaction has happened. It is calculated by the database from the dates
@@ -66,9 +70,8 @@ class BankTransaction(models.Model):
 	# when doing pairing for the shared account is very hard to occur.
 	transaction_date = models.DateField(null=True, blank=True)
 	booking_date = models.DateField(null=True, blank=True)
-	value_date = models.DateField(null=True, blank=True)
 	date = models.GeneratedField(
-		expression=Coalesce('transaction_date', 'booking_date', 'value_date'),
+		expression=Coalesce('transaction_date', 'booking_date'),
 		output_field=models.DateField(),
 		db_persist=True,
 	)
@@ -101,31 +104,63 @@ class BankTransaction(models.Model):
 				'description', 'date', 'amount', name='bank-transaction-uniqueness-description-date-amount'
 			),
 			models.CheckConstraint(
-				condition=models.Q(transaction_date__isnull=False)
-				| models.Q(booking_date__isnull=False)
-				| models.Q(value_date__isnull=False),
+				condition=models.Q(transaction_date__isnull=False) | models.Q(booking_date__isnull=False),
 				name='bank-transaction-has-a-date',
 			),
 		)
 		db_table = 'bank_transactions'
 
+	@staticmethod
+	def find_dates_in_description(description: str) -> list[dt.date]:
+		def to_date(match: re.Match) -> dt.date | None:
+			day, month, year = map(int, match.groups())
+			try:
+				return dt.date(year if year > 99 else 2000 + year, month, day)
+			except ValueError:
+				return None
+
+		return pipe(
+			DATE_D_M_Y.finditer(description),
+			lmap(to_date),
+			lfilter(lambda date: date is not None),
+		)
+
+	@staticmethod
+	def find_transaction_date_in_description(description: str, booking_date: dt.date) -> dt.date | None:
+		def is_plausible(date: dt.date) -> bool:
+			return dt.timedelta(0) <= booking_date - date <= MAX_TIME_FROM_TRANSACTION_TO_BOOKING
+
+		return pipe(
+			BankTransaction.find_dates_in_description(description),
+			lfilter(is_plausible),
+			first_or_none,
+		)
+
 	@classmethod
 	def from_fineco_bank_account_xslx_row(cls, row, file_import):
+		description = clean_description(row['Descrizione_Completa'])
+		booking_date = row['Data_Operazione'].date()
+
 		return cls(
-			description=clean_description(row['Descrizione_Completa']),
+			description=description,
 			amount=float(row['Entrate'] or 0) + float(row['Uscite'] or 0),
-			transaction_date=row['Data_Operazione'],
+			transaction_date=cls.find_transaction_date_in_description(description, booking_date),
+			booking_date=booking_date,
 			file_import=file_import,
 			bank_account_id=FINECO_BANK_ACCOUNT_ID,
 		)
 
 	@classmethod
 	def from_credem_csv_row(cls, row, file_import):
+		description = clean_description(row['Descrizione:'])
+		# Unfortunately, only booking date from Credem
+		booking_date = datetime.strptime(row['Data contabile'], '%d/%m/%Y').date()
+
 		return cls(
-			description=clean_description(row['Descrizione:']),
+			description=description,
 			amount=float(fix_italian_floating_point(row['Importo']) or 0),
-			# Unfortunately, only booking date from Credem
-			booking_date=datetime.strptime(row['Data contabile'], '%d/%m/%Y'),
+			transaction_date=cls.find_transaction_date_in_description(description, booking_date),
+			booking_date=booking_date,
 			file_import=file_import,
 			bank_account_id=CREDEM_BANK_ACCOUNT_ID,
 		)
@@ -154,15 +189,6 @@ class BankTransaction(models.Model):
 			.first()
 		)
 
-	def get_operation_date_with_description(self) -> dt.date | None:
-		if self.transaction_date:
-			return self.transaction_date
-
-		if match := DATE_DD_MM_YY.search(self.description):
-			return datetime.strptime(match.group(0), '%d/%m/%y').date()
-
-		return None
-
 	def get_operation_time_with_description(self) -> dt.time | None:
 		if match := TIME_HH_MM.search(self.description):
 			return datetime.strptime(match.group(0), '%H:%M').time()
@@ -182,11 +208,10 @@ class BankTransaction(models.Model):
 				matched_hints.append((match.group(0), potential_hint.hint))
 
 		# There can be specific hints based on the bank account the transaction comes from
-		operation_date = self.get_operation_date_with_description()
-		if operation_date:
-			date_text = operation_date.strftime('%d/%m/%y')
-			date_match = date_text if date_text in DATE_DD_MM_YY.findall(self.description) else operation_date
-			matched_hints.append((date_match, datetime.strftime(operation_date, '%A %d/%m/%y')))
+		if self.transaction_date:
+			matched_hints.append(
+				(self.transaction_date.strftime('%d/%m/%y'), self.transaction_date.strftime('%A %d/%m/%y'))
+			)
 
 		if operation_time := self.get_operation_time_with_description():
 			matched_hints.append((operation_time.strftime('%H:%M'), get_part_of_day(operation_time)))

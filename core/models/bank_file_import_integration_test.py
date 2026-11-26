@@ -1,11 +1,18 @@
+from datetime import date
+from decimal import Decimal
 from io import BytesIO
+from pathlib import Path
 from unittest.mock import patch
 
+from django.core.files import File
 from django.core.files.uploadedfile import SimpleUploadedFile
 from openpyxl import Workbook
 
-from core.models import BankFileImport
+from core.models import BankAccount, BankFileImport, BankTransaction
+from core.models.bank_transaction import CREDEM_BANK_ACCOUNT_ID, FINECO_BANK_ACCOUNT_ID
 from core.tests.base import FileCleanupTestCase
+
+FIXTURES = Path(__file__).parent / 'bank_file_import_fixtures'
 
 
 class BankFileImportFinecoHeaderDetectionTest(FileCleanupTestCase):
@@ -146,3 +153,73 @@ class BankFileImportFinecoHeaderDetectionTest(FileCleanupTestCase):
 		self.assertIn('Descrizione_Completa', rows[0])
 		self.assertIn('Entrate', rows[0])
 		self.assertIn('Uscite', rows[0])
+
+
+class BankFileImportSaveTest(FileCleanupTestCase):
+	def setUp(self):
+		BankAccount.objects.create(
+			id=FINECO_BANK_ACCOUNT_ID, name='Fineco', iban='IT00X0000000000000000000002', personal=True
+		)
+		BankAccount.objects.create(
+			id=CREDEM_BANK_ACCOUNT_ID, name='Credem', iban='IT00X0000000000000000000003', personal=False
+		)
+
+	def import_fixture(self, file_name, file_type):
+		with open(FIXTURES / file_name, 'rb') as fixture:
+			return BankFileImport.objects.create(file_type=file_type, bank_file=File(fixture, name=file_name))
+
+	def test_fineco_export(self):
+		"""A Fineco export stores its Data_Operazione as booking date and the date in the description as transaction date, skipping the rows not yet booked."""
+		self.import_fixture('fineco_export.xlsx', BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT)
+
+		self.assertEqual(
+			list(
+				BankTransaction.objects.order_by('booking_date', 'amount').values_list(
+					'transaction_date', 'booking_date', 'date', 'amount'
+				)
+			),
+			[
+				(date(2026, 10, 12), date(2026, 10, 14), date(2026, 10, 12), Decimal('-50.00')),
+				(date(2026, 10, 23), date(2026, 10, 23), date(2026, 10, 23), Decimal('-150.00')),
+				(date(2026, 10, 27), date(2026, 10, 27), date(2026, 10, 27), Decimal('2500.50')),
+				(date(2026, 10, 26), date(2026, 10, 28), date(2026, 10, 26), Decimal('-2.00')),
+				(None, date(2026, 11, 5), date(2026, 11, 5), Decimal('-3.95')),
+			],
+		)
+
+	def test_credem_export(self):
+		"""A Credem export stores its Data contabile as booking date, the date in the description as transaction date, and collapses the spaces of the description."""
+		self.import_fixture('credem_export.csv', BankFileImport.FileType.CREDEM_CSV_EXPORT)
+
+		self.assertEqual(
+			list(
+				BankTransaction.objects.order_by('booking_date', 'amount').values_list(
+					'transaction_date', 'booking_date', 'date', 'amount'
+				)
+			),
+			[
+				(None, date(2026, 8, 6), date(2026, 8, 6), Decimal('-1608.90')),
+				(None, date(2026, 10, 27), date(2026, 10, 27), Decimal('-744.50')),
+				(date(2026, 10, 28), date(2026, 10, 30), date(2026, 10, 28), Decimal('-122.02')),
+				(None, date(2026, 10, 30), date(2026, 10, 30), Decimal('2000.00')),
+			],
+		)
+		self.assertEqual(
+			BankTransaction.objects.get(amount=Decimal('-122.02')).description,
+			'PAGAMENTO DEBINT PAGAMENTO CARTA DI DEBITO INTERNAZIONALE 537572******0000 -28/10/26-19:33 ROSSI '
+			'AMAZON* B27GE7IZ4 LUXEMBOU',
+		)
+
+	def test_fineco_export_imported_twice(self):
+		"""Importing the same Fineco export twice adds no transaction the second time."""
+		self.import_fixture('fineco_export.xlsx', BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT)
+		self.import_fixture('fineco_export.xlsx', BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT)
+
+		self.assertEqual(BankTransaction.objects.count(), 5)
+
+	def test_credem_export_imported_twice(self):
+		"""Importing the same Credem export twice adds no transaction the second time."""
+		self.import_fixture('credem_export.csv', BankFileImport.FileType.CREDEM_CSV_EXPORT)
+		self.import_fixture('credem_export.csv', BankFileImport.FileType.CREDEM_CSV_EXPORT)
+
+		self.assertEqual(BankTransaction.objects.count(), 4)

@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from decimal import Decimal
 from unittest.mock import patch
 
@@ -213,14 +213,14 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': '  Test Income Transaction  ',
 			'Entrate': 150.75,
 			'Uscite': 0,
-			'Data_Operazione': date(2024, 3, 15),
+			'Data_Operazione': datetime(2024, 3, 15),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
 		self.assertEqual(transaction.description, 'Test Income Transaction')
 		self.assertEqual(transaction.amount, 150.75)
-		self.assertEqual(transaction.transaction_date, date(2024, 3, 15))
+		self.assertEqual(transaction.booking_date, date(2024, 3, 15))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
@@ -230,14 +230,14 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Test Expense Transaction',
 			'Entrate': 0,
 			'Uscite': -85.30,
-			'Data_Operazione': date(2024, 3, 20),
+			'Data_Operazione': datetime(2024, 3, 20),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
 		self.assertEqual(transaction.description, 'Test Expense Transaction')
 		self.assertEqual(transaction.amount, -85.30)
-		self.assertEqual(transaction.transaction_date, date(2024, 3, 20))
+		self.assertEqual(transaction.booking_date, date(2024, 3, 20))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)  # FINECO_BANK_ACCOUNT_ID
 
@@ -247,14 +247,14 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Transaction with both values',
 			'Entrate': 100.0,
 			'Uscite': -25.0,
-			'Data_Operazione': date(2024, 3, 25),
+			'Data_Operazione': datetime(2024, 3, 25),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
 		self.assertEqual(transaction.description, 'Transaction with both values')
 		self.assertEqual(transaction.amount, 75.0)  # 100.0 + (-25.0)
-		self.assertEqual(transaction.transaction_date, date(2024, 3, 25))
+		self.assertEqual(transaction.booking_date, date(2024, 3, 25))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -264,14 +264,14 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Zero amount transaction',
 			'Entrate': 0,
 			'Uscite': 0,
-			'Data_Operazione': date(2024, 3, 30),
+			'Data_Operazione': datetime(2024, 3, 30),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
 		self.assertEqual(transaction.description, 'Zero amount transaction')
 		self.assertEqual(transaction.amount, 0.0)
-		self.assertEqual(transaction.transaction_date, date(2024, 3, 30))
+		self.assertEqual(transaction.booking_date, date(2024, 3, 30))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -281,14 +281,14 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Transaction with None values',
 			'Entrate': None,
 			'Uscite': None,
-			'Data_Operazione': date(2024, 4, 1),
+			'Data_Operazione': datetime(2024, 4, 1),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
 		self.assertEqual(transaction.description, 'Transaction with None values')
 		self.assertEqual(transaction.amount, 0.0)  # None or 0 + None or 0 = 0.0
-		self.assertEqual(transaction.transaction_date, date(2024, 4, 1))
+		self.assertEqual(transaction.booking_date, date(2024, 4, 1))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -298,14 +298,14 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Mixed None and value',
 			'Entrate': 250.0,
 			'Uscite': None,
-			'Data_Operazione': date(2024, 4, 5),
+			'Data_Operazione': datetime(2024, 4, 5),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
 		self.assertEqual(transaction.description, 'Mixed None and value')
 		self.assertEqual(transaction.amount, 250.0)  # 250.0 + 0
-		self.assertEqual(transaction.transaction_date, date(2024, 4, 5))
+		self.assertEqual(transaction.booking_date, date(2024, 4, 5))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
 
@@ -315,7 +315,7 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': '   \t  Whitespace    Transaction  \n\t Test  ',
 			'Entrate': 100.0,
 			'Uscite': 0,
-			'Data_Operazione': date(2024, 4, 10),
+			'Data_Operazione': datetime(2024, 4, 10),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
@@ -328,13 +328,13 @@ class BankTransactionFromFinecoXslxRowTest(TestCase):
 			'Descrizione_Completa': 'Decimal Transaction',
 			'Entrate': 123.456,
 			'Uscite': -45.789,
-			'Data_Operazione': date(2024, 4, 15),
+			'Data_Operazione': datetime(2024, 4, 15),
 		}
 
 		transaction = BankTransaction.from_fineco_bank_account_xslx_row(row, self.file_import)
 
 		self.assertEqual(transaction.description, 'Decimal Transaction')
 		self.assertAlmostEqual(transaction.amount, 77.667, places=3)  # 123.456 + (-45.789)
-		self.assertEqual(transaction.transaction_date, date(2024, 4, 15))
+		self.assertEqual(transaction.booking_date, date(2024, 4, 15))
 		self.assertEqual(transaction.file_import, self.file_import)
 		self.assertEqual(transaction.bank_account_id, 2)
