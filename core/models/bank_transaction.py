@@ -6,13 +6,11 @@ from django.db import models
 from django.db.models.functions import Coalesce
 
 from core.models.bank_transaction_description_hint import BankTransactionDescriptionHint
-from core.utils.fp import first_or_none, last, lfilter, lmap, pipe
+from core.utils.fp import first_or_none, lfilter, lmap, pipe
 
 DATE_D_M_Y = re.compile(r'(?<![\d/])(\d{1,2})/(\d{1,2})/(\d{4}|\d{2})(?![\d/])')
 TIME_HH_MM = re.compile(r'(?<![\d:])(?:[01]\d|2[0-3]):[0-5]\d(?![\d:])')
 MAX_TIME_FROM_TRANSACTION_TO_BOOKING = dt.timedelta(days=60)
-
-type DateInDescription = tuple[str, dt.date]
 
 
 def fix_italian_floating_point(string):
@@ -21,14 +19,6 @@ def fix_italian_floating_point(string):
 
 def clean_description(description):
 	return ' '.join(description.split())
-
-
-def to_date_in_description(match: re.Match) -> DateInDescription | None:
-	day, month, year = map(int, match.groups())
-	try:
-		return match.group(0), dt.date(year if year > 99 else 2000 + year, month, day)
-	except ValueError:
-		return None
 
 
 def get_part_of_day(time):
@@ -121,11 +111,18 @@ class BankTransaction(models.Model):
 		db_table = 'bank_transactions'
 
 	@staticmethod
-	def find_dates_in_description(description: str) -> list[DateInDescription]:
+	def find_dates_in_description(description: str) -> list[dt.date]:
+		def to_date(match: re.Match) -> dt.date | None:
+			day, month, year = map(int, match.groups())
+			try:
+				return dt.date(year if year > 99 else 2000 + year, month, day)
+			except ValueError:
+				return None
+
 		return pipe(
 			DATE_D_M_Y.finditer(description),
-			lmap(to_date_in_description),
-			lfilter(lambda found: found is not None),
+			lmap(to_date),
+			lfilter(lambda date: date is not None),
 		)
 
 	@staticmethod
@@ -135,7 +132,6 @@ class BankTransaction(models.Model):
 
 		return pipe(
 			BankTransaction.find_dates_in_description(description),
-			lmap(last),
 			lfilter(is_plausible),
 			first_or_none,
 		)
@@ -213,9 +209,9 @@ class BankTransaction(models.Model):
 
 		# There can be specific hints based on the bank account the transaction comes from
 		if self.transaction_date:
-			text_by_date = {date: text for text, date in BankTransaction.find_dates_in_description(self.description)}
-			date_match = text_by_date.get(self.transaction_date, self.transaction_date)
-			matched_hints.append((date_match, datetime.strftime(self.transaction_date, '%A %d/%m/%y')))
+			matched_hints.append(
+				(self.transaction_date.strftime('%d/%m/%y'), self.transaction_date.strftime('%A %d/%m/%y'))
+			)
 
 		if operation_time := self.get_operation_time_with_description():
 			matched_hints.append((operation_time.strftime('%H:%M'), get_part_of_day(operation_time)))

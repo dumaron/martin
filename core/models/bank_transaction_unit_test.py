@@ -6,11 +6,11 @@ from core.models import BankTransaction
 
 
 class FindDatesInDescriptionTest(SimpleTestCase):
-	def test_returns_text_and_date(self):
-		"""Every slash-separated date comes back with the text it was written as, in order of appearance."""
+	def test_returns_dates_in_order(self):
+		"""Every slash-separated date of the description comes back, in order of appearance."""
 		self.assertEqual(
 			BankTransaction.find_dates_in_description('Ins: 25/04/2024 11:05:42 Cau: Proforma nr. 23 del 24/04/2024'),
-			[('25/04/2024', date(2024, 4, 25)), ('24/04/2024', date(2024, 4, 24))],
+			[date(2024, 4, 25), date(2024, 4, 24)],
 		)
 
 	def test_skips_impossible_dates(self):

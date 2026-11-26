@@ -168,19 +168,16 @@ class BankFileImportSaveTest(FileCleanupTestCase):
 		with open(FIXTURES / file_name, 'rb') as fixture:
 			return BankFileImport.objects.create(file_type=file_type, bank_file=File(fixture, name=file_name))
 
-	def imported_dates_and_amounts(self):
-		return list(
-			BankTransaction.objects.order_by('booking_date', 'amount').values_list(
-				'transaction_date', 'booking_date', 'date', 'amount'
-			)
-		)
-
 	def test_fineco_export(self):
 		"""A Fineco export stores its Data_Operazione as booking date and the date in the description as transaction date, skipping the rows not yet booked."""
 		self.import_fixture('fineco_export.xlsx', BankFileImport.FileType.FINECO_BANK_ACCOUNT_XLSX_EXPORT)
 
 		self.assertEqual(
-			self.imported_dates_and_amounts(),
+			list(
+				BankTransaction.objects.order_by('booking_date', 'amount').values_list(
+					'transaction_date', 'booking_date', 'date', 'amount'
+				)
+			),
 			[
 				(date(2026, 10, 12), date(2026, 10, 14), date(2026, 10, 12), Decimal('-50.00')),
 				(date(2026, 10, 23), date(2026, 10, 23), date(2026, 10, 23), Decimal('-150.00')),
@@ -195,7 +192,11 @@ class BankFileImportSaveTest(FileCleanupTestCase):
 		self.import_fixture('credem_export.csv', BankFileImport.FileType.CREDEM_CSV_EXPORT)
 
 		self.assertEqual(
-			self.imported_dates_and_amounts(),
+			list(
+				BankTransaction.objects.order_by('booking_date', 'amount').values_list(
+					'transaction_date', 'booking_date', 'date', 'amount'
+				)
+			),
 			[
 				(None, date(2026, 8, 6), date(2026, 8, 6), Decimal('-1608.90')),
 				(None, date(2026, 10, 27), date(2026, 10, 27), Decimal('-744.50')),
